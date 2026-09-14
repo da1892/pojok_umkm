@@ -3,14 +3,14 @@
 @section('content')
 
 <!-- Hero Section with Pasar Purwantoro Background and Maroon Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-20 pb-20 sm:pt-24 sm:pb-24 md:pt-28 md:pb-28"
-     style="background: linear-gradient(rgba(138, 26, 26, 0.88), rgba(115, 18, 18, 0.93)), url('{{ asset('img/pasar_purwantoro.jpg') }}') center 30% / cover no-repeat;">
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-24 sm:pt-28 sm:pb-28 md:pt-32 md:pb-32"
+     style="background: linear-gradient(rgba(90, 12, 12, 0.50), rgba(60, 8, 8, 0.70)), url('{{ asset('img/pasar_purwantoro.jpg') }}') center 25% / cover no-repeat;">
     
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight drop-shadow-sm">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight [text-shadow:_0_3px_12px_rgba(0,0,0,0.7)]">
             Pojok UMKM Kabupaten Wonogiri
         </h1>
-        <p class="text-base sm:text-lg md:text-xl text-red-100/90 mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
+        <p class="text-base sm:text-lg md:text-xl text-white/95 mb-10 max-w-2xl mx-auto leading-relaxed font-medium [text-shadow:_0_2px_8px_rgba(0,0,0,0.7)]">
             Wadah informasi resmi, kurasi, dan promosi produk unggulan UMKM Wonogiri sukses mendunia.
         </p>
         
