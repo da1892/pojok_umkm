@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- Hero Section with Pasar Purwantoro Background and Maroon Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center py-28 md:py-36"
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-36 sm:pt-28 sm:pb-44 md:pt-32 md:pb-48"
      style="background: linear-gradient(rgba(138, 26, 26, 0.88), rgba(115, 18, 18, 0.93)), url('{{ asset('img/pasar_purwantoro.jpg') }}') center 30% / cover no-repeat;">
     
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
@@ -29,60 +29,61 @@
     </div>
 </div>
 
-<!-- 4 Cards Row (Overlapping Hero, Exactly as Mockup) -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mt-14 sm:-mt-16 mb-20 reveal delay-200">
-    <div class="bg-white rounded-2xl shadow-xl shadow-slate-900/5 border border-slate-200/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 overflow-hidden">
-        
-        <!-- Card 1: Profil UMKM -->
-        <a href="/direktori" class="p-6 sm:p-7 hover:bg-slate-50/70 transition-colors group flex flex-col justify-start">
-            <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-sm">
-                <!-- Ribbon / Medal Icon -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.003 0V9.75m-5.003 0V9.75m0 0a3.75 3.75 0 117.5 0v4.5"/>
-                    <circle cx="12" cy="7.5" r="3.75" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 11.25l-2.25 6 4-1.5 4 1.5-2.25-6"/>
-                </svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#991b1b] transition-colors">Profil UMKM</h3>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Kenali profil ribuan UMKM tangguh di seluruh pelosok Wonogiri.</p>
-        </a>
+<!-- 4 Cards Section (With Outer Container & Individual Card Gap Matching Figma) -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mt-16 sm:-mt-20 md:-mt-24 mb-20 reveal delay-200">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl shadow-slate-900/5 border border-slate-200/80">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 lg:gap-6">
+            
+            <!-- Card 1: Profil UMKM -->
+            <a href="/direktori" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
+                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <!-- Ribbon / Medal Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12l-2 8 5.5-2.5 5.5 2.5-2-8" />
+                    </svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Profil UMKM</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Kenali profil ribuan UMKM tangguh di seluruh pelosok Wonogiri.</p>
+            </a>
 
-        <!-- Card 2: Produk UMKM -->
-        <a href="/katalog" class="p-6 sm:p-7 hover:bg-slate-50/70 transition-colors group flex flex-col justify-start">
-            <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-sm">
-                <!-- Shopping Bag Icon -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                </svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#991b1b] transition-colors">Produk UMKM</h3>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Katalog kurasi produk lokal mulai dari kuliner hingga kriya bersertifikat.</p>
-        </a>
+            <!-- Card 2: Produk UMKM -->
+            <a href="/katalog" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
+                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <!-- Shopping Bag Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Produk UMKM</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Katalog kurasi produk lokal mulai dari kuliner hingga kriya bersertifikat.</p>
+            </a>
 
-        <!-- Card 3: Berita & Kegiatan -->
-        <a href="/informasi" class="p-6 sm:p-7 hover:bg-slate-50/70 transition-colors group flex flex-col justify-start">
-            <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-sm">
-                <!-- Calendar Event Icon -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
-                </svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#991b1b] transition-colors">Berita & Kegiatan</h3>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Informasi bazar, pameran, pelatihan, dan program pemberdayaan terkini.</p>
-        </a>
+            <!-- Card 3: Berita & Kegiatan -->
+            <a href="/informasi" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
+                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <!-- Calendar Event Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Berita & Kegiatan</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Informasi bazar, pameran, pelatihan, dan program pemberdayaan terkini.</p>
+            </a>
 
-        <!-- Card 4: Informasi & Panduan -->
-        <a href="/konsultasi" class="p-6 sm:p-7 hover:bg-slate-50/70 transition-colors group flex flex-col justify-start">
-            <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-sm">
-                <!-- Info Circle Icon -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
-                </svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 mb-1.5 group-hover:text-[#991b1b] transition-colors">Informasi & Panduan</h3>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Panduan lengkap sertifikasi halal, PIRT, legalitas NIB gratis.</p>
-        </a>
+            <!-- Card 4: Informasi & Panduan -->
+            <a href="/konsultasi" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
+                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <!-- Info Circle Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Informasi & Panduan</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Panduan lengkap sertifikasi halal, PIRT, legalitas NIB gratis.</p>
+            </a>
 
+        </div>
     </div>
 </div>
 
