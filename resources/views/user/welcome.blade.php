@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- Hero Section with Pasar Purwantoro Background and Maroon Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-36 sm:pt-28 sm:pb-44 md:pt-32 md:pb-48"
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-28 pb-48 sm:pt-32 sm:pb-56 md:pt-36 md:pb-64"
      style="background: linear-gradient(rgba(138, 26, 26, 0.88), rgba(115, 18, 18, 0.93)), url('{{ asset('img/pasar_purwantoro.jpg') }}') center 30% / cover no-repeat;">
     
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
@@ -15,7 +15,7 @@
         </p>
         
         <!-- Action Buttons Matching Mockup -->
-        <div class="flex flex-wrap items-center justify-center gap-4">
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-2">
             <a href="/katalog" class="inline-flex items-center gap-2.5 bg-[#eab308] hover:bg-[#facc15] text-[#78350f] font-bold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                 <svg class="w-4 h-4 text-[#78350f]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -30,9 +30,9 @@
 </div>
 
 <!-- 4 Cards Section (With Outer Container & Individual Card Gap Matching Figma) -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mt-16 sm:-mt-20 md:-mt-24 mb-20 reveal delay-200">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl shadow-slate-900/5 border border-slate-200/80">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 lg:gap-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mt-16 sm:-mt-20 md:-mt-24 mb-24 reveal delay-200">
+    <div class="bg-white rounded-3xl p-8 sm:p-10 md:p-12 lg:p-14 shadow-xl shadow-slate-900/5 border border-slate-200/80">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 md:gap-8 lg:gap-8 xl:gap-9">
             
             <!-- Card 1: Profil UMKM -->
             <a href="/direktori" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
