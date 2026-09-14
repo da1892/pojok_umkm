@@ -54,54 +54,92 @@
         .delay-500 { transition-delay: 500ms; }
     </style>
 </head>
-<body class="font-sans antialiased bg-red-50 text-slate-900 scroll-smooth">
+<body class="font-sans antialiased bg-slate-50 text-slate-900 scroll-smooth">
     
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-[#800000] text-white shadow-lg transition-all duration-300 border-b border-red-900" id="navbar">
+    <nav class="fixed w-full z-50 bg-white text-slate-800 shadow-sm transition-all duration-300 border-b border-slate-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20">
+            <div class="flex justify-between items-center h-20">
+                <!-- Brand / Logo -->
                 <div class="flex items-center">
-                    <a href="/" class="flex items-center gap-2 text-2xl font-bold text-white hover:text-red-200 transition-colors">
-                        <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-8 h-8" alt="Logo">
-                        Pojok UMKM
+                    <a href="/" class="flex items-center gap-3 group">
+                        <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-10 h-10 object-contain group-hover:scale-105 transition-transform" alt="Logo Wonogiri">
+                        <div class="flex flex-col text-left">
+                            <span class="text-xl font-black text-[#991b1b] leading-tight tracking-tight">Pojok UMKM</span>
+                            <span class="text-xs text-slate-500 font-medium">Kabupaten Wonogiri</span>
+                        </div>
                     </a>
-                    
-                    <div class="hidden md:flex ml-10 space-x-8 items-center">
-                        <a href="/" class="{{ request()->is('/') ? 'text-white font-bold' : 'text-red-200 hover:text-white font-medium transition-colors' }}">Beranda</a>
-                        <a href="/katalog" class="{{ request()->is('katalog*') ? 'text-white font-bold' : 'text-red-200 hover:text-white font-medium transition-colors' }}">Katalog Produk</a>
-                        <a href="/direktori" class="{{ request()->is('direktori*') ? 'text-white font-bold' : 'text-red-200 hover:text-white font-medium transition-colors' }}">Direktori UMKM</a>
-                        <a href="/informasi" class="{{ request()->is('informasi*') ? 'text-white font-bold' : 'text-red-200 hover:text-white font-medium transition-colors' }}">Informasi</a>
-                        <a href="/konsultasi" class="{{ request()->is('konsultasi*') ? 'text-white font-bold' : 'text-red-200 hover:text-white font-medium transition-colors' }}">Konsultasi</a>
-                    </div>
                 </div>
-                <div class="flex items-center space-x-4">
+
+                <!-- Navigation Links (Center/Right Desktop) -->
+                <div class="hidden lg:flex items-center space-x-7">
+                    <a href="/" class="relative py-2 text-sm font-semibold {{ request()->is('/') ? 'text-[#991b1b] after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
+                        Beranda
+                    </a>
+                    <a href="/katalog" class="text-sm font-medium {{ request()->is('katalog*') ? 'text-[#991b1b] font-semibold' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
+                        Produk Unggulan
+                    </a>
+                    <a href="/direktori" class="text-sm font-medium {{ request()->is('direktori*') ? 'text-[#991b1b] font-semibold' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
+                        Direktori UMKM
+                    </a>
+                    <a href="/konsultasi" class="text-sm font-medium {{ request()->is('konsultasi*') ? 'text-[#991b1b] font-semibold' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
+                        Konsultasi
+                    </a>
+                    <a href="/informasi" class="text-sm font-medium {{ request()->is('informasi*') ? 'text-[#991b1b] font-semibold' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
+                        Informasi
+                    </a>
+                    <a href="#kontak" class="text-sm font-medium text-slate-600 hover:text-[#991b1b] transition-colors">
+                        Kontak
+                    </a>
+                </div>
+
+                <!-- Auth Action Button -->
+                <div class="hidden sm:flex items-center space-x-3">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="text-red-100 hover:text-white font-medium px-3 py-2">Dashboard</a>
+                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Dashboard</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="text-red-100 hover:text-white font-medium px-3 py-2">Keluar</button>
+                            <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Keluar</button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-red-100 hover:text-white font-medium px-3 py-2 transition-colors">Masuk</a>
-                        <a href="{{ route('register') }}" class="hidden md:inline-block bg-white text-[#800000] px-5 py-2.5 rounded-full font-bold hover:bg-red-50 transition-colors shadow-lg active:scale-95">Daftar UMKM</a>
+                        <a href="{{ route('login') }}" class="bg-[#a31d1d] hover:bg-[#8b1818] text-white px-7 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all hover:shadow hover:-translate-y-0.5">
+                            Login
+                        </a>
                     @endauth
-                    
-                    <!-- Mobile Menu Button -->
-                    <button id="mobile-menu-btn" class="md:hidden text-white hover:text-red-200 focus:outline-none ml-2">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="flex lg:hidden items-center gap-2">
+                    @guest
+                    <a href="{{ route('login') }}" class="bg-[#a31d1d] text-white px-4 py-1.5 rounded-lg text-xs font-semibold sm:hidden">
+                        Login
+                    </a>
+                    @endguest
+                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-[#991b1b] focus:outline-none p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden bg-[#700000] border-t border-red-900">
-            <div class="px-4 pt-2 pb-4 space-y-1 shadow-inner">
-                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('/') ? 'bg-red-900 text-white' : 'text-red-100 hover:bg-red-800 hover:text-white' }}">Beranda</a>
-                <a href="/katalog" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('katalog*') ? 'bg-red-900 text-white' : 'text-red-100 hover:bg-red-800 hover:text-white' }}">Katalog Produk</a>
-                <a href="/direktori" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('direktori*') ? 'bg-red-900 text-white' : 'text-red-100 hover:bg-red-800 hover:text-white' }}">Direktori UMKM</a>
-                <a href="/informasi" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('informasi*') ? 'bg-red-900 text-white' : 'text-red-100 hover:bg-red-800 hover:text-white' }}">Informasi</a>
-                <a href="/konsultasi" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('konsultasi*') ? 'bg-red-900 text-white' : 'text-red-100 hover:bg-red-800 hover:text-white' }}">Konsultasi</a>
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-100 shadow-xl">
+            <div class="px-4 pt-3 pb-5 space-y-1.5">
+                <a href="/" class="block px-3 py-2 rounded-lg text-sm font-semibold {{ request()->is('/') ? 'bg-red-50 text-[#991b1b]' : 'text-slate-700 hover:bg-slate-50' }}">Beranda</a>
+                <a href="/katalog" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Produk Unggulan</a>
+                <a href="/direktori" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Direktori UMKM</a>
+                <a href="/konsultasi" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Konsultasi</a>
+                <a href="/informasi" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Informasi</a>
+                <a href="#kontak" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Kontak</a>
+                @auth
+                <div class="pt-2 border-t border-slate-100 flex flex-col gap-1">
+                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700">Dashboard</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-3 py-2 text-sm text-red-600 font-medium">Keluar</button>
+                    </form>
+                </div>
+                @endauth
             </div>
         </div>
     </nav>
