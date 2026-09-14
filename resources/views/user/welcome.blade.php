@@ -2,20 +2,47 @@
 
 @section('content')
 
-<!-- Hero Section with Pasar Purwantoro Background and Maroon Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-24 sm:pt-28 sm:pb-28 md:pt-32 md:pb-32"
-     style="background: linear-gradient(rgba(90, 12, 12, 0.50), rgba(60, 8, 8, 0.70)), url('{{ asset('img/pasar_purwantoro.jpg') }}') center 25% / cover no-repeat;">
+<!-- Hero Section with 3-Photo Animated Carousel Background -->
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-28 sm:pt-28 sm:pb-32 md:pt-36 md:pb-36" id="hero-slider-section">
     
+    <!-- Slide 1: Tugu Selamat Datang di Wonogiri -->
+    <div class="hero-bg-slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-100 scale-100 z-0"
+         style="background: linear-gradient(rgba(80, 10, 10, 0.45), rgba(50, 8, 8, 0.65)), url('{{ asset('img/hero_wonogiri_1.jpg') }}') center center / cover no-repeat;">
+    </div>
+
+    <!-- Slide 2: Pasar Ngadirojo Wonogiri -->
+    <div class="hero-bg-slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-0 scale-105 z-0"
+         style="background: linear-gradient(rgba(80, 10, 10, 0.45), rgba(50, 8, 8, 0.65)), url('{{ asset('img/hero_wonogiri_2.jpg') }}') center 25% / cover no-repeat;">
+    </div>
+
+    <!-- Slide 3: Pasar Kota Wonogiri -->
+    <div class="hero-bg-slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-0 scale-105 z-0"
+         style="background: linear-gradient(rgba(80, 10, 10, 0.45), rgba(50, 8, 8, 0.65)), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 35% / cover no-repeat;">
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button type="button" onclick="prevHeroSlide()" class="absolute left-3 sm:left-6 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/30 hover:bg-black/50 text-white/90 hover:text-white flex items-center justify-center backdrop-blur-sm transition-all transform hover:scale-105" aria-label="Foto Sebelumnya">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+        </svg>
+    </button>
+    <button type="button" onclick="nextHeroSlide()" class="absolute right-3 sm:right-6 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/30 hover:bg-black/50 text-white/90 hover:text-white flex items-center justify-center backdrop-blur-sm transition-all transform hover:scale-105" aria-label="Foto Berikutnya">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+        </svg>
+    </button>
+
+    <!-- Content Overlay -->
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight [text-shadow:_0_3px_12px_rgba(0,0,0,0.7)]">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight [text-shadow:_0_3px_12px_rgba(0,0,0,0.75)]">
             Pojok UMKM Kabupaten Wonogiri
         </h1>
-        <p class="text-base sm:text-lg md:text-xl text-white/95 mb-10 max-w-2xl mx-auto leading-relaxed font-medium [text-shadow:_0_2px_8px_rgba(0,0,0,0.7)]">
+        <p class="text-base sm:text-lg md:text-xl text-white/95 mb-10 max-w-2xl mx-auto leading-relaxed font-medium [text-shadow:_0_2px_8px_rgba(0,0,0,0.75)]">
             Wadah informasi resmi, kurasi, dan promosi produk unggulan UMKM Wonogiri sukses mendunia.
         </p>
         
         <!-- Action Buttons Matching Mockup -->
-        <div class="flex flex-wrap items-center justify-center gap-4">
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
             <a href="/katalog" class="inline-flex items-center gap-2.5 bg-[#eab308] hover:bg-[#facc15] text-[#78350f] font-bold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
                 <svg class="w-4 h-4 text-[#78350f]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -25,6 +52,13 @@
             <a href="#kategori" class="inline-flex items-center justify-center border-2 border-white/80 hover:border-white hover:bg-white/10 text-white font-semibold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg transition-all transform hover:-translate-y-0.5">
                 Pelajari Program
             </a>
+        </div>
+
+        <!-- Slide Indicator Dots -->
+        <div class="flex items-center justify-center gap-2.5 pt-1">
+            <button type="button" onclick="setHeroSlide(0)" class="hero-dot w-8 h-2.5 rounded-full bg-white transition-all duration-300 shadow-sm" aria-label="Slide 1"></button>
+            <button type="button" onclick="setHeroSlide(1)" class="hero-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all duration-300 shadow-sm" aria-label="Slide 2"></button>
+            <button type="button" onclick="setHeroSlide(2)" class="hero-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all duration-300 shadow-sm" aria-label="Slide 3"></button>
         </div>
     </div>
 </div>
@@ -169,7 +203,68 @@
                 <div class="text-red-100 text-sm sm:text-base font-medium">Konsultasi Sukses</div>
             </div>
         </div>
-    </div>
 </div>
+
+<!-- Hero Slider Script -->
+<script>
+    (function () {
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-bg-slide');
+        const dots = document.querySelectorAll('.hero-dot');
+        const totalSlides = slides.length;
+        let slideTimer = null;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.remove('opacity-0', 'scale-105');
+                    slide.classList.add('opacity-100', 'scale-100');
+                } else {
+                    slide.classList.remove('opacity-100', 'scale-100');
+                    slide.classList.add('opacity-0', 'scale-105');
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('w-2.5', 'bg-white/50');
+                    dot.classList.add('w-8', 'bg-white');
+                } else {
+                    dot.classList.remove('w-8', 'bg-white');
+                    dot.classList.add('w-2.5', 'bg-white/50');
+                }
+            });
+            currentSlide = index;
+        }
+
+        window.setHeroSlide = function (index) {
+            showSlide(index);
+            restartTimer();
+        };
+
+        window.nextHeroSlide = function () {
+            let nextIndex = (currentSlide + 1) % totalSlides;
+            showSlide(nextIndex);
+            restartTimer();
+        };
+
+        window.prevHeroSlide = function () {
+            let prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(prevIndex);
+            restartTimer();
+        };
+
+        function restartTimer() {
+            if (slideTimer) clearInterval(slideTimer);
+            slideTimer = setInterval(() => {
+                let nextIndex = (currentSlide + 1) % totalSlides;
+                showSlide(nextIndex);
+            }, 5000);
+        }
+
+        // Start auto slide
+        restartTimer();
+    })();
+</script>
 
 @endsection
