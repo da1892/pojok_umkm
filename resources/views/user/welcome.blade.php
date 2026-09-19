@@ -63,146 +63,257 @@
     </div>
 </div>
 
-<!-- 4 Cards Section (Geser ke bawah, berada di bawah Hero dengan jarak lega) -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-8 sm:mt-10 md:mt-14 mb-20 reveal delay-200">
-    <div class="bg-white rounded-3xl p-8 sm:p-10 md:p-12 lg:p-14 shadow-sm border border-slate-200/80">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 md:gap-8 lg:gap-8 xl:gap-9">
+<!-- 4 Cards Section (Mobile 2x2 grid, Desktop 4 columns) -->
+<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 mt-6 sm:mt-10 md:mt-14 mb-12 sm:mb-20 reveal delay-200">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 md:p-10 lg:p-12 shadow-sm border border-slate-200/80">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-7 lg:gap-8">
             
             <!-- Card 1: Profil UMKM -->
-            <a href="/direktori" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
-                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <!-- Ribbon / Medal Icon -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="/direktori" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12l-2 8 5.5-2.5 5.5 2.5-2-8" />
                     </svg>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Profil UMKM</h3>
-                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Kenali profil ribuan UMKM tangguh di seluruh pelosok Wonogiri.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Profil UMKM</h3>
+                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Kenali profil ribuan UMKM tangguh di seluruh pelosok Wonogiri.</p>
             </a>
 
             <!-- Card 2: Produk UMKM -->
-            <a href="/katalog" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
-                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <!-- Shopping Bag Icon -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="/katalog" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
                     </svg>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Produk UMKM</h3>
-                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Katalog kurasi produk lokal mulai dari kuliner hingga kriya bersertifikat.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Produk UMKM</h3>
+                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Katalog kurasi produk lokal mulai kuliner hingga kriya bersertifikat.</p>
             </a>
 
             <!-- Card 3: Berita & Kegiatan -->
-            <a href="/informasi" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
-                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <!-- Calendar Event Icon -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="/informasi" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
                     </svg>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Berita & Kegiatan</h3>
-                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Informasi bazar, pameran, pelatihan, dan program pemberdayaan terkini.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Berita & Kegiatan</h3>
+                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Informasi bazar, pameran, pelatihan, dan pemberdayaan terkini.</p>
             </a>
 
             <!-- Card 4: Informasi & Panduan -->
-            <a href="/konsultasi" class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-1 group flex flex-col justify-start">
-                <div class="w-12 h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <!-- Info Circle Icon -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="/konsultasi" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
                     </svg>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-[#991b1b] transition-colors">Informasi & Panduan</h3>
-                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">Panduan lengkap sertifikasi halal, PIRT, legalitas NIB gratis.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Info & Panduan</h3>
+                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Panduan lengkap sertifikasi halal, PIRT, legalitas NIB gratis.</p>
             </a>
 
         </div>
     </div>
 </div>
 
-<!-- Eksplor Kategori Produk -->
-<div id="kategori" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-14 reveal delay-300">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Eksplor Kategori Produk</h2>
-            <p class="text-slate-500 text-sm mt-1">Pilihan ragam produk komoditas lokal Wonogiri berkualitas.</p>
-        </div>
-        <a href="/katalog" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-[#991b1b] hover:underline">
-            Lihat Semua Kategori &rarr;
+<!-- Eksplor Kategori Produk (Horizontal Swipeable on mobile) -->
+<div id="kategori" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-14 reveal delay-300">
+    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 sm:mb-4">Eksplor Kategori Produk</h2>
+    <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" style="scrollbar-width: none; -ms-overflow-style: none;">
+        <a href="/katalog?kategori=makanan" class="px-4 sm:px-5 py-2 rounded-full bg-[#991b1b] text-white text-xs sm:text-sm font-semibold shadow-xs hover:bg-[#801414] transition-all whitespace-nowrap shrink-0">
+            Makanan & Minuman
         </a>
-    </div>
-    
-    <div class="flex flex-wrap gap-2.5">
-        <a href="/katalog?kategori=makanan" class="px-5 py-2.5 bg-[#991b1b] text-white rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:bg-[#801414] transition-colors">Makanan & Minuman</a>
-        <a href="/katalog?kategori=kerajinan" class="px-5 py-2.5 bg-white text-slate-700 border border-slate-200 rounded-full text-xs sm:text-sm font-medium hover:bg-red-50 hover:text-[#991b1b] hover:border-red-200 transition-colors shadow-sm">Kerajinan & Kriya</a>
-        <a href="/katalog?kategori=batik" class="px-5 py-2.5 bg-white text-slate-700 border border-slate-200 rounded-full text-xs sm:text-sm font-medium hover:bg-red-50 hover:text-[#991b1b] hover:border-red-200 transition-colors shadow-sm">Batik & Fashion</a>
-        <a href="/katalog?kategori=pertanian" class="px-5 py-2.5 bg-white text-slate-700 border border-slate-200 rounded-full text-xs sm:text-sm font-medium hover:bg-red-50 hover:text-[#991b1b] hover:border-red-200 transition-colors shadow-sm">Olahan Hasil Tani</a>
-        <a href="/katalog?kategori=kreatif" class="px-5 py-2.5 bg-white text-slate-700 border border-slate-200 rounded-full text-xs sm:text-sm font-medium hover:bg-red-50 hover:text-[#991b1b] hover:border-red-200 transition-colors shadow-sm">Ekonomi Kreatif</a>
+        <a href="/katalog?kategori=kerajinan" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+            Kerajinan
+        </a>
+        <a href="/katalog?kategori=batik" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+            Batik/Fashion
+        </a>
+        <a href="/katalog?kategori=pertanian" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+            Olahan Hasil Pertanian
+        </a>
+        <a href="/katalog?kategori=kreatif" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+            Produk Kreatif
+        </a>
     </div>
 </div>
 
 <!-- Produk Unggulan Terbaru -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 reveal delay-400">
-    <div class="flex justify-between items-end mb-8">
+@php
+    $featuredProducts = [
+        [
+            'name' => 'Tiwul',
+            'category' => 'Makanan',
+            'seller' => 'Rasa Lestari',
+            'location' => 'Kec. Ngadirojo',
+            'image' => asset('img/products/tiwul.jpg')
+        ],
+        [
+            'name' => 'Tas Rotan',
+            'category' => 'Kerajinan',
+            'seller' => 'Kriya Mandiri',
+            'location' => 'Kec. Wuryantoro',
+            'image' => asset('img/products/tas_rotan.jpg')
+        ],
+        [
+            'name' => 'Batik Tulis Premium',
+            'category' => 'Batik/Fashion',
+            'seller' => 'Batik Sekar Arum',
+            'location' => 'Kec. Wonogiri',
+            'image' => asset('img/products/batik_tulis.jpg')
+        ],
+        [
+            'name' => 'Keripik Singkong',
+            'category' => 'Makanan',
+            'seller' => 'UD Sari Rasa',
+            'location' => 'Kec. Selogiri',
+            'image' => asset('img/products/keripik_singkong.jpg')
+        ],
+        [
+            'name' => 'Piring Hias',
+            'category' => 'Kerajinan',
+            'seller' => 'Logam Jaya',
+            'location' => 'Kec. Purwantoro',
+            'image' => asset('img/products/piring_hias.jpg')
+        ],
+        [
+            'name' => 'Jahe Merah',
+            'category' => 'Olahan Hasil Pertanian',
+            'seller' => 'Sido Muncul Wonogiri',
+            'location' => 'Kec. Bulukerto',
+            'image' => asset('img/products/jahe_merah.jpg')
+        ],
+    ];
+@endphp
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-14 reveal delay-400">
+    <div class="flex flex-row items-center justify-between gap-4 mb-8 flex-wrap sm:flex-nowrap">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Produk Unggulan Terbaru</h2>
-            <p class="text-slate-500 text-sm mt-1">Produk-produk pilihan asli Wonogiri yang telah terkurasi kualitasnya.</p>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Produk Unggulan Terbaru</h2>
+            <p class="text-slate-500 text-xs sm:text-sm mt-1">Produk-produk pilihan asli Wonogiri yang telah lulus kurasi kualitas Dinas Perdagangan.</p>
         </div>
-        <a href="/katalog" class="hidden md:flex items-center gap-1.5 text-[#991b1b] font-bold text-sm hover:underline">
-            Katalog Selengkapnya &rarr;
+        <a href="/katalog" class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 bg-white border border-[#991b1b] text-[#991b1b] hover:bg-red-50 rounded-lg text-xs sm:text-sm font-semibold transition-all shadow-2xs shrink-0 whitespace-nowrap self-start sm:self-center" style="width: fit-content; max-width: max-content;">
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#991b1b] shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 4h3.5v3.5H4V4zm6.25 0h3.5v3.5h-3.5V4zm6.25 0H20v3.5h-3.5V4zM4 10.25h3.5v3.5H4v-3.5zm6.25 0h3.5v3.5h-3.5v-3.5zm6.25 0H20v3.5h-3.5v-3.5zM4 16.5h3.5V20H4v-3.5zm6.25 0h3.5V20h-3.5v-3.5zm6.25 0H20V20h-3.5v-3.5z"/>
+            </svg>
+            <span>Katalog Selengkapnya</span>
         </a>
     </div>
 
     <!-- Product Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-        @for ($i = 1; $i <= 6; $i++)
-        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-slate-100 group hover:-translate-y-1 transition-all duration-300">
-            <div class="h-52 bg-slate-100 relative overflow-hidden flex items-center justify-center text-slate-400">
-                <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <div class="absolute top-3 left-3">
-                    <span class="bg-white/90 backdrop-blur-sm text-[#991b1b] text-xs font-bold px-3 py-1 rounded-full shadow-xs border border-red-100">Kuliner Wonogiri</span>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        @foreach ($featuredProducts as $product)
+        <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-md hover:border-red-100 transition-all duration-300 group flex flex-col justify-between">
+            <div>
+                <div class="h-52 w-full overflow-hidden bg-slate-100 relative">
+                    <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="p-5 pb-0">
+                    <span class="inline-block bg-red-50 text-[#991b1b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md mb-2">
+                        {{ $product['category'] }}
+                    </span>
+                    <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
+                        {{ $product['name'] }}
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">
+                        oleh {{ $product['seller'] }}
+                    </p>
                 </div>
             </div>
-            <div class="p-5">
-                <h3 class="text-base font-bold text-slate-800 mb-1 group-hover:text-[#991b1b] transition-colors">Produk UMKM Pilihan #{{ $i }}</h3>
-                <p class="text-xs text-slate-500 mb-4">oleh <span class="font-medium text-slate-700">UMKM Maju Bersama</span></p>
-                <div class="flex justify-between items-center pt-3 border-t border-slate-100">
-                    <span class="text-xs text-slate-400 flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Purwantoro
-                    </span>
-                    <a href="/katalog" class="text-[#991b1b] font-bold text-xs hover:underline">Lihat Detail</a>
+            <div class="p-5 pt-4">
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+                    <div class="flex items-center gap-1.5 text-slate-500 font-medium">
+                        <svg class="w-3.5 h-3.5 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                        </svg>
+                        <span>{{ $product['location'] }}</span>
+                    </div>
+                    <a href="/katalog" class="text-[#991b1b] font-bold hover:underline">
+                        Lihat Detail
+                    </a>
                 </div>
             </div>
         </div>
-        @endfor
-    </div>
-    
-    <div class="mt-8 text-center md:hidden">
-        <a href="/katalog" class="inline-block bg-white text-[#991b1b] border border-[#991b1b] px-6 py-2.5 rounded-lg text-sm font-bold shadow-xs hover:bg-red-50 transition-colors">Lihat Semua Produk</a>
+        @endforeach
     </div>
 </div>
 
-<!-- Statistik Banner -->
-<div class="bg-[#8b1818] text-white py-14">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-red-800/60">
-            <div class="p-3">
-                <div class="text-4xl sm:text-5xl font-extrabold text-[#facc15] mb-1.5">1.250+</div>
-                <div class="text-red-100 text-sm sm:text-base font-medium">UMKM Bergabung</div>
+<!-- Statistik Banner (Always 3 columns) -->
+<div class="bg-[#801414] text-white py-5 sm:py-8">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-3 gap-2 sm:gap-8 text-center items-center">
+            <div class="flex flex-col items-center justify-center">
+                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">1.234+</div>
+                <div class="text-white text-[10px] sm:text-xs md:text-sm font-semibold leading-tight">Jumlah UMKM Terdaftar</div>
             </div>
-            <div class="p-3">
-                <div class="text-4xl sm:text-5xl font-extrabold text-[#facc15] mb-1.5">3.400+</div>
-                <div class="text-red-100 text-sm sm:text-base font-medium">Produk Terdaftar</div>
+            <div class="flex flex-col items-center justify-center">
+                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">4.567+</div>
+                <div class="text-white text-[10px] sm:text-xs md:text-sm font-semibold leading-tight">Produk Terpublikasi</div>
             </div>
-            <div class="p-3">
-                <div class="text-4xl sm:text-5xl font-extrabold text-[#facc15] mb-1.5">890+</div>
-                <div class="text-red-100 text-sm sm:text-base font-medium">Konsultasi Sukses</div>
+            <div class="flex flex-col items-center justify-center">
+                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">890+</div>
+                <div class="text-white text-[10px] sm:text-xs md:text-sm font-semibold leading-tight">Konsultasi Selesai</div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Berita & Kegiatan Terkini Section -->
+@php
+    $latestNews = [
+        [
+            'title' => 'Bimtek Pemasaran Digital UMKM Wonogiri Go-Glo...',
+            'date' => '12 Oktober 2025',
+            'excerpt' => 'Dinas Perdagangan dan KUKM Kabupaten Wonogiri terus mempercepat akselerasi digitalisasi...',
+            'image' => asset('img/news/bimtek.jpg'),
+            'link' => '/informasi'
+        ],
+        [
+            'title' => 'Fasilitasi Sertifikasi Halal Gratis Tahap Ke-III',
+            'date' => '28 September 2025',
+            'excerpt' => 'Dinas Perdagangan dan KUKM Kabupaten Wonogiri terus mempercepat akselerasi digitalisasi...',
+            'image' => asset('img/news/halal.jpg'),
+            'link' => '/informasi'
+        ],
+        [
+            'title' => 'Pameran Produk Unggulan di Alun-Alun Wonogiri',
+            'date' => '15 September 2025',
+            'excerpt' => 'Dinas Perdagangan dan KUKM Kabupaten Wonogiri terus mempercepat akselerasi digitalisasi...',
+            'image' => asset('img/news/pameran.jpg'),
+            'link' => '/informasi'
+        ],
+    ];
+@endphp
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-16 sm:pb-20 reveal delay-300">
+    <div class="mb-8">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Berita & Kegiatan Terkini</h2>
+        <p class="text-slate-500 text-xs sm:text-sm mt-1">Ikuti berbagai perkembangan program fasilitasi dan peningkatan daya saing lokal.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        @foreach ($latestNews as $news)
+        <a href="{{ $news['link'] }}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+            <div>
+                <div class="h-48 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
+                    <img src="{{ $news['image'] }}" alt="{{ $news['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="p-5">
+                    <span class="text-xs font-bold text-[#b91c1c] mb-2 block">
+                        {{ $news['date'] }}
+                    </span>
+                    <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug mb-2 line-clamp-1">
+                        {{ $news['title'] }}
+                    </h3>
+                    <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                        {{ $news['excerpt'] }}
+                    </p>
+                </div>
+            </div>
+        </a>
+        @endforeach
+    </div>
 </div>
 
 <!-- Hero Slider Script -->
