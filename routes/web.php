@@ -25,6 +25,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', function () {
-        return "Dashboard (Coming Soon)";
+        return view('admin.dashboard');
     })->name('dashboard');
 });
