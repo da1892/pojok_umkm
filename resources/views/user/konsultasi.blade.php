@@ -15,7 +15,7 @@
                     <h1 class="text-4xl md:text-5xl font-extrabold mb-4 reveal delay-200 leading-tight">Konsultasi Bisnis<br>UMKM Gratis</h1>
                     <p class="text-red-100 text-lg reveal delay-300 mb-8">Punya kendala bisnis? Diskusikan langsung dengan pakar kami di bidang Pemasaran, Keuangan, Izin Usaha, dan lain-lain untuk memajukan UMKM Anda.</p>
                     <div class="flex gap-4 reveal delay-400">
-                        <a href="#form-konsultasi" class="bg-white text-[#800000] font-bold px-8 py-3 rounded-full hover:bg-red-50 transition-colors shadow-lg">Mulai Konsultasi</a>
+                        <a href="{{ route('konsultasi.cek') }}" class="bg-white text-[#800000] font-bold px-8 py-3 rounded-full hover:bg-red-50 transition-colors shadow-lg">Cek Konsultasi</a>
                     </div>
                 </div>
                 <div class="md:w-2/5 hidden md:flex justify-center reveal delay-400">
@@ -38,48 +38,61 @@
                     <h2 class="text-[22px] font-bold text-slate-900 mb-8">Formulir Pengajuan Layanan</h2>
                     
                     @if(session('success'))
-                        <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl font-medium">
-                            {{ session('success') }}
-                        </div>
+                        <!-- SweetAlert will handle this -->
                     @endif
 
-                    <form method="POST" action="{{ route('konsultasi.store') }}" class="space-y-5">
+                    <form method="POST" action="{{ route('konsultasi.store') }}" enctype="multipart/form-data" class="space-y-5">
                         @csrf
                         <!-- Nama Lengkap -->
                         <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap Pemohon</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap Pemohon <span class="text-red-500">*</span></label>
+                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
+                        </div>
+                        
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Alamat Email <span class="text-red-500">*</span></label>
+                            <input type="text" name="email" value="{{ old('email') }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan email aktif Anda...">
                         </div>
                         
                         <!-- Nama UMKM -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nama UMKM / Usaha (Opsional)</label>
-                            <input type="text" name="umkm_name" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama badan usaha Anda...">
+                            <input type="text" name="umkm_name" value="{{ old('umkm_name') }}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama badan usaha Anda...">
                         </div>
                         
                         <!-- Nomor HP -->
                         <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nomor HP / WhatsApp</label>
-                            <input type="text" name="phone" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukan nomor anda...">
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nomor HP / WhatsApp <span class="text-red-500">*</span></label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukan nomor anda...">
                         </div>
                         
                         <!-- Kategori Konsultasi -->
                         <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Kategori Konsultasi</label>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Kategori Konsultasi <span class="text-red-500">*</span></label>
                             <select name="subject" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-500 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10">
-                                <option value="" disabled selected>Pilih Kategori Permasalahan</option>
-                                <option value="Pemasaran & Penjualan">Pemasaran & Penjualan</option>
-                                <option value="Keuangan & Modal">Keuangan & Modal</option>
-                                <option value="Perizinan Usaha">Perizinan Usaha</option>
-                                <option value="Sertifikasi Halal / PIRT">Sertifikasi Halal / PIRT</option>
-                                <option value="Lainnya">Lainnya</option>
+                                <option value="" disabled {{ old('subject') ? '' : 'selected' }}>Pilih Kategori Permasalahan</option>
+                                <option value="Pemasaran & Penjualan" {{ old('subject') == 'Pemasaran & Penjualan' ? 'selected' : '' }}>Pemasaran & Penjualan</option>
+                                <option value="Keuangan & Modal" {{ old('subject') == 'Keuangan & Modal' ? 'selected' : '' }}>Keuangan & Modal</option>
+                                <option value="Perizinan Usaha" {{ old('subject') == 'Perizinan Usaha' ? 'selected' : '' }}>Perizinan Usaha</option>
+                                <option value="Sertifikasi Halal / PIRT" {{ old('subject') == 'Sertifikasi Halal / PIRT' ? 'selected' : '' }}>Sertifikasi Halal / PIRT</option>
+                                <option value="Lainnya" {{ old('subject') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                         </div>
                         
                         <!-- Uraian Singkat -->
                         <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Uraian Singkat Masalah / Kebutuhan</label>
-                            <textarea name="message" required rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci..."></textarea>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Uraian Singkat Masalah / Kebutuhan <span class="text-red-500">*</span></label>
+                            <textarea name="message" required rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci...">{{ old('message') }}</textarea>
+                        </div>
+                        
+                        <!-- Lampiran (Opsional) -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Lampiran Foto/Dokumen <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                            <div class="p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl hover:bg-slate-100 transition-colors">
+                                <input type="file" name="attachment" accept="image/*,.pdf,.doc,.docx" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#800000] file:text-white hover:file:bg-[#600000] transition-all cursor-pointer">
+                                <p class="text-[11px] text-slate-400 mt-2 ml-1">Format yang diizinkan: JPG, PNG, PDF, DOC (Maks. 2MB)</p>
+                            </div>
                         </div>
                         
                         <!-- Submit Button -->
@@ -140,4 +153,47 @@
         
     </div>
 </div>
+
+<!-- SweetAlert2 Pop Up -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Terkirim!',
+                text: {!! json_encode(session('success')) !!},
+                confirmButtonColor: '#800000',
+                confirmButtonText: 'Tutup & Mengerti',
+                background: '#ffffff',
+                customClass: {
+                    title: 'text-xl font-bold text-slate-800',
+                    popup: 'rounded-3xl',
+                    confirmButton: 'rounded-xl font-bold px-6 py-3'
+                }
+            });
+        @endif
+        
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: {!! json_encode(session('error')) !!},
+                confirmButtonColor: '#800000',
+                confirmButtonText: 'Kembali'
+            });
+        @endif
+
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Pengisian Belum Lengkap',
+                html: '<ul class="text-left space-y-1 text-sm text-slate-600">@foreach($errors->all() as $error)<li>&bull; {{ $error }}</li>@endforeach</ul>',
+                confirmButtonColor: '#800000',
+                confirmButtonText: 'Perbaiki'
+            });
+        @endif
+    });
+</script>
+
 @endsection

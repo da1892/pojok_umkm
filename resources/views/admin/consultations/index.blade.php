@@ -51,7 +51,19 @@
                     <td colspan="6" class="p-6">
                         <div class="mb-4">
                             <h4 class="font-semibold text-slate-800 mb-1">Pertanyaan / Masalah:</h4>
-                            <p class="text-sm text-slate-600 bg-white p-4 rounded-lg border border-slate-200">{{ $consultation->message }}</p>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200">
+                                <p class="text-sm text-slate-600 mb-3">{{ $consultation->message }}</p>
+                                
+                                @if($consultation->attachment)
+                                    <div class="pt-3 border-t border-slate-100">
+                                        <p class="text-xs font-semibold text-slate-500 mb-2">Berkas Pendukung:</p>
+                                        <a href="{{ asset('storage/' . $consultation->attachment) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md hover:bg-slate-100 transition-colors shadow-sm text-xs font-medium text-slate-700">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                            Buka Lampiran Dokumen
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST">
                             @csrf
