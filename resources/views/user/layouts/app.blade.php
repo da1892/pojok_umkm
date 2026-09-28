@@ -96,7 +96,11 @@
                 <!-- Auth Action Button -->
                 <div class="hidden sm:flex items-center space-x-3">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Dashboard</a>
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Dashboard Admin</a>
+                        @else
+                            <a href="{{ route('toko.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Toko Saya</a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Keluar</button>
@@ -133,7 +137,11 @@
                 <a href="#kontak" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Kontak</a>
                 @auth
                 <div class="pt-2 border-t border-slate-100 flex flex-col gap-1">
-                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700">Dashboard</a>
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Dashboard Admin</a>
+                    @else
+                        <a href="{{ route('toko.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Toko Saya</a>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full text-left px-3 py-2 text-sm text-red-600 font-medium">Keluar</button>
@@ -155,7 +163,7 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 mb-10">
                 
                 <!-- Col 1: Brand & Contact -->
-                <div class="md:col-span-6 lg:col-span-5">
+                <div class="md:col-span-6 lg:col-span-4">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-10 h-10 rounded-xl bg-[#eab308] text-white flex items-center justify-center shrink-0 shadow-sm">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -178,7 +186,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                             </svg>
-                            <span>Jl. Jenderal Sudirman No. 120, Wonogiri, Jawa Tengah</span>
+                            <span>Jalan RM. Said No. 03, Joho, Wonogiri, Pancuran, Kaliancar, Kec. Selogiri, Kabupaten Wonogiri, Jawa Tengah 57652</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <svg class="w-3.5 h-3.5 text-[#facc15] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -190,7 +198,7 @@
                 </div>
 
                 <!-- Col 2: Menu Pintas -->
-                <div class="md:col-span-3 lg:col-span-3">
+                <div class="md:col-span-6 lg:col-span-2">
                     <h4 class="text-sm font-bold text-[#facc15] mb-4 tracking-wide">Menu Pintas</h4>
                     <ul class="space-y-2 text-xs text-red-100/90 font-medium">
                         <li><a href="/katalog" class="hover:text-[#facc15] transition-colors">Katalog Produk</a></li>
@@ -202,7 +210,7 @@
                 </div>
 
                 <!-- Col 3: Kecamatan Wonogiri & Socials -->
-                <div class="md:col-span-3 lg:col-span-4">
+                <div class="md:col-span-6 lg:col-span-3">
                     <h4 class="text-sm font-bold text-[#facc15] mb-4 tracking-wide">Kecamatan Wonogiri</h4>
                     <p class="text-xs text-red-100/90 leading-relaxed mb-5">
                         Membina potensi UMKM di seluruh 25 Kecamatan Kabupaten Wonogiri secara merata dan berkelanjutan menuju go-digital.
@@ -222,6 +230,14 @@
                         <a href="#" class="w-8 h-8 rounded-full bg-[#5c0f0f] hover:bg-[#480a0a] text-white flex items-center justify-center transition-all shadow-xs" aria-label="YouTube">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                         </a>
+                    </div>
+                </div>
+
+                <!-- Col 4: Maps -->
+                <div class="md:col-span-6 lg:col-span-3">
+                    <h4 class="text-sm font-bold text-[#facc15] mb-4 tracking-wide">Lokasi Kami</h4>
+                    <div class="rounded-xl overflow-hidden shadow-lg border border-red-900/50 hover:shadow-xl transition-shadow duration-300 w-full">
+                        <iframe src="https://maps.google.com/maps?q=Dinas+Koperasi,+Usaha+Kecil+Dan+Menengah+Dan+Perindustrian+Dan+Perdagangan+Kabupaten+Wonogiri&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="180" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
 

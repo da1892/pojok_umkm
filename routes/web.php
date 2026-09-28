@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\StoreController;
+use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,7 +26,22 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    // Admin Routes
+    Route::middleware('can:admin')->group(function () {
+        Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/admin/umkm/{id}', [AdminController::class, 'showUmkm'])->name('admin.umkm.show');
+        Route::post('/admin/umkm/{id}/verify', [AdminController::class, 'verifyUmkm'])->name('admin.umkm.verify');
+        Route::post('/admin/umkm/{id}/reject', [AdminController::class, 'rejectUmkm'])->name('admin.umkm.reject');
+        
+        Route::post('/admin/product/{id}/verify', [AdminController::class, 'verifyProduct'])->name('admin.product.verify');
+        Route::post('/admin/product/{id}/reject', [AdminController::class, 'rejectProduct'])->name('admin.product.reject');
+    });
+
+    // Store Routes (UMKM)
+    Route::get('/toko', [StoreController::class, 'index'])->name('toko.index');
+    Route::get('/toko/buka', [StoreController::class, 'create'])->name('toko.create');
+    Route::post('/toko/buka', [StoreController::class, 'store'])->name('toko.store');
+    
+    Route::get('/toko/produk/tambah', [StoreController::class, 'createProduct'])->name('toko.product.create');
+    Route::post('/toko/produk/tambah', [StoreController::class, 'storeProduct'])->name('toko.product.store');
 });

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +23,9 @@ class AppServiceProvider extends ServiceProvider
     {
         View::addLocation(resource_path('views/user'));
         View::addLocation(resource_path('views/admin'));
+
+        Gate::define('admin', function ($user) {
+            return $user->role === 'admin';
+        });
     }
 }
