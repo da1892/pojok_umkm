@@ -30,114 +30,120 @@
             </div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <!-- Informasi & Kategori Panel (Kiri) -->
-            <div class="md:col-span-1 space-y-8">
-                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 reveal delay-100">
-                    <h3 class="text-xl font-bold text-slate-900 mb-6">Bidang Konsultasi</h3>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-4 p-3 rounded-2xl hover:bg-red-50 transition-colors cursor-pointer group">
-                            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 group-hover:bg-[#800000] group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-pie"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 text-sm">Pemasaran Digital</h4>
-                                <p class="text-xs text-slate-500 mt-1">Strategi media sosial, e-commerce, & branding.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start gap-4 p-3 rounded-2xl hover:bg-red-50 transition-colors cursor-pointer group">
-                            <div class="w-12 h-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 group-hover:bg-[#800000] group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 text-sm">Keuangan & Modal</h4>
-                                <p class="text-xs text-slate-500 mt-1">Pembukuan, akses KUR, & manajemen aset.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start gap-4 p-3 rounded-2xl hover:bg-red-50 transition-colors cursor-pointer group">
-                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0 group-hover:bg-[#800000] group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 text-sm">Legal & Perizinan</h4>
-                                <p class="text-xs text-slate-500 mt-1">NIB, PIRT, Sertifikasi Halal, & HAKI.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Info Jam Operasional -->
-                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 reveal delay-200">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4">Jam Operasional Konsultasi</h3>
-                    <ul class="space-y-3 text-sm text-slate-600">
-                        <li class="flex justify-between items-center border-b border-slate-100 pb-2">
-                            <span>Senin - Kamis</span>
-                            <span class="font-bold text-slate-900">08:00 - 15:00 WIB</span>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-slate-100 pb-2">
-                            <span>Jumat</span>
-                            <span class="font-bold text-slate-900">08:00 - 11:00 WIB</span>
-                        </li>
-                        <li class="flex justify-between items-center text-red-500 pt-1">
-                            <span>Sabtu - Minggu</span>
-                            <span class="font-bold">Tutup</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
             
-            <!-- Form Panel (Kanan) -->
-            <div class="md:col-span-2" id="form-konsultasi">
-                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-md border border-slate-100 reveal delay-300">
-                    <div class="mb-8 border-b border-slate-100 pb-6">
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-[#800000] mb-2">Formulir Konsultasi</h2>
-                        <p class="text-slate-500">Silakan isi data diri dan ceritakan kendala yang Anda hadapi. Tim pakar kami akan segera menghubungi Anda kembali.</p>
-                    </div>
+            <!-- Form Panel (Kiri, 8 columns) -->
+            <div class="md:col-span-8" id="form-konsultasi">
+                <div class="bg-white rounded-[24px] p-8 md:p-10 shadow-sm border border-slate-100 reveal delay-100">
+                    <h2 class="text-[22px] font-bold text-slate-900 mb-8">Formulir Pengajuan Layanan</h2>
                     
-                    <form class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
-                                <input type="text" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-slate-50 focus:bg-white" placeholder="Masukkan nama Anda">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Nomor WhatsApp</label>
-                                <input type="text" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-slate-50 focus:bg-white" placeholder="08xx xxxx xxxx">
-                            </div>
+                    <form class="space-y-5">
+                        <!-- Nama Lengkap -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap Pemohon</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
                         </div>
                         
+                        <!-- Nama UMKM -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Nama UMKM (Opsional)</label>
-                            <input type="text" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-slate-50 focus:bg-white" placeholder="Nama usaha Anda (jika ada)">
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nama UMKM / Usaha</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama badan usaha Anda...">
                         </div>
                         
+                        <!-- Alamat Tempat Usaha -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Topik Konsultasi</label>
-                            <select class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-slate-50 focus:bg-white text-slate-700">
-                                <option value="" disabled selected>Pilih topik yang paling sesuai</option>
-                                <option value="pemasaran">Pemasaran Digital & Penjualan</option>
-                                <option value="keuangan">Keuangan, Modal & Pembukuan</option>
-                                <option value="legal">Legal, Izin Usaha (NIB) & Sertifikasi Halal</option>
-                                <option value="produksi">Teknis Produksi & Pengemasan</option>
-                                <option value="lainnya">Topik Lainnya</option>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Alamat Tempat Usaha</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan alamat lengkap usaha...">
+                        </div>
+                        
+                        <!-- Nomor HP -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nomor HP / WhatsApp</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukan nomor anda...">
+                        </div>
+                        
+                        <!-- Kategori Konsultasi -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Kategori Konsultasi</label>
+                            <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-500 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10">
+                                <option value="" disabled selected>Pilih Kategori Permasalahan</option>
+                                <option value="pemasaran">Pemasaran & Penjualan</option>
+                                <option value="keuangan">Keuangan & Modal</option>
+                                <option value="perizinan">Perizinan Usaha</option>
+                                <option value="sertifikasi">Sertifikasi Halal / PIRT</option>
+                                <option value="lainnya">Lainnya</option>
                             </select>
                         </div>
                         
+                        <!-- Uraian Singkat -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Ceritakan Detail Kendala Anda</label>
-                            <textarea rows="5" class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-slate-50 focus:bg-white resize-none" placeholder="Jelaskan secara singkat masalah atau pertanyaan yang ingin Anda konsultasikan..."></textarea>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Uraian Singkat Masalah / Kebutuhan</label>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci..."></textarea>
                         </div>
                         
-                        <div class="pt-4">
-                            <button type="button" class="w-full bg-[#800000] text-white font-bold py-4 rounded-xl hover:bg-[#600000] transition-colors shadow-lg hover:shadow-xl active:scale-95 flex justify-center items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                                Kirim Permintaan Konsultasi
+                        <!-- Unggah Lampiran -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Unggah Lampiran Pendukung (KTP/NIB/Foto Produk)</label>
+                            <div class="w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors flex flex-col items-center justify-center py-6 cursor-pointer group">
+                                <svg class="w-6 h-6 text-[#991b1b] mb-2 transition-transform group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                <span class="text-sm text-slate-500 font-medium">Klik untuk memilih berkas pendukung (Max 5MB)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="pt-2">
+                            <button type="button" class="w-full bg-[#a31d1d] text-white font-bold py-3.5 rounded-xl hover:bg-[#8b1818] transition-all shadow-md hover:shadow-lg active:scale-[0.98] flex justify-center items-center gap-2 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+                                Kirim Pengajuan Konsultasi
                             </button>
-                            <p class="text-xs text-center text-slate-400 mt-4">Dengan menekan tombol kirim, Anda menyetujui data Anda digunakan untuk keperluan sesi konsultasi resmi.</p>
                         </div>
                     </form>
                 </div>
             </div>
+            
+            <!-- Info & FAQ Panel (Kanan, 4 columns) -->
+            <div class="md:col-span-4 space-y-6">
+                
+                <!-- Kotak Informasi (Merah) -->
+                <div class="bg-[#a31d1d] rounded-[24px] p-7 shadow-sm text-white reveal delay-200">
+                    <h3 class="text-lg font-bold mb-4">Informasi Konsultasi</h3>
+                    <p class="text-[13px] text-white/90 leading-relaxed mb-6">
+                        Setiap berkas pengajuan akan ditinjau dalam waktu maksimal 2x24 jam kerja. Anda akan dihubungi oleh petugas resmi Dinas Perdagangan via WhatsApp untuk proses pendampingan lanjutan.
+                    </p>
+                    <div class="flex items-center gap-3 text-sm font-medium">
+                        <svg class="w-5 h-5 text-white/80 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Senin - Jumat | 08.00 - 15.00 WIB
+                    </div>
+                </div>
+                
+                <!-- Tanya Jawab (FAQ) -->
+                <div class="bg-white rounded-[24px] p-7 shadow-sm border border-slate-100 reveal delay-300">
+                    <h3 class="text-[15px] font-bold text-slate-900 mb-5">Tanya Jawab Layanan (FAQ)</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-[13px] font-bold text-[#a31d1d] mb-1.5 leading-snug">Apakah layanan konsultasi ini berbayar?</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Seluruh layanan fasilitasi dan konsultasi ini gratis ditanggung oleh pemerintah daerah.</p>
+                        </div>
+                        
+                        <div class="w-full h-px bg-slate-100"></div>
+                        
+                        <div>
+                            <h4 class="text-[13px] font-bold text-[#a31d1d] mb-1.5 leading-snug">Bagaimana cara mendapatkan NIB?</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Sampaikan kebutuhan Anda melalui kategori konsultasi Perizinan Usaha, petugas kami akan memandu Anda.</p>
+                        </div>
+                        
+                        <div class="w-full h-px bg-slate-100"></div>
+                        
+                        <div>
+                            <h4 class="text-[13px] font-bold text-[#a31d1d] mb-1.5 leading-snug">Berapa lama proses sertifikasi Halal?</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Proses bervariasi bergantung pada skema reguler maupun self-declare, biasanya selesai 14-30 hari.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
         </div>
         
     </div>
