@@ -12,18 +12,26 @@
     </style>
 </head>
 <body class="bg-[#FAF9F6] text-slate-900 antialiased overflow-hidden selection:bg-[#800000] selection:text-white">
-    <div class="flex h-screen w-full">
+    <div class="flex h-screen w-full relative">
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-30 lg:hidden hidden transition-opacity opacity-0"></div>
+
         <!-- Sidebar -->
-        <aside class="w-64 bg-[#800000] text-white flex flex-col transition-all duration-300 z-20 shrink-0 shadow-xl">
+        <aside id="sidebar" class="w-64 bg-[#800000] text-white flex flex-col transition-transform duration-300 z-40 fixed inset-y-0 left-0 lg:relative lg:translate-x-0 h-full shrink-0 shadow-xl -translate-x-full">
             <!-- Logo Area -->
-            <div class="flex items-center gap-3 px-6 py-6 border-b border-white/10">
-                <div class="w-10 h-10 bg-white rounded-lg p-1 shadow-sm flex items-center justify-center shrink-0">
-                    <img src="{{ asset('images/logo-wonogiri.png') }}" alt="Logo Wonogiri" class="w-full h-full object-contain">
+            <div class="flex items-center justify-between px-6 py-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white rounded-lg p-1 shadow-sm flex items-center justify-center shrink-0">
+                        <img src="{{ asset('images/logo-wonogiri.png') }}" alt="Logo Wonogiri" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-sm tracking-wide leading-tight">Pojok UMKM</h1>
+                        <p class="text-[10px] text-white/70">Wonogiri Admin</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-bold text-sm tracking-wide leading-tight">Pojok UMKM</h1>
-                    <p class="text-[10px] text-white/70">Wonogiri Admin</p>
-                </div>
+                <button id="sidebarCloseBtn" class="lg:hidden text-white/70 hover:text-white p-1 rounded-md hover:bg-white/10 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
 
             <!-- Navigation -->
@@ -80,10 +88,15 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col min-w-0 bg-[#FAF9F6]">
+        <main class="flex-1 flex flex-col min-w-0 bg-[#FAF9F6] lg:w-full">
             <!-- Topbar -->
-            <header class="h-16 bg-white border-b border-slate-200/80 flex items-center justify-between px-6 lg:px-10 shrink-0 z-10 shadow-sm">
-                <h2 class="text-xl font-bold text-slate-800 tracking-tight">@yield('page_title', 'Dashboard Pojok UMKM Wonogiri')</h2>
+            <header class="h-16 bg-white border-b border-slate-200/80 flex items-center justify-between px-4 lg:px-10 shrink-0 z-10 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <button id="sidebarToggleBtn" class="lg:hidden p-2 text-slate-600 hover:text-[#800000] hover:bg-red-50 rounded-lg transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <h2 class="text-lg lg:text-xl font-bold text-slate-800 tracking-tight truncate max-w-[200px] sm:max-w-xs md:max-w-md">@yield('page_title', 'Dashboard Pojok UMKM Wonogiri')</h2>
+                </div>
                 <div class="flex items-center gap-4">
                     <button class="relative p-2 text-slate-400 hover:text-[#800000] hover:bg-red-50 rounded-full transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -124,6 +137,30 @@
             background: rgba(255, 255, 255, 0.2);
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarBackdrop.classList.remove('hidden');
+                setTimeout(() => sidebarBackdrop.classList.remove('opacity-0'), 10);
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                sidebarBackdrop.classList.add('opacity-0');
+                setTimeout(() => sidebarBackdrop.classList.add('hidden'), 300);
+            }
+
+            if(sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', openSidebar);
+            if(sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+            if(sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
