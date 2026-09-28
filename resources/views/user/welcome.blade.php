@@ -193,7 +193,7 @@
                         </svg>
                         <span class="line-clamp-1 max-w-[120px]">{{ $product->umkmProfile->address ?? 'Kabupaten Wonogiri' }}</span>
                     </div>
-                    <a href="/katalog" class="text-[#991b1b] font-bold hover:underline">
+                    <a href="{{ route('katalog.show', $product->id) }}" class="text-[#991b1b] font-bold hover:underline">
                         Lihat Detail
                     </a>
                 </div>

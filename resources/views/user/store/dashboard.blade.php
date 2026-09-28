@@ -35,10 +35,13 @@
                         {{ $umkm->owner_name }} &bull; {{ $umkm->phone }}
                     </p>
                 </div>
-                <div class="mt-4 md:mt-0">
-                    <a href="{{ route('toko.product.create') }}" class="inline-flex items-center justify-center bg-[#801414] hover:bg-red-900 text-white font-semibold py-2.5 px-6 rounded-full transition-colors shadow">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Tambah Produk Baru
+                <div class="mt-4 md:mt-0 flex items-center gap-3">
+                    <a href="{{ route('toko.consultations') }}" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold py-2.5 px-5 rounded-full transition-colors shadow-sm text-sm">
+                        Riwayat Konsultasi
+                    </a>
+                    <a href="{{ route('toko.product.create') }}" class="inline-flex items-center justify-center bg-[#801414] hover:bg-red-900 text-white font-semibold py-2.5 px-5 rounded-full transition-colors shadow text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Produk Baru
                     </a>
                 </div>
             </div>
@@ -77,10 +80,21 @@
                         <p class="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">{{ $product->description }}</p>
                         
                         @if($product->price)
-                            <div class="font-bold text-[#801414] text-lg">
+                            <div class="font-bold text-[#801414] text-lg mb-4">
                                 Rp {{ number_format($product->price, 0, ',', '.') }}
                             </div>
                         @endif
+                        
+                        <div class="mt-auto border-t border-slate-100 pt-4 text-right">
+                            <form action="{{ route('toko.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-semibold flex items-center justify-end gap-1 w-full">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Hapus Produk
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 @endforeach

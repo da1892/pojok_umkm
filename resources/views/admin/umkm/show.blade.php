@@ -4,9 +4,14 @@
 <div class="space-y-6 max-w-4xl">
     <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold text-slate-800">Detail Pengajuan UMKM</h2>
-        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
-            &larr; Kembali ke Dashboard
-        </a>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.umkm.edit', $umkm->id) }}" class="text-sm font-semibold text-[#800000] hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-lg transition-colors">
+                Edit Profil
+            </a>
+            <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
+                &larr; Kembali
+            </a>
+        </div>
     </div>
 
     <div class="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
@@ -18,12 +23,15 @@
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor WhatsApp</p>
-                <p class="text-sm font-semibold text-slate-800">{{ $umkm->whatsapp_number ?? '-' }}</p>
+                <p class="text-sm font-semibold text-slate-800">{{ $umkm->phone ?? '-' }}</p>
             </div>
             
             <div class="md:col-span-2">
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Alamat Produksi</p>
                 <p class="text-sm font-semibold text-slate-800">{{ $umkm->address ?? '-' }}</p>
+                @if($umkm->district)
+                    <p class="text-xs text-slate-500 mt-1">Kec. {{ $umkm->district }}</p>
+                @endif
             </div>
             
             <div class="md:col-span-2">
