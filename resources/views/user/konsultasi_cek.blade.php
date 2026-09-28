@@ -18,11 +18,8 @@
             @endif
 
             <form action="{{ route('konsultasi.cek') }}" method="GET" class="flex flex-col sm:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                    </div>
-                    <input type="text" name="phone" value="{{ request('phone') }}" required placeholder="Masukkan Nomor HP Anda..." class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all text-slate-800 font-medium">
+                <div class="flex-1">
+                    <input type="text" name="phone" value="{{ request('phone') }}" required placeholder="Masukkan Nomor HP Anda..." class="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all text-slate-800 font-medium">
                 </div>
                 <button type="submit" class="bg-[#800000] hover:bg-[#600000] text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-md shrink-0">
                     Cek Status
@@ -75,6 +72,16 @@
                         </div>
                         <div class="bg-slate-50 p-5 rounded-2xl text-slate-700 text-sm leading-relaxed border border-slate-100 ml-0 sm:ml-13">
                             {{ $consultation->message }}
+                            
+                            @if($consultation->attachment)
+                                <div class="mt-4 pt-4 border-t border-slate-200">
+                                    <p class="text-xs font-semibold text-slate-500 mb-2">Lampiran Berkas:</p>
+                                    <a href="{{ asset('storage/' . $consultation->attachment) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                        <span class="text-sm font-medium text-slate-700">Lihat Lampiran</span>
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
 

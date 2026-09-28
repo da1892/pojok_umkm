@@ -76,13 +76,40 @@ class PublicController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => [
+                'required',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (!str_contains($value, '@')) {
+                        $fail('Alamat email tidak valid. Harap sertakan simbol "@".');
+                    } else {
+                        $domain = explode('@', $value)[1] ?? '';
+                        if (empty($domain)) {
+                            $fail('Alamat email tidak lengkap. Harap masukkan nama domain (contoh: gmail.com).');
+                        } elseif (!str_contains($domain, '.')) {
+                            $fail('Alamat email tidak valid. Harap sertakan ekstensi domain (contoh: .com atau .co.id).');
+                        }
+                    }
+                }
+            ],
             'phone' => 'required|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'phone.required' => 'Nomor telepon atau WhatsApp wajib diisi.',
+            'subject.required' => 'Topik konsultasi wajib dipilih.',
+            'message.required' => 'Pesan atau detail konsultasi wajib diisi.',
         ]);
 
         $ticket_id = 'UMKM-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('consultations', 'public');
+        }
 
         \App\Models\Consultation::create([
             'user_id' => auth()->check() ? auth()->id() : null,
@@ -92,10 +119,11 @@ class PublicController extends Controller
             'phone' => $request->phone,
             'subject' => $request->subject,
             'message' => $request->message,
+            'attachment' => $attachmentPath,
             'status' => 'menunggu',
         ]);
 
-        return back()->with('success', "Konsultasi berhasil dikirim. Nomor Tiket Anda: $ticket_id. Simpan nomor ini untuk mengecek status.");
+        return back()->with('success', "Pengajuan konsultasi Anda berhasil dikirim! Anda dapat memantau jawaban dari Admin kapan saja dengan menekan tombol 'Cek Konsultasi' dan memasukkan Nomor HP Anda.");
     }
 
     public function cekKonsultasi(Request $request)
@@ -107,7 +135,7 @@ class PublicController extends Controller
                                 ->get();
             
             if ($consultations->isEmpty()) {
-                return back()->with('error', 'Tidak ada riwayat konsultasi yang ditemukan untuk nomor HP tersebut.');
+                return back()->with('error', 'Riwayat konsultasi untuk nomor telepon tersebut tidak ditemukan.');
             }
         }
 
