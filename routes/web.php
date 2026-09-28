@@ -3,12 +3,14 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\KatalogController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/katalog', function () { return view('katalog'); });
+Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
+Route::get('/produk/{slug}', [KatalogController::class, 'show'])->name('produk.detail');
 Route::get('/direktori', function () { return view('direktori'); });
 Route::get('/informasi', function () { return view('informasi'); });
 Route::get('/konsultasi', function () { return view('konsultasi'); });

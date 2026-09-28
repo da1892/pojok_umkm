@@ -75,107 +75,8 @@
 
         <!-- 9 Products for Page 1 (Sesuai Figma) -->
         @php
-            $page1Products = [
-                [
-                    'name' => 'Tiwul',
-                    'category' => 'Makanan',
-                    'seller' => 'Rasa Lestari',
-                    'location' => 'Kec. Ngadirojo',
-                    'image' => asset('img/products/tiwul.jpg')
-                ],
-                [
-                    'name' => 'Tas Rotan',
-                    'category' => 'Kerajinan',
-                    'seller' => 'Kriya Mandiri',
-                    'location' => 'Kec. Wuryantoro',
-                    'image' => asset('img/products/tas_rotan.jpg')
-                ],
-                [
-                    'name' => 'Batik Tulis Premium',
-                    'category' => 'Batik/Fashion',
-                    'seller' => 'Batik Sekar Arum',
-                    'location' => 'Kec. Wonogiri',
-                    'image' => asset('img/products/batik_tulis.jpg')
-                ],
-                [
-                    'name' => 'Keripik Singkong',
-                    'category' => 'Makanan',
-                    'seller' => 'UD Sari Rasa',
-                    'location' => 'Kec. Selogiri',
-                    'image' => asset('img/products/keripik_singkong.jpg')
-                ],
-                [
-                    'name' => 'Piring Hias',
-                    'category' => 'Kerajinan',
-                    'seller' => 'Logam Jaya',
-                    'location' => 'Kec. Purwantoro',
-                    'image' => asset('img/products/piring_hias.jpg')
-                ],
-                [
-                    'name' => 'Jahe Merah Instan',
-                    'category' => 'Olahan Hasil Pertanian',
-                    'seller' => 'Sido Muncul Wonogiri',
-                    'location' => 'Kec. Bulukerto',
-                    'image' => asset('img/products/jahe_merah.jpg')
-                ],
-                [
-                    'name' => 'Kue Cucur',
-                    'category' => 'Makanan',
-                    'seller' => 'Karya Makmur',
-                    'location' => 'Kec. Pracimantoro',
-                    'image' => asset('img/products/kue_cucur.jpg')
-                ],
-                [
-                    'name' => 'Guci Keramik',
-                    'category' => 'Kerajinan',
-                    'seller' => 'Arto Moro',
-                    'location' => 'Kec. Baturetno',
-                    'image' => asset('img/products/guci_keramik.jpg')
-                ],
-                [
-                    'name' => 'Kemeja Batik',
-                    'category' => 'Batik/Fashion',
-                    'seller' => 'Griya Busana',
-                    'location' => 'Kec. Wonogiri',
-                    'image' => asset('img/products/kemeja_batik.jpg')
-                ],
-            ];
-
-            // Filter pencarian dan kategori
-            $searchQuery = strtolower(trim(request('q', '')));
-            $categoryFilter = strtolower(trim(request('kategori', '')));
-            $districtFilter = strtolower(trim(request('kecamatan', '')));
-
-            $filteredProducts = array_filter($page1Products, function($item) use ($searchQuery, $categoryFilter, $districtFilter) {
-                if ($searchQuery !== '') {
-                    $haystack = strtolower($item['name'] . ' ' . $item['seller'] . ' ' . $item['location']);
-                    if (strpos($haystack, $searchQuery) === false) {
-                        return false;
-                    }
-                }
-
-                if ($categoryFilter !== '') {
-                    $itemCategory = strtolower($item['category']);
-                    if ($categoryFilter === 'makanan' && strpos($itemCategory, 'makan') === false) return false;
-                    if ($categoryFilter === 'kerajinan' && strpos($itemCategory, 'kerajinan') === false) return false;
-                    if ($categoryFilter === 'batik' && strpos($itemCategory, 'batik') === false) return false;
-                    if ($categoryFilter === 'pertanian' && strpos($itemCategory, 'pertanian') === false) return false;
-                    if ($categoryFilter === 'kreatif' && strpos($itemCategory, 'kreatif') === false) return false;
-                }
-
-                if ($districtFilter !== '') {
-                    $itemDistrict = strtolower($item['location']);
-                    if (strpos($itemDistrict, $districtFilter) === false) {
-                        return false;
-                    }
-                }
-
-                return true;
-            });
-
-            $currentPage = (int) request('page', 1);
-            if ($currentPage < 1) $currentPage = 1;
-            if ($currentPage > 3) $currentPage = 3;
+            // The product list and filtering is now handled by KatalogController.
+            // We just use the $filteredProducts and $currentPage variables.
         @endphp
 
         <!-- Target Anchor for Smooth Scrolling -->
@@ -214,7 +115,7 @@
                                     </svg>
                                     <span>{{ $product['location'] }}</span>
                                 </div>
-                                <a href="/katalog" class="text-[#991b1b] font-bold hover:underline">
+                                <a href="{{ route('produk.detail', $product['slug']) }}" class="text-[#991b1b] font-bold hover:underline">
                                     Lihat Detail
                                 </a>
                             </div>
