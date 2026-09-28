@@ -76,6 +76,7 @@ class PublicController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
@@ -87,12 +88,29 @@ class PublicController extends Controller
             'user_id' => auth()->check() ? auth()->id() : null,
             'ticket_id' => $ticket_id,
             'name' => $request->name,
+            'email' => $request->email,
             'phone' => $request->phone,
             'subject' => $request->subject,
             'message' => $request->message,
-            'status' => 'Menunggu',
+            'status' => 'menunggu',
         ]);
 
         return back()->with('success', "Konsultasi berhasil dikirim. Nomor Tiket Anda: $ticket_id. Simpan nomor ini untuk mengecek status.");
+    }
+
+    public function cekKonsultasi(Request $request)
+    {
+        $consultations = collect();
+        if ($request->has('phone') && $request->phone != '') {
+            $consultations = \App\Models\Consultation::where('phone', $request->phone)
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+            
+            if ($consultations->isEmpty()) {
+                return back()->with('error', 'Tidak ada riwayat konsultasi yang ditemukan untuk nomor HP tersebut.');
+            }
+        }
+
+        return view('user.konsultasi_cek', compact('consultations'));
     }
 }

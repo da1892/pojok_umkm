@@ -16,6 +16,7 @@
                     <p class="text-red-100 text-lg reveal delay-300 mb-8">Punya kendala bisnis? Diskusikan langsung dengan pakar kami di bidang Pemasaran, Keuangan, Izin Usaha, dan lain-lain untuk memajukan UMKM Anda.</p>
                     <div class="flex gap-4 reveal delay-400">
                         <a href="#form-konsultasi" class="bg-white text-[#800000] font-bold px-8 py-3 rounded-full hover:bg-red-50 transition-colors shadow-lg">Mulai Konsultasi</a>
+                        <a href="{{ route('konsultasi.cek') }}" class="bg-transparent border-2 border-white text-white font-bold px-8 py-3 rounded-full hover:bg-white/10 transition-colors shadow-lg">Cek Tiket Konsultasi</a>
                     </div>
                 </div>
                 <div class="md:w-2/5 hidden md:flex justify-center reveal delay-400">
@@ -49,6 +50,12 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap Pemohon</label>
                             <input type="text" name="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
+                        </div>
+                        
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Alamat Email</label>
+                            <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan email aktif Anda...">
                         </div>
                         
                         <!-- Nama UMKM -->
