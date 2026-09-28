@@ -17,6 +17,7 @@ class UmkmProfile extends Model
         'pirt',
         'halal_cert',
         'address',
+        'district',
         'phone',
         'description',
         'map_link',

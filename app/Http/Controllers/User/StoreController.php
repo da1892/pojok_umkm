@@ -97,4 +97,21 @@ class StoreController extends Controller
 
         return redirect()->route('toko.index')->with('success', 'Produk berhasil ditambahkan! Menunggu verifikasi admin sebelum tampil di katalog.');
     }
+
+    public function consultations()
+    {
+        $consultations = \App\Models\Consultation::where('user_id', auth()->id())->latest()->get();
+        return view('user.store.consultations', compact('consultations'));
+    }
+
+    public function destroyProduct($id)
+    {
+        $product = \App\Models\User\Product::where('id', $id)->whereHas('umkmProfile', function($q) {
+            $q->where('user_id', auth()->id());
+        })->firstOrFail();
+        
+        $product->delete();
+        
+        return back()->with('success', 'Produk berhasil dihapus.');
+    }
 }

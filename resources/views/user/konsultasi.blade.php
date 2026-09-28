@@ -37,62 +37,54 @@
                 <div class="bg-white rounded-[24px] p-8 md:p-10 shadow-sm border border-slate-100 reveal delay-100">
                     <h2 class="text-[22px] font-bold text-slate-900 mb-8">Formulir Pengajuan Layanan</h2>
                     
-                    <form class="space-y-5">
+                    @if(session('success'))
+                        <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl font-medium">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('konsultasi.store') }}" class="space-y-5">
+                        @csrf
                         <!-- Nama Lengkap -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap Pemohon</label>
-                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
+                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
                         </div>
                         
                         <!-- Nama UMKM -->
                         <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nama UMKM / Usaha</label>
-                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama badan usaha Anda...">
-                        </div>
-                        
-                        <!-- Alamat Tempat Usaha -->
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Alamat Tempat Usaha</label>
-                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan alamat lengkap usaha...">
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Nama UMKM / Usaha (Opsional)</label>
+                            <input type="text" name="umkm_name" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama badan usaha Anda...">
                         </div>
                         
                         <!-- Nomor HP -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nomor HP / WhatsApp</label>
-                            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukan nomor anda...">
+                            <input type="text" name="phone" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukan nomor anda...">
                         </div>
                         
                         <!-- Kategori Konsultasi -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Kategori Konsultasi</label>
-                            <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-500 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10">
+                            <select name="subject" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-500 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10">
                                 <option value="" disabled selected>Pilih Kategori Permasalahan</option>
-                                <option value="pemasaran">Pemasaran & Penjualan</option>
-                                <option value="keuangan">Keuangan & Modal</option>
-                                <option value="perizinan">Perizinan Usaha</option>
-                                <option value="sertifikasi">Sertifikasi Halal / PIRT</option>
-                                <option value="lainnya">Lainnya</option>
+                                <option value="Pemasaran & Penjualan">Pemasaran & Penjualan</option>
+                                <option value="Keuangan & Modal">Keuangan & Modal</option>
+                                <option value="Perizinan Usaha">Perizinan Usaha</option>
+                                <option value="Sertifikasi Halal / PIRT">Sertifikasi Halal / PIRT</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
                         
                         <!-- Uraian Singkat -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Uraian Singkat Masalah / Kebutuhan</label>
-                            <textarea rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci..."></textarea>
-                        </div>
-                        
-                        <!-- Unggah Lampiran -->
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Unggah Lampiran Pendukung (KTP/NIB/Foto Produk)</label>
-                            <div class="w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors flex flex-col items-center justify-center py-6 cursor-pointer group">
-                                <svg class="w-6 h-6 text-[#991b1b] mb-2 transition-transform group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                <span class="text-sm text-slate-500 font-medium">Klik untuk memilih berkas pendukung (Max 5MB)</span>
-                            </div>
+                            <textarea name="message" required rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci..."></textarea>
                         </div>
                         
                         <!-- Submit Button -->
                         <div class="pt-2">
-                            <button type="button" class="w-full bg-[#a31d1d] text-white font-bold py-3.5 rounded-xl hover:bg-[#8b1818] transition-all shadow-md hover:shadow-lg active:scale-[0.98] flex justify-center items-center gap-2 text-sm">
+                            <button type="submit" class="w-full bg-[#a31d1d] text-white font-bold py-3.5 rounded-xl hover:bg-[#8b1818] transition-all shadow-md hover:shadow-lg active:scale-[0.98] flex justify-center items-center gap-2 text-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
                                 Kirim Pengajuan Konsultasi
                             </button>
