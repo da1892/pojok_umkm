@@ -9,7 +9,7 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Total UMKM Terdaftar</p>
-                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">1.234</h3>
+                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">{{ $totalUmkm }}</h3>
                 </div>
                 <div class="p-2.5 bg-red-50 text-[#800000] rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -26,7 +26,7 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Produk Terpublikasi</p>
-                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">4.567</h3>
+                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">{{ $totalProducts }}</h3>
                 </div>
                 <div class="p-2.5 bg-red-50 text-[#800000] rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -91,37 +91,39 @@
         <!-- Table 1 -->
         <div class="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col">
             <div class="px-6 py-5 border-b border-slate-200 bg-white">
-                <h3 class="text-[15px] font-bold text-slate-800">Konsultasi Terbaru</h3>
+                <h3 class="text-[15px] font-bold text-slate-800">Verifikasi Profil UMKM Baru</h3>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-slate-200 text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/80">
-                            <th class="px-6 py-4">No Tiket</th>
-                            <th class="px-6 py-4">Nama UMKM</th>
-                            <th class="px-6 py-4">Kategori</th>
+                            <th class="px-6 py-4">Nama Usaha</th>
+                            <th class="px-6 py-4">Pemilik</th>
                             <th class="px-6 py-4 text-center">Status</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm divide-y divide-slate-100">
+                        @forelse($pendingUmkms as $umkm)
                         <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-bold text-[#800000]">#UMKM-0024</td>
-                            <td class="px-6 py-4 font-semibold text-slate-800">UD Sari Rasa</td>
-                            <td class="px-6 py-4 text-slate-500">Sertifikat Halal</td>
-                            <td class="px-6 py-4 text-center"><span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-amber-100 text-amber-700 border border-amber-200/50">Menunggu</span></td>
+                            <td class="px-6 py-4 font-bold text-[#800000]">{{ $umkm->business_name }}</td>
+                            <td class="px-6 py-4 font-semibold text-slate-800">{{ $umkm->owner_name }}</td>
+                            <td class="px-6 py-4 text-center"><span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-amber-100 text-amber-700 border border-amber-200/50">Pending</span></td>
+                            <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                <a href="{{ route('admin.umkm.show', $umkm->id) }}" class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">Detail</a>
+                                <form action="{{ route('admin.umkm.verify', $umkm->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm focus:ring focus:ring-emerald-200">Setujui</button>
+                                </form>
+                                <form action="{{ route('admin.umkm.reject', $umkm->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-[#800000] text-white hover:bg-[#600000] transition-colors shadow-sm focus:ring focus:ring-red-200">Tolak</button>
+                                </form>
+                            </td>
                         </tr>
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-bold text-[#800000]">#UMKM-0023</td>
-                            <td class="px-6 py-4 font-semibold text-slate-800">Batik Sekar Wonogiri</td>
-                            <td class="px-6 py-4 text-slate-500">PIRT</td>
-                            <td class="px-6 py-4 text-center"><span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-blue-100 text-blue-700 border border-blue-200/50">Diproses</span></td>
-                        </tr>
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-bold text-[#800000]">#UMKM-0022</td>
-                            <td class="px-6 py-4 font-semibold text-slate-800">Madu Randu Asli</td>
-                            <td class="px-6 py-4 text-slate-500">Sertifikat Halal</td>
-                            <td class="px-6 py-4 text-center"><span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200/50">Selesai</span></td>
-                        </tr>
+                        @empty
+                        <tr><td colspan="4" class="px-6 py-4 text-center text-slate-500">Tidak ada pengajuan baru</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -142,30 +144,27 @@
                         </tr>
                     </thead>
                     <tbody class="text-sm divide-y divide-slate-100">
+                        @forelse($pendingProducts as $product)
                         <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-semibold text-slate-800">Mente Oven</td>
-                            <td class="px-6 py-4 text-slate-500">UD Kacang Jaya</td>
+                            <td class="px-6 py-4 font-semibold text-slate-800">
+                                {{ $product->name }}
+                                <div class="text-xs text-slate-500">{{ $product->category }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-slate-500">{{ $product->umkmProfile->business_name ?? 'Tidak diketahui' }}</td>
                             <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
-                                <button class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm focus:ring focus:ring-emerald-200">Setujui</button>
-                                <button class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-[#800000] text-white hover:bg-[#600000] transition-colors shadow-sm focus:ring focus:ring-red-200">Tolak</button>
+                                <form action="{{ route('admin.product.verify', $product->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm focus:ring focus:ring-emerald-200">Setujui</button>
+                                </form>
+                                <form action="{{ route('admin.product.reject', $product->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-[#800000] text-white hover:bg-[#600000] transition-colors shadow-sm focus:ring focus:ring-red-200">Tolak</button>
+                                </form>
                             </td>
                         </tr>
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-semibold text-slate-800">Batik Sakera</td>
-                            <td class="px-6 py-4 text-slate-500">Batik Wonogiren</td>
-                            <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
-                                <button class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm focus:ring focus:ring-emerald-200">Setujui</button>
-                                <button class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-[#800000] text-white hover:bg-[#600000] transition-colors shadow-sm focus:ring focus:ring-red-200">Tolak</button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-semibold text-slate-800">Sambel Pecel</td>
-                            <td class="px-6 py-4 text-slate-500">Dapur Bu Lastri</td>
-                            <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
-                                <button class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm focus:ring focus:ring-emerald-200">Setujui</button>
-                                <button class="px-3.5 py-1.5 text-xs font-semibold rounded-md bg-[#800000] text-white hover:bg-[#600000] transition-colors shadow-sm focus:ring focus:ring-red-200">Tolak</button>
-                            </td>
-                        </tr>
+                        @empty
+                        <tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Tidak ada produk baru</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
