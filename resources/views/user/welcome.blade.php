@@ -141,50 +141,7 @@
 
 <!-- Produk Unggulan Terbaru -->
 @php
-    $featuredProducts = [
-        [
-            'name' => 'Tiwul',
-            'category' => 'Makanan',
-            'seller' => 'Rasa Lestari',
-            'location' => 'Kec. Ngadirojo',
-            'image' => asset('img/products/tiwul.jpg')
-        ],
-        [
-            'name' => 'Tas Rotan',
-            'category' => 'Kerajinan',
-            'seller' => 'Kriya Mandiri',
-            'location' => 'Kec. Wuryantoro',
-            'image' => asset('img/products/tas_rotan.jpg')
-        ],
-        [
-            'name' => 'Batik Tulis Premium',
-            'category' => 'Batik/Fashion',
-            'seller' => 'Batik Sekar Arum',
-            'location' => 'Kec. Wonogiri',
-            'image' => asset('img/products/batik_tulis.jpg')
-        ],
-        [
-            'name' => 'Keripik Singkong',
-            'category' => 'Makanan',
-            'seller' => 'UD Sari Rasa',
-            'location' => 'Kec. Selogiri',
-            'image' => asset('img/products/keripik_singkong.jpg')
-        ],
-        [
-            'name' => 'Piring Hias',
-            'category' => 'Kerajinan',
-            'seller' => 'Logam Jaya',
-            'location' => 'Kec. Purwantoro',
-            'image' => asset('img/products/piring_hias.jpg')
-        ],
-        [
-            'name' => 'Jahe Merah',
-            'category' => 'Olahan Hasil Pertanian',
-            'seller' => 'Sido Muncul Wonogiri',
-            'location' => 'Kec. Bulukerto',
-            'image' => asset('img/products/jahe_merah.jpg')
-        ],
-    ];
+    $featuredProducts = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified')->latest()->take(6)->get();
 @endphp
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-14 reveal delay-400">
@@ -202,22 +159,29 @@
     </div>
 
     <!-- Product Grid -->
+    @if($featuredProducts->count() > 0)
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
         @foreach ($featuredProducts as $product)
         <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-md hover:border-red-100 transition-all duration-300 group flex flex-col justify-between">
             <div>
                 <div class="h-52 w-full overflow-hidden bg-slate-100 relative">
-                    <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    @if($product->image_path)
+                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                    @endif
                 </div>
                 <div class="p-5 pb-0">
                     <span class="inline-block bg-red-50 text-[#991b1b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md mb-2">
-                        {{ $product['category'] }}
+                        {{ $product->category }}
                     </span>
                     <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
-                        {{ $product['name'] }}
+                        {{ $product->name }}
                     </h3>
                     <p class="text-xs text-slate-500 mt-1">
-                        oleh {{ $product['seller'] }}
+                        oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}
                     </p>
                 </div>
             </div>
@@ -227,7 +191,7 @@
                         <svg class="w-3.5 h-3.5 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                         </svg>
-                        <span>{{ $product['location'] }}</span>
+                        <span class="line-clamp-1 max-w-[120px]">{{ $product->umkmProfile->address ?? 'Kabupaten Wonogiri' }}</span>
                     </div>
                     <a href="/katalog" class="text-[#991b1b] font-bold hover:underline">
                         Lihat Detail
@@ -237,6 +201,12 @@
         </div>
         @endforeach
     </div>
+    @else
+    <div class="text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada produk</h3>
+        <p class="text-gray-500">Jadilah UMKM pertama yang mempublikasikan produk unggulan Anda di sini!</p>
+    </div>
+    @endif
 </div>
 
 <!-- Statistik Banner (Always 3 columns) -->

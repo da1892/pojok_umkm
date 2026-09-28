@@ -73,109 +73,38 @@
             </form>
         </div>
 
-        <!-- 9 Products for Page 1 (Sesuai Figma) -->
         @php
-            $page1Products = [
-                [
-                    'name' => 'Tiwul',
-                    'category' => 'Makanan',
-                    'seller' => 'Rasa Lestari',
-                    'location' => 'Kec. Ngadirojo',
-                    'image' => asset('img/products/tiwul.jpg')
-                ],
-                [
-                    'name' => 'Tas Rotan',
-                    'category' => 'Kerajinan',
-                    'seller' => 'Kriya Mandiri',
-                    'location' => 'Kec. Wuryantoro',
-                    'image' => asset('img/products/tas_rotan.jpg')
-                ],
-                [
-                    'name' => 'Batik Tulis Premium',
-                    'category' => 'Batik/Fashion',
-                    'seller' => 'Batik Sekar Arum',
-                    'location' => 'Kec. Wonogiri',
-                    'image' => asset('img/products/batik_tulis.jpg')
-                ],
-                [
-                    'name' => 'Keripik Singkong',
-                    'category' => 'Makanan',
-                    'seller' => 'UD Sari Rasa',
-                    'location' => 'Kec. Selogiri',
-                    'image' => asset('img/products/keripik_singkong.jpg')
-                ],
-                [
-                    'name' => 'Piring Hias',
-                    'category' => 'Kerajinan',
-                    'seller' => 'Logam Jaya',
-                    'location' => 'Kec. Purwantoro',
-                    'image' => asset('img/products/piring_hias.jpg')
-                ],
-                [
-                    'name' => 'Jahe Merah Instan',
-                    'category' => 'Olahan Hasil Pertanian',
-                    'seller' => 'Sido Muncul Wonogiri',
-                    'location' => 'Kec. Bulukerto',
-                    'image' => asset('img/products/jahe_merah.jpg')
-                ],
-                [
-                    'name' => 'Kue Cucur',
-                    'category' => 'Makanan',
-                    'seller' => 'Karya Makmur',
-                    'location' => 'Kec. Pracimantoro',
-                    'image' => asset('img/products/kue_cucur.jpg')
-                ],
-                [
-                    'name' => 'Guci Keramik',
-                    'category' => 'Kerajinan',
-                    'seller' => 'Arto Moro',
-                    'location' => 'Kec. Baturetno',
-                    'image' => asset('img/products/guci_keramik.jpg')
-                ],
-                [
-                    'name' => 'Kemeja Batik',
-                    'category' => 'Batik/Fashion',
-                    'seller' => 'Griya Busana',
-                    'location' => 'Kec. Wonogiri',
-                    'image' => asset('img/products/kemeja_batik.jpg')
-                ],
-            ];
-
-            // Filter pencarian dan kategori
-            $searchQuery = strtolower(trim(request('q', '')));
+            $searchQuery = trim(request('q', ''));
             $categoryFilter = strtolower(trim(request('kategori', '')));
-            $districtFilter = strtolower(trim(request('kecamatan', '')));
+            $districtFilter = trim(request('kecamatan', ''));
 
-            $filteredProducts = array_filter($page1Products, function($item) use ($searchQuery, $categoryFilter, $districtFilter) {
-                if ($searchQuery !== '') {
-                    $haystack = strtolower($item['name'] . ' ' . $item['seller'] . ' ' . $item['location']);
-                    if (strpos($haystack, $searchQuery) === false) {
-                        return false;
-                    }
-                }
+            $query = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified');
 
-                if ($categoryFilter !== '') {
-                    $itemCategory = strtolower($item['category']);
-                    if ($categoryFilter === 'makanan' && strpos($itemCategory, 'makan') === false) return false;
-                    if ($categoryFilter === 'kerajinan' && strpos($itemCategory, 'kerajinan') === false) return false;
-                    if ($categoryFilter === 'batik' && strpos($itemCategory, 'batik') === false) return false;
-                    if ($categoryFilter === 'pertanian' && strpos($itemCategory, 'pertanian') === false) return false;
-                    if ($categoryFilter === 'kreatif' && strpos($itemCategory, 'kreatif') === false) return false;
-                }
+            if ($searchQuery !== '') {
+                $query->where(function($q) use ($searchQuery) {
+                    $q->where('name', 'like', "%{$searchQuery}%")
+                      ->orWhereHas('umkmProfile', function($q2) use ($searchQuery) {
+                          $q2->where('business_name', 'like', "%{$searchQuery}%")
+                             ->orWhere('address', 'like', "%{$searchQuery}%");
+                      });
+                });
+            }
 
-                if ($districtFilter !== '') {
-                    $itemDistrict = strtolower($item['location']);
-                    if (strpos($itemDistrict, $districtFilter) === false) {
-                        return false;
-                    }
-                }
+            if ($categoryFilter !== '') {
+                if ($categoryFilter === 'makanan') $query->where('category', 'like', '%makan%');
+                elseif ($categoryFilter === 'kerajinan') $query->where('category', 'like', '%kerajin%');
+                elseif ($categoryFilter === 'batik') $query->where('category', 'like', '%batik%');
+                elseif ($categoryFilter === 'pertanian') $query->where('category', 'like', '%pertan%');
+                elseif ($categoryFilter === 'kreatif') $query->where('category', 'like', '%kreatif%');
+            }
 
-                return true;
-            });
+            if ($districtFilter !== '') {
+                $query->whereHas('umkmProfile', function($q) use ($districtFilter) {
+                    $q->where('address', 'like', "%{$districtFilter}%");
+                });
+            }
 
-            $currentPage = (int) request('page', 1);
-            if ($currentPage < 1) $currentPage = 1;
-            if ($currentPage > 3) $currentPage = 3;
+            $products = $query->latest()->paginate(9)->withQueryString();
         @endphp
 
         <!-- Target Anchor for Smooth Scrolling -->
@@ -183,236 +112,105 @@
 
         <!-- Katalog Content Container -->
         <div id="katalog-grid-container" class="reveal delay-200">
-            
-            {{-- HALAMAN 1 (Berisi 9 Produk Sesuai Figma) --}}
-            <div id="katalog-page-1" class="katalog-page-group {{ $currentPage == 1 ? '' : 'hidden' }}">
-                @if (count($filteredProducts) > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
-                    @foreach ($filteredProducts as $product)
-                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-red-100 transition-all duration-300 group flex flex-col justify-between">
-                        <div>
-                            <div class="h-52 sm:h-56 w-full overflow-hidden bg-slate-100 relative">
-                                <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            </div>
-                            <div class="p-5 pb-0">
-                                <span class="inline-block bg-red-50 text-[#991b1b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md mb-2">
-                                    {{ $product['category'] }}
-                                </span>
-                                <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
-                                    {{ $product['name'] }}
-                                </h3>
-                                <p class="text-xs text-slate-500 mt-1">
-                                    oleh {{ $product['seller'] }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="p-5 pt-4">
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-                                <div class="flex items-center gap-1.5 text-slate-500 font-medium">
-                                    <svg class="w-3.5 h-3.5 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span>{{ $product['location'] }}</span>
+            @if ($products->count() > 0)
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+                @foreach ($products as $product)
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-red-100 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="h-52 sm:h-56 w-full overflow-hidden bg-slate-100 relative">
+                            @if($product->image_path)
+                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
-                                <a href="/katalog" class="text-[#991b1b] font-bold hover:underline">
-                                    Lihat Detail
-                                </a>
-                            </div>
+                            @endif
+                        </div>
+                        <div class="p-5 pb-0">
+                            <span class="inline-block bg-red-50 text-[#991b1b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md mb-2">
+                                {{ $product->category }}
+                            </span>
+                            <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
+                                {{ $product->name }}
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-1">
+                                oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}
+                            </p>
                         </div>
                     </div>
-                    @endforeach
-                </div>
-                @else
-                <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
-                    <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                    </svg>
-                    <p class="text-slate-600 font-semibold text-base mb-1">Tidak ada produk yang cocok</p>
-                    <p class="text-slate-400 text-xs sm:text-sm mb-4">Coba cari dengan kata kunci lain atau reset filter kategori.</p>
-                    <a href="/katalog" class="inline-flex items-center px-4 py-2 rounded-lg bg-[#991b1b] text-white text-xs font-bold hover:bg-[#801414] transition-colors">
-                        Reset Filter
-                    </a>
-                </div>
-                @endif
-            </div>
-
-            {{-- HALAMAN 2 (Kosong / Tidak Ada Produk) --}}
-            <div id="katalog-page-2" class="katalog-page-group {{ $currentPage == 2 ? '' : 'hidden' }}">
-                <div class="py-20 text-center bg-white rounded-2xl border border-slate-200/90 shadow-2xs">
-                    <div class="w-16 h-16 bg-red-50 text-[#991b1b] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                        </svg>
+                    <div class="p-5 pt-4">
+                        <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+                            <div class="flex items-center gap-1.5 text-slate-500 font-medium">
+                                <svg class="w-3.5 h-3.5 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="line-clamp-1 max-w-[120px]">{{ $product->umkmProfile->address ?? 'Wonogiri' }}</span>
+                            </div>
+                            <a href="/katalog" class="text-[#991b1b] font-bold hover:underline">
+                                Lihat Detail
+                            </a>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-1.5">Tidak Ada Produk di Halaman 2</h3>
-                    <p class="text-xs sm:text-sm text-slate-400 mb-6 max-w-md mx-auto">Seluruh produk unggulan UMKM Wonogiri saat ini telah ditampilkan lengkap pada Halaman 1.</p>
-                    <button type="button" class="btn-back-to-page1 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#991b1b] text-white text-xs sm:text-sm font-bold hover:bg-[#801414] transition-colors shadow-2xs cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
-                        </svg>
-                        <span>Kembali ke Halaman 1</span>
-                    </button>
                 </div>
+                @endforeach
             </div>
-
-            {{-- HALAMAN 3 (Kosong / Tidak Ada Produk) --}}
-            <div id="katalog-page-3" class="katalog-page-group {{ $currentPage == 3 ? '' : 'hidden' }}">
-                <div class="py-20 text-center bg-white rounded-2xl border border-slate-200/90 shadow-2xs">
-                    <div class="w-16 h-16 bg-red-50 text-[#991b1b] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-1.5">Tidak Ada Produk di Halaman 3</h3>
-                    <p class="text-xs sm:text-sm text-slate-400 mb-6 max-w-md mx-auto">Seluruh produk unggulan UMKM Wonogiri saat ini telah ditampilkan lengkap pada Halaman 1.</p>
-                    <button type="button" class="btn-back-to-page1 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#991b1b] text-white text-xs sm:text-sm font-bold hover:bg-[#801414] transition-colors shadow-2xs cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
-                        </svg>
-                        <span>Kembali ke Halaman 1</span>
-                    </button>
-                </div>
+            @else
+            <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
+                <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
+                <p class="text-slate-600 font-semibold text-base mb-1">Belum ada produk</p>
+                <p class="text-slate-400 text-xs sm:text-sm mb-4">Belum ada produk yang tersedia saat ini atau kriteria pencarian tidak cocok.</p>
+                <a href="/katalog" class="inline-flex items-center px-4 py-2 rounded-lg bg-[#991b1b] text-white text-xs font-bold hover:bg-[#801414] transition-colors">
+                    Reset Filter
+                </a>
             </div>
-
+            @endif
         </div>
 
-        <!-- Pagination matching Figma exactly (< [1] 2 3 >) -->
+        <!-- Pagination -->
+        @if ($products->hasPages())
         <div class="flex items-center justify-center gap-2 mt-12 mb-8 reveal delay-300 select-none">
             {{-- Tombol Previous (<) --}}
-            <a id="katalog-prev-btn" 
-               href="{{ request()->fullUrlWithQuery(['page' => max(1, $currentPage - 1)]) }}" 
-               class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs {{ $currentPage <= 1 ? 'pointer-events-none opacity-40 bg-slate-100 text-slate-300' : '' }}" 
-               title="Halaman Sebelumnya">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-                </svg>
-            </a>
-
-            {{-- Nomor Halaman (1, 2, 3) --}}
-            @for ($p = 1; $p <= 3; $p++)
-                <a href="{{ request()->fullUrlWithQuery(['page' => $p]) }}" 
-                   data-page="{{ $p }}"
-                   class="katalog-num-btn w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium {{ $p == $currentPage ? 'bg-[#991b1b] text-white font-bold shadow-xs cursor-default' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs' }}">
-                    {{ $p }}
+            @if ($products->onFirstPage())
+                <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                </span>
+            @else
+                <a href="{{ $products->previousPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                 </a>
-            @endfor
+            @endif
+
+            {{-- Nomor Halaman --}}
+            @foreach ($products->links()->elements[0] as $page => $url)
+                @if ($page == $products->currentPage())
+                    <span class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-bold bg-[#991b1b] text-white shadow-xs cursor-default">
+                        {{ $page }}
+                    </span>
+                @else
+                    <a href="{{ $url }}#katalog-anchor" class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
+                        {{ $page }}
+                    </a>
+                @endif
+            @endforeach
 
             {{-- Tombol Next (>) --}}
-            <a id="katalog-next-btn" 
-               href="{{ request()->fullUrlWithQuery(['page' => min(3, $currentPage + 1)]) }}" 
-               class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs {{ $currentPage >= 3 ? 'pointer-events-none opacity-40 bg-slate-100 text-slate-300' : '' }}" 
-               title="Halaman Selanjutnya">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                </svg>
-            </a>
+            @if ($products->hasMorePages())
+                <a href="{{ $products->nextPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </a>
+            @else
+                <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </span>
+            @endif
         </div>
+        @endif
 
     </div>
 </div>
 
-<!-- Instant Smooth Client-Side Switch Script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let activePage = {{ $currentPage }};
-        const maxPage = 3;
-        const prevBtn = document.getElementById('katalog-prev-btn');
-        const nextBtn = document.getElementById('katalog-next-btn');
-        const numBtns = document.querySelectorAll('.katalog-num-btn');
-        const pageGroups = document.querySelectorAll('.katalog-page-group');
-
-        function switchKatalogPage(pageNum) {
-            if (pageNum < 1 || pageNum > maxPage) return;
-            activePage = pageNum;
-
-            // 1. Tampilkan grup halaman yang dipilih, sembunyikan yang lain
-            pageGroups.forEach((group, index) => {
-                if (index + 1 === activePage) {
-                    group.classList.remove('hidden');
-                } else {
-                    group.classList.add('hidden');
-                }
-            });
-
-            // 2. Update warna tombol nomor halaman
-            numBtns.forEach(btn => {
-                const p = parseInt(btn.getAttribute('data-page'));
-                if (p === activePage) {
-                    btn.className = 'katalog-num-btn w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-bold bg-[#991b1b] text-white shadow-xs cursor-default';
-                } else {
-                    btn.className = 'katalog-num-btn w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs';
-                }
-            });
-
-            // 3. Update tombol panah Previous (<)
-            if (prevBtn) {
-                if (activePage <= 1) {
-                    prevBtn.className = 'w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40';
-                } else {
-                    prevBtn.className = 'w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs cursor-pointer';
-                }
-            }
-
-            // 4. Update tombol panah Next (>)
-            if (nextBtn) {
-                if (activePage >= maxPage) {
-                    nextBtn.className = 'w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40';
-                } else {
-                    nextBtn.className = 'w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs cursor-pointer';
-                }
-            }
-
-            // 5. Update URL di browser tanpa reload
-            try {
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('page', activePage);
-                window.history.pushState({ page: activePage }, '', currentUrl);
-            } catch (e) {}
-
-            // 6. Scroll halus ke grid katalog
-            const anchor = document.getElementById('katalog-anchor');
-            if (anchor) {
-                anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        // Klik nomor halaman
-        numBtns.forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const p = parseInt(this.getAttribute('data-page'));
-                switchKatalogPage(p);
-            });
-        });
-
-        // Tombol Kembali ke Halaman 1
-        document.querySelectorAll('.btn-back-to-page1').forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                switchKatalogPage(1);
-            });
-        });
-
-        // Klik tombol Prev (<)
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (activePage > 1) {
-                    switchKatalogPage(activePage - 1);
-                }
-            });
-        }
-
-        // Klik tombol Next (>)
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (activePage < maxPage) {
-                    switchKatalogPage(activePage + 1);
-                }
-            });
-        }
-    });
-</script>
+<!-- Deleted Script -->
 
 @endsection
