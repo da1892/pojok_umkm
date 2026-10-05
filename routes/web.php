@@ -17,9 +17,6 @@ Route::get('/katalog/{id}', [PublicController::class, 'showProduct'])->name('kat
 Route::get('/direktori', [PublicController::class, 'direktori'])->name('direktori');
 Route::get('/direktori/{id}', [PublicController::class, 'showUmkm'])->name('direktori.show');
 Route::get('/informasi', function () { return view('informasi'); });
-Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsultasi');
-Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
-Route::get('/konsultasi/cek', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -32,6 +29,11 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
+    // Konsultasi (Wajib Login)
+    Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsultasi');
+    Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
+    Route::get('/konsultasi/cek', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
+
     // Admin Routes
     Route::middleware('can:admin')->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');

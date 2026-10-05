@@ -8,6 +8,8 @@
     <!-- Memuat berkas CSS Tailwind dan Javascript dasar melalui Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
+    <!-- Google reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         /* ==============================================================
            CSS UNTUK ANIMASI SLIDING PANEL
@@ -235,12 +237,22 @@
                     
                     <!-- Kolom pengisian kata sandi dan konfirmasi -->
                     <div class="grid grid-cols-2 gap-4">
-                        <input id="password_reg" type="password" name="password" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
-                            placeholder="Password">
-                        <input id="password_confirmation" type="password" name="password_confirmation" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
-                            placeholder="Konfirmasi">
+                        <div class="relative">
+                            <input id="password_reg" type="password" name="password" required
+                                class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                                placeholder="Password">
+                            <button type="button" onclick="togglePassword('password_reg', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <input id="password_confirmation" type="password" name="password_confirmation" required
+                                class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                                placeholder="Konfirmasi">
+                            <button type="button" onclick="togglePassword('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Tombol eksekusi pendaftaran -->
@@ -299,10 +311,13 @@
                     </div>
 
                     <!-- Kolom pengisian kata sandi -->
-                    <div>
+                    <div class="relative">
                         <input id="password" type="password" name="password" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
                             placeholder="Password">
+                        <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </button>
                     </div>
                     
                     <!-- Opsi kelola sesi dan reset kata sandi -->
@@ -315,6 +330,10 @@
                     </div>
 
                     <!-- Tombol eksekusi login -->
+                    <div class="flex justify-center mt-2 mb-2">
+                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    </div>
+
                     <button type="submit"
                         class="w-full bg-[#800000] text-white py-3 rounded-xl hover:bg-[#600000] transition-colors font-bold shadow-lg mt-4">
                         Masuk
@@ -420,6 +439,18 @@
                 container.classList.remove("right-panel-active");
                 window.history.pushState({}, '', '/login');
             });
+        }
+
+        // Fungsi toggle kata sandi (lihat/sembunyikan)
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+            }
         }
     </script>
 </body>
