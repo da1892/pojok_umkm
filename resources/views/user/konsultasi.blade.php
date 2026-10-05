@@ -159,19 +159,53 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Terkirim!',
-                text: {!! json_encode(session('success')) !!},
-                confirmButtonColor: '#800000',
-                confirmButtonText: 'Tutup & Mengerti',
-                background: '#ffffff',
-                customClass: {
-                    title: 'text-xl font-bold text-slate-800',
-                    popup: 'rounded-3xl',
-                    confirmButton: 'rounded-xl font-bold px-6 py-3'
-                }
-            });
+            @if(session('ticket_id'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Terkirim!',
+                    html: `
+                        <p class="mb-4">{!! session('success') !!}</p>
+                        <p class="text-sm text-slate-500 mb-2">ID Tiket (UUID) Anda:</p>
+                        <div class="flex items-center justify-center gap-2 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <code id="ticket-id" class="font-bold text-[#800000] text-sm sm:text-base">{{ session('ticket_id') }}</code>
+                            <button onclick="navigator.clipboard.writeText('{{ session('ticket_id') }}').then(() => { Swal.showValidationMessage('ID Berhasil Disalin!'); setTimeout(()=>Swal.resetValidationMessage(), 2000); })" class="bg-[#800000] text-white p-2 rounded-md hover:bg-red-900 transition flex-shrink-0" title="Salin ID">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500">Fitur email menunggu SMTP. Silakan salin ID Tiket di atas untuk mengecek balasan Admin secara manual, atau klik tombol di bawah.</p>
+                    `,
+                    showDenyButton: true,
+                    confirmButtonColor: '#800000',
+                    confirmButtonText: 'Tutup & Salin',
+                    denyButtonColor: '#10b981',
+                    denyButtonText: 'Cek Tiket Sekarang',
+                    background: '#ffffff',
+                    customClass: {
+                        title: 'text-xl font-bold text-slate-800',
+                        popup: 'rounded-3xl',
+                        confirmButton: 'rounded-xl font-bold px-4 py-2 mt-2',
+                        denyButton: 'rounded-xl font-bold px-4 py-2 mt-2'
+                    }
+                }).then((result) => {
+                    if (result.isDenied) {
+                        window.location.href = "{{ route('konsultasi.cek') }}?ticket_id={{ session('ticket_id') }}";
+                    }
+                });
+            @else
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Terkirim!',
+                    text: {!! json_encode(session('success')) !!},
+                    confirmButtonColor: '#800000',
+                    confirmButtonText: 'Tutup & Mengerti',
+                    background: '#ffffff',
+                    customClass: {
+                        title: 'text-xl font-bold text-slate-800',
+                        popup: 'rounded-3xl',
+                        confirmButton: 'rounded-xl font-bold px-6 py-3'
+                    }
+                });
+            @endif
         @endif
         
         @if(session('error'))

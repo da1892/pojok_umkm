@@ -104,7 +104,8 @@ class PublicController extends Controller
             'message.required' => 'Pesan atau detail konsultasi wajib diisi.',
         ]);
 
-        $ticket_id = 'UMKM-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        // Menggunakan UUID (Universally Unique Identifier) bawaan Laravel
+        $ticket_id = (string) \Illuminate\Support\Str::uuid();
 
         $attachmentPath = null;
         if ($request->hasFile('attachment')) {
@@ -123,19 +124,36 @@ class PublicController extends Controller
             'status' => 'menunggu',
         ]);
 
-        return back()->with('success', "Pengajuan konsultasi Anda berhasil dikirim! Anda dapat memantau jawaban dari Admin kapan saja dengan menekan tombol 'Cek Konsultasi' dan memasukkan Nomor HP Anda.");
+        // Mengirimkan email berisi UUID ke pengguna
+        try {
+            \Illuminate\Support\Facades\Mail::raw(
+                "Halo {$request->name},\n\nTerima kasih telah menghubungi layanan konsultasi Pojok UMKM Wonogiri.\n\nBerikut adalah ID Tiket Konsultasi Anda:\n\n{$ticket_id}\n\nHarap simpan ID Tiket (UUID) ini. Anda dapat menggunakannya untuk mengecek status dan balasan dari Admin melalui halaman Cek Konsultasi.\n\nSalam,\nAdmin Pojok UMKM",
+                function ($message) use ($request) {
+                    $message->to($request->email)
+                            ->subject('ID Tiket Konsultasi Pojok UMKM Wonogiri');
+                }
+            );
+        } catch (\Exception $e) {
+            // Abaikan error pengiriman email di environment lokal jika tidak ada setting SMTP
+            // Anda bisa melakukan logging error di sini jika diperlukan
+        }
+
+        // Tampilkan UUID di layar untuk sementara agar user bisa menyalinnya
+        return back()
+            ->with('success', 'Pengajuan konsultasi Anda berhasil dikirim!')
+            ->with('ticket_id', $ticket_id);
     }
 
     public function cekKonsultasi(Request $request)
     {
         $consultations = collect();
-        if ($request->has('phone') && $request->phone != '') {
-            $consultations = \App\Models\Consultation::where('phone', $request->phone)
+        if ($request->has('ticket_id') && $request->ticket_id != '') {
+            $consultations = \App\Models\Consultation::where('ticket_id', $request->ticket_id)
                                 ->orderBy('created_at', 'desc')
                                 ->get();
             
             if ($consultations->isEmpty()) {
-                return back()->with('error', 'Riwayat konsultasi untuk nomor telepon tersebut tidak ditemukan.');
+                return back()->with('error', 'Riwayat konsultasi untuk ID Tiket tersebut tidak ditemukan.');
             }
         }
 

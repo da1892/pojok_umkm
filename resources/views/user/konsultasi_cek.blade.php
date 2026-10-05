@@ -6,7 +6,7 @@
         
         <div class="text-center mb-10 reveal">
             <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Cek Status Konsultasi</h1>
-            <p class="text-slate-600">Masukkan Nomor HP Anda untuk melihat semua riwayat pertanyaan dan jawaban dari Admin Dinas Perdagangan Wonogiri.</p>
+            <p class="text-slate-600">Masukkan ID Tiket (UUID) Anda untuk melihat riwayat pertanyaan dan jawaban dari Admin Dinas Perdagangan Wonogiri.</p>
         </div>
 
         <!-- Search Card -->
@@ -19,7 +19,7 @@
 
             <form action="{{ route('konsultasi.cek') }}" method="GET" class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1">
-                    <input type="text" name="phone" value="{{ request('phone') }}" required placeholder="Masukkan Nomor HP Anda..." class="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all text-slate-800 font-medium">
+                    <input type="text" name="ticket_id" value="{{ request('ticket_id') }}" required placeholder="Masukkan ID Tiket (UUID)..." class="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all text-slate-800 font-medium">
                 </div>
                 <button type="submit" class="bg-[#800000] hover:bg-[#600000] text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-md shrink-0">
                     Cek Status
