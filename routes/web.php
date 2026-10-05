@@ -75,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/toko/produk/tambah', [StoreController::class, 'createProduct'])->name('toko.product.create');
     Route::post('/toko/produk/tambah', [StoreController::class, 'storeProduct'])->name('toko.product.store');
+    Route::get('/toko/produk/{id}/edit', [StoreController::class, 'editProduct'])->name('toko.product.edit');
+    Route::put('/toko/produk/{id}', [StoreController::class, 'updateProduct'])->name('toko.product.update');
     Route::delete('/toko/produk/{id}', [StoreController::class, 'destroyProduct'])->name('toko.product.destroy');
     
     // User Consultations History

@@ -81,7 +81,7 @@ class StoreController extends Controller
             'category' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'nullable|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:10240'
         ]);
 
         $imagePath = $request->file('image')->store('products', 'public');
@@ -113,5 +113,47 @@ class StoreController extends Controller
         $product->delete();
         
         return back()->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function editProduct($id)
+    {
+        $product = \App\Models\User\Product::where('id', $id)->whereHas('umkmProfile', function($q) {
+            $q->where('user_id', auth()->id());
+        })->firstOrFail();
+        
+        return view('user.store.product_edit', compact('product'));
+    }
+
+    public function updateProduct(Request $request, $id)
+    {
+        $product = \App\Models\User\Product::where('id', $id)->whereHas('umkmProfile', function($q) {
+            $q->where('user_id', auth()->id());
+        })->firstOrFail();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'nullable|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240'
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'category' => $request->category,
+            'description' => $request->description,
+            'price' => $request->price,
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update($data);
+
+        return redirect()->route('toko.index')->with('success', 'Produk berhasil diperbarui!');
     }
 }
