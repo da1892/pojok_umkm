@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -29,6 +30,26 @@ class AuthController extends Controller
                 'email' => ['required', 'email'],
                 'password' => ['required'],
             ]);
+
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            
+            if (empty($recaptchaResponse)) {
+                throw ValidationException::withMessages([
+                    'g-recaptcha-response' => 'Harap centang kotak verifikasi captcha terlebih dahulu.',
+                ]);
+            }
+
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'response' => $recaptchaResponse,
+                'remoteip' => $request->ip()
+            ]);
+
+            if (!$response->json('success')) {
+                throw ValidationException::withMessages([
+                    'g-recaptcha-response' => 'Validasi captcha gagal, silakan coba lagi.',
+                ]);
+            }
 
             if (Auth::attempt($credentials, $request->boolean('remember'))) {
                 $request->session()->regenerate();
