@@ -134,8 +134,10 @@ class PublicController extends Controller
                 }
             );
         } catch (\Exception $e) {
-            // Abaikan error pengiriman email di environment lokal jika tidak ada setting SMTP
-            // Anda bisa melakukan logging error di sini jika diperlukan
+            // Jika gagal kirim email, beri tahu pengguna alasannya
+            return back()
+                ->with('error', 'Konsultasi Anda tersimpan, tetapi sistem gagal mengirimkan email ke alamat Anda. (Error: ' . $e->getMessage() . ')')
+                ->with('ticket_id', $ticket_id);
         }
 
         // Tampilkan UUID di layar untuk sementara agar user bisa menyalinnya
