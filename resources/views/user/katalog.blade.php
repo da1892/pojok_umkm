@@ -115,7 +115,7 @@
             @if ($products->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
                 @foreach ($products as $product)
-                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-red-100 transition-all duration-300 group flex flex-col justify-between">
+                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-red-200 transition-all duration-300 group flex flex-col justify-between block cursor-pointer">
                     <div>
                         <div class="h-52 sm:h-56 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
@@ -146,12 +146,12 @@
                                 </svg>
                                 <span class="line-clamp-1 max-w-[120px]">{{ $product->umkmProfile->address ?? 'Wonogiri' }}</span>
                             </div>
-                            <a href="{{ route('katalog.show', $product->id) }}" class="text-[#991b1b] font-bold hover:underline">
+                            <span class="text-[#991b1b] font-bold group-hover:underline">
                                 Lihat Detail
-                            </a>
+                            </span>
                         </div>
                     </div>
-                </div>
+                </a>
                 @endforeach
             </div>
             @else

@@ -120,20 +120,20 @@
 <!-- Eksplor Kategori Produk (Horizontal Swipeable on mobile) -->
 <div id="kategori" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-14 reveal delay-300">
     <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 sm:mb-4">Eksplor Kategori Produk</h2>
-    <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" style="scrollbar-width: none; -ms-overflow-style: none;">
-        <a href="/katalog?kategori=makanan" class="px-4 sm:px-5 py-2 rounded-full bg-[#991b1b] text-white text-xs sm:text-sm font-semibold shadow-xs hover:bg-[#801414] transition-all whitespace-nowrap shrink-0">
+    <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto pt-2 pb-2 -mt-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" style="scrollbar-width: none; -ms-overflow-style: none;">
+        <a href="/katalog?kategori=makanan" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-[#801414] hover:text-white hover:border-transparent transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-1 whitespace-nowrap shrink-0">
             Makanan & Minuman
         </a>
-        <a href="/katalog?kategori=kerajinan" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+        <a href="/katalog?kategori=kerajinan" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-[#801414] hover:text-white hover:border-transparent transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-1 whitespace-nowrap shrink-0">
             Kerajinan
         </a>
-        <a href="/katalog?kategori=batik" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+        <a href="/katalog?kategori=batik" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-[#801414] hover:text-white hover:border-transparent transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-1 whitespace-nowrap shrink-0">
             Batik/Fashion
         </a>
-        <a href="/katalog?kategori=pertanian" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+        <a href="/katalog?kategori=pertanian" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-[#801414] hover:text-white hover:border-transparent transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-1 whitespace-nowrap shrink-0">
             Olahan Hasil Pertanian
         </a>
-        <a href="/katalog?kategori=kreatif" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-all shadow-xs whitespace-nowrap shrink-0">
+        <a href="/katalog?kategori=kreatif" class="px-4 sm:px-5 py-2 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-medium hover:bg-[#801414] hover:text-white hover:border-transparent transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-1 whitespace-nowrap shrink-0">
             Produk Kreatif
         </a>
     </div>
@@ -162,7 +162,7 @@
     @if($featuredProducts->count() > 0)
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
         @foreach ($featuredProducts as $product)
-        <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-md hover:border-red-100 transition-all duration-300 group flex flex-col justify-between">
+        <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-red-200 transition-all duration-300 group flex flex-col justify-between block cursor-pointer">
             <div>
                 <div class="h-52 w-full overflow-hidden bg-slate-100 relative">
                     @if($product->image_path)
@@ -193,12 +193,12 @@
                         </svg>
                         <span class="line-clamp-1 max-w-[120px]">{{ $product->umkmProfile->address ?? 'Kabupaten Wonogiri' }}</span>
                     </div>
-                    <a href="{{ route('katalog.show', $product->id) }}" class="text-[#991b1b] font-bold hover:underline">
+                    <span class="text-[#991b1b] font-bold group-hover:underline">
                         Lihat Detail
-                    </a>
+                    </span>
                 </div>
             </div>
-        </div>
+        </a>
         @endforeach
     </div>
     @else

@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
         View::addLocation(resource_path('views/user'));
         View::addLocation(resource_path('views/admin'));
 
+        \Carbon\Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
+
         Gate::define('admin', function ($user) {
             return $user->role === 'admin';
         });
