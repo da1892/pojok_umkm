@@ -23,6 +23,63 @@ class StoreController extends Controller
         return view('user.store.dashboard', compact('umkm', 'products'));
     }
 
+    public function profile()
+    {
+        $user = auth()->user();
+        $umkm = $user->umkmProfile;
+
+        if (!$umkm) {
+            return redirect()->route('toko.create');
+        }
+
+        $productsCount = $umkm->products()->count();
+        return view('user.store.profile', compact('umkm', 'productsCount'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        $umkm = $user->umkmProfile;
+
+        if (!$umkm) {
+            return redirect()->route('toko.create');
+        }
+
+        $request->validate([
+            'business_name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:25',
+            'province' => 'nullable|string|max:100',
+            'regency' => 'nullable|string|max:100',
+            'district' => 'required|string|max:100',
+            'village' => 'required|string|max:100',
+            'postal_code' => 'nullable|string|max:10',
+            'address' => 'required|string',
+            'nib' => 'nullable|string|max:255',
+            'pirt' => 'nullable|string|max:255',
+            'halal_cert' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $umkm->update([
+            'business_name' => $request->business_name,
+            'owner_name' => $request->owner_name,
+            'phone' => $request->phone,
+            'province' => $request->province ?: 'Jawa Tengah',
+            'regency' => $request->regency ?: 'Kabupaten Wonogiri',
+            'district' => $request->district,
+            'village' => $request->village,
+            'postal_code' => $request->postal_code,
+            'address' => $request->address,
+            'nib' => $request->nib,
+            'pirt' => $request->pirt,
+            'halal_cert' => $request->halal_cert,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('toko.profile')->with('success', 'Profil UMKM berhasil diperbarui!');
+    }
+
     public function create()
     {
         if (auth()->user()->umkmProfile) {
@@ -36,8 +93,13 @@ class StoreController extends Controller
         $request->validate([
             'business_name' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
+            'province' => 'nullable|string|max:100',
+            'regency' => 'nullable|string|max:100',
+            'district' => 'required|string|max:100',
+            'village' => 'required|string|max:100',
+            'postal_code' => 'nullable|string|max:10',
             'address' => 'required|string',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|max:25',
             'nib' => 'nullable|string|max:255',
             'pirt' => 'nullable|string|max:255',
             'halal_cert' => 'nullable|string|max:255',
@@ -47,6 +109,11 @@ class StoreController extends Controller
         auth()->user()->umkmProfile()->create([
             'business_name' => $request->business_name,
             'owner_name' => $request->owner_name,
+            'province' => $request->province ?: 'Jawa Tengah',
+            'regency' => $request->regency ?: 'Kabupaten Wonogiri',
+            'district' => $request->district,
+            'village' => $request->village,
+            'postal_code' => $request->postal_code,
             'address' => $request->address,
             'phone' => $request->phone,
             'nib' => $request->nib,
@@ -56,7 +123,7 @@ class StoreController extends Controller
             'status' => 'pending'
         ]);
 
-        return redirect()->route('toko.index')->with('success', 'Toko UMKM berhasil didaftarkan! Menunggu verifikasi dari admin.');
+        return redirect()->route('toko.index')->with('success', 'Pendaftaran UMKM berhasil dikirim! Menunggu verifikasi dari Admin.');
     }
 
     public function createProduct()
@@ -80,18 +147,40 @@ class StoreController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'nullable|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:10240'
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240'
+        ], [
+            'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.'
         ]);
 
-        $imagePath = $request->file('image')->store('products', 'public');
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if (count($imagePaths) < 5) {
+                    $imagePaths[] = $file->store('products', 'public');
+                }
+            }
+        } elseif ($request->hasFile('image')) {
+            $imagePaths[] = $request->file('image')->store('products', 'public');
+        }
+
+        if (empty($imagePaths)) {
+            return back()->withErrors(['images' => 'Wajib mengunggah minimal 1 foto produk.'])->withInput();
+        }
+
+        $primaryImage = $imagePaths[0];
 
         $umkm->products()->create([
             'name' => $request->name,
             'category' => $request->category,
             'description' => $request->description,
-            'price' => $request->price,
-            'image_path' => $imagePath,
+            'price' => null,
+            'image_path' => $primaryImage,
+            'images' => $imagePaths,
             'status' => 'pending'
         ]);
 
@@ -134,22 +223,37 @@ class StoreController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'nullable|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:10240'
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240'
+        ], [
+            'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.'
         ]);
 
         $data = [
             'name' => $request->name,
             'category' => $request->category,
             'description' => $request->description,
-            'price' => $request->price,
+            'price' => null,
         ];
 
-        if ($request->hasFile('image')) {
-            if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
+        $newImagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if (count($newImagePaths) < 5) {
+                    $newImagePaths[] = $file->store('products', 'public');
+                }
             }
-            $data['image_path'] = $request->file('image')->store('products', 'public');
+        } elseif ($request->hasFile('image')) {
+            $newImagePaths[] = $request->file('image')->store('products', 'public');
+        }
+
+        if (!empty($newImagePaths)) {
+            $data['images'] = $newImagePaths;
+            $data['image_path'] = $newImagePaths[0];
         }
 
         $product->update($data);

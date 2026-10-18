@@ -49,7 +49,7 @@
                 </svg>
                 Lihat Produk UMKM
             </a>
-            <a href="#kategori" class="inline-flex items-center justify-center border-2 border-white/80 hover:border-white hover:bg-white/10 text-white font-semibold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg transition-all transform hover:-translate-y-0.5">
+            <a href="{{ route('informasi') }}" class="inline-flex items-center justify-center border-2 border-white/80 hover:border-white hover:bg-white/10 text-white font-semibold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg transition-all transform hover:-translate-y-0.5">
                 Pelajari Program
             </a>
         </div>
@@ -69,7 +69,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-7 lg:gap-8">
             
             <!-- Card 1: Profil UMKM -->
-            <a href="/direktori" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+            <a href="{{ route('direktori') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
                 <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
@@ -81,7 +81,7 @@
             </a>
 
             <!-- Card 2: Produk UMKM -->
-            <a href="/katalog" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+            <a href="{{ route('katalog') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
                 <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
@@ -92,7 +92,7 @@
             </a>
 
             <!-- Card 3: Berita & Kegiatan -->
-            <a href="/informasi" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+            <a href="{{ route('informasi') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
                 <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
@@ -102,11 +102,12 @@
                 <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Informasi bazar, pameran, pelatihan, dan pemberdayaan terkini.</p>
             </a>
 
-            <!-- Card 4: Informasi & Panduan -->
-            <a href="/konsultasi" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+            <!-- Card 4: Info & Panduan -->
+            <a href="{{ route('panduan') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
                 <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                        <circle cx="12" cy="12" r="9"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25h.01M12 11.25v4.5"/>
                     </svg>
                 </div>
                 <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Info & Panduan</h3>
@@ -230,61 +231,58 @@
 </div>
 
 <!-- Berita & Kegiatan Terkini Section -->
-@php
-    $latestNews = [
-        [
-            'title' => 'Bimtek Pemasaran Digital UMKM Wonogiri Go-Glo...',
-            'date' => '12 Oktober 2025',
-            'excerpt' => 'Dinas Perdagangan dan KUKM Kabupaten Wonogiri terus mempercepat akselerasi digitalisasi...',
-            'image' => asset('img/news/bimtek.jpg'),
-            'link' => '/informasi'
-        ],
-        [
-            'title' => 'Fasilitasi Sertifikasi Halal Gratis Tahap Ke-III',
-            'date' => '28 September 2025',
-            'excerpt' => 'Dinas Perdagangan dan KUKM Kabupaten Wonogiri terus mempercepat akselerasi digitalisasi...',
-            'image' => asset('img/news/halal.jpg'),
-            'link' => '/informasi'
-        ],
-        [
-            'title' => 'Pameran Produk Unggulan di Alun-Alun Wonogiri',
-            'date' => '15 September 2025',
-            'excerpt' => 'Dinas Perdagangan dan KUKM Kabupaten Wonogiri terus mempercepat akselerasi digitalisasi...',
-            'image' => asset('img/news/pameran.jpg'),
-            'link' => '/informasi'
-        ],
-    ];
-@endphp
-
+@if(isset($latestNews) && $latestNews->count() > 0)
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-16 sm:pb-20 reveal delay-300">
-    <div class="mb-8">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Berita & Kegiatan Terkini</h2>
-        <p class="text-slate-500 text-xs sm:text-sm mt-1">Ikuti berbagai perkembangan program fasilitasi dan peningkatan daya saing lokal.</p>
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+        <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-[#800000] border border-red-100 mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#800000]"></span>
+                Informasi & Agenda Terkini
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Berita & Kegiatan Terkini</h2>
+            <p class="text-slate-500 text-xs sm:text-sm mt-1">Ikuti berbagai perkembangan program fasilitasi dan peningkatan daya saing lokal.</p>
+        </div>
+        <a href="{{ route('informasi') }}" class="inline-flex items-center gap-1 text-sm font-bold text-[#800000] hover:text-red-900 group">
+            Lihat Semua Berita
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         @foreach ($latestNews as $news)
-        <a href="{{ $news['link'] }}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+        @php
+            $newsImg = $news->image_path ? (str_starts_with($news->image_path, 'http') || str_starts_with($news->image_path, 'img/') ? asset($news->image_path) : asset('storage/' . $news->image_path)) : asset('img/news/bimtek.jpg');
+        @endphp
+        <a href="{{ route('informasi.show', $news->id) }}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
             <div>
                 <div class="h-48 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
-                    <img src="{{ $news['image'] }}" alt="{{ $news['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="{{ $newsImg }}" alt="{{ $news->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white/90 backdrop-blur-xs text-[#800000] shadow-2xs">
+                        {{ $news->category ?? 'Berita UMKM' }}
+                    </span>
                 </div>
                 <div class="p-5">
                     <span class="text-xs font-bold text-[#b91c1c] mb-2 block">
-                        {{ $news['date'] }}
+                        {{ $news->created_at ? $news->created_at->translatedFormat('d F Y') : date('d F Y') }}
                     </span>
-                    <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug mb-2 line-clamp-1">
-                        {{ $news['title'] }}
+                    <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug mb-2 line-clamp-2">
+                        {{ $news->title }}
                     </h3>
                     <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                        {{ $news['excerpt'] }}
+                        {{ $news->excerpt ?: Str::limit(strip_tags($news->content), 100) }}
                     </p>
                 </div>
+            </div>
+            <div class="px-5 pb-5 pt-0">
+                <span class="text-xs font-bold text-[#800000] group-hover:underline inline-flex items-center gap-1">
+                    Baca Selengkapnya &rarr;
+                </span>
             </div>
         </a>
         @endforeach
     </div>
 </div>
+@endif
 
 <!-- Hero Slider Script -->
 <script>

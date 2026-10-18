@@ -7,6 +7,61 @@ use Illuminate\Http\Request;
 
 class PublicController extends Controller
 {
+    public function welcome()
+    {
+        // Hanya ambil berita yang aktif (is_published = true / 1)
+        $latestNews = \App\Models\User\NewsInformation::where('is_published', true)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $featuredProducts = \App\Models\User\Product::with('umkmProfile')
+            ->where('status', 'verified')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('user.welcome', compact('latestNews', 'featuredProducts'));
+    }
+
+    public function panduan(Request $request)
+    {
+        return view('user.panduan');
+    }
+
+    public function informasi(Request $request)
+    {
+        $query = \App\Models\User\NewsInformation::where('is_published', true);
+
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(function($b) use ($q) {
+                $b->where('title', 'like', "%{$q}%")
+                  ->orWhere('excerpt', 'like', "%{$q}%")
+                  ->orWhere('content', 'like', "%{$q}%");
+            });
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('category', $request->kategori);
+        }
+
+        $newsList = $query->latest()->paginate(6)->withQueryString();
+        return view('user.informasi', compact('newsList'));
+    }
+
+    public function showNews($id)
+    {
+        $news = \App\Models\User\NewsInformation::where('is_published', true)->findOrFail($id);
+        $otherNews = \App\Models\User\NewsInformation::where('is_published', true)
+            ->where('id', '!=', $id)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('user.news_detail', compact('news', 'otherNews'));
+    }
+
     public function katalog(Request $request)
     {
         $query = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified');
@@ -26,31 +81,44 @@ class PublicController extends Controller
 
     public function direktori(Request $request)
     {
-        $query = \App\Models\User\UmkmProfile::with('user')->where('status', 'verified');
+        $query = \App\Models\User\UmkmProfile::with(['user', 'products' => function($q) {
+            $q->where('status', 'verified');
+        }])->where('status', 'verified');
         
-        if ($request->has('q') && $request->q != '') {
-            $query->where(function($q) use ($request) {
-                $q->where('business_name', 'like', '%' . $request->q . '%')
-                  ->orWhere('owner_name', 'like', '%' . $request->q . '%')
-                  ->orWhere('address', 'like', '%' . $request->q . '%')
-                  ->orWhereHas('products', function($pq) use ($request) {
-                      $pq->where('name', 'like', '%' . $request->q . '%');
+        if ($request->filled('q')) {
+            $search = trim($request->q);
+            $query->where(function($q) use ($search) {
+                $q->where('business_name', 'like', '%' . $search . '%')
+                  ->orWhere('owner_name', 'like', '%' . $search . '%')
+                  ->orWhere('address', 'like', '%' . $search . '%')
+                  ->orWhere('village', 'like', '%' . $search . '%')
+                  ->orWhere('district', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhereHas('products', function($pq) use ($search) {
+                      $pq->where('name', 'like', '%' . $search . '%');
                   });
             });
         }
         
-        if ($request->has('kategori') && $request->kategori != '') {
-            // The directory uses kategori now based on the form
-            $query->whereHas('products', function($pq) use ($request) {
-                $pq->where('category', $request->kategori);
+        if ($request->filled('kategori')) {
+            $kategori = strtolower(trim($request->kategori));
+            $query->whereHas('products', function($pq) use ($kategori) {
+                $pq->where('status', 'verified');
+                if ($kategori === 'makanan') $pq->where('category', 'like', '%makan%');
+                elseif ($kategori === 'kerajinan') $pq->where('category', 'like', '%kerajin%');
+                elseif ($kategori === 'batik') $pq->where('category', 'like', '%batik%');
+                elseif ($kategori === 'pertanian') $pq->where('category', 'like', '%pertan%');
+                elseif ($kategori === 'kreatif') $pq->where('category', 'like', '%kreatif%');
+                else $pq->where('category', 'like', '%' . $kategori . '%');
             });
         }
 
-        if ($request->has('kecamatan') && $request->kecamatan != '') {
-            $query->where('district', $request->kecamatan);
+        if ($request->filled('kecamatan')) {
+            $kecamatan = strtolower(trim($request->kecamatan));
+            $query->where('district', 'like', '%' . $kecamatan . '%');
         }
         
-        $umkms = $query->latest()->paginate(8)->withQueryString();
+        $umkms = $query->latest()->paginate(12)->withQueryString();
         
         return view('user.direktori', compact('umkms'));
     }

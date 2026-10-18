@@ -39,58 +39,73 @@
                 @csrf
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Foto Produk <span class="text-red-500">*</span></label>
-                    <label for="file-upload" class="mt-1 flex flex-col justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#801414] transition-colors bg-gray-50 cursor-pointer relative overflow-hidden">
-                        <input id="file-upload" name="image" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/jpeg,image/png,image/jpg" required>
-                        <div class="space-y-1 text-center pointer-events-none z-10">
-                            <img id="image-preview" src="#" alt="Preview" class="hidden mx-auto object-contain mb-2 rounded" style="max-height: 150px;">
-                            <svg id="upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <div class="flex text-sm text-gray-600 justify-center">
-                                <span class="bg-white rounded-md font-medium text-[#801414] px-1">
-                                    Klik untuk unggah file baru
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-semibold text-gray-800">
+                            Foto Produk (Maksimal 5 Foto) <span class="text-red-500">*</span>
+                        </label>
+                        <span id="photo-counter" class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                            0 / 5 Foto dipilih
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">
+                        Unggah minimal 1 dan maksimal 5 foto produk. Foto pertama akan dijadikan foto sampul utama. Format: JPG, PNG, JPEG, WEBP (maks. 10MB/foto).
+                    </p>
+
+                    <!-- Dropzone Area -->
+                    <div id="dropzone-area" class="border-2 border-gray-300 border-dashed rounded-2xl p-6 text-center hover:border-[#801414] transition-colors bg-gray-50/70 cursor-pointer relative">
+                        <input id="images-input" name="images[]" type="file" multiple accept="image/jpeg,image/png,image/jpg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="flex flex-col items-center pointer-events-none">
+                            <div class="w-12 h-12 rounded-full bg-red-50 text-[#801414] flex items-center justify-center mb-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <span class="text-sm font-bold text-[#801414]">Klik atau seret file ke sini untuk memilih foto</span>
+                            <span class="text-xs text-slate-400 mt-1">Bisa memilih sekaligus hingga 5 foto</span>
+                        </div>
+                    </div>
+
+                    <!-- 5 Slot Preview Grid -->
+                    <div id="preview-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-4">
+                        @for($i = 0; $i < 5; $i++)
+                        <div id="slot-{{ $i }}" class="relative aspect-square rounded-xl border border-slate-200 bg-slate-100 flex flex-col items-center justify-center overflow-hidden transition-all group">
+                            <div class="slot-placeholder text-center p-2 text-slate-400 pointer-events-none">
+                                <svg class="w-6 h-6 mx-auto mb-1 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
+                                <span class="text-[10px] font-medium block">
+                                    {{ $i === 0 ? 'Foto Utama' : 'Foto ' . ($i + 1) }}
                                 </span>
                             </div>
-                            <p id="file-name-create" class="text-xs text-gray-500 mt-2">
-                                PNG, JPG, JPEG maks 10MB
-                            </p>
+                            <img class="slot-image hidden w-full h-full object-cover" alt="Preview {{ $i + 1 }}">
+                            <button type="button" onclick="removeImage({{ $i }})" class="slot-remove hidden absolute top-1.5 right-1.5 w-6 h-6 bg-red-600 text-white rounded-full items-center justify-center text-xs shadow hover:bg-red-700 transition-colors z-20" title="Hapus foto ini">
+                                &times;
+                            </button>
+                            <span class="slot-badge hidden absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold z-20 {{ $i === 0 ? 'bg-amber-500 text-white' : 'bg-slate-900/70 text-white' }}">
+                                {{ $i === 0 ? 'Sampul' : 'Foto ' . ($i + 1) }}
+                            </span>
                         </div>
-                    </label>
+                        @endfor
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Produk <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: Keripik Singkong Balado">
+                    <input type="text" name="name" value="{{ old('name') }}" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: Keripik Singkong Balado">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Produk <span class="text-red-500">*</span></label>
-                        <select name="category" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]">
-                            <option value="">Pilih Kategori...</option>
-                            <option value="Makanan & Minuman">Makanan & Minuman</option>
-                            <option value="Kerajinan">Kerajinan</option>
-                            <option value="Batik/Fashion">Batik/Fashion</option>
-                            <option value="Olahan Hasil Pertanian">Olahan Hasil Pertanian</option>
-                            <option value="Produk Kreatif">Produk Kreatif</option>
-                            <option value="Lainnya">Produk Unggulan Lainnya</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Opsional)</label>
-                        <div class="relative rounded-md shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm">Rp</span>
-                            </div>
-                            <input type="number" name="price" class="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="0">
-                        </div>
-                    </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Produk <span class="text-red-500">*</span></label>
+                    <select name="category" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]">
+                        <option value="">Pilih Kategori...</option>
+                        <option value="Makanan & Minuman" {{ old('category') == 'Makanan & Minuman' ? 'selected' : '' }}>Makanan & Minuman</option>
+                        <option value="Kerajinan" {{ old('category') == 'Kerajinan' ? 'selected' : '' }}>Kerajinan</option>
+                        <option value="Batik/Fashion" {{ old('category') == 'Batik/Fashion' ? 'selected' : '' }}>Batik/Fashion</option>
+                        <option value="Olahan Hasil Pertanian" {{ old('category') == 'Olahan Hasil Pertanian' ? 'selected' : '' }}>Olahan Hasil Pertanian</option>
+                        <option value="Produk Kreatif" {{ old('category') == 'Produk Kreatif' ? 'selected' : '' }}>Produk Kreatif</option>
+                        <option value="Lainnya" {{ old('category') == 'Lainnya' ? 'selected' : '' }}>Produk Unggulan Lainnya</option>
+                    </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Produk <span class="text-red-500">*</span></label>
-                    <textarea name="description" rows="5" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="Jelaskan detail produk Anda, bahan, keunggulan, dll..."></textarea>
+                    <textarea name="description" rows="5" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="Jelaskan detail produk Anda, bahan, keunggulan, dll...">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="pt-4 flex justify-end">
@@ -105,15 +120,65 @@
 </div>
 
 <script>
-    document.getElementById('file-upload').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            document.getElementById('file-name-create').textContent = file.name;
-            const preview = document.getElementById('image-preview');
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = 'block'; // Ensure it becomes visible
-            document.getElementById('upload-icon').style.display = 'none';
+    let uploadedFiles = [];
+    const imagesInput = document.getElementById('images-input');
+    const photoCounter = document.getElementById('photo-counter');
+
+    imagesInput.addEventListener('change', function(event) {
+        const newFiles = Array.from(event.target.files);
+        
+        // Append new files up to limit of 5
+        for (const file of newFiles) {
+            if (uploadedFiles.length < 5) {
+                uploadedFiles.push(file);
+            }
         }
+        
+        updateFileInputAndPreview();
     });
+
+    function updateFileInputAndPreview() {
+        // Sync DataTransfer back to imagesInput so form submits all uploaded files
+        const dataTransfer = new DataTransfer();
+        uploadedFiles.forEach(file => dataTransfer.items.add(file));
+        imagesInput.files = dataTransfer.files;
+
+        photoCounter.textContent = `${uploadedFiles.length} / 5 Foto dipilih`;
+
+        // Update slots
+        for (let i = 0; i < 5; i++) {
+            const slot = document.getElementById(`slot-${i}`);
+            const placeholder = slot.querySelector('.slot-placeholder');
+            const img = slot.querySelector('.slot-image');
+            const removeBtn = slot.querySelector('.slot-remove');
+            const badge = slot.querySelector('.slot-badge');
+
+            if (uploadedFiles[i]) {
+                img.src = URL.createObjectURL(uploadedFiles[i]);
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+                removeBtn.classList.add('flex');
+                badge.classList.remove('hidden');
+                slot.classList.remove('border-dashed');
+                slot.classList.add('border-solid', 'border-[#801414]/30');
+            } else {
+                img.src = '';
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                removeBtn.classList.add('hidden');
+                removeBtn.classList.remove('flex');
+                badge.classList.add('hidden');
+                slot.classList.remove('border-solid', 'border-[#801414]/30');
+            }
+        }
+    }
+
+    function removeImage(index) {
+        if (index >= 0 && index < uploadedFiles.length) {
+            uploadedFiles.splice(index, 1);
+            updateFileInputAndPreview();
+        }
+    }
 </script>
 @endsection
