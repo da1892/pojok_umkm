@@ -142,6 +142,10 @@ class PublicController extends Controller
 
     public function storeKonsultasi(Request $request)
     {
+        if ($request->file('attachment') && ! $request->file('attachment')->isValid()) {
+            \Illuminate\Support\Facades\Log::warning('Upload attachment error: ' . $request->file('attachment')->getError() . ' - ' . $request->file('attachment')->getErrorMessage());
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
@@ -163,24 +167,39 @@ class PublicController extends Controller
             'phone' => 'required|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+            'attachments' => 'nullable|array|max:3',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,webp,pdf,doc,docx|max:5120',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf,doc,docx|max:5120',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'email.required' => 'Alamat email wajib diisi.',
             'phone.required' => 'Nomor telepon atau WhatsApp wajib diisi.',
             'subject.required' => 'Topik konsultasi wajib dipilih.',
             'message.required' => 'Pesan atau detail konsultasi wajib diisi.',
+            'attachments.max' => 'Maksimal 3 file lampiran yang dapat diunggah.',
+            'attachments.*.mimes' => 'Format file lampiran harus berupa JPG, PNG, WEBP, PDF, atau DOC.',
+            'attachments.*.max' => 'Ukuran masing-masing file lampiran tidak boleh lebih dari 5MB.',
+            'attachment.mimes' => 'Format file lampiran harus berupa JPG, PNG, WEBP, PDF, atau DOC.',
+            'attachment.max' => 'Ukuran file lampiran tidak boleh lebih dari 5MB.',
         ]);
 
         // Menggunakan UUID (Universally Unique Identifier) bawaan Laravel
         $ticket_id = (string) \Illuminate\Support\Str::uuid();
 
-        $attachmentPath = null;
-        if ($request->hasFile('attachment')) {
-            $attachmentPath = $request->file('attachment')->store('consultations', 'public');
+        $attachmentPaths = [];
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                if ($file && $file->isValid()) {
+                    $attachmentPaths[] = $file->store('consultations', 'public');
+                }
+            }
+        } elseif ($request->hasFile('attachment')) {
+            $attachmentPaths[] = $request->file('attachment')->store('consultations', 'public');
         }
 
-        \App\Models\Consultation::create([
+        $storedAttachment = !empty($attachmentPaths) ? json_encode($attachmentPaths) : null;
+
+        $consultation = \App\Models\Consultation::create([
             'user_id' => auth()->check() ? auth()->id() : null,
             'ticket_id' => $ticket_id,
             'name' => $request->name,
@@ -188,19 +207,14 @@ class PublicController extends Controller
             'phone' => $request->phone,
             'subject' => $request->subject,
             'message' => $request->message,
-            'attachment' => $attachmentPath,
+            'attachment' => $storedAttachment,
             'status' => 'menunggu',
         ]);
 
-        // Mengirimkan email berisi UUID ke pengguna
+        // Mengirimkan email konfirmasi HTML resmi berisi UUID ke pengguna
         try {
-            \Illuminate\Support\Facades\Mail::raw(
-                "Halo {$request->name},\n\nTerima kasih telah menghubungi layanan konsultasi Pojok UMKM Wonogiri.\n\nBerikut adalah ID Tiket Konsultasi Anda:\n\n{$ticket_id}\n\nHarap simpan ID Tiket (UUID) ini. Anda dapat menggunakannya untuk mengecek status dan balasan dari Admin melalui halaman Cek Konsultasi.\n\nSalam,\nAdmin Pojok UMKM",
-                function ($message) use ($request) {
-                    $message->to($request->email)
-                            ->subject('ID Tiket Konsultasi Pojok UMKM Wonogiri');
-                }
-            );
+            \Illuminate\Support\Facades\Mail::to($consultation->email)
+                ->send(new \App\Mail\ConsultationTicketMail($consultation));
         } catch (\Exception $e) {
             // Jika gagal kirim email, beri tahu pengguna alasannya
             return back()

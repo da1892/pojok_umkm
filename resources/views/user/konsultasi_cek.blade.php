@@ -73,13 +73,38 @@
                         <div class="bg-slate-50 p-5 rounded-2xl text-slate-700 text-sm leading-relaxed border border-slate-100 ml-0 sm:ml-13">
                             {{ $consultation->message }}
                             
-                            @if($consultation->attachment)
+                            @if(!empty($consultation->attachments_list))
                                 <div class="mt-4 pt-4 border-t border-slate-200">
-                                    <p class="text-xs font-semibold text-slate-500 mb-2">Lampiran Berkas:</p>
-                                    <a href="{{ asset('storage/' . $consultation->attachment) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm">
-                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                        <span class="text-sm font-medium text-slate-700">Lihat Lampiran</span>
-                                    </a>
+                                    <p class="text-xs font-semibold text-slate-500 mb-2.5">Lampiran Berkas ({{ count($consultation->attachments_list) }}):</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                        @foreach($consultation->attachments_list as $attachItem)
+                                            @php
+                                                $extension = pathinfo($attachItem, PATHINFO_EXTENSION);
+                                                $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                            @endphp
+                                            @if($isImage)
+                                                <div class="space-y-1.5 bg-white p-2.5 rounded-xl border border-slate-200">
+                                                    <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="block group overflow-hidden rounded-lg">
+                                                        <img src="{{ asset('storage/' . $attachItem) }}" alt="Lampiran" class="w-full h-36 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-all">
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-[#800000] font-semibold hover:underline">
+                                                        <span>Lihat Gambar</span>
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
+                                                    <div class="flex items-center gap-2 overflow-hidden">
+                                                        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                                        <span class="text-xs font-semibold text-slate-700 truncate">{{ strtoupper($extension) }}</span>
+                                                    </div>
+                                                    <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="shrink-0 text-xs text-[#800000] font-bold hover:underline ml-2">
+                                                        Unduh &rarr;
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endif
                         </div>
