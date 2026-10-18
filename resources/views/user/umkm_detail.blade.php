@@ -76,9 +76,9 @@
                                 <div class="p-4">
                                     <div class="text-[10px] font-bold uppercase tracking-wider text-[#991b1b] mb-1">{{ $product->category }}</div>
                                     <h3 class="font-bold text-slate-800 text-sm mb-2 group-hover:text-[#991b1b] transition-colors line-clamp-1">{{ $product->name }}</h3>
-                                    <div class="font-bold text-slate-900">
-                                        Rp {{ number_format($product->price, 0, ',', '.') }}
-                                    </div>
+                                    <span class="inline-flex items-center text-xs font-semibold text-[#991b1b] group-hover:translate-x-1 transition-transform">
+                                        Lihat Detail &rarr;
+                                    </span>
                                 </div>
                             </a>
                             @endforeach
@@ -86,7 +86,7 @@
                     @else
                         <div class="text-center py-12 bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
                             <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                            <p class="text-slate-500 font-medium">UMKM ini belum memiliki produk terverifikasi.</p>
+                            <p class="text-slate-500 font-medium">UMKM ini belum memiliki produk yang disetujui.</p>
                         </div>
                     @endif
                 </div>

@@ -7,16 +7,24 @@ use App\Http\Controllers\User\StoreController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\User\PublicController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PublicController::class, 'welcome'])->name('home');
 
 Route::get('/katalog', [PublicController::class, 'katalog'])->name('katalog');
 Route::get('/katalog/{id}', [PublicController::class, 'showProduct'])->name('katalog.show');
 
 Route::get('/direktori', [PublicController::class, 'direktori'])->name('direktori');
 Route::get('/direktori/{id}', [PublicController::class, 'showUmkm'])->name('direktori.show');
-Route::get('/informasi', function () { return view('informasi'); });
+Route::get('/informasi', [PublicController::class, 'informasi'])->name('informasi');
+Route::get('/informasi/{id}', [PublicController::class, 'showNews'])->name('informasi.show');
+
+// Info & Panduan Publik
+Route::get('/panduan', [PublicController::class, 'panduan'])->name('panduan');
+Route::get('/info-panduan', function() { return redirect()->route('panduan'); });
+
+// Konsultasi Publik
+Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsultasi');
+Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
+Route::get('/konsultasi/cek', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -29,11 +37,6 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {
-    // Konsultasi (Wajib Login)
-    Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsultasi');
-    Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
-    Route::get('/konsultasi/cek', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
-
     // Admin Routes
     Route::middleware('can:admin')->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
@@ -54,6 +57,15 @@ Route::middleware(['auth'])->group(function () {
         // Laporan
         Route::get('/admin/laporan', [AdminController::class, 'reports'])->name('admin.reports');
         
+        // Kelola Berita & Kegiatan
+        Route::get('/admin/berita', [AdminController::class, 'news'])->name('admin.news');
+        Route::get('/admin/berita/tambah', [AdminController::class, 'createNews'])->name('admin.news.create');
+        Route::post('/admin/berita', [AdminController::class, 'storeNews'])->name('admin.news.store');
+        Route::get('/admin/berita/{id}/edit', [AdminController::class, 'editNews'])->name('admin.news.edit');
+        Route::put('/admin/berita/{id}', [AdminController::class, 'updateNews'])->name('admin.news.update');
+        Route::patch('/admin/berita/{id}/toggle', [AdminController::class, 'toggleNews'])->name('admin.news.toggle');
+        Route::delete('/admin/berita/{id}', [AdminController::class, 'destroyNews'])->name('admin.news.destroy');
+
         // Pengaturan
         Route::get('/admin/pengaturan', [AdminController::class, 'settings'])->name('admin.settings');
         // Data UMKM / Toko
@@ -72,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Store Routes (UMKM)
     Route::get('/toko', [StoreController::class, 'index'])->name('toko.index');
+    Route::get('/toko/profil', [StoreController::class, 'profile'])->name('toko.profile');
+    Route::put('/toko/profil', [StoreController::class, 'updateProfile'])->name('toko.profile.update');
     Route::get('/toko/buka', [StoreController::class, 'create'])->name('toko.create');
     Route::post('/toko/buka', [StoreController::class, 'store'])->name('toko.store');
     

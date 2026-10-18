@@ -14,8 +14,12 @@
                     <div class="inline-block bg-white text-[#800000] text-xs font-bold px-3 py-1 rounded-full mb-4 reveal delay-100 uppercase tracking-wider">Layanan Ekstra</div>
                     <h1 class="text-4xl md:text-5xl font-extrabold mb-4 reveal delay-200 leading-tight">Konsultasi Bisnis<br>UMKM Gratis</h1>
                     <p class="text-red-100 text-lg reveal delay-300 mb-8">Punya kendala bisnis? Diskusikan langsung dengan pakar kami di bidang Pemasaran, Keuangan, Izin Usaha, dan lain-lain untuk memajukan UMKM Anda.</p>
-                    <div class="flex gap-4 reveal delay-400">
+                    <div class="flex flex-wrap gap-4 reveal delay-400">
                         <a href="{{ route('konsultasi.cek') }}" class="bg-white text-[#800000] font-bold px-8 py-3 rounded-full hover:bg-red-50 transition-colors shadow-lg">Cek Konsultasi</a>
+                        <a href="{{ route('panduan') }}" class="border-2 border-white/80 text-white hover:bg-white/10 font-bold px-6 py-3 rounded-full transition-colors flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                            Baca Info & Panduan
+                        </a>
                     </div>
                 </div>
                 <div class="md:w-2/5 hidden md:flex justify-center reveal delay-400">
@@ -145,6 +149,20 @@
                             <p class="text-xs text-slate-500 leading-relaxed">Proses bervariasi bergantung pada skema reguler maupun self-declare, biasanya selesai 14-30 hari.</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Kotak Info & Panduan Edukasi -->
+                <div class="bg-gradient-to-br from-red-50 to-amber-50 rounded-[24px] p-6 border border-red-100 shadow-2xs">
+                    <div class="flex items-center gap-2.5 mb-2 text-[#800000] font-bold text-sm">
+                        <svg class="w-5 h-5 text-[#800000]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                        Info & Panduan Lengkap
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Pelajari syarat, alur, dan cara daftar mandiri Sertifikasi Halal gratis, izin edar PIRT Dinkes, dan legalitas NIB sebelum mengajukan konsultasi.
+                    </p>
+                    <a href="{{ route('panduan') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#800000] hover:text-red-900 group">
+                        Buka Halaman Info & Panduan &rarr;
+                    </a>
                 </div>
                 
             </div>

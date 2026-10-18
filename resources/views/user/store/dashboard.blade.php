@@ -22,11 +22,15 @@
                         <h2 class="text-3xl font-bold text-[#801414]">{{ $umkm->business_name }}</h2>
                         @if($umkm->status == 'verified')
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                Verified
+                                Disetujui
                             </span>
                         @elseif($umkm->status == 'pending')
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                Menunggu Verifikasi
+                                Menunggu Persetujuan
+                            </span>
+                        @elseif($umkm->status == 'rejected')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Ditolak
                             </span>
                         @endif
                     </div>
@@ -35,7 +39,11 @@
                         {{ $umkm->owner_name }} &bull; {{ $umkm->phone }}
                     </p>
                 </div>
-                <div class="mt-4 md:mt-0 flex items-center gap-3">
+                <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-3">
+                    <a href="{{ route('toko.profile') }}" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#801414] font-semibold py-2.5 px-5 rounded-full transition-all shadow-sm text-sm group">
+                        <svg class="w-4 h-4 mr-2 text-slate-400 group-hover:text-[#801414] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Profil UMKM
+                    </a>
                     <a href="{{ route('toko.consultations') }}" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold py-2.5 px-5 rounded-full transition-colors shadow-sm text-sm">
                         Riwayat Konsultasi
                     </a>
@@ -44,6 +52,23 @@
                         Produk Baru
                     </a>
                 </div>
+            </div>
+
+            <!-- Sub Navigasi Menu UMKM -->
+            <div class="px-6 sm:px-8 bg-white border-t border-slate-100 flex items-center gap-8">
+                <a href="{{ route('toko.index') }}" class="py-4 text-sm font-bold border-b-2 border-[#801414] text-[#801414] transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    Katalog Produk
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-[#801414] font-bold">{{ $products->count() }}</span>
+                </a>
+                <a href="{{ route('toko.profile') }}" class="py-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Profil UMKM
+                </a>
+                <a href="{{ route('toko.consultations') }}" class="py-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    Riwayat Konsultasi
+                </a>
             </div>
         </div>
 
@@ -66,11 +91,11 @@
                         
                         <div class="absolute top-3 right-3">
                             @if($product->status == 'verified')
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full border border-green-200 shadow-sm">Verified</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full border border-emerald-200 shadow-sm">Disetujui</span>
                             @elseif($product->status == 'pending')
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-1 rounded-full border border-yellow-200 shadow-sm">Pending</span>
+                                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full border border-amber-200 shadow-sm">Menunggu Persetujuan</span>
                             @else
-                                <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full border border-red-200 shadow-sm">Rejected</span>
+                                <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full border border-red-200 shadow-sm">Ditolak</span>
                             @endif
                         </div>
                     </div>
@@ -78,12 +103,6 @@
                         <div class="text-xs font-semibold text-[#eab308] uppercase tracking-wider mb-2">{{ $product->category }}</div>
                         <h4 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">{{ $product->name }}</h4>
                         <p class="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">{{ $product->description }}</p>
-                        
-                        @if($product->price)
-                            <div class="font-bold text-[#801414] text-lg mb-4">
-                                Rp {{ number_format($product->price, 0, ',', '.') }}
-                            </div>
-                        @endif
                         
                         <div class="mt-auto border-t border-slate-100 pt-4 flex items-center justify-between">
                             <a href="{{ route('toko.product.edit', $product->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold flex items-center gap-1">

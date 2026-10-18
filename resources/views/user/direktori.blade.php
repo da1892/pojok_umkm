@@ -1,199 +1,374 @@
-@extends('layouts.app')
+@extends('user.layouts.app')
 
 @section('content')
 
-<!-- Hero Header Section with Dark Red Background & Wonogiri Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-28 pb-16 sm:pt-36 sm:pb-20"
-     style="background: linear-gradient(rgba(120, 15, 15, 0.82), rgba(90, 10, 10, 0.90)), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
-    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3.5 tracking-tight [text-shadow:_0_2px_10px_rgba(0,0,0,0.6)]">
-            Direktori UMKM Wonogiri
+<!-- Compact Hero Header Section -->
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-8 sm:pt-28 sm:pb-10"
+     style="background: linear-gradient(rgba(120, 15, 15, 0.9), rgba(70, 10, 10, 0.95)), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 backdrop-blur-md border border-white/20 text-red-100 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Direktori Resmi UMKM Wonogiri
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1.5 tracking-tight [text-shadow:_0_2px_8px_rgba(0,0,0,0.5)]">
+            Katalog Direktori Pelaku Usaha
         </h1>
-        <p class="text-sm sm:text-base md:text-lg text-white/95 max-w-2xl mx-auto font-medium leading-relaxed [text-shadow:_0_1px_6px_rgba(0,0,0,0.6)]">
-            Telusuri ratusan basis data pelaku usaha mikro, kecil, dan menengah terdaftar resmi di Kabupaten Wonogiri.
+        <p class="text-xs sm:text-sm text-white/90 max-w-xl mx-auto leading-relaxed [text-shadow:_0_1px_4px_rgba(0,0,0,0.5)] mb-3">
+            Temukan produk unggulan dan profil pelaku UMKM terdaftar di 25 kecamatan Kabupaten Wonogiri.
         </p>
+
+        <!-- Compact Metrics Pills -->
+        <div class="inline-flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/15 text-[11px] text-white/95">
+            <span><strong class="text-amber-300">{{ \App\Models\User\UmkmProfile::where('status', 'verified')->count() }}</strong> UMKM</span>
+            <span class="text-white/40">&bull;</span>
+            <span><strong class="text-amber-300">{{ \App\Models\User\Product::where('status', 'verified')->count() }}</strong> Produk</span>
+            <span class="text-white/40">&bull;</span>
+            <span><strong>25</strong> Kecamatan</span>
+        </div>
     </div>
 </div>
 
-<!-- Main Directory Content on #FAF9F6 Background -->
-<div style="background-color: #FAF9F6;" class="min-h-screen py-10 sm:py-14">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Main Directory Content on Clean #FAF9F6 Background -->
+<div style="background-color: #FAF9F6;" class="min-h-screen py-5 sm:py-7">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <!-- Search & Filter Bar Card matching Figma -->
-        <div class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs border border-slate-200/80 mb-8 sm:mb-10 reveal delay-100">
-            <form action="/direktori" method="GET" class="flex flex-col md:flex-row items-center gap-3 sm:gap-3.5">
-                
-                <!-- Search Input -->
-                <div class="relative flex-1 w-full">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-                        </svg>
+        <!-- Compact Search & Filter Card -->
+        <div class="bg-white rounded-xl p-2.5 sm:p-3 shadow-2xs border border-slate-200/80 mb-5">
+            <form action="/direktori" method="GET">
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                    <!-- Search Input (8 cols) -->
+                    <div class="relative sm:col-span-8 w-full">
+                        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+                            </svg>
+                        </div>
+                        <input type="text" 
+                               name="q" 
+                               value="{{ request('q') }}" 
+                               placeholder="Cari nama toko, pemilik, produk, atau alamat..." 
+                               class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000] text-slate-800 placeholder-slate-400">
                     </div>
-                    <input type="text" 
-                           name="q" 
-                           value="{{ request('q') }}" 
-                           placeholder="Cari berdasarkan nama UMKM, produk, atau alamat..." 
-                           class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#991b1b] focus:ring-1 focus:ring-[#991b1b] text-slate-800 placeholder-slate-400">
-                </div>
 
-                <!-- Dropdown Kategori Usaha -->
-                <div class="w-full md:w-56 shrink-0 relative">
-                    <select name="kategori" class="w-full appearance-none pl-3.5 pr-8 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#991b1b] text-slate-700 font-medium cursor-pointer">
-                        <option value="">Kategori Usaha</option>
-                        <option value="makanan" {{ request('kategori') == 'makanan' ? 'selected' : '' }}>Makanan & Minuman</option>
-                        <option value="batik" {{ request('kategori') == 'batik' ? 'selected' : '' }}>Batik/Fashion</option>
-                        <option value="kerajinan" {{ request('kategori') == 'kerajinan' ? 'selected' : '' }}>Kerajinan</option>
-                        <option value="pertanian" {{ request('kategori') == 'pertanian' ? 'selected' : '' }}>Olahan Hasil Pertanian</option>
-                        <option value="kreatif" {{ request('kategori') == 'kreatif' ? 'selected' : '' }}>Produk Kreatif</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                    <!-- Dropdown Kecamatan & Tombol Cari (4 cols) -->
+                    <div class="sm:col-span-4 flex items-center gap-1.5">
+                        @php
+                            $kecamatanList = [
+                                'Baturetno', 'Batuwarno', 'Bulukerto', 'Eromoko', 'Girimarto', 
+                                'Giritontro', 'Giriwoyo', 'Jatipurno', 'Jatiroto', 'Jatisrono', 
+                                'Karangtengah', 'Kismantoro', 'Manyaran', 'Ngadirojo', 'Nguntoronadi', 
+                                'Paranggupito', 'Pracimantoro', 'Puhpelem', 'Purwantoro', 'Selogiri', 
+                                'Sidoharjo', 'Slogohimo', 'Tirtomoyo', 'Wonogiri', 'Wuryantoro'
+                            ];
+                        @endphp
+                        <div class="relative flex-1">
+                            <select name="kecamatan" class="w-full appearance-none pl-2.5 pr-7 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#800000] text-slate-700 font-medium cursor-pointer">
+                                <option value="">Semua Kecamatan</option>
+                                @foreach($kecamatanList as $kec)
+                                    <option value="{{ strtolower($kec) }}" {{ request('kecamatan') == strtolower($kec) ? 'selected' : '' }}>
+                                        Kec. {{ $kec }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="px-3.5 py-1.5 bg-[#800000] hover:bg-red-900 text-white text-xs font-bold rounded-lg transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <span>Filter</span>
+                        </button>
+
+                        @if(request()->filled('q') || request()->filled('kecamatan'))
+                            <a href="/direktori" class="px-2 py-1.5 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-700 rounded-lg transition-all text-xs font-bold border border-slate-200 shrink-0 flex items-center gap-1" title="Reset Filter">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                <span>Reset</span>
+                            </a>
+                        @endif
                     </div>
                 </div>
-
-                <!-- Tombol Cari Direktori -->
-                <button type="submit" class="w-full md:w-auto px-6 py-2 bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold rounded-lg transition-colors shadow-2xs shrink-0">
-                    Cari Direktori
-                </button>
             </form>
         </div>
 
-        <!-- Directory Data Setup: 4 UMKM on Page 1 from Figma -->
-        @php
-            $searchQuery = trim(request('q', ''));
-            $categoryFilter = strtolower(trim(request('kategori', '')));
+        <!-- Results Toolbar Header with View Switcher -->
+        <div id="direktori-anchor" class="scroll-mt-24 mb-3.5 flex items-center justify-between gap-3">
+            <div>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Daftar Mitra UMKM</h2>
+                <p class="text-xs text-slate-500">
+                    Menampilkan <span class="font-bold text-slate-800">{{ $umkms->total() }}</span> UMKM aktif di Wonogiri
+                    @if(request('kecamatan')) &bull; Kec. {{ ucfirst(request('kecamatan')) }} @endif
+                </p>
+            </div>
 
-            $query = \App\Models\User\UmkmProfile::where('status', 'verified');
+            <!-- View Toggle Buttons (Grid vs List) -->
+            <div class="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-slate-200/80 shadow-2xs">
+                <button type="button" 
+                        id="view-grid-btn" 
+                        onclick="switchDirectoryView('grid')" 
+                        class="px-2 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 bg-[#800000] text-white shadow-xs cursor-pointer" 
+                        title="Tampilan Grid">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <span>Grid</span>
+                </button>
+                <button type="button" 
+                        id="view-list-btn" 
+                        onclick="switchDirectoryView('list')" 
+                        class="px-2 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1 cursor-pointer" 
+                        title="Tampilan List">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <span>List</span>
+                </button>
+            </div>
+        </div>
 
-            if ($searchQuery !== '') {
-                $query->where(function($q) use ($searchQuery) {
-                    $q->where('business_name', 'like', "%{$searchQuery}%")
-                      ->orWhere('owner_name', 'like', "%{$searchQuery}%")
-                      ->orWhere('address', 'like', "%{$searchQuery}%")
-                      ->orWhere('description', 'like', "%{$searchQuery}%");
-                });
-            }
+        @if ($umkms->count() > 0)
 
-            if ($categoryFilter !== '') {
-                // Since UmkmProfile doesn't have an explicit category, we filter by its products' categories
-                // or we can just ignore category filter if it's too complex. 
-                // Let's filter by its verified products' category to be smart:
-                $query->whereHas('products', function($q) use ($categoryFilter) {
-                    $q->where('status', 'verified');
-                    if ($categoryFilter === 'makanan') $q->where('category', 'like', '%makan%');
-                    elseif ($categoryFilter === 'kerajinan') $q->where('category', 'like', '%kerajin%');
-                    elseif ($categoryFilter === 'batik') $q->where('category', 'like', '%batik%');
-                    elseif ($categoryFilter === 'pertanian') $q->where('category', 'like', '%pertan%');
-                    elseif ($categoryFilter === 'kreatif') $q->where('category', 'like', '%kreatif%');
-                });
-            }
-
-            $umkms = $query->latest()->paginate(4)->withQueryString();
-        @endphp
-
-        <!-- Target Anchor for Smooth Scrolling -->
-        <div id="direktori-anchor" class="scroll-mt-24"></div>
-
-        <!-- UMKM List Cards Container -->
-        <div id="direktori-list-container" class="reveal delay-200">
-            @if ($umkms->count() > 0)
-            <div class="flex flex-col gap-4 sm:gap-4.5">
+            <!-- 1. TAMPILAN GRID: 4 KOLOM KOMPAK, RAPI & ELEGAN -->
+            <div id="directory-grid-view" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-4">
                 @foreach ($umkms as $item)
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
-                    
-                    <!-- Left: Thumbnail & Details -->
-                    <div class="flex items-center gap-3.5 sm:gap-4 flex-1 min-w-0">
-                        <!-- Thumbnail Image -->
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 border border-slate-100 bg-slate-100 shadow-2xs flex items-center justify-center text-slate-400">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    @php
+                        $products = $item->products ?? collect();
+                        $firstProduct = $products->whereNotNull('image_path')->first() ?? $products->first();
+                        $productCount = $products->count();
+                        $categoryName = $firstProduct ? $firstProduct->category : 'UMKM Wonogiri';
+                    @endphp
+                    <div class="bg-white rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col group">
+                        
+                        <!-- Header Image Container (Compact 135px height) -->
+                        <div class="relative w-full overflow-hidden bg-slate-100" style="height: 135px;">
+                            @if($firstProduct && $firstProduct->image_path)
+                                <img src="{{ asset('storage/' . $firstProduct->image_path) }}" 
+                                     alt="{{ $item->business_name }}" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20"></div>
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-[#800000] via-[#991b1b] to-amber-700 flex flex-col items-center justify-center text-white relative">
+                                    <div class="w-10 h-10 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center font-black text-lg text-white shadow-inner mb-0.5">
+                                        {{ strtoupper(substr($item->business_name, 0, 2)) }}
+                                    </div>
+                                    <span class="text-[9px] text-white/80 font-medium">UMKM Wonogiri</span>
+                                </div>
+                            @endif
+
+                            <!-- Floating Badges Top Left & Right -->
+                            <div class="absolute top-2 left-2">
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-white/95 backdrop-blur-md text-emerald-800 shadow-2xs border border-emerald-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Disetujui
+                                </span>
+                            </div>
+
+                            <div class="absolute top-2 right-2">
+                                <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-black/60 backdrop-blur-md text-white border border-white/20">
+                                    {{ $productCount }} Produk
+                                </span>
+                            </div>
+
+                            <!-- Bottom Left Category Pill overlay -->
+                            <div class="absolute bottom-2 left-2">
+                                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-400 text-slate-900 shadow-2xs line-clamp-1 max-w-[200px]">
+                                    {{ $categoryName }}
+                                </span>
+                            </div>
                         </div>
 
-                        <!-- Information -->
-                        <div class="min-w-0 flex-1">
-                            <div class="flex flex-wrap items-center gap-2 mb-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">
-                                    {{ $item->business_name }}
+                        <!-- Card Body Content (Compact) -->
+                        <div class="p-3 flex-1 flex flex-col justify-between">
+                            <div class="space-y-1.5">
+                                <!-- Business Name -->
+                                <h3 class="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug line-clamp-1" title="{{ $item->business_name }}">
+                                    <a href="{{ route('direktori.show', $item->id) }}">
+                                        {{ $item->business_name }}
+                                    </a>
                                 </h3>
-                                @php
-                                    $topCategory = $item->products()->where('status', 'verified')->first();
-                                @endphp
-                                @if($topCategory)
-                                <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-[#eff6ff] text-[#1d4ed8] border border-blue-100">
-                                    {{ $topCategory->category }}
-                                </span>
+
+                                <!-- Owner and Location in One Compact Line -->
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 pb-1.5 border-b border-slate-100">
+                                    <div class="flex items-center gap-1 font-medium text-slate-700 truncate max-w-[55%]">
+                                        <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        <span class="truncate">{{ $item->owner_name }}</span>
+                                    </div>
+                                    <span class="font-bold text-[#800000] truncate text-right text-[10.5px]">
+                                        Kec. {{ $item->district ?? 'Wonogiri' }}
+                                    </span>
+                                </div>
+
+                                <!-- Address Subtext -->
+                                <div class="flex items-start gap-1 text-[10.5px] text-slate-500">
+                                    <svg class="w-3 h-3 text-slate-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                    <p class="truncate">{{ $item->address }}</p>
+                                </div>
+
+                                <!-- Description (2 lines clamp) -->
+                                <p class="text-[10.5px] text-slate-500 leading-relaxed line-clamp-2">
+                                    {{ $item->description ?? 'Pelaku usaha UMKM terdaftar resmi di Kabupaten Wonogiri dengan berbagai produk berkualitas.' }}
+                                </p>
+
+                                <!-- Mini Product Preview Thumbnails Strip -->
+                                @if($products->count() > 0)
+                                    <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between">
+                                        <span class="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wider">Produk:</span>
+                                        <div class="flex items-center gap-1">
+                                            @foreach($products->take(3) as $prod)
+                                                <div class="w-6 h-6 rounded-md overflow-hidden border border-slate-200 bg-slate-100 shrink-0" title="{{ $prod->name }}">
+                                                    @if($prod->image_path)
+                                                        <img src="{{ asset('storage/' . $prod->image_path) }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        <div class="w-full h-full bg-slate-200 flex items-center justify-center text-[8px] text-slate-600 font-bold">{{ substr($prod->name, 0, 1) }}</div>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                            @if($products->count() > 3)
+                                                <span class="text-[8.5px] font-bold text-slate-500 bg-slate-100 px-1 py-0.5 rounded border border-slate-200">+{{ $products->count() - 3 }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
-                            
-                            <p class="text-xs text-slate-500 line-clamp-1">
-                                Pemilik: <span class="text-slate-700 font-medium">{{ $item->owner_name }}</span> <span class="text-slate-300 mx-1">|</span> NIB: <span class="text-slate-700 font-medium">{{ $item->nib ?? '-' }}</span>
-                            </p>
-                            
-                            <div class="flex items-center gap-1.5 text-xs text-slate-500 mt-1.5">
-                                <svg class="w-3.5 h-3.5 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="truncate">{{ $item->address }}</span>
+
+                            <!-- Card Action Buttons (Compact) -->
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->phone) }}?text=Halo%20{{ urlencode($item->business_name) }},%20saya%20menemukan%20profil%20UMKM%20Anda%20di%20Pojok%20UMKM%20Wonogiri." 
+                                   target="_blank" 
+                                   class="inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-bold transition-all shadow-2xs"
+                                   title="Hubungi via WhatsApp">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2z"/></svg>
+                                    <span>WA</span>
+                                </a>
+
+                                <a href="{{ route('direktori.show', $item->id) }}" 
+                                   class="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 bg-[#800000] hover:bg-red-900 text-white text-[11px] font-bold rounded-lg transition-all shadow-2xs hover:shadow-xs">
+                                    <span>Detail Profil</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </a>
                             </div>
                         </div>
+
                     </div>
-
-                    <!-- Right: Action Buttons -->
-                    <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->phone) }}?text=Halo%20{{ urlencode($item->business_name) }},%20saya%20menemukan%20profil%20UMKM%20Anda%20di%20Pojok%20UMKM%20Wonogiri." 
-                           target="_blank" 
-                           class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 bg-white border border-[#991b1b] text-[#991b1b] hover:bg-red-50 text-xs sm:text-sm font-semibold rounded-lg transition-colors shadow-2xs">
-                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
-                            </svg>
-                            <span>Hubungi UMKM</span>
-                        </a>
-
-                        <a href="/direktori" 
-                           class="flex-1 sm:flex-initial inline-flex items-center justify-center px-4 sm:px-5 py-2 bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold rounded-lg transition-colors shadow-2xs">
-                            Detail Profil
-                        </a>
-                    </div>
-
-                </div>
                 @endforeach
             </div>
-            @else
-            <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
-                <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                </svg>
-                <p class="text-slate-600 font-semibold text-base mb-1">Belum ada UMKM yang terdaftar</p>
-                <p class="text-slate-400 text-xs sm:text-sm mb-4">Silahkan gunakan pencarian lain atau kembali lagi nanti.</p>
-                <a href="/direktori" class="inline-flex items-center px-4 py-2 rounded-lg bg-[#991b1b] text-white text-xs font-bold hover:bg-[#801414] transition-colors">
+
+            <!-- 2. TAMPILAN LIST (HORIZONTAL KOMPAK & RAPI) -->
+            <div id="directory-list-view" class="hidden flex-col gap-2.5">
+                @foreach ($umkms as $item)
+                    @php
+                        $products = $item->products ?? collect();
+                        $firstProduct = $products->whereNotNull('image_path')->first() ?? $products->first();
+                        $productCount = $products->count();
+                        $categoryName = $firstProduct ? $firstProduct->category : 'UMKM Wonogiri';
+                    @endphp
+                    <div class="bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs hover:shadow-sm transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group">
+                        
+                        <!-- Left: Thumbnail & Details -->
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <!-- Monogram / Image Thumbnail (70px x 70px) -->
+                            <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-lg overflow-hidden shrink-0 border border-slate-200/80 bg-slate-100 shadow-2xs relative" style="width: 70px; height: 70px;">
+                                @if($firstProduct && $firstProduct->image_path)
+                                    <img src="{{ asset('storage/' . $firstProduct->image_path) }}" 
+                                         alt="{{ $item->business_name }}" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-[#800000] to-red-800 flex items-center justify-center font-bold text-white text-sm">
+                                        {{ strtoupper(substr($item->business_name, 0, 2)) }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Text Details -->
+                            <div class="min-w-0 flex-1 space-y-0.5">
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <h3 class="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug">
+                                        <a href="{{ route('direktori.show', $item->id) }}">
+                                            {{ $item->business_name }}
+                                        </a>
+                                    </h3>
+                                    <span class="inline-block px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                        {{ $categoryName }}
+                                    </span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                                        Disetujui
+                                    </span>
+                                </div>
+                                
+                                <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-slate-500">
+                                    <span class="font-medium text-slate-700 flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        {{ $item->owner_name }}
+                                    </span>
+                                    <span>&bull;</span>
+                                    <span class="font-bold text-[#800000]">Kec. {{ $item->district ?? 'Wonogiri' }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ $productCount }} Produk</span>
+                                </div>
+                                
+                                <p class="text-[11px] text-slate-500 line-clamp-1">
+                                    {{ $item->address }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right: Action Buttons -->
+                        <div class="flex items-center gap-1.5 shrink-0 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->phone) }}?text=Halo%20{{ urlencode($item->business_name) }},%20saya%20menemukan%20profil%20UMKM%20Anda%20di%20Pojok%20UMKM%20Wonogiri." 
+                               target="_blank" 
+                               class="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-xs font-bold rounded-lg transition-all shadow-2xs">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2z"/></svg>
+                                <span>WA</span>
+                            </a>
+
+                            <a href="{{ route('direktori.show', $item->id) }}" 
+                               class="inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-[#800000] hover:bg-red-900 text-white text-xs font-bold rounded-lg transition-all shadow-2xs hover:shadow-xs">
+                                <span>Detail Profil</span>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+
+        @else
+            <!-- Empty State -->
+            <div class="py-12 text-center bg-white rounded-xl border border-slate-200/80 shadow-xs p-6 max-w-md mx-auto">
+                <div class="w-12 h-12 rounded-xl bg-red-50 text-[#800000] flex items-center justify-center mx-auto mb-3 border border-red-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-slate-800 font-bold text-base mb-1">Tidak ada UMKM yang cocok</h3>
+                <p class="text-slate-500 text-xs mb-4 leading-relaxed">
+                    Tidak ditemukan data UMKM dengan filter ini. Silakan reset filter.
+                </p>
+                <a href="/direktori" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#800000] hover:bg-red-900 text-white text-xs font-bold transition-all shadow-xs">
                     Reset Filter
                 </a>
             </div>
-            @endif
-        </div>
+        @endif
 
-        <!-- Pagination -->
+        <!-- Pagination (Compact) -->
         @if ($umkms->hasPages())
-        <div class="flex items-center justify-center gap-2 mt-12 mb-8 reveal delay-300 select-none">
+        <div class="flex items-center justify-center gap-1.5 mt-7 mb-5 select-none">
             {{-- Tombol Previous (<) --}}
             @if ($umkms->onFirstPage())
-                <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                <span class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center shadow-2xs pointer-events-none opacity-40">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                 </span>
             @else
-                <a href="{{ $umkms->previousPageUrl() }}#direktori-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                <a href="{{ $umkms->previousPageUrl() }}#direktori-anchor" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                 </a>
             @endif
 
             {{-- Nomor Halaman --}}
             @foreach ($umkms->links()->elements[0] as $page => $url)
                 @if ($page == $umkms->currentPage())
-                    <span class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-bold bg-[#991b1b] text-white shadow-xs cursor-default">
+                    <span class="w-8 h-8 rounded-lg flex items-center justify-center transition-all text-xs font-bold bg-[#800000] text-white shadow-xs cursor-default">
                         {{ $page }}
                     </span>
                 @else
-                    <a href="{{ $url }}#direktori-anchor" class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
+                    <a href="{{ $url }}#direktori-anchor" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
                         {{ $page }}
                     </a>
                 @endif
@@ -201,12 +376,12 @@
 
             {{-- Tombol Next (>) --}}
             @if ($umkms->hasMorePages())
-                <a href="{{ $umkms->nextPageUrl() }}#direktori-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                <a href="{{ $umkms->nextPageUrl() }}#direktori-anchor" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
                 </a>
             @else
-                <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                <span class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center shadow-2xs pointer-events-none opacity-40">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
                 </span>
             @endif
         </div>
@@ -215,6 +390,40 @@
     </div>
 </div>
 
-<!-- Deleted Script -->
+<script>
+    function switchDirectoryView(mode) {
+        const gridView = document.getElementById('directory-grid-view');
+        const listView = document.getElementById('directory-list-view');
+        const gridBtn = document.getElementById('view-grid-btn');
+        const listBtn = document.getElementById('view-list-btn');
+
+        if (!gridView || !listView) return;
+
+        if (mode === 'list') {
+            gridView.classList.add('hidden');
+            listView.classList.remove('hidden');
+            listView.classList.add('flex');
+
+            listBtn.className = 'px-2 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 bg-[#800000] text-white shadow-xs cursor-pointer';
+            gridBtn.className = 'px-2 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1 cursor-pointer';
+            localStorage.setItem('umkm_directory_view', 'list');
+        } else {
+            listView.classList.add('hidden');
+            listView.classList.remove('flex');
+            gridView.classList.remove('hidden');
+
+            gridBtn.className = 'px-2 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 bg-[#800000] text-white shadow-xs cursor-pointer';
+            listBtn.className = 'px-2 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1 cursor-pointer';
+            localStorage.setItem('umkm_directory_view', 'grid');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedView = localStorage.getItem('umkm_directory_view');
+        if (savedView === 'list') {
+            switchDirectoryView('list');
+        }
+    });
+</script>
 
 @endsection

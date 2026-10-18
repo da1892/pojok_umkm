@@ -72,7 +72,7 @@
                 </div>
 
                 <!-- Navigation Links (Center/Right Desktop) -->
-                <div class="hidden lg:flex items-center space-x-7">
+                <div class="hidden lg:flex items-center space-x-5 xl:space-x-7">
                     <a href="/" class="relative py-2 text-sm font-semibold {{ request()->is('/') ? 'text-[#991b1b] after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
                         Beranda
                     </a>
@@ -82,13 +82,16 @@
                     <a href="/direktori" class="relative py-2 text-sm font-medium {{ request()->is('direktori*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
                         Direktori UMKM
                     </a>
+                    <a href="/panduan" class="relative py-2 text-sm font-medium {{ request()->is('panduan*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
+                        Info & Panduan
+                    </a>
                     <a href="/konsultasi" class="relative py-2 text-sm font-medium {{ request()->is('konsultasi*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
                         Konsultasi
                     </a>
                     <a href="/informasi" class="relative py-2 text-sm font-medium {{ request()->is('informasi*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
                         Informasi
                     </a>
-                    <a href="#kontak" class="text-sm font-medium text-slate-600 hover:text-[#991b1b] transition-colors">
+                    <a href="#kontak" onclick="event.preventDefault(); document.getElementById('kontak')?.scrollIntoView({behavior: 'smooth'}); history.pushState(null, null, '#kontak');" class="text-sm font-medium text-slate-600 hover:text-[#991b1b] transition-colors cursor-pointer">
                         Kontak
                     </a>
                 </div>
@@ -99,7 +102,7 @@
                         @if(auth()->user()->role === 'admin')
                             <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Dashboard Admin</a>
                         @else
-                            <a href="{{ route('toko.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Toko Saya</a>
+                            <a href="{{ route('toko.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">UMKM</a>
                         @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -132,15 +135,16 @@
                 <a href="/" class="block px-3 py-2 rounded-lg text-sm font-semibold {{ request()->is('/') ? 'bg-red-50 text-[#991b1b]' : 'text-slate-700 hover:bg-slate-50' }}">Beranda</a>
                 <a href="/katalog" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Produk Unggulan</a>
                 <a href="/direktori" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Direktori UMKM</a>
+                <a href="/panduan" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->is('panduan*') ? 'bg-red-50 text-[#991b1b]' : 'text-slate-700 hover:bg-slate-50' }}">Info & Panduan</a>
                 <a href="/konsultasi" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Konsultasi</a>
                 <a href="/informasi" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Informasi</a>
-                <a href="#kontak" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Kontak</a>
+                <a href="#kontak" onclick="document.getElementById('mobile-menu')?.classList.add('hidden'); document.getElementById('kontak')?.scrollIntoView({behavior: 'smooth'}); history.pushState(null, null, '#kontak');" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer">Kontak</a>
                 @auth
                 <div class="pt-2 border-t border-slate-100 flex flex-col gap-1">
                     @if(auth()->user()->role === 'admin')
                         <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Dashboard Admin</a>
                     @else
-                        <a href="{{ route('toko.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Toko Saya</a>
+                        <a href="{{ route('toko.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">UMKM</a>
                     @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -158,7 +162,7 @@
     </main>
 
     <!-- Footer matching Figma -->
-    <footer class="bg-[#801414] text-white pt-14 pb-8 border-t border-red-900/30">
+    <footer id="kontak" class="bg-[#801414] text-white pt-14 pb-8 border-t border-red-900/30 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 mb-10">
                 
@@ -289,6 +293,13 @@
             reveals.forEach(reveal => {
                 revealObserver.observe(reveal);
             });
+
+            // Auto-scroll to #kontak if hash is present in URL
+            if (window.location.hash === '#kontak') {
+                setTimeout(() => {
+                    document.getElementById('kontak')?.scrollIntoView({ behavior: 'smooth' });
+                }, 200);
+            }
         });
     </script>
 </body>
