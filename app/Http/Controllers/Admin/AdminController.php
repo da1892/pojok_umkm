@@ -17,13 +17,124 @@ class AdminController extends Controller
         $totalUmkm = UmkmProfile::where('status', 'verified')->count();
         $totalProducts = Product::where('status', 'verified')->count();
         
-        return view('admin.dashboard', compact('pendingUmkms', 'pendingProducts', 'totalUmkm', 'totalProducts'));
+        // Data Distribusi per Wilayah (Kecamatan)
+        $districtStats = UmkmProfile::select('district')
+            ->selectRaw("count(CASE WHEN products.status = 'verified' THEN products.id END) as total_products")
+            ->selectRaw("count(DISTINCT umkm_profiles.id) as total_umkms")
+            ->leftJoin('products', 'products.umkm_profile_id', '=', 'umkm_profiles.id')
+            ->whereNotNull('district')
+            ->where('district', '!=', '')
+            ->groupBy('district')
+            ->orderByDesc('total_products')
+            ->orderBy('district')
+            ->get();
+
+        // Kategori Produk Real
+        $categoryStats = Product::where('status', 'verified')
+            ->select('category')
+            ->selectRaw('count(*) as count')
+            ->groupBy('category')
+            ->orderByDesc('count')
+            ->get();
+
+        // Seluruh produk terverifikasi beserta info daerah UMKM untuk filter interaktif per daerah
+        $allVerifiedProducts = Product::with('umkmProfile')
+            ->where('status', 'verified')
+            ->latest()
+            ->get()
+            ->map(function($p) {
+                return [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                    'category' => $p->category,
+                    'price' => $p->price > 0 ? 'Rp ' . number_format($p->price, 0, ',', '.') : 'Hubungi Toko',
+                    'image' => $p->image_path ? asset('storage/' . $p->image_path) : asset('images/no-image.png'),
+                    'district' => $p->umkmProfile->district ?? '',
+                    'village' => $p->umkmProfile->village ?? '',
+                    'business_name' => $p->umkmProfile->business_name ?? '-',
+                    'edit_url' => route('admin.product.edit', $p->id),
+                ];
+            });
+
+        // Semua UMKM terdaftar beserta daerahnya
+        $allUmkms = UmkmProfile::select('id', 'business_name', 'district', 'village', 'status')->get();
+
+        // Data 25 Kecamatan dan Desanya dari JSON
+        $wilayahWonogiri = file_exists(public_path('wonogiri_wilayah.json'))
+            ? json_decode(file_get_contents(public_path('wonogiri_wilayah.json')), true)
+            : [];
+            
+        return view('admin.dashboard', compact(
+            'pendingUmkms', 
+            'pendingProducts', 
+            'totalUmkm', 
+            'totalProducts',
+            'districtStats',
+            'categoryStats',
+            'allVerifiedProducts',
+            'allUmkms',
+            'wilayahWonogiri'
+        ));
     }
 
-    public function products()
+    public function products(Request $request)
     {
-        $products = Product::with('umkmProfile')->latest()->paginate(10);
-        return view('admin.products.index', compact('products'));
+        $query = Product::with('umkmProfile')->latest();
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                  ->orWhere('category', 'ilike', "%{$search}%")
+                  ->orWhereHas('umkmProfile', function($qu) use ($search) {
+                      $qu->where('business_name', 'ilike', "%{$search}%")
+                        ->orWhere('district', 'ilike', "%{$search}%")
+                        ->orWhere('village', 'ilike', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('district')) {
+            $districtClean = trim(preg_replace('/^(Kec\.|Kecamatan)\s+/i', '', $request->district));
+            $query->whereHas('umkmProfile', function($q) use ($districtClean) {
+                $q->where('district', 'ilike', '%' . $districtClean . '%');
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        $products = $query->paginate(10)->withQueryString();
+
+        // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat
+        $districtsWithCounts = UmkmProfile::select('district')
+            ->selectRaw("count(products.id) as total_products")
+            ->leftJoin('products', 'products.umkm_profile_id', '=', 'umkm_profiles.id')
+            ->whereNotNull('district')
+            ->where('district', '!=', '')
+            ->groupBy('district')
+            ->orderByDesc('total_products')
+            ->orderBy('district')
+            ->get();
+
+        $allCategories = Product::select('category')->distinct()->whereNotNull('category')->pluck('category');
+
+        $wilayahWonogiri = file_exists(public_path('wonogiri_wilayah.json'))
+            ? json_decode(file_get_contents(public_path('wonogiri_wilayah.json')), true)
+            : [];
+        $allKecamatanList = !empty($wilayahWonogiri) ? array_keys($wilayahWonogiri) : [];
+        sort($allKecamatanList);
+
+        $totalAllProducts = Product::count();
+
+        return view('admin.products.index', compact(
+            'products', 
+            'districtsWithCounts', 
+            'allCategories', 
+            'allKecamatanList',
+            'totalAllProducts'
+        ));
     }
 
     public function consultations()

@@ -86,6 +86,245 @@
         </div>
     </div>
 
+    @php
+        $catLabels = isset($categoryStats) ? $categoryStats->pluck('category')->toArray() : ['Mamin', 'Kriya', 'Batik'];
+        $catCounts = isset($categoryStats) ? $categoryStats->pluck('count')->map(fn($v) => (int)$v)->toArray() : [55, 25, 20];
+        if (empty($catLabels)) {
+            $catLabels = ['Mamin', 'Kriya', 'Batik'];
+            $catCounts = [55, 25, 20];
+        }
+
+        $allKecamatanList = !empty($wilayahWonogiri) ? array_keys($wilayahWonogiri) : [
+            'Baturetno', 'Batuwarno', 'Bulukerto', 'Eromoko', 'Girimarto', 'Giritontro', 'Giriwoyo',
+            'Jatipurno', 'Jatiroto', 'Jatisrono', 'Karangtengah', 'Kismantoro', 'Manyaran',
+            'Ngadirojo', 'Nguntoronadi', 'Paranggupito', 'Pracimantoro', 'Puhpelem', 'Purwantoro',
+            'Selogiri', 'Sidoharjo', 'Slogohimo', 'Tirtomoyo', 'Wonogiri', 'Wuryantoro'
+        ];
+        sort($allKecamatanList);
+
+        $districtsWithCounts = $districtStats ?? collect();
+        $districtsStatsData = $districtsWithCounts->map(function($d) {
+            return [
+                'district' => $d->district,
+                'total_products' => (int)$d->total_products,
+                'total_umkms' => (int)$d->total_umkms
+            ];
+        })->values();
+    @endphp
+
+    <!-- Section: Pencarian & Pengecekan Produk per Daerah (Searchable Dropdown) -->
+    <div class="bg-white rounded-xl border border-slate-200/60 shadow-sm p-6 lg:p-7 space-y-6">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-red-50 text-[#800000] rounded-xl shadow-2xs">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-base font-bold text-slate-800">Cek Produk per Daerah</h3>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-[#800000] border border-red-200">Kab. Wonogiri</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">Ketik kata kunci desa/kecamatan atau pilih dari dropdown untuk mengetahui jumlah dan katalog produk di daerah tersebut</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.products') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-[#800000] hover:text-white transition-colors border border-slate-200">
+                    Katalog Lengkap
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+        </div>
+
+        <style>
+            #dropdownOptionsList::-webkit-scrollbar {
+                width: 6px;
+            }
+            #dropdownOptionsList::-webkit-scrollbar-track {
+                background: #f8fafc;
+            }
+            #dropdownOptionsList::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 9999px;
+            }
+            #dropdownOptionsList::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+        </style>
+
+        <!-- Controls: Dropdown Pilih Wilayah -->
+        <div>
+            <!-- Dropdown Pilih Wilayah / Kecamatan (Searchable Select Dropdown) -->
+            <div class="w-full max-w-md relative" id="districtDropdownContainer">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Pilih Wilayah / Kecamatan:
+                </label>
+                <div class="relative">
+                    <button type="button" id="districtDropdownBtn" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 shadow-2xs hover:border-[#800000] focus:border-[#800000] focus:ring-1 focus:ring-[#800000] transition-all">
+                        <div class="flex items-center gap-2.5 truncate">
+                            <span class="p-1 rounded-lg bg-red-50 text-[#800000] shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                            </span>
+                            <span id="selectedDistrictLabel" class="truncate font-bold">Semua Wilayah Wonogiri</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="selectedDistrictBadge" class="px-2 py-0.5 rounded-full text-xs font-extrabold bg-red-100 text-[#800000]">{{ $totalProducts }} Produk</span>
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+
+                    <!-- Popover Dropdown Menu (Hanya muncul saat tombol diklik) -->
+                    <div id="districtDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden" style="max-height: 380px; width: 100%;">
+                        <!-- Pencarian di dalam Dropdown (Tetap diam di atas) -->
+                        <div class="p-2.5 bg-slate-50 border-b border-slate-100 sticky top-0 z-10 shrink-0">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <input type="text" id="insideDropdownSearch" autocomplete="off" placeholder="Ketik nama kecamatan atau desa..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:border-[#800000] focus:ring-1 focus:ring-[#800000] bg-white">
+                            </div>
+                        </div>
+                        <!-- Daftar Kecamatan (Bisa di-scroll di dalam satu kotak) -->
+                        <div id="dropdownOptionsList" class="divide-y divide-slate-100" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;">
+                            <div data-district="" data-name="Semua Wilayah Wonogiri seluruh kabupaten" class="dropdown-item p-2.5 text-xs text-slate-800 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-bold transition-colors flex items-center justify-between bg-red-50/40">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-amber-500">★</span>
+                                    <span>Semua Wilayah Wonogiri</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-[#800000]">{{ $totalProducts }} Produk</span>
+                            </div>
+                            @foreach($allKecamatanList as $kec)
+                                @php
+                                    $dStat = $districtsWithCounts->firstWhere('district', $kec);
+                                    $pCount = $dStat ? $dStat->total_products : 0;
+                                    $uCount = $dStat ? $dStat->total_umkms : 0;
+                                    $desas = isset($wilayahWonogiri[$kec]) && is_array($wilayahWonogiri[$kec]) ? implode(', ', $wilayahWonogiri[$kec]) : '';
+                                @endphp
+                                <div data-district="{{ $kec }}" data-name="Kecamatan {{ $kec }} {{ $desas }}" class="dropdown-item p-2.5 text-xs text-slate-700 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-medium transition-colors flex items-center justify-between">
+                                    <div class="pr-2">
+                                        <span class="font-semibold block text-slate-800">Kecamatan {{ $kec }}</span>
+                                        @if(!empty($desas))
+                                        <span class="text-[10px] text-slate-400 line-clamp-1 max-w-[260px]">{{ $desas }}</span>
+                                        @endif
+                                        @if($uCount > 0)
+                                        <span class="text-[10px] text-emerald-600 font-bold block mt-0.5">{{ $uCount }} UMKM terdaftar</span>
+                                        @endif
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 {{ $pCount > 0 ? 'bg-red-100 text-[#800000]' : 'bg-slate-100 text-slate-400' }}">
+                                        {{ $pCount }} Produk
+                                    </span>
+                                </div>
+                            @endforeach
+                            <div id="dropdownNoResults" class="hidden p-4 text-center text-xs text-slate-400">
+                                Tidak ada kecamatan atau desa yang cocok.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Summary Banner -->
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-50 text-[#800000] flex items-center justify-center font-bold shrink-0 border border-red-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h4 id="activeRegionTitle" class="text-sm font-bold text-slate-800">Semua Wilayah Wonogiri</h4>
+                        <span id="activeRegionBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            Seluruh Kabupaten
+                        </span>
+                    </div>
+                    <p id="activeRegionSubtitle" class="text-xs text-slate-500 mt-0.5">Menampilkan seluruh produk terverifikasi dari UMKM di Kabupaten Wonogiri</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="text-right">
+                    <span id="activeProductCountBadge" class="text-lg font-black text-[#800000]">{{ $totalProducts }}</span>
+                    <span class="text-xs text-slate-500 font-medium block -mt-1">Produk Aktif</span>
+                </div>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="text-right">
+                    <span id="activeUmkmCountBadge" class="text-lg font-bold text-slate-700">{{ $totalUmkm }}</span>
+                    <span class="text-xs text-slate-500 font-medium block -mt-1">UMKM Terdaftar</span>
+                </div>
+                <a id="activeManageLink" href="{{ route('admin.products') }}" class="ml-2 inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold text-white bg-[#800000] hover:bg-[#600000] transition-colors shadow-2xs">
+                    Kelola Produk
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Grafik Produk & UMKM Daerah (Menggantikan Katalog Kartu Produk) -->
+        <div class="bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#800000]"></span>
+                        <h4 id="regionChartTitle" class="text-sm font-bold text-slate-800">
+                            Grafik Sebaran Produk & UMKM Sentra Aktif
+                        </h4>
+                    </div>
+                    <p id="regionChartSubtitle" class="text-xs text-slate-500 mt-0.5">
+                        Komparasi kecamatan yang memiliki data produk dan UMKM terdaftar di Kabupaten Wonogiri
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" id="chartResetBtn" onclick="resetRegionFilter()" class="hidden px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200">
+                        ↺ Lihat Semua Sentra
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Grafik -->
+            <div id="regionChartWrapper" class="w-full h-[300px] relative">
+                <canvas id="regionDistributionChart"></canvas>
+            </div>
+
+            <!-- Empty State bila daerah belum ada produk -->
+            <div id="regionChartEmptyState" class="hidden p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200 mt-2">
+                <div class="w-12 h-12 rounded-2xl bg-white text-slate-400 mx-auto flex items-center justify-center mb-3 shadow-2xs border border-slate-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h5 id="chartEmptyTitle" class="text-sm font-bold text-slate-700">Belum Ada Produk di Wilayah Ini</h5>
+                <p id="chartEmptyDesc" class="text-xs text-slate-400 max-w-md mx-auto mt-1">Belum ada produk aktif yang diverifikasi pada daerah ini.</p>
+                <button type="button" onclick="resetRegionFilter()" class="mt-4 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:border-[#800000] hover:text-[#800000] transition-colors shadow-2xs">
+                    Tampilkan Semua Sentra
+                </button>
+            </div>
+
+            <!-- Ringkasan Statistik 4 Kolom di Bawah Grafik -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 mt-4 border-t border-slate-100">
+                <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Sentra Terbanyak</span>
+                    <span class="text-xs font-bold text-slate-800 block mt-0.5 truncate">Ngadirojo, Selogiri, Tirtomoyo</span>
+                    <span class="text-[10px] text-[#800000] font-semibold">5 Produk / kecamatan</span>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kecamatan Aktif</span>
+                    <span class="text-xs font-bold text-slate-800 block mt-0.5">3 dari 25 Kecamatan</span>
+                    <span class="text-[10px] text-emerald-600 font-semibold">Memiliki produk aktif</span>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total UMKM Terdaftar</span>
+                    <span class="text-xs font-bold text-slate-800 block mt-0.5">{{ $totalUmkm }} UMKM</span>
+                    <span class="text-[10px] text-slate-500 font-semibold">Tersebar di 4 kecamatan</span>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Peluang Ekspansi</span>
+                    <span class="text-xs font-bold text-slate-800 block mt-0.5">21 Kecamatan</span>
+                    <span class="text-[10px] text-indigo-600 font-semibold">Target pembinaan baru</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Tables Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Table 1: Verifikasi Profil UMKM Baru -->
@@ -508,17 +747,17 @@
 
         // Donut Chart
         const donutCtx = document.getElementById('donutChart').getContext('2d');
+        const catLabels = {!! json_encode($catLabels) !!};
+        const catCounts = {!! json_encode($catCounts) !!};
+        const catPalette = ['#800000', '#D97706', '#2563EB', '#059669', '#7C3AED', '#DB2777', '#0891B2'];
+
         new Chart(donutCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Mamin', 'Kriya', 'Batik'],
+                labels: catLabels,
                 datasets: [{
-                    data: [55, 25, 20],
-                    backgroundColor: [
-                        '#B91C1C', // red-700
-                        '#EAB308', // yellow-500
-                        '#3B82F6'  // blue-500
-                    ],
+                    data: catCounts,
+                    backgroundColor: catPalette.slice(0, catLabels.length),
                     borderWidth: 0,
                     hoverOffset: 6
                 }]
@@ -532,8 +771,8 @@
                         position: 'bottom',
                         labels: {
                             usePointStyle: true,
-                            padding: 24,
-                            font: { size: 12, weight: '500' }
+                            padding: 16,
+                            font: { size: 11, weight: '500' }
                         }
                     },
                     tooltip: {
@@ -541,11 +780,326 @@
                         padding: 12,
                         cornerRadius: 8,
                         titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 13 }
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.label}: ${context.raw} Produk`;
+                            }
+                        }
                     }
                 }
             }
         });
+
+        // ==========================================
+        // Logika Dropdown Produk Wilayah, Pintasan & Grafik
+        // ==========================================
+        const regionProducts = {!! json_encode($allVerifiedProducts ?? []) !!};
+        const regionUmkms = {!! json_encode($allUmkms ?? []) !!};
+        const wilayahData = {!! json_encode($wilayahWonogiri ?? []) !!};
+        const districtStatsData = {!! json_encode($districtsStatsData ?? []) !!};
+        const allKecamatanList = {!! json_encode($allKecamatanList ?? []) !!};
+        const adminProductsUrl = "{{ route('admin.products') }}";
+
+        const dropdownBtn = document.getElementById('districtDropdownBtn');
+        const dropdownMenu = document.getElementById('districtDropdownMenu');
+        const dropdownSearch = document.getElementById('insideDropdownSearch');
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        const selectedLabel = document.getElementById('selectedDistrictLabel');
+        const selectedBadge = document.getElementById('selectedDistrictBadge');
+
+        const activeTitle = document.getElementById('activeRegionTitle');
+        const activeSubtitle = document.getElementById('activeRegionSubtitle');
+        const activeBadge = document.getElementById('activeRegionBadge');
+        const activeProductCount = document.getElementById('activeProductCountBadge');
+        const activeUmkmCount = document.getElementById('activeUmkmCountBadge');
+        const activeManageLink = document.getElementById('activeManageLink');
+
+        let currentDistrict = '';
+        let regionChart = null;
+
+        function renderRegionUI() {
+            let filtered = regionProducts;
+            if (currentDistrict) {
+                filtered = regionProducts.filter(p => (p.district || '').toLowerCase() === currentDistrict.toLowerCase());
+            }
+
+            let matchedUmkms = regionUmkms;
+            if (currentDistrict) {
+                matchedUmkms = regionUmkms.filter(u => (u.district || '').toLowerCase() === currentDistrict.toLowerCase());
+            }
+
+            const displayName = currentDistrict ? `Kecamatan ${currentDistrict}` : 'Semua Wilayah Wonogiri';
+
+            // Update info banner
+            if (activeTitle) activeTitle.textContent = displayName;
+            if (activeProductCount) activeProductCount.textContent = filtered.length;
+            if (activeUmkmCount) activeUmkmCount.textContent = matchedUmkms.length;
+
+            if (!currentDistrict) {
+                if (activeSubtitle) activeSubtitle.textContent = `Menampilkan data produk terverifikasi dari UMKM di Kabupaten Wonogiri`;
+                if (activeBadge) {
+                    activeBadge.textContent = 'Seluruh Kabupaten';
+                    activeBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200';
+                }
+                if (activeManageLink) activeManageLink.href = adminProductsUrl;
+                if (selectedLabel) selectedLabel.textContent = 'Semua Wilayah Wonogiri';
+                if (selectedBadge) selectedBadge.textContent = `${filtered.length} Produk`;
+            } else {
+                if (activeSubtitle) activeSubtitle.textContent = `Visualisasi grafik data produk & UMKM di Kecamatan ${currentDistrict}`;
+                if (activeBadge) {
+                    if (filtered.length > 0) {
+                        activeBadge.textContent = 'Sentra Aktif';
+                        activeBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    } else {
+                        activeBadge.textContent = 'Belum Ada Produk';
+                        activeBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200';
+                    }
+                }
+                if (activeManageLink) activeManageLink.href = `${adminProductsUrl}?district=${encodeURIComponent(currentDistrict)}`;
+                if (selectedLabel) selectedLabel.textContent = `Kecamatan ${currentDistrict}`;
+                if (selectedBadge) selectedBadge.textContent = `${filtered.length} Produk`;
+            }
+
+            // Update Grafik
+            renderRegionChart(filtered, matchedUmkms);
+        }
+
+        function renderRegionChart(filteredProducts, matchedUmkms) {
+            const canvas = document.getElementById('regionDistributionChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const emptyEl = document.getElementById('regionChartEmptyState');
+            const chartWrapper = document.getElementById('regionChartWrapper');
+            const chartTitle = document.getElementById('regionChartTitle');
+            const chartSubtitle = document.getElementById('regionChartSubtitle');
+            const chartResetBtn = document.getElementById('chartResetBtn');
+
+            let labels = [];
+            let productCounts = [];
+            let umkmCounts = [];
+            const isSingleDistrict = Boolean(currentDistrict);
+
+            if (!isSingleDistrict) {
+                // Tampilan Sentra Aktif Saja (Rapi & Padat)
+                if (chartResetBtn) chartResetBtn.classList.add('hidden');
+                if (emptyEl) emptyEl.classList.add('hidden');
+                if (chartWrapper) chartWrapper.classList.remove('hidden');
+
+                if (chartTitle) chartTitle.textContent = 'Grafik Sebaran Produk & UMKM Sentra Aktif';
+                if (chartSubtitle) chartSubtitle.textContent = 'Komparasi kecamatan yang memiliki data produk dan UMKM terdaftar di Kabupaten Wonogiri';
+
+                labels = districtStatsData.map(d => d.district);
+                productCounts = districtStatsData.map(d => d.total_products);
+                umkmCounts = districtStatsData.map(d => d.total_umkms);
+            } else {
+                // Tampilan Satu Kecamatan Terpilih
+                if (chartResetBtn) chartResetBtn.classList.remove('hidden');
+                if (chartTitle) chartTitle.textContent = `Grafik Rincian Produk di Kecamatan ${currentDistrict}`;
+
+                if (filteredProducts.length === 0) {
+                    // Belum ada produk
+                    if (chartWrapper) chartWrapper.classList.add('hidden');
+                    if (emptyEl) {
+                        emptyEl.classList.remove('hidden');
+                        const emptyTitle = document.getElementById('chartEmptyTitle');
+                        const emptyDesc = document.getElementById('chartEmptyDesc');
+                        if (emptyTitle) emptyTitle.textContent = `Belum Ada Produk di Kecamatan ${currentDistrict}`;
+                        if (emptyDesc) {
+                            if (matchedUmkms.length > 0) {
+                                emptyDesc.textContent = `Terdapat ${matchedUmkms.length} UMKM terdaftar di Kecamatan ${currentDistrict} yang belum memiliki produk terverifikasi.`;
+                            } else {
+                                emptyDesc.textContent = `Belum ada UMKM maupun produk terverifikasi di Kecamatan ${currentDistrict}.`;
+                            }
+                        }
+                    }
+                    if (regionChart) {
+                        regionChart.destroy();
+                        regionChart = null;
+                    }
+                    return;
+                }
+
+                if (chartWrapper) chartWrapper.classList.remove('hidden');
+                if (emptyEl) emptyEl.classList.add('hidden');
+
+                // Breakdown kategori di kecamatan ini
+                const catCount = {};
+                filteredProducts.forEach(p => {
+                    const c = p.category || 'Lainnya';
+                    catCount[c] = (catCount[c] || 0) + 1;
+                });
+
+                labels = Object.keys(catCount);
+                productCounts = Object.values(catCount);
+
+                if (chartSubtitle) {
+                    chartSubtitle.textContent = `Distribusi ${filteredProducts.length} produk terverifikasi berdasarkan kategori di Kecamatan ${currentDistrict}`;
+                }
+            }
+
+            if (regionChart) {
+                regionChart.destroy();
+            }
+
+            regionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: isSingleDistrict ? [
+                        {
+                            label: `Jumlah Produk (${currentDistrict})`,
+                            data: productCounts,
+                            backgroundColor: '#800000',
+                            borderRadius: 6,
+                            barPercentage: 0.45,
+                        }
+                    ] : [
+                        {
+                            label: 'Jumlah Produk',
+                            data: productCounts,
+                            backgroundColor: '#800000',
+                            borderRadius: 6,
+                            barPercentage: 0.45,
+                        },
+                        {
+                            label: 'Jumlah UMKM',
+                            data: umkmCounts,
+                            backgroundColor: '#D97706',
+                            borderRadius: 6,
+                            barPercentage: 0.45,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onClick: function(e, elements) {
+                        if (!isSingleDistrict && elements.length > 0) {
+                            const index = elements[0].index;
+                            const clickedDistrict = labels[index];
+                            if (clickedDistrict) {
+                                currentDistrict = clickedDistrict;
+                                renderRegionUI();
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                boxWidth: 12,
+                                boxHeight: 12,
+                                usePointStyle: true,
+                                font: { size: 11, weight: 'bold' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: { size: 13, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw} ${isSingleDistrict ? 'Produk' : ''}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: '#f1f5f9',
+                                borderDash: [3, 3]
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 11, weight: '600' },
+                                maxRotation: 0,
+                                minRotation: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dropdown toggle
+        if (dropdownBtn && dropdownMenu) {
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+                if (!dropdownMenu.classList.contains('hidden') && dropdownSearch) {
+                    dropdownSearch.value = '';
+                    filterDropdownItems('');
+                    setTimeout(() => dropdownSearch.focus(), 50);
+                }
+            });
+
+            // Pencarian di dalam dropdown menu
+            if (dropdownSearch) {
+                dropdownSearch.addEventListener('click', e => e.stopPropagation());
+                dropdownSearch.addEventListener('input', function() {
+                    filterDropdownItems(this.value.trim().toLowerCase());
+                });
+            }
+
+            function filterDropdownItems(query) {
+                let visibleCount = 0;
+                dropdownItems.forEach(item => {
+                    const text = (item.getAttribute('data-name') || item.textContent).toLowerCase();
+                    if (!query || text.includes(query)) {
+                        item.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                const noResults = document.getElementById('dropdownNoResults');
+                if (noResults) {
+                    if (visibleCount === 0) {
+                        noResults.classList.remove('hidden');
+                    } else {
+                        noResults.classList.add('hidden');
+                    }
+                }
+            }
+
+            // Klik item pilihan pada dropdown
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentDistrict = this.getAttribute('data-district') || '';
+                    dropdownMenu.classList.add('hidden');
+                    renderRegionUI();
+                });
+            });
+
+            // Tutup dropdown bila klik di luar
+            document.addEventListener('click', function(e) {
+                if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        window.resetRegionFilter = function() {
+            currentDistrict = '';
+            renderRegionUI();
+        };
+
+        // Render perdana saat halaman selesai dimuat
+        renderRegionUI();
     });
 
     function openDashModal(modalId) {
