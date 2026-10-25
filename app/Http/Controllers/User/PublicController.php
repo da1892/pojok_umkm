@@ -216,31 +216,41 @@ class PublicController extends Controller
             \Illuminate\Support\Facades\Mail::to($consultation->email)
                 ->send(new \App\Mail\ConsultationTicketMail($consultation));
         } catch (\Exception $e) {
-            // Jika gagal kirim email, beri tahu pengguna alasannya
-            return back()
+            // Jika gagal kirim email, beri tahu pengguna alasannya dan arahkan ke halaman cek tiket dengan ID di URL
+            return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
                 ->with('error', 'Konsultasi Anda tersimpan, tetapi sistem gagal mengirimkan email ke alamat Anda. (Error: ' . $e->getMessage() . ')')
-                ->with('ticket_id', $ticket_id);
+                ->with('ticket_id', $ticket_id)
+                ->with('auto_copy', true);
         }
 
-        // Tampilkan UUID di layar untuk sementara agar user bisa menyalinnya
-        return back()
-            ->with('success', 'Pengajuan konsultasi Anda berhasil dikirim!')
-            ->with('ticket_id', $ticket_id);
+        // Arahkan langsung ke halaman cek konsultasi dengan ID di URL dan trigger auto-copy
+        return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+            ->with('success', 'Pengajuan konsultasi Anda berhasil dikirim! ID Tiket telah otomatis disalin ke clipboard.')
+            ->with('ticket_id', $ticket_id)
+            ->with('auto_copy', true);
     }
 
-    public function cekKonsultasi(Request $request)
+    public function cekKonsultasi(Request $request, $ticket_id = null)
     {
+        // Jika parameter dikirim via query string (?ticket_id=...), redirect ke format URL bersih (/konsultasi/cek/{ticket_id})
+        if ($request->filled('ticket_id') && empty($ticket_id)) {
+            return redirect()->route('konsultasi.cek', ['ticket_id' => trim($request->ticket_id)]);
+        }
+
+        $ticketId = $ticket_id ?: $request->query('ticket_id');
         $consultations = collect();
-        if ($request->has('ticket_id') && $request->ticket_id != '') {
-            $consultations = \App\Models\Consultation::where('ticket_id', $request->ticket_id)
+
+        if (!empty($ticketId)) {
+            $consultations = \App\Models\Consultation::where('ticket_id', $ticketId)
                                 ->orderBy('created_at', 'desc')
                                 ->get();
             
             if ($consultations->isEmpty()) {
-                return back()->with('error', 'Riwayat konsultasi untuk ID Tiket tersebut tidak ditemukan.');
+                return redirect()->route('konsultasi.cek')
+                    ->with('error', 'Riwayat konsultasi untuk ID Tiket "' . $ticketId . '" tidak ditemukan.');
             }
         }
 
-        return view('user.konsultasi_cek', compact('consultations'));
+        return view('user.konsultasi_cek', compact('consultations', 'ticketId'));
     }
 }
