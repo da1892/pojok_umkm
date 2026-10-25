@@ -139,7 +139,7 @@
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 26px;">
                                 <tr>
                                     <td align="center">
-                                        <a href="{{ route('konsultasi.cek') }}?ticket_id={{ $consultation->ticket_id }}" target="_blank" style="display: inline-block; background-color: #800000; background: linear-gradient(135deg, #800000 0%, #991b1b 100%); color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 34px; border-radius: 50px; box-shadow: 0 4px 14px rgba(128, 0, 0, 0.25); letter-spacing: 0.3px;">
+                                        <a href="{{ route('konsultasi.cek', ['ticket_id' => $consultation->ticket_id]) }}" target="_blank" style="display: inline-block; background-color: #800000; background: linear-gradient(135deg, #800000 0%, #991b1b 100%); color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 34px; border-radius: 50px; box-shadow: 0 4px 14px rgba(128, 0, 0, 0.25); letter-spacing: 0.3px;">
                                             Lihat Status & Balasan &rarr;
                                         </a>
                                     </td>

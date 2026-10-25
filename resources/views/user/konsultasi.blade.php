@@ -232,7 +232,7 @@
                     }
                 }).then((result) => {
                     if (result.isDenied) {
-                        window.location.href = "{{ route('konsultasi.cek') }}?ticket_id={{ session('ticket_id') }}";
+                        window.location.href = "{{ url('/konsultasi/cek') }}/{{ session('ticket_id') }}";
                     }
                 });
             @else

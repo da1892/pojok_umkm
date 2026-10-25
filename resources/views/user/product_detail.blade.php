@@ -157,13 +157,13 @@
                             @endif
                         </div>
 
-                        <div class="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                            <div class="flex items-start gap-3.5">
+                        <div class="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-5 border border-slate-200/90 shadow-2xs">
+                            <div class="flex items-start gap-3.5 min-w-0">
                                 <div class="w-12 h-12 rounded-xl bg-[#800000] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#800000]/20 font-bold text-lg">
                                     {{ strtoupper(substr($product->umkmProfile->business_name ?? 'U', 0, 1)) }}
                                 </div>
-                                <div>
-                                    <h5 class="font-extrabold text-slate-900 text-base leading-tight">
+                                <div class="min-w-0 flex-1">
+                                    <h5 class="font-extrabold text-slate-900 text-base leading-tight truncate">
                                         {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}
                                     </h5>
                                     @if(isset($product->umkmProfile->owner_name))
@@ -173,13 +173,13 @@
                                     @endif
                                     <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                        <span class="truncate max-w-xs">{{ $product->umkmProfile->address ?? ($product->umkmProfile->district ? 'Kec. ' . $product->umkmProfile->district : 'Kabupaten Wonogiri') }}</span>
+                                        <span class="truncate">{{ $product->umkmProfile->address ?? ($product->umkmProfile->district ? 'Kec. ' . $product->umkmProfile->district : 'Kabupaten Wonogiri') }}</span>
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Buttons -->
-                            <div class="flex items-center gap-2.5 shrink-0">
+                            <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center gap-2.5">
                                 @if(!empty($product->umkmProfile->phone))
                                     @php
                                         $cleanPhone = preg_replace('/[^0-9]/', '', $product->umkmProfile->phone);
@@ -188,14 +188,14 @@
                                         }
                                         $waUrl = "https://wa.me/{$cleanPhone}?text=" . urlencode("Halo {$product->umkmProfile->business_name}, saya melihat produk '{$product->name}' di website Pojok UMKM Wonogiri dan berminat untuk bertanya/pesan.");
                                     @endphp
-                                    <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-500/20 hover:scale-102 active:scale-98 transition-all">
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.087-.179.182-.077.357.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.679.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.203c.043.072.043.419-.101.824z"/></svg>
+                                    <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold rounded-xl shadow-xs hover:shadow transition-all">
+                                        <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.087-.179.182-.077.357.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.679.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.203c.043.072.043.419-.101.824z"/></svg>
                                         <span>Hubungi Penjual</span>
                                     </a>
                                 @endif
                                 @if($product->umkmProfile)
-                                    <a href="{{ route('direktori.show', $product->umkmProfile->id) }}" class="inline-flex items-center px-4 py-3 bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-xs">
-                                        Profil Toko
+                                    <a href="{{ route('direktori.show', $product->umkmProfile->id) }}" class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-2xs">
+                                        <span>Profil Toko</span>
                                     </a>
                                 @endif
                             </div>
