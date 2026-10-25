@@ -90,12 +90,38 @@
                             <textarea name="message" required rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci...">{{ old('message') }}</textarea>
                         </div>
                         
-                        <!-- Lampiran (Opsional) -->
+                        <!-- Lampiran -->
                         <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Lampiran Foto/Dokumen <span class="text-slate-400 font-normal">(Opsional)</span></label>
-                            <div class="p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl hover:bg-slate-100 transition-colors">
-                                <input type="file" name="attachment" accept="image/*,.pdf,.doc,.docx" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#800000] file:text-white hover:file:bg-[#600000] transition-all cursor-pointer">
-                                <p class="text-[11px] text-slate-400 mt-2 ml-1">Format yang diizinkan: JPG, PNG, PDF, DOC (Maks. 2MB)</p>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-sm font-semibold text-slate-900">Lampiran Foto/Dokumen <span class="text-xs font-normal text-slate-500">(Opsional, Maks. 3 File)</span></label>
+                                <span id="file-count-badge" class="hidden text-xs font-bold text-[#800000] bg-red-50 px-2.5 py-0.5 rounded-full border border-red-100">0/3 File</span>
+                            </div>
+                            
+                            <div id="dropzone" class="relative border-2 border-dashed border-slate-300 hover:border-[#800000] rounded-2xl p-5 text-center bg-slate-50/70 hover:bg-slate-50 transition-all cursor-pointer group">
+                                <input type="file" id="attachment-input" name="attachments[]" accept="image/*,.pdf,.doc,.docx" multiple class="hidden">
+                                
+                                <!-- Placeholder State -->
+                                <div id="upload-placeholder" class="space-y-2 py-2">
+                                    <div class="w-12 h-12 mx-auto bg-red-100/60 text-[#800000] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-slate-700">
+                                        <span class="text-[#800000] font-semibold underline underline-offset-2">Klik untuk memilih file</span> atau tarik ke sini
+                                    </p>
+                                    <p class="text-xs text-slate-400">Bisa upload hingga 3 foto/dokumen (Maks. 5MB per file)</p>
+                                </div>
+
+                                <!-- Preview State Container (List of Selected Files) -->
+                                <div id="upload-preview-container" class="hidden space-y-3 text-left">
+                                    <div id="file-list" class="space-y-2"></div>
+                                    
+                                    <div id="add-more-container" class="pt-2 text-center border-t border-slate-200">
+                                        <button type="button" id="add-more-btn" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#800000] hover:text-red-900 transition-colors bg-white px-3.5 py-1.5 rounded-lg border border-red-200 shadow-sm hover:bg-red-50">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                                            <span>Tambah Foto/Dokumen Lain (Maks. 3)</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -206,7 +232,7 @@
                     }
                 }).then((result) => {
                     if (result.isDenied) {
-                        window.location.href = "{{ route('konsultasi.cek') }}?ticket_id={{ session('ticket_id') }}";
+                        window.location.href = "{{ url('/konsultasi/cek') }}/{{ session('ticket_id') }}";
                     }
                 });
             @else
@@ -245,6 +271,188 @@
                 confirmButtonText: 'Perbaiki'
             });
         @endif
+
+        // Multiple File Upload & Preview Handler (Up to 3 Files)
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('attachment-input');
+        const placeholder = document.getElementById('upload-placeholder');
+        const previewContainer = document.getElementById('upload-preview-container');
+        const fileList = document.getElementById('file-list');
+        const fileCountBadge = document.getElementById('file-count-badge');
+        const addMoreBtn = document.getElementById('add-more-btn');
+
+        if (dropzone && fileInput) {
+            let selectedFiles = [];
+
+            function renderFiles() {
+                fileList.innerHTML = '';
+
+                selectedFiles.forEach((file, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs';
+
+                    const isImg = file.type.startsWith('image/');
+                    const sizeStr = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+                    let thumbHtml = '';
+                    if (isImg) {
+                        const blobUrl = URL.createObjectURL(file);
+                        thumbHtml = `<img src="${blobUrl}" alt="Preview" class="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0">`;
+                    } else {
+                        thumbHtml = `<div class="w-12 h-12 bg-red-50 text-[#800000] rounded-lg flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>`;
+                    }
+
+                    row.innerHTML = `
+                        <div class="flex items-center space-x-3 truncate">
+                            ${thumbHtml}
+                            <div class="text-left truncate">
+                                <p class="text-xs sm:text-sm font-semibold text-slate-800 truncate max-w-[200px] sm:max-w-xs">${file.name}</p>
+                                <p class="text-xs text-slate-400">${sizeStr}</p>
+                            </div>
+                        </div>
+                        <button type="button" data-index="${index}" class="remove-single-file p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors shrink-0 ml-2" title="Hapus file ini">
+                            <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    `;
+
+                    fileList.appendChild(row);
+                });
+
+                fileList.querySelectorAll('.remove-single-file').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.getAttribute('data-index'), 10);
+                        selectedFiles.splice(idx, 1);
+                        syncInput();
+                    });
+                });
+            }
+
+            function syncInput() {
+                const dt = new DataTransfer();
+                selectedFiles.forEach(file => dt.items.add(file));
+                fileInput.files = dt.files;
+
+                const count = selectedFiles.length;
+                if (count > 0) {
+                    fileCountBadge.textContent = `${count}/3 File`;
+                    fileCountBadge.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+
+                    if (count >= 3) {
+                        addMoreBtn.classList.add('hidden');
+                    } else {
+                        addMoreBtn.classList.remove('hidden');
+                    }
+                } else {
+                    fileCountBadge.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                    previewContainer.classList.add('hidden');
+                    addMoreBtn.classList.remove('hidden');
+                }
+
+                renderFiles();
+            }
+
+            function handleNewFiles(incomingFiles) {
+                if (!incomingFiles || !incomingFiles.length) return;
+
+                let exceeded = false;
+                let oversized = false;
+
+                for (let i = 0; i < incomingFiles.length; i++) {
+                    const file = incomingFiles[i];
+
+                    if (selectedFiles.length >= 3) {
+                        exceeded = true;
+                        break;
+                    }
+
+                    if (file.size > 5 * 1024 * 1024) {
+                        oversized = true;
+                        continue;
+                    }
+
+                    const exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+                    if (!exists) {
+                        selectedFiles.push(file);
+                    }
+                }
+
+                if (oversized) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran Terlalu Besar',
+                        text: 'File yang melebihi batas 5MB otomatis diabaikan.',
+                        confirmButtonColor: '#800000'
+                    });
+                }
+
+                if (exceeded) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Maksimal',
+                        text: 'Maksimal 3 file lampiran yang dapat diunggah.',
+                        confirmButtonColor: '#800000'
+                    });
+                }
+
+                syncInput();
+            }
+
+            fileInput.addEventListener('click', (e) => e.stopPropagation());
+
+            dropzone.addEventListener('click', (e) => {
+                if (e.target.closest('.remove-single-file') || e.target.closest('#add-more-btn')) return;
+                if (selectedFiles.length === 0) {
+                    fileInput.click();
+                }
+            });
+
+            if (addMoreBtn) {
+                addMoreBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (selectedFiles.length < 3) {
+                        fileInput.click();
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Batas Tercapai',
+                            text: 'Anda sudah memilih batas maksimal 3 file.',
+                            confirmButtonColor: '#800000'
+                        });
+                    }
+                });
+            }
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('border-[#800000]', 'bg-red-50/50');
+            });
+
+            ['dragleave', 'dragend'].forEach(type => {
+                dropzone.addEventListener(type, () => {
+                    dropzone.classList.remove('border-[#800000]', 'bg-red-50/50');
+                });
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('border-[#800000]', 'bg-red-50/50');
+                if (e.dataTransfer.files && e.dataTransfer.files.length) {
+                    handleNewFiles(e.dataTransfer.files);
+                }
+            });
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files && fileInput.files.length) {
+                    handleNewFiles(fileInput.files);
+                }
+            });
+        }
     });
 </script>
 
