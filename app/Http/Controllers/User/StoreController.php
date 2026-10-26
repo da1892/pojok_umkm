@@ -45,27 +45,7 @@ class StoreController extends Controller
             return redirect()->route('toko.create');
         }
 
-        $request->validate([
-            'business_name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:25',
-            'province' => 'nullable|string|max:100',
-            'regency' => 'nullable|string|max:100',
-            'district' => 'required|string|max:100',
-            'village' => 'required|string|max:100',
-            'postal_code' => 'nullable|string|max:10',
-            'address' => 'required|string',
-            'nib' => 'nullable|string|max:255',
-            'pirt' => 'nullable|string|max:255',
-            'halal_cert' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'map_link' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-        ], [
-            'image.image' => 'File foto profil harus berupa gambar.',
-            'image.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
-            'image.max' => 'Ukuran foto profil maksimal 5MB.',
-        ]);
+        $request->validate($this->getUmkmValidationRules(), $this->getUmkmValidationMessages());
 
         $data = [
             'business_name' => $request->business_name,
@@ -130,27 +110,7 @@ class StoreController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'business_name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'province' => 'nullable|string|max:100',
-            'regency' => 'nullable|string|max:100',
-            'district' => 'required|string|max:100',
-            'village' => 'required|string|max:100',
-            'postal_code' => 'nullable|string|max:10',
-            'address' => 'required|string',
-            'phone' => 'required|string|max:25',
-            'nib' => 'nullable|string|max:255',
-            'pirt' => 'nullable|string|max:255',
-            'halal_cert' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'map_link' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-        ], [
-            'image.image' => 'File foto profil harus berupa gambar.',
-            'image.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
-            'image.max' => 'Ukuran foto profil maksimal 5MB.',
-        ]);
+        $request->validate($this->getUmkmValidationRules(), $this->getUmkmValidationMessages());
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -393,4 +353,41 @@ class StoreController extends Controller
 
         return redirect('/')->with('warning', 'Akun pengguna dan seluruh data toko Anda telah berhasil dihapus secara permanen dari sistem Pojok UMKM Wonogiri.');
     }
+
+    private function getUmkmValidationRules(): array
+    {
+        return [
+            'business_name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'phone' => ['required', 'string', 'min:10', 'max:25'],
+            'province' => 'nullable|string|max:100',
+            'regency' => 'nullable|string|max:100',
+            'district' => 'required|string|max:100',
+            'village' => 'required|string|max:100',
+            'postal_code' => ['nullable', 'string', 'size:5', 'regex:/^[0-9]+$/'],
+            'address' => 'required|string',
+            'nib' => ['nullable', 'string', 'regex:/^[0-9]{13}$/'],
+            'pirt' => ['nullable', 'string', 'min:15', 'max:35'],
+            'halal_cert' => ['nullable', 'string', 'min:10', 'max:35'],
+            'description' => 'nullable|string',
+            'map_link' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ];
+    }
+
+    private function getUmkmValidationMessages(): array
+    {
+        return [
+            'nib.regex' => 'Nomor Induk Berusaha (NIB) wajib berupa tepat 13 digit angka standar OSS.',
+            'pirt.min' => 'Nomor Sertifikasi PIRT minimal 15 karakter/digit standar BPOM/Dinkes.',
+            'halal_cert.min' => 'Nomor Sertifikasi Halal minimal 10 karakter/digit standar BPJPH/MUI.',
+            'postal_code.size' => 'Kode pos harus terdiri dari 5 digit angka.',
+            'postal_code.regex' => 'Kode pos hanya boleh berisi angka.',
+            'phone.min' => 'Nomor telepon/WhatsApp minimal 10 digit angka.',
+            'image.image' => 'File foto profil harus berupa gambar.',
+            'image.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran foto profil maksimal 5MB.',
+        ];
+    }
 }
+

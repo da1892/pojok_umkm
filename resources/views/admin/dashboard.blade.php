@@ -110,6 +110,15 @@
                 'total_umkms' => (int)$d->total_umkms
             ];
         })->values();
+
+        $defaultCategories = [
+            'Makanan & Minuman',
+            'Batik/Fashion',
+            'Kerajinan',
+            'Olahan Hasil Pertanian',
+            'Produk Kreatif',
+        ];
+        $allCategoriesList = $allCategoriesList ?? $defaultCategories;
     @endphp
 
     <!-- Section: Pencarian & Pengecekan Produk per Daerah (Searchable Dropdown) -->
@@ -125,7 +134,7 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h3 class="text-base font-bold text-slate-800">Cek Produk per Daerah</h3>
+                        <h3 class="text-base font-bold text-slate-800">Produk Daerah</h3>
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-[#800000] border border-red-200">Kab. Wonogiri</span>
                     </div>
                     <p class="text-xs text-slate-500 mt-0.5">Ketik kata kunci desa/kecamatan atau pilih dari dropdown untuk mengetahui jumlah dan katalog produk di daerah tersebut</p>
@@ -155,75 +164,125 @@
             }
         </style>
 
-        <!-- Controls: Dropdown Pilih Wilayah -->
-        <div>
-            <!-- Dropdown Pilih Wilayah / Kecamatan (Searchable Select Dropdown) -->
-            <div class="w-full max-w-md relative" id="districtDropdownContainer">
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                    Pilih Wilayah / Kecamatan:
-                </label>
-                <div class="relative">
-                    <button type="button" id="districtDropdownBtn" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 shadow-2xs hover:border-[#800000] focus:border-[#800000] focus:ring-1 focus:ring-[#800000] transition-all">
-                        <div class="flex items-center gap-2.5 truncate">
-                            <span class="p-1 rounded-lg bg-red-50 text-[#800000] shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                            </span>
-                            <span id="selectedDistrictLabel" class="truncate font-bold">Semua Wilayah Wonogiri</span>
-                        </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span id="selectedDistrictBadge" class="px-2 py-0.5 rounded-full text-xs font-extrabold bg-red-100 text-[#800000]">{{ $totalProducts }} Produk</span>
-                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                    </button>
+        <!-- Controls: Dropdown Pilih Wilayah (Kecamatan & Desa dari Master) -->
+        <div class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dropdown 1: Pilih Kecamatan (25 Kecamatan dari master_kecamatan.xlsx) -->
+                <div class="relative" id="districtDropdownContainer">
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        <span>Pilih Kecamatan (25 Kecamatan):</span>
+                    </label>
+                    <div class="relative">
+                        <button type="button" id="districtDropdownBtn" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 shadow-2xs hover:border-[#800000] focus:border-[#800000] focus:ring-1 focus:ring-[#800000] transition-all">
+                            <div class="flex items-center gap-2.5 truncate">
+                                <span class="p-1 rounded-lg bg-red-50 text-[#800000] shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                </span>
+                                <span id="selectedDistrictLabel" class="truncate font-bold">Semua Kecamatan (Wonogiri)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span id="selectedDistrictBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-red-100 text-[#800000]">25 Kec</span>
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </button>
 
-                    <!-- Popover Dropdown Menu (Hanya muncul saat tombol diklik) -->
-                    <div id="districtDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden" style="max-height: 380px; width: 100%;">
-                        <!-- Pencarian di dalam Dropdown (Tetap diam di atas) -->
-                        <div class="p-2.5 bg-slate-50 border-b border-slate-100 sticky top-0 z-10 shrink-0">
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                </div>
-                                <input type="text" id="insideDropdownSearch" autocomplete="off" placeholder="Ketik nama kecamatan atau desa..." class="w-full pl-8 pr-3 py-2 text-xs rounded-lg border-2 border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 outline-none bg-white text-slate-900 placeholder:text-slate-400">
-                            </div>
-                        </div>
-                        <!-- Daftar Kecamatan (Bisa di-scroll di dalam satu kotak) -->
-                        <div id="dropdownOptionsList" class="divide-y divide-slate-100" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;">
-                            <div data-district="" data-name="Semua Wilayah Wonogiri seluruh kabupaten" class="dropdown-item p-2.5 text-xs text-slate-800 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-bold transition-colors flex items-center justify-between bg-red-50/40">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-amber-500">★</span>
-                                    <span>Semua Wilayah Wonogiri</span>
-                                </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-[#800000]">{{ $totalProducts }} Produk</span>
-                            </div>
-                            @foreach($allKecamatanList as $kec)
-                                @php
-                                    $dStat = $districtsWithCounts->firstWhere('district', $kec);
-                                    $pCount = $dStat ? $dStat->total_products : 0;
-                                    $uCount = $dStat ? $dStat->total_umkms : 0;
-                                    $desas = isset($wilayahWonogiri[$kec]) && is_array($wilayahWonogiri[$kec]) ? implode(', ', $wilayahWonogiri[$kec]) : '';
-                                @endphp
-                                <div data-district="{{ $kec }}" data-name="Kecamatan {{ $kec }} {{ $desas }}" class="dropdown-item p-2.5 text-xs text-slate-700 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-medium transition-colors flex items-center justify-between">
-                                    <div class="pr-2">
-                                        <span class="font-semibold block text-slate-800">Kecamatan {{ $kec }}</span>
-                                        @if(!empty($desas))
-                                        <span class="text-[10px] text-slate-400 line-clamp-1 max-w-[260px]">{{ $desas }}</span>
-                                        @endif
-                                        @if($uCount > 0)
-                                        <span class="text-[10px] text-emerald-600 font-bold block mt-0.5">{{ $uCount }} UMKM terdaftar</span>
-                                        @endif
+                        <!-- Popover Dropdown Kecamatan -->
+                        <div id="districtDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden" style="max-height: 380px; width: 100%;">
+                            <div class="p-2.5 bg-slate-50 border-b border-slate-100 sticky top-0 z-10 shrink-0">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                     </div>
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 {{ $pCount > 0 ? 'bg-red-100 text-[#800000]' : 'bg-slate-100 text-slate-400' }}">
-                                        {{ $pCount }} Produk
-                                    </span>
+                                    <input type="text" id="insideDropdownSearch" autocomplete="off" placeholder="Cari nama kecamatan..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:border-[#800000] focus:ring-1 focus:ring-[#800000] bg-white">
                                 </div>
-                            @endforeach
-                            <div id="dropdownNoResults" class="hidden p-4 text-center text-xs text-slate-400">
-                                Tidak ada kecamatan atau desa yang cocok.
+                            </div>
+                                </div>
+                            </div>
+                            <div id="dropdownOptionsList" class="divide-y divide-slate-100" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;">
+                                <div data-district="" data-name="Semua Kecamatan Wonogiri seluruh kabupaten" class="dropdown-item p-2.5 text-xs text-slate-800 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-bold transition-colors flex items-center justify-between bg-red-50/40">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-amber-500">★</span>
+                                        <span>Semua Kecamatan (Wonogiri)</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-[#800000]">25 Kecamatan</span>
+                                </div>
+                                @foreach($allKecamatanList as $kec)
+                                    @php
+                                        $dStat = $districtsWithCounts->firstWhere('district', $kec);
+                                        $pCount = $dStat ? $dStat->total_products : 0;
+                                        $uCount = $dStat ? $dStat->total_umkms : 0;
+                                        $desasInKec = isset($wilayahWonogiri[$kec]) && is_array($wilayahWonogiri[$kec]) ? $wilayahWonogiri[$kec] : [];
+                                        $desaCount = count($desasInKec);
+                                    @endphp
+                                    <div data-district="{{ $kec }}" data-name="Kecamatan {{ $kec }}" class="dropdown-item p-2.5 text-xs text-slate-700 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-medium transition-colors flex items-center justify-between">
+                                        <div class="pr-2">
+                                            <span class="font-semibold block text-slate-800">Kecamatan {{ $kec }}</span>
+                                            <span class="text-[10px] text-slate-400 block mt-0.5">{{ $desaCount }} Desa / Kelurahan</span>
+                                            @if($uCount > 0)
+                                            <span class="text-[10px] text-emerald-600 font-bold block mt-0.5">{{ $uCount }} UMKM &bull; {{ $pCount }} Produk</span>
+                                            @endif
+                                        </div>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 {{ $pCount > 0 ? 'bg-red-100 text-[#800000]' : 'bg-slate-100 text-slate-400' }}">
+                                            {{ $pCount }} Produk
+                                        </span>
+                                    </div>
+                                @endforeach
+                                <div id="dropdownNoResults" class="hidden p-4 text-center text-xs text-slate-400">
+                                    Tidak ada kecamatan yang cocok.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Dropdown 2: Pilih Desa / Kelurahan (294 Desa dari master_desa.xlsx) -->
+                <div class="relative" id="villageDropdownContainer">
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        <span id="villageLabelTitle">Pilih Desa / Kelurahan (294 Desa):</span>
+                    </label>
+                    <div class="relative">
+                        <button type="button" id="villageDropdownBtn" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 shadow-2xs hover:border-[#800000] focus:border-[#800000] focus:ring-1 focus:ring-[#800000] transition-all">
+                            <div class="flex items-center gap-2.5 truncate">
+                                <span class="p-1 rounded-lg bg-red-50 text-[#800000] shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                </span>
+                                <span id="selectedVillageLabel" class="truncate font-bold">Semua Desa / Kelurahan</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span id="selectedVillageBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-600">Semua</span>
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </button>
+
+                        <!-- Popover Dropdown Desa -->
+                        <div id="villageDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden" style="max-height: 380px; width: 100%;">
+                            <div class="p-2.5 bg-slate-50 border-b border-slate-100 sticky top-0 z-10 shrink-0">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    </div>
+                                    <input type="text" id="insideVillageSearch" autocomplete="off" placeholder="Ketik nama desa atau kelurahan..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:border-[#800000] focus:ring-1 focus:ring-[#800000] bg-white">
+                                </div>
+                            </div>
+                            <div id="villageOptionsList" class="divide-y divide-slate-100" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;">
+                                <!-- Diisi dinamis via JavaScript dari master desa -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notice Filter Wilayah Aktif -->
+            <div id="activeFilterNotice" class="hidden flex items-center justify-between p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+                <div class="flex items-center gap-2 text-amber-800">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span id="activeFilterDesc" class="font-semibold">Filter wilayah aktif.</span>
+                </div>
+                <button type="button" onclick="resetRegionFilter()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-slate-700 hover:text-[#800000] hover:bg-red-50 border border-slate-300 transition-colors shadow-2xs">
+                    ↺ Tampilkan Semua Wilayah
+                </button>
             </div>
         </div>
 
@@ -260,24 +319,24 @@
             </div>
         </div>
 
-        <!-- Grafik Produk & UMKM Daerah (Menggantikan Katalog Kartu Produk) -->
+        <!-- Grafik Kategori Produk Daerah (Berdasarkan Wilayah Terpilih) -->
         <div class="bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-[#800000]"></span>
                         <h4 id="regionChartTitle" class="text-sm font-bold text-slate-800">
-                            Grafik Sebaran Produk & UMKM Sentra Aktif
+                            Grafik Sebaran Kategori Produk UMKM
                         </h4>
                     </div>
                     <p id="regionChartSubtitle" class="text-xs text-slate-500 mt-0.5">
-                        Komparasi kecamatan yang memiliki data produk dan UMKM terdaftar di Kabupaten Wonogiri
+                        Distribusi produk terverifikasi per kategori di seluruh wilayah Kabupaten Wonogiri
                     </p>
                 </div>
 
                 <div class="flex items-center gap-2">
                     <button type="button" id="chartResetBtn" onclick="resetRegionFilter()" class="hidden px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200">
-                        ↺ Lihat Semua Sentra
+                        ↺ Tampilkan Semua Wilayah
                     </button>
                 </div>
             </div>
@@ -295,31 +354,31 @@
                 <h5 id="chartEmptyTitle" class="text-sm font-bold text-slate-700">Belum Ada Produk di Wilayah Ini</h5>
                 <p id="chartEmptyDesc" class="text-xs text-slate-400 max-w-md mx-auto mt-1">Belum ada produk aktif yang diverifikasi pada daerah ini.</p>
                 <button type="button" onclick="resetRegionFilter()" class="mt-4 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:border-[#800000] hover:text-[#800000] transition-colors shadow-2xs">
-                    Tampilkan Semua Sentra
+                    Tampilkan Semua Wilayah
                 </button>
             </div>
 
             <!-- Ringkasan Statistik 4 Kolom di Bawah Grafik -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 mt-4 border-t border-slate-100">
                 <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Sentra Terbanyak</span>
-                    <span class="text-xs font-bold text-slate-800 block mt-0.5 truncate">Ngadirojo, Selogiri, Tirtomoyo</span>
-                    <span class="text-[10px] text-[#800000] font-semibold">5 Produk / kecamatan</span>
+                    <span id="statCategoryTopLabel" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kategori Terbanyak</span>
+                    <span id="statCategoryTopValue" class="text-xs font-bold text-slate-800 block mt-0.5 truncate">Makanan & Minuman</span>
+                    <span id="statCategoryTopDesc" class="text-[10px] text-[#800000] font-semibold">8 Produk</span>
                 </div>
                 <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kecamatan Aktif</span>
-                    <span class="text-xs font-bold text-slate-800 block mt-0.5">3 dari 25 Kecamatan</span>
-                    <span class="text-[10px] text-emerald-600 font-semibold">Memiliki produk aktif</span>
+                    <span id="statCategoryActiveLabel" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kategori Aktif</span>
+                    <span id="statCategoryActiveValue" class="text-xs font-bold text-slate-800 block mt-0.5">5 dari 5 Kategori</span>
+                    <span id="statCategoryActiveDesc" class="text-[10px] text-emerald-600 font-semibold">Memiliki produk aktif</span>
                 </div>
                 <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total UMKM Terdaftar</span>
-                    <span class="text-xs font-bold text-slate-800 block mt-0.5">{{ $totalUmkm }} UMKM</span>
-                    <span class="text-[10px] text-slate-500 font-semibold">Tersebar di 4 kecamatan</span>
+                    <span id="statProductTotalLabel" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Produk</span>
+                    <span id="statProductTotalValue" class="text-xs font-bold text-slate-800 block mt-0.5">{{ $totalProducts }} Produk</span>
+                    <span id="statProductTotalDesc" class="text-[10px] text-slate-500 font-semibold">Terverifikasi aktif</span>
                 </div>
                 <div class="p-3 rounded-lg bg-slate-50/70 border border-slate-100">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Peluang Ekspansi</span>
-                    <span class="text-xs font-bold text-slate-800 block mt-0.5">21 Kecamatan</span>
-                    <span class="text-[10px] text-indigo-600 font-semibold">Target pembinaan baru</span>
+                    <span id="statRegionScopeLabel" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Wilayah Pantauan</span>
+                    <span id="statRegionScopeValue" class="text-xs font-bold text-slate-800 block mt-0.5">Semua Wilayah</span>
+                    <span id="statRegionScopeDesc" class="text-[10px] text-indigo-600 font-semibold">Kabupaten Wonogiri</span>
                 </div>
             </div>
         </div>
@@ -799,6 +858,13 @@
         const wilayahData = {!! json_encode($wilayahWonogiri ?? []) !!};
         const districtStatsData = {!! json_encode($districtsStatsData ?? []) !!};
         const allKecamatanList = {!! json_encode($allKecamatanList ?? []) !!};
+        const standardCategories = {!! json_encode($allCategoriesList ?? [
+            'Makanan & Minuman',
+            'Batik/Fashion',
+            'Kerajinan',
+            'Olahan Hasil Pertanian',
+            'Produk Kreatif'
+        ]) !!};
         const adminProductsUrl = "{{ route('admin.products') }}";
 
         const dropdownBtn = document.getElementById('districtDropdownBtn');
@@ -808,6 +874,16 @@
         const selectedLabel = document.getElementById('selectedDistrictLabel');
         const selectedBadge = document.getElementById('selectedDistrictBadge');
 
+        const villageDropdownBtn = document.getElementById('villageDropdownBtn');
+        const villageDropdownMenu = document.getElementById('villageDropdownMenu');
+        const villageSearch = document.getElementById('insideVillageSearch');
+        const villageOptionsList = document.getElementById('villageOptionsList');
+        const selectedVillageLabel = document.getElementById('selectedVillageLabel');
+        const selectedVillageBadge = document.getElementById('selectedVillageBadge');
+        const villageLabelTitle = document.getElementById('villageLabelTitle');
+        const activeFilterNotice = document.getElementById('activeFilterNotice');
+        const activeFilterDesc = document.getElementById('activeFilterDesc');
+
         const activeTitle = document.getElementById('activeRegionTitle');
         const activeSubtitle = document.getElementById('activeRegionSubtitle');
         const activeBadge = document.getElementById('activeRegionBadge');
@@ -816,52 +892,193 @@
         const activeManageLink = document.getElementById('activeManageLink');
 
         let currentDistrict = '';
+        let currentVillage = '';
         let regionChart = null;
+
+        function normalizeCategory(cat) {
+            if (!cat) return 'Lainnya';
+            const lower = cat.toLowerCase().trim();
+            if (lower.includes('makan') || lower.includes('minum')) return 'Makanan & Minuman';
+            if (lower.includes('batik') || lower.includes('fashion')) return 'Batik/Fashion';
+            if (lower.includes('kerajinan') || lower.includes('kriya')) return 'Kerajinan';
+            if (lower.includes('tani') || lower.includes('pertanian')) return 'Olahan Hasil Pertanian';
+            if (lower.includes('kreatif')) return 'Produk Kreatif';
+            for (let sc of standardCategories) {
+                if (sc.toLowerCase() === lower) return sc;
+            }
+            return cat;
+        }
+
+        function populateVillageDropdown(districtName) {
+            if (!villageOptionsList) return;
+            villageOptionsList.innerHTML = '';
+
+            // Pilihan default "Semua Desa"
+            const allDesaItem = document.createElement('div');
+            allDesaItem.className = 'dropdown-village-item p-2.5 text-xs text-slate-800 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-bold transition-colors flex items-center justify-between ' + (!currentVillage ? 'bg-red-50/50' : '');
+            allDesaItem.setAttribute('data-village', '');
+            allDesaItem.setAttribute('data-name', 'Semua Desa Kelurahan seluruh ' + (districtName || 'Wonogiri'));
+            allDesaItem.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-500">★</span>
+                    <span>${districtName ? 'Semua Desa di Kec. ' + districtName : 'Semua Desa / Kelurahan'}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">Semua</span>
+            `;
+            allDesaItem.addEventListener('click', function(e) {
+                e.stopPropagation();
+                currentVillage = '';
+                if (villageDropdownMenu) villageDropdownMenu.classList.add('hidden');
+                renderRegionUI();
+            });
+            villageOptionsList.appendChild(allDesaItem);
+
+            // Daftar Desa dari Master
+            let listToDisplay = [];
+            if (districtName && wilayahData[districtName]) {
+                const desas = wilayahData[districtName];
+                desas.forEach(d => {
+                    listToDisplay.push({ desa: d, kec: districtName });
+                });
+                if (villageLabelTitle) villageLabelTitle.textContent = `Pilih Desa / Kelurahan (${desas.length} Desa di ${districtName}):`;
+            } else {
+                let totalD = 0;
+                for (let k in wilayahData) {
+                    wilayahData[k].forEach(d => {
+                        listToDisplay.push({ desa: d, kec: k });
+                        totalD++;
+                    });
+                }
+                if (villageLabelTitle) villageLabelTitle.textContent = `Pilih Desa / Kelurahan (${totalD} Desa di Wonogiri):`;
+            }
+
+            listToDisplay.forEach(item => {
+                const pInDesa = regionProducts.filter(p => (p.village || '').toLowerCase() === item.desa.toLowerCase() && (!item.kec || (p.district || '').toLowerCase() === item.kec.toLowerCase())).length;
+                const uInDesa = regionUmkms.filter(u => (u.village || '').toLowerCase() === item.desa.toLowerCase() && (!item.kec || (u.district || '').toLowerCase() === item.kec.toLowerCase())).length;
+
+                const isSelected = currentVillage && currentVillage.toLowerCase() === item.desa.toLowerCase();
+                const div = document.createElement('div');
+                div.className = 'dropdown-village-item p-2.5 text-xs text-slate-700 hover:bg-red-50 hover:text-[#800000] cursor-pointer font-medium transition-colors flex items-center justify-between ' + (isSelected ? 'bg-red-50 font-bold text-[#800000]' : '');
+                div.setAttribute('data-village', item.desa);
+                div.setAttribute('data-district', item.kec);
+                div.setAttribute('data-name', `Desa ${item.desa} Kecamatan ${item.kec}`);
+                div.innerHTML = `
+                    <div class="pr-2">
+                        <span class="font-semibold block text-slate-800">Desa ${item.desa}</span>
+                        <span class="text-[10px] text-slate-400">Kecamatan ${item.kec}</span>
+                        ${uInDesa > 0 ? `<span class="text-[10px] text-emerald-600 font-bold block mt-0.5">${uInDesa} UMKM</span>` : ''}
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${pInDesa > 0 ? 'bg-red-100 text-[#800000]' : 'bg-slate-100 text-slate-400'}">
+                        ${pInDesa} Produk
+                    </span>
+                `;
+                div.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentVillage = item.desa;
+                    if (!currentDistrict) {
+                        currentDistrict = item.kec;
+                    }
+                    if (villageDropdownMenu) villageDropdownMenu.classList.add('hidden');
+                    renderRegionUI();
+                });
+                villageOptionsList.appendChild(div);
+            });
+        }
 
         function renderRegionUI() {
             let filtered = regionProducts;
             if (currentDistrict) {
-                filtered = regionProducts.filter(p => (p.district || '').toLowerCase() === currentDistrict.toLowerCase());
+                filtered = filtered.filter(p => (p.district || '').toLowerCase() === currentDistrict.toLowerCase());
+            }
+            if (currentVillage) {
+                filtered = filtered.filter(p => (p.village || '').toLowerCase() === currentVillage.toLowerCase());
             }
 
             let matchedUmkms = regionUmkms;
             if (currentDistrict) {
-                matchedUmkms = regionUmkms.filter(u => (u.district || '').toLowerCase() === currentDistrict.toLowerCase());
+                matchedUmkms = matchedUmkms.filter(u => (u.district || '').toLowerCase() === currentDistrict.toLowerCase());
+            }
+            if (currentVillage) {
+                matchedUmkms = matchedUmkms.filter(u => (u.village || '').toLowerCase() === currentVillage.toLowerCase());
             }
 
-            const displayName = currentDistrict ? `Kecamatan ${currentDistrict}` : 'Semua Wilayah Wonogiri';
+            // Update Label & Badge Kecamatan
+            if (selectedLabel) {
+                selectedLabel.textContent = currentDistrict ? `Kecamatan ${currentDistrict}` : 'Semua Kecamatan (Wonogiri)';
+            }
+            if (selectedBadge) {
+                if (currentDistrict) {
+                    const desasInKec = wilayahData[currentDistrict] ? wilayahData[currentDistrict].length : 0;
+                    selectedBadge.textContent = `${desasInKec} Desa`;
+                } else {
+                    selectedBadge.textContent = '25 Kec';
+                }
+            }
 
-            // Update info banner
+            // Update Label & Badge Desa
+            if (selectedVillageLabel) {
+                selectedVillageLabel.textContent = currentVillage ? `Desa ${currentVillage}` : (currentDistrict ? `Semua Desa (${currentDistrict})` : 'Semua Desa / Kelurahan');
+            }
+            if (selectedVillageBadge) {
+                selectedVillageBadge.textContent = currentVillage ? '1 Desa' : 'Semua';
+                selectedVillageBadge.className = currentVillage ? 'px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-red-100 text-[#800000]' : 'px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-600';
+            }
+
+            // Display Title & Subtitle Banner
+            let displayName = 'Semua Wilayah Wonogiri';
+            let displaySub = 'Menampilkan seluruh data produk terverifikasi dari UMKM di Kabupaten Wonogiri (25 Kecamatan, 294 Desa)';
+            let displayBadge = 'Seluruh Kabupaten (294 Desa)';
+            let badgeClass = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200';
+
+            if (currentVillage && currentDistrict) {
+                displayName = `Desa ${currentVillage}, Kec. ${currentDistrict}`;
+                displaySub = `Menampilkan data produk terverifikasi & UMKM di Desa ${currentVillage}, Kecamatan ${currentDistrict}`;
+                displayBadge = 'Desa Terpilih';
+                badgeClass = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200';
+            } else if (currentDistrict) {
+                const totalDesasInKec = wilayahData[currentDistrict] ? wilayahData[currentDistrict].length : 0;
+                displayName = `Kecamatan ${currentDistrict}`;
+                displaySub = `Menampilkan data produk terverifikasi dari ${totalDesasInKec} desa/kelurahan di Kecamatan ${currentDistrict}`;
+                displayBadge = `Kecamatan Terpilih (${totalDesasInKec} Desa)`;
+                badgeClass = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+            }
+
             if (activeTitle) activeTitle.textContent = displayName;
+            if (activeSubtitle) activeSubtitle.textContent = displaySub;
+            if (activeBadge) {
+                activeBadge.textContent = displayBadge;
+                activeBadge.className = badgeClass;
+            }
+
             if (activeProductCount) activeProductCount.textContent = filtered.length;
             if (activeUmkmCount) activeUmkmCount.textContent = matchedUmkms.length;
 
-            if (!currentDistrict) {
-                if (activeSubtitle) activeSubtitle.textContent = `Menampilkan data produk terverifikasi dari UMKM di Kabupaten Wonogiri`;
-                if (activeBadge) {
-                    activeBadge.textContent = 'Seluruh Kabupaten';
-                    activeBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200';
-                }
-                if (activeManageLink) activeManageLink.href = adminProductsUrl;
-                if (selectedLabel) selectedLabel.textContent = 'Semua Wilayah Wonogiri';
-                if (selectedBadge) selectedBadge.textContent = `${filtered.length} Produk`;
-            } else {
-                if (activeSubtitle) activeSubtitle.textContent = `Visualisasi grafik data produk & UMKM di Kecamatan ${currentDistrict}`;
-                if (activeBadge) {
-                    if (filtered.length > 0) {
-                        activeBadge.textContent = 'Sentra Aktif';
-                        activeBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    } else {
-                        activeBadge.textContent = 'Belum Ada Produk';
-                        activeBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200';
-                    }
-                }
-                if (activeManageLink) activeManageLink.href = `${adminProductsUrl}?district=${encodeURIComponent(currentDistrict)}`;
-                if (selectedLabel) selectedLabel.textContent = `Kecamatan ${currentDistrict}`;
-                if (selectedBadge) selectedBadge.textContent = `${filtered.length} Produk`;
+            // Link Kelola Produk
+            if (activeManageLink) {
+                let link = adminProductsUrl;
+                let params = [];
+                if (currentDistrict) params.push(`district=${encodeURIComponent(currentDistrict)}`);
+                if (currentVillage) params.push(`village=${encodeURIComponent(currentVillage)}`);
+                if (params.length > 0) link += '?' + params.join('&');
+                activeManageLink.href = link;
             }
 
-            // Update Grafik
+            // Notice Filter Aktif
+            if (activeFilterNotice) {
+                if (currentDistrict || currentVillage) {
+                    activeFilterNotice.classList.remove('hidden');
+                    if (activeFilterDesc) {
+                        activeFilterDesc.textContent = `Filter Aktif: ${displayName} (${filtered.length} Produk, ${matchedUmkms.length} UMKM).`;
+                    }
+                } else {
+                    activeFilterNotice.classList.add('hidden');
+                }
+            }
+
+            // Update isi dropdown Desa sesuai kecamatan aktif
+            populateVillageDropdown(currentDistrict);
+
+            // Render Grafik
             renderRegionChart(filtered, matchedUmkms);
         }
 
@@ -875,68 +1092,112 @@
             const chartSubtitle = document.getElementById('regionChartSubtitle');
             const chartResetBtn = document.getElementById('chartResetBtn');
 
-            let labels = [];
-            let productCounts = [];
-            let umkmCounts = [];
-            const isSingleDistrict = Boolean(currentDistrict);
+            // Elements of the 4 stat cards below the chart
+            const statCategoryTopValue = document.getElementById('statCategoryTopValue');
+            const statCategoryTopDesc = document.getElementById('statCategoryTopDesc');
+            const statCategoryActiveValue = document.getElementById('statCategoryActiveValue');
+            const statCategoryActiveDesc = document.getElementById('statCategoryActiveDesc');
+            const statProductTotalValue = document.getElementById('statProductTotalValue');
+            const statProductTotalDesc = document.getElementById('statProductTotalDesc');
+            const statRegionScopeValue = document.getElementById('statRegionScopeValue');
+            const statRegionScopeDesc = document.getElementById('statRegionScopeDesc');
 
-            if (!isSingleDistrict) {
-                // Tampilan Sentra Aktif Saja (Rapi & Padat)
-                if (chartResetBtn) chartResetBtn.classList.add('hidden');
-                if (emptyEl) emptyEl.classList.add('hidden');
-                if (chartWrapper) chartWrapper.classList.remove('hidden');
+            const isFiltered = Boolean(currentDistrict || currentVillage);
+            const filterDescName = currentVillage ? `Desa ${currentVillage}, Kec. ${currentDistrict}` : (currentDistrict ? `Kecamatan ${currentDistrict}` : 'Semua Wilayah');
 
-                if (chartTitle) chartTitle.textContent = 'Grafik Sebaran Produk & UMKM Sentra Aktif';
-                if (chartSubtitle) chartSubtitle.textContent = 'Komparasi kecamatan yang memiliki data produk dan UMKM terdaftar di Kabupaten Wonogiri';
-
-                labels = districtStatsData.map(d => d.district);
-                productCounts = districtStatsData.map(d => d.total_products);
-                umkmCounts = districtStatsData.map(d => d.total_umkms);
-            } else {
-                // Tampilan Satu Kecamatan Terpilih
+            // Handle Empty State when filtered area has 0 products
+            if (isFiltered && filteredProducts.length === 0) {
                 if (chartResetBtn) chartResetBtn.classList.remove('hidden');
-                if (chartTitle) chartTitle.textContent = `Grafik Rincian Produk di Kecamatan ${currentDistrict}`;
-
-                if (filteredProducts.length === 0) {
-                    // Belum ada produk
-                    if (chartWrapper) chartWrapper.classList.add('hidden');
-                    if (emptyEl) {
-                        emptyEl.classList.remove('hidden');
-                        const emptyTitle = document.getElementById('chartEmptyTitle');
-                        const emptyDesc = document.getElementById('chartEmptyDesc');
-                        if (emptyTitle) emptyTitle.textContent = `Belum Ada Produk di Kecamatan ${currentDistrict}`;
-                        if (emptyDesc) {
-                            if (matchedUmkms.length > 0) {
-                                emptyDesc.textContent = `Terdapat ${matchedUmkms.length} UMKM terdaftar di Kecamatan ${currentDistrict} yang belum memiliki produk terverifikasi.`;
-                            } else {
-                                emptyDesc.textContent = `Belum ada UMKM maupun produk terverifikasi di Kecamatan ${currentDistrict}.`;
-                            }
+                if (chartTitle) chartTitle.textContent = `Grafik Kategori Produk - ${filterDescName}`;
+                if (chartSubtitle) chartSubtitle.textContent = `Tidak ada produk terverifikasi di ${filterDescName}`;
+                if (chartWrapper) chartWrapper.classList.add('hidden');
+                if (emptyEl) {
+                    emptyEl.classList.remove('hidden');
+                    const emptyTitle = document.getElementById('chartEmptyTitle');
+                    const emptyDesc = document.getElementById('chartEmptyDesc');
+                    if (emptyTitle) emptyTitle.textContent = `Belum Ada Produk di ${filterDescName}`;
+                    if (emptyDesc) {
+                        if (matchedUmkms.length > 0) {
+                            emptyDesc.textContent = `Terdapat ${matchedUmkms.length} UMKM terdaftar di ${filterDescName} yang belum memiliki produk terverifikasi.`;
+                        } else {
+                            emptyDesc.textContent = `Belum ada UMKM maupun produk terverifikasi di ${filterDescName}.`;
                         }
                     }
-                    if (regionChart) {
-                        regionChart.destroy();
-                        regionChart = null;
-                    }
-                    return;
                 }
 
-                if (chartWrapper) chartWrapper.classList.remove('hidden');
-                if (emptyEl) emptyEl.classList.add('hidden');
+                // Update cards for empty state
+                if (statCategoryTopValue) statCategoryTopValue.textContent = '-';
+                if (statCategoryTopDesc) statCategoryTopDesc.textContent = '0 Produk';
+                if (statCategoryActiveValue) statCategoryActiveValue.textContent = '0 dari ' + standardCategories.length + ' Kategori';
+                if (statCategoryActiveDesc) statCategoryActiveDesc.textContent = 'Belum ada produk aktif';
+                if (statProductTotalValue) statProductTotalValue.textContent = '0 Produk';
+                if (statProductTotalDesc) statProductTotalDesc.textContent = filterDescName;
+                if (statRegionScopeValue) statRegionScopeValue.textContent = filterDescName;
+                if (statRegionScopeDesc) statRegionScopeDesc.textContent = matchedUmkms.length + ' UMKM Terdaftar';
 
-                // Breakdown kategori di kecamatan ini
-                const catCount = {};
-                filteredProducts.forEach(p => {
-                    const c = p.category || 'Lainnya';
-                    catCount[c] = (catCount[c] || 0) + 1;
-                });
-
-                labels = Object.keys(catCount);
-                productCounts = Object.values(catCount);
-
-                if (chartSubtitle) {
-                    chartSubtitle.textContent = `Distribusi ${filteredProducts.length} produk terverifikasi berdasarkan kategori di Kecamatan ${currentDistrict}`;
+                if (regionChart) {
+                    regionChart.destroy();
+                    regionChart = null;
                 }
+                return;
             }
+
+            // Normal state (with products or all regions)
+            if (chartWrapper) chartWrapper.classList.remove('hidden');
+            if (emptyEl) emptyEl.classList.add('hidden');
+
+            if (!isFiltered) {
+                if (chartResetBtn) chartResetBtn.classList.add('hidden');
+                if (chartTitle) chartTitle.textContent = 'Grafik Sebaran Kategori Produk UMKM';
+                if (chartSubtitle) chartSubtitle.textContent = 'Distribusi produk terverifikasi per kategori di seluruh wilayah Kabupaten Wonogiri (25 Kecamatan, 294 Desa)';
+            } else {
+                if (chartResetBtn) chartResetBtn.classList.remove('hidden');
+                if (chartTitle) chartTitle.textContent = `Grafik Kategori Produk - ${filterDescName}`;
+                if (chartSubtitle) chartSubtitle.textContent = `Distribusi ${filteredProducts.length} produk terverifikasi berdasarkan kategori di ${filterDescName}`;
+            }
+
+            // Prepare counts with exact standard categories
+            const categoryCounts = {};
+            standardCategories.forEach(c => {
+                categoryCounts[c] = 0;
+            });
+
+            filteredProducts.forEach(p => {
+                const normCat = normalizeCategory(p.category);
+                if (categoryCounts.hasOwnProperty(normCat)) {
+                    categoryCounts[normCat]++;
+                } else {
+                    categoryCounts[normCat] = (categoryCounts[normCat] || 0) + 1;
+                }
+            });
+
+            const labels = Object.keys(categoryCounts);
+            const productCounts = Object.values(categoryCounts);
+
+            // Calculate card metrics
+            let topCat = '-';
+            let topCount = 0;
+            let activeCatCount = 0;
+            labels.forEach(l => {
+                const cnt = categoryCounts[l];
+                if (cnt > 0) activeCatCount++;
+                if (cnt > topCount) {
+                    topCount = cnt;
+                    topCat = l;
+                }
+            });
+
+            const totalFilteredProducts = filteredProducts.length;
+            const topPct = totalFilteredProducts > 0 ? Math.round((topCount / totalFilteredProducts) * 100) : 0;
+
+            if (statCategoryTopValue) statCategoryTopValue.textContent = topCat;
+            if (statCategoryTopDesc) statCategoryTopDesc.textContent = `${topCount} Produk (${topPct}%)`;
+            if (statCategoryActiveValue) statCategoryActiveValue.textContent = `${activeCatCount} dari ${labels.length} Kategori`;
+            if (statCategoryActiveDesc) statCategoryActiveDesc.textContent = activeCatCount > 0 ? 'Memiliki produk aktif' : 'Belum ada produk';
+            if (statProductTotalValue) statProductTotalValue.textContent = `${totalFilteredProducts} Produk`;
+            if (statProductTotalDesc) statProductTotalDesc.textContent = isFiltered ? filterDescName : 'Seluruh Kabupaten (294 Desa)';
+            if (statRegionScopeValue) statRegionScopeValue.textContent = isFiltered ? filterDescName : 'Semua Wilayah';
+            if (statRegionScopeDesc) statRegionScopeDesc.textContent = isFiltered ? `${matchedUmkms.length} UMKM Terdaftar` : '25 Kecamatan &bull; 294 Desa';
 
             if (regionChart) {
                 regionChart.destroy();
@@ -946,28 +1207,16 @@
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: isSingleDistrict ? [
-                        {
-                            label: `Jumlah Produk (${currentDistrict})`,
-                            data: productCounts,
-                            backgroundColor: '#800000',
-                            borderRadius: 6,
-                            barPercentage: 0.45,
-                        }
-                    ] : [
+                    datasets: [
                         {
                             label: 'Jumlah Produk',
                             data: productCounts,
                             backgroundColor: '#800000',
-                            borderRadius: 6,
+                            hoverBackgroundColor: '#991b1b',
+                            borderRadius: 8,
+                            borderSkipped: false,
                             barPercentage: 0.45,
-                        },
-                        {
-                            label: 'Jumlah UMKM',
-                            data: umkmCounts,
-                            backgroundColor: '#D97706',
-                            borderRadius: 6,
-                            barPercentage: 0.45,
+                            categoryPercentage: 0.7,
                         }
                     ]
                 },
@@ -975,12 +1224,18 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     onClick: function(e, elements) {
-                        if (!isSingleDistrict && elements.length > 0) {
+                        if (elements.length > 0) {
                             const index = elements[0].index;
-                            const clickedDistrict = labels[index];
-                            if (clickedDistrict) {
-                                currentDistrict = clickedDistrict;
-                                renderRegionUI();
+                            const clickedCat = labels[index];
+                            if (clickedCat) {
+                                let targetUrl = `${adminProductsUrl}?category=${encodeURIComponent(clickedCat)}`;
+                                if (currentDistrict) {
+                                    targetUrl += `&district=${encodeURIComponent(currentDistrict)}`;
+                                }
+                                if (currentVillage) {
+                                    targetUrl += `&village=${encodeURIComponent(currentVillage)}`;
+                                }
+                                window.location.href = targetUrl;
                             }
                         }
                     },
@@ -1004,7 +1259,7 @@
                             bodyFont: { size: 12 },
                             callbacks: {
                                 label: function(context) {
-                                    return ` ${context.dataset.label}: ${context.raw} ${isSingleDistrict ? 'Produk' : ''}`;
+                                    return ` Jumlah Produk: ${context.raw} Produk (Klik untuk filter katalog)`;
                                 }
                             }
                         }
@@ -1014,6 +1269,7 @@
                             beginAtZero: true,
                             ticks: {
                                 precision: 0,
+                                stepSize: 1,
                                 font: { size: 11 }
                             },
                             grid: {
@@ -1025,8 +1281,16 @@
                             grid: { display: false },
                             ticks: {
                                 font: { size: 11, weight: '600' },
+                                color: '#334155',
                                 maxRotation: 0,
-                                minRotation: 0
+                                minRotation: 0,
+                                callback: function(value) {
+                                    const label = this.getLabelForValue(value);
+                                    if (window.innerWidth < 640 && label.length > 14) {
+                                        return label.substring(0, 12) + '...';
+                                    }
+                                    return label;
+                                }
                             }
                         }
                     }
@@ -1034,10 +1298,11 @@
             });
         }
 
-        // Dropdown toggle
+        // Dropdown Kecamatan toggle & events
         if (dropdownBtn && dropdownMenu) {
             dropdownBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
+                if (villageDropdownMenu) villageDropdownMenu.classList.add('hidden');
                 dropdownMenu.classList.toggle('hidden');
                 if (!dropdownMenu.classList.contains('hidden') && dropdownSearch) {
                     dropdownSearch.value = '';
@@ -1046,7 +1311,6 @@
                 }
             });
 
-            // Pencarian di dalam dropdown menu
             if (dropdownSearch) {
                 dropdownSearch.addEventListener('click', e => e.stopPropagation());
                 dropdownSearch.addEventListener('input', function() {
@@ -1075,30 +1339,65 @@
                 }
             }
 
-            // Klik item pilihan pada dropdown
             dropdownItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.stopPropagation();
                     currentDistrict = this.getAttribute('data-district') || '';
+                    currentVillage = ''; // Reset desa saat ganti kecamatan
                     dropdownMenu.classList.add('hidden');
                     renderRegionUI();
                 });
             });
+        }
 
-            // Tutup dropdown bila klik di luar
-            document.addEventListener('click', function(e) {
-                if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    dropdownMenu.classList.add('hidden');
+        // Dropdown Desa toggle & events
+        if (villageDropdownBtn && villageDropdownMenu) {
+            villageDropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (dropdownMenu) dropdownMenu.classList.add('hidden');
+                villageDropdownMenu.classList.toggle('hidden');
+                if (!villageDropdownMenu.classList.contains('hidden') && villageSearch) {
+                    villageSearch.value = '';
+                    const vItems = document.querySelectorAll('.dropdown-village-item');
+                    vItems.forEach(item => item.style.display = 'flex');
+                    setTimeout(() => villageSearch.focus(), 50);
                 }
             });
+
+            if (villageSearch) {
+                villageSearch.addEventListener('click', e => e.stopPropagation());
+                villageSearch.addEventListener('input', function() {
+                    const q = this.value.trim().toLowerCase();
+                    const vItems = document.querySelectorAll('.dropdown-village-item');
+                    vItems.forEach(item => {
+                        const text = (item.getAttribute('data-name') || item.textContent).toLowerCase();
+                        if (!q || text.includes(q)) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
         }
+
+        // Klik di luar dropdown untuk menutup popover
+        document.addEventListener('click', function(e) {
+            if (dropdownBtn && dropdownMenu && !dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+            if (villageDropdownBtn && villageDropdownMenu && !villageDropdownBtn.contains(e.target) && !villageDropdownMenu.contains(e.target)) {
+                villageDropdownMenu.classList.add('hidden');
+            }
+        });
 
         window.resetRegionFilter = function() {
             currentDistrict = '';
+            currentVillage = '';
             renderRegionUI();
         };
 
-        // Render perdana saat halaman selesai dimuat
+        // Render awal saat halaman dimuat
         renderRegionUI();
     });
 

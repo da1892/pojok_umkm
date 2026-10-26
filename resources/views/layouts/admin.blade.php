@@ -60,7 +60,6 @@
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.news*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"></path></svg>
                     Berita & Kegiatan
                 </a>
-
             </nav>
 
             <!-- User Profile (Bottom) -->
