@@ -36,9 +36,20 @@
                 </div>
             @endif
 
-            <form action="{{ route('toko.store') }}" method="POST" class="space-y-6">
+            <form id="form-create-store" action="{{ route('toko.store') }}" method="POST" class="space-y-6">
                 @csrf
                 
+                <!-- Notifikasi Peringatan Jika Digit Kurang -->
+                <div id="create-alert-box" class="hidden p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-red-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-red-800 mb-1">Jumlah Digit Nomor Belum Lengkap</h4>
+                            <div id="create-alert-message" class="text-xs space-y-1"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Informasi Pokok UMKM -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -54,9 +65,17 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-1.5">Nomor Kontak / WhatsApp <span class="text-red-500">*</span></label>
-                    <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full rounded-xl border-slate-300 shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: 08123456789">
-                    <p class="text-[11px] text-slate-400 mt-1">Digunakan oleh calon pembeli dan admin untuk menghubungi Anda</p>
+                    <label class="block text-sm font-bold text-slate-800 mb-1.5">
+                        Nomor Kontak / WhatsApp <span class="text-red-500">*</span>
+                        <span class="text-[10px] text-slate-400 font-normal ml-1">(Min. 10 Digit)</span>
+                    </label>
+                    <input type="tel" name="phone" id="create-phone-input" value="{{ old('phone') }}" required minlength="10" maxlength="15" pattern="[0-9]{10,15}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full rounded-xl border-slate-300 shadow-xs focus:border-[#801414] focus:ring-[#801414] @error('phone') border-red-500 @enderror" placeholder="Contoh: 081234567890 (minimal 10 digit)">
+                    <div id="create-phone-feedback" class="mt-1 text-xs"></div>
+                    @error('phone')
+                        <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                    @else
+                        <p class="text-[11px] text-slate-400 mt-1">Digunakan oleh calon pembeli dan admin untuk menghubungi Anda (10-15 digit)</p>
+                    @enderror
                 </div>
 
                 <!-- Bagian Wilayah & Alamat Lengkap Dari Provinsi sampai Desa -->
@@ -119,8 +138,15 @@
                             <input type="text" id="address-input" name="address" required value="{{ old('address') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white" placeholder="Contoh: Jl. Diponegoro No. 12, RT 02 / RW 04, Dusun Jatirejo">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kode Pos <span class="text-slate-400 font-normal">(Opsional)</span></label>
-                            <input type="text" id="postal-input" name="postal_code" value="{{ old('postal_code') }}" maxlength="10" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white" placeholder="Contoh: 57615">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                Kode Pos
+                                <span class="text-[10px] text-slate-400 font-normal ml-1">(5 Digit)</span>
+                            </label>
+                            <input type="text" id="postal-input" name="postal_code" value="{{ old('postal_code') }}" minlength="5" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white @error('postal_code') border-red-500 @enderror" placeholder="Contoh: 57615">
+                            <div id="create-postal-feedback" class="mt-1 text-xs"></div>
+                            @error('postal_code')
+                                <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -138,16 +164,61 @@
                     <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Legalitas & Sertifikasi (Opsional)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Induk Berusaha (NIB)</label>
-                            <input type="text" name="nib" value="{{ old('nib') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Opsional">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                Nomor Induk Berusaha (NIB)
+                                <span class="text-[10px] text-slate-400 font-normal ml-1">(13 Digit)</span>
+                            </label>
+                            <input type="text" 
+                                   name="nib" 
+                                   id="create-nib-input"
+                                   value="{{ old('nib') }}" 
+                                   minlength="13" 
+                                   maxlength="13" 
+                                   pattern="[0-9]{13}" 
+                                   inputmode="numeric" 
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                                   class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] @error('nib') border-red-500 @enderror" 
+                                   placeholder="Contoh: 9120003216549">
+                            <div id="create-nib-feedback" class="mt-1 text-xs"></div>
+                            @error('nib')
+                                <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Sertifikasi PIRT</label>
-                            <input type="text" name="pirt" value="{{ old('pirt') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Opsional">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                Sertifikasi PIRT
+                                <span class="text-[10px] text-slate-400 font-normal ml-1">(15 Digit)</span>
+                            </label>
+                            <input type="text" 
+                                   name="pirt" 
+                                   id="create-pirt-input"
+                                   value="{{ old('pirt') }}" 
+                                   minlength="15" 
+                                   maxlength="35" 
+                                   class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] @error('pirt') border-red-500 @enderror" 
+                                   placeholder="Contoh: 215331201014526 atau P-IRT 2153312010145-26">
+                            <div id="create-pirt-feedback" class="mt-1 text-xs"></div>
+                            @error('pirt')
+                                <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Sertifikasi Halal</label>
-                            <input type="text" name="halal_cert" value="{{ old('halal_cert') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Opsional">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                Sertifikasi Halal
+                                <span class="text-[10px] text-slate-400 font-normal ml-1">(BPJPH / MUI)</span>
+                            </label>
+                            <input type="text" 
+                                   name="halal_cert" 
+                                   id="create-halal-input"
+                                   value="{{ old('halal_cert') }}" 
+                                   minlength="10" 
+                                   maxlength="35" 
+                                   class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] @error('halal_cert') border-red-500 @enderror" 
+                                   placeholder="Contoh: ID33110000789010323">
+                            <div id="create-halal-feedback" class="mt-1 text-xs"></div>
+                            @error('halal_cert')
+                                <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -315,5 +386,149 @@
             searchResults.classList.add('hidden');
         }
     });
+
+    // Live Validator & Notifikasi Digit Kurang
+    (function setupLiveValidation() {
+        const form = document.getElementById('form-create-store');
+        if (!form) return;
+
+        const nibInput = document.getElementById('create-nib-input');
+        const pirtInput = document.getElementById('create-pirt-input');
+        const halalInput = document.getElementById('create-halal-input');
+        const phoneInput = document.getElementById('create-phone-input');
+        const postalInput = document.getElementById('postal-input');
+
+        const nibFb = document.getElementById('create-nib-feedback');
+        const pirtFb = document.getElementById('create-pirt-feedback');
+        const halalFb = document.getElementById('create-halal-feedback');
+        const phoneFb = document.getElementById('create-phone-feedback');
+        const postalFb = document.getElementById('create-postal-feedback');
+        const alertBox = document.getElementById('create-alert-box');
+        const alertMsg = document.getElementById('create-alert-message');
+
+        function checkNib() {
+            if (!nibInput || !nibFb) return true;
+            const val = nibInput.value.trim();
+            if (!val) { nibFb.innerHTML = ''; nibInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 13) {
+                const sisa = 13 - val.length;
+                nibFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, wajib 13 digit)</span>`;
+                nibInput.classList.add('border-red-500'); nibInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                nibFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor NIB lengkap sesuai standar (13 digit)</span>`;
+                nibInput.classList.remove('border-red-500'); nibInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkPirt() {
+            if (!pirtInput || !pirtFb) return true;
+            const val = pirtInput.value.trim();
+            if (!val) { pirtFb.innerHTML = ''; pirtInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 15) {
+                const sisa = 15 - val.length;
+                pirtFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, minimal 15 digit)</span>`;
+                pirtInput.classList.add('border-red-500'); pirtInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                pirtFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor PIRT memenuhi jumlah minimal (15 digit)</span>`;
+                pirtInput.classList.remove('border-red-500'); pirtInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkHalal() {
+            if (!halalInput || !halalFb) return true;
+            const val = halalInput.value.trim();
+            if (!val) { halalFb.innerHTML = ''; halalInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 10) {
+                const sisa = 10 - val.length;
+                halalFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} karakter lagi (saat ini ${val.length} karakter, minimal 10 karakter)</span>`;
+                halalInput.classList.add('border-red-500'); halalInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                halalFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor Sertifikasi Halal memenuhi jumlah minimal</span>`;
+                halalInput.classList.remove('border-red-500'); halalInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkPhone() {
+            if (!phoneInput || !phoneFb) return true;
+            const val = phoneInput.value.trim();
+            if (!val) {
+                phoneFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Nomor kontak / WhatsApp wajib diisi</span>`;
+                phoneInput.classList.add('border-red-500'); phoneInput.classList.remove('border-emerald-500');
+                return false;
+            }
+            if (val.length < 10) {
+                const sisa = 10 - val.length;
+                phoneFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, minimal 10 digit)</span>`;
+                phoneInput.classList.add('border-red-500'); phoneInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                phoneFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor kontak valid</span>`;
+                phoneInput.classList.remove('border-red-500'); phoneInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkPostal() {
+            if (!postalInput || !postalFb) return true;
+            const val = postalInput.value.trim();
+            if (!val) { postalFb.innerHTML = ''; postalInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 5) {
+                const sisa = 5 - val.length;
+                postalFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, wajib 5 digit)</span>`;
+                postalInput.classList.add('border-red-500'); postalInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                postalFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Kode pos valid (5 digit)</span>`;
+                postalInput.classList.remove('border-red-500'); postalInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        if (nibInput) { nibInput.addEventListener('input', checkNib); checkNib(); }
+        if (pirtInput) { pirtInput.addEventListener('input', checkPirt); checkPirt(); }
+        if (halalInput) { halalInput.addEventListener('input', checkHalal); checkHalal(); }
+        if (phoneInput) { phoneInput.addEventListener('input', checkPhone); checkPhone(); }
+        if (postalInput) { postalInput.addEventListener('input', checkPostal); checkPostal(); }
+
+        form.addEventListener('submit', function(e) {
+            const vNib = checkNib();
+            const vPirt = checkPirt();
+            const vHalal = checkHalal();
+            const vPhone = checkPhone();
+            const vPostal = checkPostal();
+
+            if (!vNib || !vPirt || !vHalal || !vPhone || !vPostal) {
+                e.preventDefault();
+                let errors = [];
+                if (!vPhone) errors.push('Nomor Kontak / WhatsApp minimal 10 digit (saat ini: ' + (phoneInput ? phoneInput.value.trim().length : 0) + ' digit)');
+                if (!vNib) errors.push('Nomor Induk Berusaha (NIB) harus tepat 13 digit angka (saat ini: ' + (nibInput ? nibInput.value.trim().length : 0) + ' digit)');
+                if (!vPirt) errors.push('Nomor Sertifikasi PIRT minimal 15 digit (saat ini: ' + (pirtInput ? pirtInput.value.trim().length : 0) + ' digit)');
+                if (!vHalal) errors.push('Nomor Sertifikasi Halal minimal 10 karakter (saat ini: ' + (halalInput ? halalInput.value.trim().length : 0) + ' karakter)');
+                if (!vPostal) errors.push('Kode Pos harus tepat 5 digit angka (saat ini: ' + (postalInput ? postalInput.value.trim().length : 0) + ' digit)');
+
+                if (alertBox && alertMsg) {
+                    alertMsg.innerHTML = errors.map(err => `<div>• ${err}</div>`).join('');
+                    alertBox.classList.remove('hidden');
+                    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                alert("⚠️ JUMLAH DIGIT NOMOR BELUM LENGKAP:\n\n• " + errors.join("\n• ") + "\n\nSilakan periksa dan lengkapi digit nomor sebelum mengirim pendaftaran.");
+
+                if (!vPhone && phoneInput) phoneInput.focus();
+                else if (!vNib && nibInput) nibInput.focus();
+                else if (!vPirt && pirtInput) pirtInput.focus();
+                else if (!vHalal && halalInput) halalInput.focus();
+                else if (!vPostal && postalInput) postalInput.focus();
+            } else {
+                if (alertBox) alertBox.classList.add('hidden');
+            }
+        });
+    })();
 </script>
 @endsection

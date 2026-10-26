@@ -53,67 +53,8 @@
 
     <!-- Regional & Search Filter Section -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 p-5 space-y-4">
-        <!-- Section Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-[#800000]"></span>
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Pilih & Telusuri Per Wilayah Sentra</span>
-            </div>
-            @if($hasActiveFilter)
-            <a href="{{ route('admin.products') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-800 transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Reset Semua Filter
-            </a>
-            @endif
-        </div>
-
-        <!-- Quick District Filter Chips -->
-        <div>
-            <div class="flex items-center gap-2 flex-wrap">
-                <!-- Chip: Semua Wilayah -->
-                <a href="{{ route('admin.products', array_filter(['search' => $currentSearch, 'category' => $currentCategory])) }}"
-                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all {{ empty($currentDistrict) ? 'bg-[#800000] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 border border-slate-200/60' }}">
-                    <span>Semua Wilayah</span>
-                    <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ empty($currentDistrict) ? 'bg-white/20 text-white' : 'bg-white text-slate-600 border border-slate-200' }}">
-                        {{ $totalAllProducts }}
-                    </span>
-                </a>
-
-                <!-- Chips: Kecamatan yang memiliki produk terdata -->
-                @foreach($districtsWithCounts as $item)
-                    @if($item->total_products > 0)
-                        @php
-                            $isActive = !empty($currentDistrict) && strtolower($currentDistrict) === strtolower(trim($item->district));
-                        @endphp
-                        <a href="{{ route('admin.products', array_filter(['district' => $item->district, 'search' => $currentSearch, 'category' => $currentCategory])) }}"
-                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all {{ $isActive ? 'bg-[#800000] text-white shadow-xs ring-2 ring-red-200' : 'bg-white text-slate-700 hover:bg-red-50 hover:text-[#800000] border border-slate-200 hover:border-red-200' }}">
-                            <svg class="w-3 h-3 {{ $isActive ? 'text-white' : 'text-[#800000]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                            <span>Kec. {{ $item->district }}</span>
-                            <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ $isActive ? 'bg-white/20 text-white' : 'bg-red-50 text-[#800000] border border-red-100 font-extrabold' }}">
-                                {{ $item->total_products }}
-                            </span>
-                        </a>
-                    @endif
-                @endforeach
-
-                <!-- If current district is selected from dropdown but not in the main chips with >0 products -->
-                @if(!empty($currentDistrict) && !in_array(strtolower($currentDistrict), $districtsWithCounts->where('total_products', '>', 0)->pluck('district')->map(fn($d) => strtolower(trim($d)))->toArray()))
-                    <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#800000] text-white shadow-xs ring-2 ring-red-200">
-                        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                        <span>Kec. {{ $currentDistrict }}</span>
-                        <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-white/20 text-white">
-                            {{ $products->total() }}
-                        </span>
-                        <a href="{{ route('admin.products', array_filter(['search' => $currentSearch, 'category' => $currentCategory])) }}" class="ml-1 hover:bg-white/20 p-0.5 rounded-full" title="Hapus filter wilayah">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </a>
-                    </span>
-                @endif
-            </div>
-        </div>
-
         <!-- Integrated Search & Filter Form -->
-        <form method="GET" action="{{ route('admin.products') }}" class="pt-2 border-t border-slate-100">
+        <form method="GET" action="{{ route('admin.products') }}">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
                 <!-- Search Keyword -->
                 <div class="lg:col-span-5 relative">
