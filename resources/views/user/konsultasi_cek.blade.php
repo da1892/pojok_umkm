@@ -106,25 +106,27 @@
                                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                         @foreach($consultation->attachments_list as $attachItem)
                                             @php
-                                                $extension = pathinfo($attachItem, PATHINFO_EXTENSION);
-                                                $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
-                                                $attachFileExists = file_exists(public_path('storage/' . $attachItem)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($attachItem);
+                                                $extension = is_object($attachItem) ? $attachItem->extension : pathinfo((string)$attachItem, PATHINFO_EXTENSION);
+                                                $isImage = is_object($attachItem) ? $attachItem->is_image : in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                                $attachFileExists = is_object($attachItem) ? $attachItem->exists : (file_exists(public_path('storage/' . $attachItem)) || \Illuminate\Support\Facades\Storage::disk('public')->exists((string)$attachItem));
+                                                $attachSrc = is_object($attachItem) ? $attachItem->view_url : asset('storage/' . $attachItem);
+                                                $attachName = is_object($attachItem) ? $attachItem->name : basename((string)$attachItem);
                                             @endphp
                                             @if(!$attachFileExists)
                                                 <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 flex items-center gap-2.5 text-xs text-amber-800">
                                                     <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                                     <div class="overflow-hidden">
-                                                        <span class="font-semibold block truncate">File tidak tersedia di server</span>
-                                                        <span class="text-[10px] text-amber-700 font-mono truncate block">{{ basename($attachItem) }}</span>
+                                                        <span class="font-semibold block truncate">File belum tersinkron</span>
+                                                        <span class="text-[10px] text-amber-700 font-mono truncate block">{{ $attachName }}</span>
                                                     </div>
                                                 </div>
                                             @elseif($isImage)
                                                 <div class="space-y-1.5 bg-white p-2.5 rounded-xl border border-slate-200">
-                                                    <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="block group overflow-hidden rounded-lg">
-                                                        <img src="{{ asset('storage/' . $attachItem) }}" alt="Lampiran" class="w-full h-36 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-all">
+                                                    <a href="{{ $attachSrc }}" target="_blank" class="block group overflow-hidden rounded-lg">
+                                                        <img src="{{ $attachSrc }}" alt="Lampiran" class="w-full h-36 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-all">
                                                     </a>
-                                                    <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-[#800000] font-semibold hover:underline">
-                                                        <span>Lihat Gambar</span>
+                                                    <a href="{{ $attachSrc }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-[#800000] font-semibold hover:underline">
+                                                        <span>Lihat Gambar Penuh</span>
                                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                                                     </a>
                                                 </div>
@@ -132,9 +134,9 @@
                                                 <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
                                                     <div class="flex items-center gap-2 overflow-hidden">
                                                         <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                                        <span class="text-xs font-semibold text-slate-700 truncate">{{ strtoupper($extension) }}</span>
+                                                        <span class="text-xs font-semibold text-slate-700 truncate">{{ $attachName }} ({{ strtoupper($extension) }})</span>
                                                     </div>
-                                                    <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="shrink-0 text-xs text-[#800000] font-bold hover:underline ml-2">
+                                                    <a href="{{ $attachSrc }}" target="_blank" download="{{ $attachName }}" class="shrink-0 text-xs text-[#800000] font-bold hover:underline ml-2">
                                                         Unduh &rarr;
                                                     </a>
                                                 </div>

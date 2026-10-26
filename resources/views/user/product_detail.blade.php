@@ -149,7 +149,7 @@
                     <!-- Seller / Store Info & WhatsApp Action -->
                     <div class="pt-6 border-t border-slate-100">
                         <div class="flex items-center justify-between mb-3">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Informasi Penjual / Toko</h4>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Informasi Penjual / UMKM</h4>
                             @if($product->umkmProfile)
                                 <a href="{{ route('direktori.show', $product->umkmProfile->id) }}" class="text-xs font-bold text-[#800000] hover:underline flex items-center gap-1">
                                     Lihat Profil Lengkap &rarr;
@@ -205,7 +205,7 @@
                                 @endif
                                 @if($product->umkmProfile)
                                     <a href="{{ route('direktori.show', $product->umkmProfile->id) }}" class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-2xs">
-                                        <span>Profil Toko</span>
+                                        <span>Profil UMKM</span>
                                     </a>
                                     @if(!empty($product->umkmProfile->google_maps_directions_url))
                                         <a href="{{ $product->umkmProfile->google_maps_directions_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl transition-colors">

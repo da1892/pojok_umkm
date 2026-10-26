@@ -9,25 +9,24 @@
             <h3 class="font-bold text-slate-800 text-lg">Kelola Data UMKM</h3>
             <p class="text-slate-500 text-sm mt-1">Daftar semua UMKM yang telah terdaftar di sistem. Anda dapat melihat, mengedit, dan menghapus UMKM.</p>
         </div>
-        <form action="{{ route('admin.stores') }}" method="GET" class="flex flex-wrap items-center gap-2">
-            <div class="relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama UMKM / pemilik / desa..." class="pl-10 pr-3 py-2 text-sm bg-white border-2 border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none w-64 shadow-xs transition-all">
-                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <form id="filter-form" action="{{ route('admin.stores') }}" method="GET" class="flex items-center gap-3">
+            <div class="relative flex items-center">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input type="text" id="search-input" name="search" value="{{ request('search') }}" placeholder="Cari nama UMKM / pemilik / desa..." autocomplete="off" class="search-input-padding w-72 sm:w-80 text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal bg-white border-2 border-slate-300 rounded-xl focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" style="padding-left: 2.75rem !important; padding-right: 2.5rem !important; height: 42px;">
+                <button type="button" id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700 transition-colors z-10 {{ request('search') ? '' : 'hidden' }}" onclick="clearSearch()" title="Hapus pencarian">
+                    <span class="w-5 h-5 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </span>
+                </button>
             </div>
-            <select name="status" class="py-2 px-3 text-sm bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
+            <select name="status" onchange="document.getElementById('filter-form').submit()" class="px-3 text-sm font-semibold bg-white border-2 border-slate-300 rounded-xl text-slate-800 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all cursor-pointer" style="height: 42px;">
                 <option value="">Semua Status</option>
                 <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Disetujui</option>
                 <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu Persetujuan</option>
                 <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
             </select>
-            <button type="submit" class="px-4 py-2 bg-[#800000] text-white text-sm font-semibold rounded-lg hover:bg-red-800 transition-colors">
-                Filter
-            </button>
-            @if(request('search') || request('status'))
-                <a href="{{ route('admin.stores') }}" class="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg bg-slate-50">
-                    Reset
-                </a>
-            @endif
         </form>
     </div>
     <div class="overflow-x-auto">
@@ -44,7 +43,7 @@
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse($umkms as $umkm)
-                <tr class="hover:bg-slate-50 transition-colors">
+                <tr class="umkm-row hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 font-bold text-[#800000] text-base">
                         {{ $umkm->business_name }}
                     </td>
@@ -98,6 +97,11 @@
                     </td>
                 </tr>
                 @endforelse
+                <tr id="no-match-row" class="hidden">
+                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                        Tidak ada UMKM yang sesuai dengan kata kunci pencarian.
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -107,4 +111,64 @@
     </div>
     @endif
 </div>
+
+<script>
+    let searchTimeout = null;
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('clear-search-btn');
+    const filterForm = document.getElementById('filter-form');
+
+    function clearSearch() {
+        if (searchInput) {
+            searchInput.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            filterForm.submit();
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+
+            if (clearBtn) {
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            }
+
+            // Filter instan di sisi klien
+            const rows = document.querySelectorAll('tbody tr.umkm-row');
+            let matchCount = 0;
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = '';
+                    matchCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            const noMatchRow = document.getElementById('no-match-row');
+            if (noMatchRow) {
+                noMatchRow.classList.toggle('hidden', matchCount > 0 || rows.length === 0);
+            }
+
+            // Debounce otomatis kirim ke server tanpa perlu tombol filter
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterForm.submit();
+            }, 500);
+        });
+
+        // Pertahankan kursor di akhir teks saat halaman termuat
+        if (searchInput.value) {
+            const val = searchInput.value;
+            searchInput.value = '';
+            searchInput.value = val;
+        }
+    }
+</script>
 @endsection

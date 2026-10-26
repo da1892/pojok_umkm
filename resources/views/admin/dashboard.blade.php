@@ -168,7 +168,7 @@
         <div class="space-y-3">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Dropdown 1: Pilih Kecamatan (25 Kecamatan dari master_kecamatan.xlsx) -->
-                <div class="relative" id="districtDropdownContainer">
+                <div class="relative z-30" id="districtDropdownContainer">
                     <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         <span>Pilih Kecamatan (25 Kecamatan):</span>
@@ -195,8 +195,6 @@
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                     </div>
                                     <input type="text" id="insideDropdownSearch" autocomplete="off" placeholder="Cari nama kecamatan..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:border-[#800000] focus:ring-1 focus:ring-[#800000] bg-white">
-                                </div>
-                            </div>
                                 </div>
                             </div>
                             <div id="dropdownOptionsList" class="divide-y divide-slate-100" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;">
@@ -237,7 +235,7 @@
                 </div>
 
                 <!-- Dropdown 2: Pilih Desa / Kelurahan (294 Desa dari master_desa.xlsx) -->
-                <div class="relative" id="villageDropdownContainer">
+                <div class="relative z-20" id="villageDropdownContainer">
                     <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         <span id="villageLabelTitle">Pilih Desa / Kelurahan (294 Desa):</span>
