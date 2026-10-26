@@ -21,7 +21,7 @@
 
         <!-- Search & Filter Card -->
         <div class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs border border-slate-200/80 mb-8 sm:mb-10 reveal delay-100">
-            <form action="/katalog" method="GET" class="flex flex-col md:flex-row items-center gap-3 sm:gap-3.5">
+            <form id="katalog-filter-form" action="/katalog" method="GET" class="flex flex-col md:flex-row items-center gap-3 sm:gap-3.5">
                 
                 <!-- Search Input -->
                 <div class="relative flex-1 w-full">
@@ -30,81 +30,121 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
                         </svg>
                     </div>
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari produk unggulan..." class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all">
+                    <input type="text" 
+                           id="katalog-search-input"
+                           name="q" 
+                           value="{{ request('q') }}" 
+                           autocomplete="off"
+                           placeholder="Cari produk unggulan..." 
+                           class="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all">
+                    
+                    <!-- Subtle Spinner saat Auto-Filter Memuat -->
+                    <div id="katalog-search-spinner" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#991b1b]">
+                        <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                    </div>
                 </div>
 
                 <!-- Dropdown Kategori -->
                 <div class="w-full md:w-56 shrink-0 relative">
-                    <select name="kategori" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
+                    <select id="katalog-category-select" name="kategori" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
                         <option value="">Kategori: Semua</option>
-                        <option value="makanan" {{ request('kategori') == 'makanan' ? 'selected' : '' }}>Makanan & Minuman</option>
-                        <option value="kerajinan" {{ request('kategori') == 'kerajinan' ? 'selected' : '' }}>Kerajinan</option>
-                        <option value="batik" {{ request('kategori') == 'batik' ? 'selected' : '' }}>Batik/Fashion</option>
-                        <option value="pertanian" {{ request('kategori') == 'pertanian' ? 'selected' : '' }}>Olahan Hasil Pertanian</option>
-                        <option value="kreatif" {{ request('kategori') == 'kreatif' ? 'selected' : '' }}>Produk Kreatif</option>
+                        <option value="makanan" {{ in_array(strtolower(request('kategori', '')), ['makanan', 'makanan & minuman']) ? 'selected' : '' }}>Makanan & Minuman</option>
+                        <option value="kerajinan" {{ in_array(strtolower(request('kategori', '')), ['kerajinan', 'kerajinan tangan']) ? 'selected' : '' }}>Kerajinan</option>
+                        <option value="batik" {{ in_array(strtolower(request('kategori', '')), ['batik', 'batik/fashion', 'fashion']) ? 'selected' : '' }}>Batik/Fashion</option>
+                        <option value="pertanian" {{ in_array(strtolower(request('kategori', '')), ['pertanian', 'olahan hasil pertanian']) ? 'selected' : '' }}>Olahan Hasil Pertanian</option>
+                        <option value="kreatif" {{ in_array(strtolower(request('kategori', '')), ['kreatif', 'produk kreatif']) ? 'selected' : '' }}>Produk Kreatif</option>
                     </select>
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
                     </div>
                 </div>
 
-                <!-- Dropdown Kecamatan -->
+                @php
+                    $wilayahJsonPath = public_path('wonogiri_wilayah.json');
+                    $kecamatanList = file_exists($wilayahJsonPath)
+                        ? array_keys(json_decode(file_get_contents($wilayahJsonPath), true))
+                        : [
+                            'Baturetno', 'Batuwarno', 'Bulukerto', 'Eromoko', 'Girimarto', 
+                            'Giritontro', 'Giriwoyo', 'Jatipurno', 'Jatiroto', 'Jatisrono', 
+                            'Karangtengah', 'Kismantoro', 'Manyaran', 'Ngadirojo', 'Nguntoronadi', 
+                            'Paranggupito', 'Pracimantoro', 'Puhpelem', 'Purwantoro', 'Selogiri', 
+                            'Sidoharjo', 'Slogohimo', 'Tirtomoyo', 'Wonogiri', 'Wuryantoro'
+                        ];
+                    sort($kecamatanList);
+                @endphp
+
+                <!-- Dropdown Kecamatan (25 Kecamatan Resmi Wonogiri) -->
                 <div class="w-full md:w-56 shrink-0 relative">
-                    <select name="kecamatan" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
+                    <select id="katalog-district-select" name="kecamatan" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
                         <option value="">Kecamatan: Semua</option>
-                        <option value="wonogiri" {{ request('kecamatan') == 'wonogiri' ? 'selected' : '' }}>Kec. Wonogiri</option>
-                        <option value="ngadirojo" {{ request('kecamatan') == 'ngadirojo' ? 'selected' : '' }}>Kec. Ngadirojo</option>
-                        <option value="wuryantoro" {{ request('kecamatan') == 'wuryantoro' ? 'selected' : '' }}>Kec. Wuryantoro</option>
-                        <option value="selogiri" {{ request('kecamatan') == 'selogiri' ? 'selected' : '' }}>Kec. Selogiri</option>
-                        <option value="purwantoro" {{ request('kecamatan') == 'purwantoro' ? 'selected' : '' }}>Kec. Purwantoro</option>
-                        <option value="bulukerto" {{ request('kecamatan') == 'bulukerto' ? 'selected' : '' }}>Kec. Bulukerto</option>
-                        <option value="pracimantoro" {{ request('kecamatan') == 'pracimantoro' ? 'selected' : '' }}>Kec. Pracimantoro</option>
-                        <option value="baturetno" {{ request('kecamatan') == 'baturetno' ? 'selected' : '' }}>Kec. Baturetno</option>
+                        @foreach($kecamatanList as $kec)
+                            @php
+                                $kecVal = strtolower(trim($kec));
+                                $isSelected = strtolower(trim(request('kecamatan', ''))) === $kecVal;
+                            @endphp
+                            <option value="{{ $kecVal }}" {{ $isSelected ? 'selected' : '' }}>
+                                Kec. {{ $kec }}
+                            </option>
+                        @endforeach
                     </select>
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
                     </div>
                 </div>
-
-                <!-- Tombol Terapkan -->
-                <button type="submit" class="w-full md:w-auto px-6 py-2.5 bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs shrink-0">
-                    Terapkan
-                </button>
             </form>
         </div>
 
         @php
-            $searchQuery = trim(request('q', ''));
-            $categoryFilter = strtolower(trim(request('kategori', '')));
-            $districtFilter = trim(request('kecamatan', ''));
+            if (!isset($products)) {
+                $searchQuery = strtolower(trim(request('q', '')));
+                $categoryFilter = strtolower(trim(request('kategori', '')));
+                $districtFilter = strtolower(trim(request('kecamatan', '')));
 
-            $query = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified');
+                $query = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified');
 
-            if ($searchQuery !== '') {
-                $query->where(function($q) use ($searchQuery) {
-                    $q->where('name', 'like', "%{$searchQuery}%")
-                      ->orWhereHas('umkmProfile', function($q2) use ($searchQuery) {
-                          $q2->where('business_name', 'like', "%{$searchQuery}%")
-                             ->orWhere('address', 'like', "%{$searchQuery}%");
-                      });
-                });
+                if ($searchQuery !== '') {
+                    $query->where(function($q) use ($searchQuery) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . $searchQuery . '%'])
+                          ->orWhereHas('umkmProfile', function($q2) use ($searchQuery) {
+                              $q2->whereRaw('LOWER(business_name) LIKE ?', ['%' . $searchQuery . '%'])
+                                 ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $searchQuery . '%']);
+                          });
+                    });
+                }
+
+                if ($categoryFilter !== '') {
+                    if ($categoryFilter === 'makanan' || str_contains($categoryFilter, 'makan')) {
+                        $query->whereRaw('LOWER(category) LIKE ?', ['%makan%']);
+                    } elseif ($categoryFilter === 'kerajinan' || str_contains($categoryFilter, 'rajin')) {
+                        $query->whereRaw('LOWER(category) LIKE ?', ['%rajin%']);
+                    } elseif ($categoryFilter === 'batik' || str_contains($categoryFilter, 'batik') || str_contains($categoryFilter, 'fashion')) {
+                        $query->where(function($cq) {
+                            $cq->whereRaw('LOWER(category) LIKE ?', ['%batik%'])
+                               ->orWhereRaw('LOWER(category) LIKE ?', ['%fashion%']);
+                        });
+                    } elseif ($categoryFilter === 'pertanian' || str_contains($categoryFilter, 'pertan')) {
+                        $query->whereRaw('LOWER(category) LIKE ?', ['%pertan%']);
+                    } elseif ($categoryFilter === 'kreatif' || str_contains($categoryFilter, 'kreatif')) {
+                        $query->whereRaw('LOWER(category) LIKE ?', ['%kreatif%']);
+                    } else {
+                        $query->whereRaw('LOWER(category) LIKE ?', ['%' . $categoryFilter . '%']);
+                    }
+                }
+
+                if ($districtFilter !== '') {
+                    $query->whereHas('umkmProfile', function($q) use ($districtFilter) {
+                        $q->where(function($subQ) use ($districtFilter) {
+                            $subQ->whereRaw('LOWER(district) LIKE ?', ['%' . $districtFilter . '%'])
+                                 ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $districtFilter . '%']);
+                        });
+                    });
+                }
+
+                $products = $query->latest()->paginate(9)->withQueryString();
             }
-
-            if ($categoryFilter !== '') {
-                if ($categoryFilter === 'makanan') $query->where('category', 'like', '%makan%');
-                elseif ($categoryFilter === 'kerajinan') $query->where('category', 'like', '%kerajin%');
-                elseif ($categoryFilter === 'batik') $query->where('category', 'like', '%batik%');
-                elseif ($categoryFilter === 'pertanian') $query->where('category', 'like', '%pertan%');
-                elseif ($categoryFilter === 'kreatif') $query->where('category', 'like', '%kreatif%');
-            }
-
-            if ($districtFilter !== '') {
-                $query->whereHas('umkmProfile', function($q) use ($districtFilter) {
-                    $q->where('address', 'like', "%{$districtFilter}%");
-                });
-            }
-
-            $products = $query->latest()->paginate(9)->withQueryString();
         @endphp
 
         <!-- Target Anchor for Smooth Scrolling -->
@@ -171,49 +211,213 @@
             @endif
         </div>
 
-        <!-- Pagination -->
-        @if ($products->hasPages())
-        <div class="flex items-center justify-center gap-2 mt-12 mb-8 reveal delay-300 select-none">
-            {{-- Tombol Previous (<) --}}
-            @if ($products->onFirstPage())
-                <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                </span>
-            @else
-                <a href="{{ $products->previousPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                </a>
-            @endif
-
-            {{-- Nomor Halaman --}}
-            @foreach ($products->links()->elements[0] as $page => $url)
-                @if ($page == $products->currentPage())
-                    <span class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-bold bg-[#991b1b] text-white shadow-xs cursor-default">
-                        {{ $page }}
+        <!-- Pagination Container for Smooth AJAX Replacement -->
+        <div id="katalog-pagination-container">
+            @if ($products->hasPages())
+            <div class="flex items-center justify-center gap-2 mt-12 mb-8 reveal delay-300 select-none">
+                {{-- Tombol Previous (<) --}}
+                @if ($products->onFirstPage())
+                    <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                     </span>
                 @else
-                    <a href="{{ $url }}#katalog-anchor" class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
-                        {{ $page }}
+                    <a href="{{ $products->previousPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                     </a>
                 @endif
-            @endforeach
 
-            {{-- Tombol Next (>) --}}
-            @if ($products->hasMorePages())
-                <a href="{{ $products->nextPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                </a>
-            @else
-                <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                </span>
+                {{-- Nomor Halaman --}}
+                @foreach ($products->links()->elements[0] as $page => $url)
+                    @if ($page == $products->currentPage())
+                        <span class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-bold bg-[#991b1b] text-white shadow-xs cursor-default">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <a href="{{ $url }}#katalog-anchor" class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Tombol Next (>) --}}
+                @if ($products->hasMorePages())
+                    <a href="{{ $products->nextPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                    </a>
+                @else
+                    <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                    </span>
+                @endif
+            </div>
             @endif
         </div>
-        @endif
 
     </div>
 </div>
 
-<!-- Deleted Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('katalog-filter-form');
+    const searchInput = document.getElementById('katalog-search-input');
+    const catSelect = document.getElementById('katalog-category-select');
+    const distSelect = document.getElementById('katalog-district-select');
+    const gridContainer = document.getElementById('katalog-grid-container');
+    const paginationContainer = document.getElementById('katalog-pagination-container');
+    const spinner = document.getElementById('katalog-search-spinner');
+
+    let debounceTimer = null;
+    let abortController = null;
+    let lastExecutedQuery = (searchInput ? searchInput.value.trim() : '');
+
+    function triggerAutoFilter() {
+        if (!gridContainer) return;
+
+        // Batalkan request sebelumnya jika user masih mengetik/mengubah
+        if (abortController) {
+            abortController.abort();
+        }
+        abortController = new AbortController();
+
+        const qVal = searchInput ? searchInput.value.trim() : '';
+        const catVal = catSelect ? catSelect.value : '';
+        const distVal = distSelect ? distSelect.value : '';
+
+        const params = new URLSearchParams();
+        if (qVal.length >= 3) {
+            params.set('q', qVal);
+        }
+        if (catVal) {
+            params.set('kategori', catVal);
+        }
+        if (distVal) {
+            params.set('kecamatan', distVal);
+        }
+
+        const queryString = params.toString();
+        const targetUrl = `/katalog${queryString ? '?' + queryString : ''}`;
+
+        // Tampilkan indikator visual saat memuat
+        gridContainer.classList.add('opacity-40', 'pointer-events-none', 'transition-opacity', 'duration-200');
+        if (spinner) spinner.classList.remove('hidden');
+
+        fetch(targetUrl, {
+            signal: abortController.signal,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Gagal memuat katalog');
+            return response.text();
+        })
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const newGrid = doc.getElementById('katalog-grid-container');
+            const newPagination = doc.getElementById('katalog-pagination-container');
+
+            if (newGrid && gridContainer) {
+                gridContainer.innerHTML = newGrid.innerHTML;
+            }
+
+            if (paginationContainer) {
+                paginationContainer.innerHTML = newPagination ? newPagination.innerHTML : '';
+            }
+
+            // Update URL browser tanpa reload
+            history.replaceState(null, '', targetUrl);
+            lastExecutedQuery = qVal;
+        })
+        .catch(err => {
+            if (err.name !== 'AbortError') {
+                console.error('Error saat auto-filter katalog:', err);
+            }
+        })
+        .finally(() => {
+            if (gridContainer) gridContainer.classList.remove('opacity-40', 'pointer-events-none');
+            if (spinner) spinner.classList.add('hidden');
+        });
+    }
+
+    // 1. Live Filter saat menulis minimal 3 huruf (atau saat dihapus/dikosongkan untuk reset)
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            const val = this.value.trim();
+
+            if (val.length >= 3 || val.length === 0) {
+                debounceTimer = setTimeout(() => {
+                    if (val !== lastExecutedQuery || val.length === 0) {
+                        triggerAutoFilter();
+                    }
+                }, 350);
+            }
+        });
+    }
+
+    // 2. Pilih salah satu kategori langsung otomatis terfilter
+    if (catSelect) {
+        catSelect.addEventListener('change', function() {
+            clearTimeout(debounceTimer);
+            triggerAutoFilter();
+        });
+    }
+
+    // 3. Pilih salah satu kecamatan langsung otomatis terfilter
+    if (distSelect) {
+        distSelect.addEventListener('change', function() {
+            clearTimeout(debounceTimer);
+            triggerAutoFilter();
+        });
+    }
+
+    // 4. Submit form (jika menekan Enter di kolom pencarian)
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearTimeout(debounceTimer);
+            triggerAutoFilter();
+        });
+    }
+
+    // 5. Intercept pagination agar navigasi halaman juga tetap mulus tanpa reload
+    if (paginationContainer) {
+        paginationContainer.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            if (!href || href.startsWith('#')) return;
+
+            e.preventDefault();
+            gridContainer.classList.add('opacity-40', 'pointer-events-none', 'transition-opacity', 'duration-200');
+            if (spinner) spinner.classList.remove('hidden');
+
+            fetch(href, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newGrid = doc.getElementById('katalog-grid-container');
+                const newPagination = doc.getElementById('katalog-pagination-container');
+
+                if (newGrid && gridContainer) gridContainer.innerHTML = newGrid.innerHTML;
+                if (paginationContainer) paginationContainer.innerHTML = newPagination ? newPagination.innerHTML : '';
+
+                history.replaceState(null, '', href);
+
+                const anchor = document.getElementById('katalog-anchor');
+                if (anchor) anchor.scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(err => console.error('Pagination fetch error:', err))
+            .finally(() => {
+                if (gridContainer) gridContainer.classList.remove('opacity-40', 'pointer-events-none');
+                if (spinner) spinner.classList.add('hidden');
+            });
+        });
+    }
+});
+</script>
 
 @endsection

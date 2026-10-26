@@ -70,17 +70,62 @@ class PublicController extends Controller
     {
         $query = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified');
         
-        if ($request->has('q') && $request->q != '') {
-            $query->where('name', 'like', '%' . $request->q . '%');
+        if ($request->filled('q')) {
+            $search = strtolower(trim($request->q));
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereHas('umkmProfile', function($q2) use ($search) {
+                      $q2->whereRaw('LOWER(business_name) LIKE ?', ['%' . $search . '%'])
+                         ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $search . '%']);
+                  });
+            });
         }
         
-        if ($request->has('kategori') && $request->kategori != '') {
-            $query->where('category', $request->kategori);
+        if ($request->filled('kategori')) {
+            $cat = strtolower(trim($request->kategori));
+            if ($cat === 'makanan' || str_contains($cat, 'makan')) {
+                $query->whereRaw('LOWER(category) LIKE ?', ['%makan%']);
+            } elseif ($cat === 'kerajinan' || str_contains($cat, 'rajin')) {
+                $query->whereRaw('LOWER(category) LIKE ?', ['%rajin%']);
+            } elseif ($cat === 'batik' || str_contains($cat, 'batik') || str_contains($cat, 'fashion')) {
+                $query->where(function($cq) {
+                    $cq->whereRaw('LOWER(category) LIKE ?', ['%batik%'])
+                       ->orWhereRaw('LOWER(category) LIKE ?', ['%fashion%']);
+                });
+            } elseif ($cat === 'pertanian' || str_contains($cat, 'pertan')) {
+                $query->whereRaw('LOWER(category) LIKE ?', ['%pertan%']);
+            } elseif ($cat === 'kreatif' || str_contains($cat, 'kreatif')) {
+                $query->whereRaw('LOWER(category) LIKE ?', ['%kreatif%']);
+            } else {
+                $query->whereRaw('LOWER(category) LIKE ?', ['%' . $cat . '%']);
+            }
+        }
+
+        if ($request->filled('kecamatan')) {
+            $dist = strtolower(trim($request->kecamatan));
+            $query->whereHas('umkmProfile', function($q) use ($dist) {
+                $q->where(function($subQ) use ($dist) {
+                    $subQ->whereRaw('LOWER(district) LIKE ?', ['%' . $dist . '%'])
+                         ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $dist . '%']);
+                });
+            });
         }
         
         $products = $query->latest()->paginate(9)->withQueryString();
+
+        $wilayahJsonPath = public_path('wonogiri_wilayah.json');
+        $kecamatanList = file_exists($wilayahJsonPath)
+            ? array_keys(json_decode(file_get_contents($wilayahJsonPath), true))
+            : [
+                'Baturetno', 'Batuwarno', 'Bulukerto', 'Eromoko', 'Girimarto', 
+                'Giritontro', 'Giriwoyo', 'Jatipurno', 'Jatiroto', 'Jatisrono', 
+                'Karangtengah', 'Kismantoro', 'Manyaran', 'Ngadirojo', 'Nguntoronadi', 
+                'Paranggupito', 'Pracimantoro', 'Puhpelem', 'Purwantoro', 'Selogiri', 
+                'Sidoharjo', 'Slogohimo', 'Tirtomoyo', 'Wonogiri', 'Wuryantoro'
+            ];
+        sort($kecamatanList);
         
-        return view('user.katalog', compact('products'));
+        return view('user.katalog', compact('products', 'kecamatanList'));
     }
 
     public function direktori(Request $request)
@@ -90,16 +135,16 @@ class PublicController extends Controller
         }])->where('status', 'verified');
         
         if ($request->filled('q')) {
-            $search = trim($request->q);
+            $search = strtolower(trim($request->q));
             $query->where(function($q) use ($search) {
-                $q->where('business_name', 'like', '%' . $search . '%')
-                  ->orWhere('owner_name', 'like', '%' . $search . '%')
-                  ->orWhere('address', 'like', '%' . $search . '%')
-                  ->orWhere('village', 'like', '%' . $search . '%')
-                  ->orWhere('district', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%')
+                $q->whereRaw('LOWER(business_name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(owner_name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(village) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(district) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(description) LIKE ?', ['%' . $search . '%'])
                   ->orWhereHas('products', function($pq) use ($search) {
-                      $pq->where('name', 'like', '%' . $search . '%');
+                      $pq->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%']);
                   });
             });
         }
@@ -108,18 +153,31 @@ class PublicController extends Controller
             $kategori = strtolower(trim($request->kategori));
             $query->whereHas('products', function($pq) use ($kategori) {
                 $pq->where('status', 'verified');
-                if ($kategori === 'makanan') $pq->where('category', 'like', '%makan%');
-                elseif ($kategori === 'kerajinan') $pq->where('category', 'like', '%kerajin%');
-                elseif ($kategori === 'batik') $pq->where('category', 'like', '%batik%');
-                elseif ($kategori === 'pertanian') $pq->where('category', 'like', '%pertan%');
-                elseif ($kategori === 'kreatif') $pq->where('category', 'like', '%kreatif%');
-                else $pq->where('category', 'like', '%' . $kategori . '%');
+                if ($kategori === 'makanan' || str_contains($kategori, 'makan')) {
+                    $pq->whereRaw('LOWER(category) LIKE ?', ['%makan%']);
+                } elseif ($kategori === 'kerajinan' || str_contains($kategori, 'rajin')) {
+                    $pq->whereRaw('LOWER(category) LIKE ?', ['%rajin%']);
+                } elseif ($kategori === 'batik' || str_contains($kategori, 'batik') || str_contains($kategori, 'fashion')) {
+                    $pq->where(function($cq) {
+                        $cq->whereRaw('LOWER(category) LIKE ?', ['%batik%'])
+                           ->orWhereRaw('LOWER(category) LIKE ?', ['%fashion%']);
+                    });
+                } elseif ($kategori === 'pertanian' || str_contains($kategori, 'pertan')) {
+                    $pq->whereRaw('LOWER(category) LIKE ?', ['%pertan%']);
+                } elseif ($kategori === 'kreatif' || str_contains($kategori, 'kreatif')) {
+                    $pq->whereRaw('LOWER(category) LIKE ?', ['%kreatif%']);
+                } else {
+                    $pq->whereRaw('LOWER(category) LIKE ?', ['%' . $kategori . '%']);
+                }
             });
         }
 
         if ($request->filled('kecamatan')) {
             $kecamatan = strtolower(trim($request->kecamatan));
-            $query->where('district', 'like', '%' . $kecamatan . '%');
+            $query->where(function($q) use ($kecamatan) {
+                $q->whereRaw('LOWER(district) LIKE ?', ['%' . $kecamatan . '%'])
+                  ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $kecamatan . '%']);
+            });
         }
         
         $umkms = $query->latest()->paginate(12)->withQueryString();
