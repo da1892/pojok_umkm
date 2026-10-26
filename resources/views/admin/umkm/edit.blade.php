@@ -15,10 +15,21 @@
     </div>
     
     <div class="p-6">
-        <form action="{{ route('admin.umkm.update', $umkm->id) }}" method="POST">
+        <form id="form-admin-umkm-edit" action="{{ route('admin.umkm.update', $umkm->id) }}" method="POST">
             @csrf
             @method('PUT')
             
+            <!-- Notifikasi Peringatan Jika Digit Kurang -->
+            <div id="admin-alert-box" class="hidden mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-red-800 mb-1">Jumlah Digit Nomor Belum Lengkap</h4>
+                        <div id="admin-alert-message" class="text-xs space-y-1"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Data Pemilik -->
                 <div class="md:col-span-2">
@@ -36,8 +47,15 @@
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-800 mb-2">Nomor HP / WhatsApp <span class="text-red-500">*</span></label>
-                    <input type="text" name="phone" value="{{ old('phone', $umkm->phone) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]" required>
+                    <label class="block text-sm font-semibold text-slate-800 mb-2">
+                        Nomor HP / WhatsApp <span class="text-red-500">*</span>
+                        <span class="text-xs text-slate-400 font-normal ml-1">(Min. 10 Digit)</span>
+                    </label>
+                    <input type="tel" name="phone" id="admin-phone-input" value="{{ old('phone', $umkm->phone) }}" minlength="10" maxlength="15" pattern="[0-9]{10,15}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000] @error('phone') border-red-500 @enderror" required>
+                    <div id="admin-phone-feedback" class="mt-1 text-xs"></div>
+                    @error('phone')
+                        <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
@@ -105,8 +123,15 @@
                             <textarea id="address_input" name="address" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]" required>{{ old('address', $umkm->address) }}</textarea>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Pos</label>
-                            <input type="text" id="postal_code_input" name="postal_code" value="{{ old('postal_code', $umkm->postal_code) }}" maxlength="10" placeholder="Contoh: 57615" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-[#800000] focus:border-[#800000]">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                Kode Pos
+                                <span class="text-[10px] text-slate-400 font-normal ml-1">(5 Digit)</span>
+                            </label>
+                            <input type="text" id="postal_code_input" name="postal_code" value="{{ old('postal_code', $umkm->postal_code) }}" minlength="5" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Contoh: 57615" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-[#800000] focus:border-[#800000] @error('postal_code') border-red-500 @enderror">
+                            <div id="admin-postal-feedback" class="mt-1 text-xs"></div>
+                            @error('postal_code')
+                                <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -130,18 +155,63 @@
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-800 mb-2">Nomor Induk Berusaha (NIB)</label>
-                    <input type="text" name="nib" value="{{ old('nib', $umkm->nib) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <label class="block text-sm font-semibold text-slate-800 mb-1">
+                        Nomor Induk Berusaha (NIB)
+                        <span class="text-xs text-slate-400 font-normal ml-1">(13 Digit)</span>
+                    </label>
+                    <input type="text" 
+                           name="nib" 
+                           id="admin-nib-input"
+                           value="{{ old('nib', $umkm->nib) }}" 
+                           minlength="13" 
+                           maxlength="13" 
+                           pattern="[0-9]{13}" 
+                           inputmode="numeric" 
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                           placeholder="Contoh: 9120003216549" 
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000] @error('nib') border-red-500 @enderror">
+                    <div id="admin-nib-feedback" class="mt-1 text-xs"></div>
+                    @error('nib')
+                        <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                    @enderror
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-800 mb-2">Sertifikasi PIRT</label>
-                    <input type="text" name="pirt" value="{{ old('pirt', $umkm->pirt) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <label class="block text-sm font-semibold text-slate-800 mb-1">
+                        Sertifikasi PIRT
+                        <span class="text-xs text-slate-400 font-normal ml-1">(15 Digit)</span>
+                    </label>
+                    <input type="text" 
+                           name="pirt" 
+                           id="admin-pirt-input"
+                           value="{{ old('pirt', $umkm->pirt) }}" 
+                           minlength="15" 
+                           maxlength="35" 
+                           placeholder="Contoh: 215331201014526 atau P-IRT 2153312010145-26" 
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000] @error('pirt') border-red-500 @enderror">
+                    <div id="admin-pirt-feedback" class="mt-1 text-xs"></div>
+                    @error('pirt')
+                        <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                    @enderror
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-800 mb-2">Sertifikasi Halal</label>
-                    <input type="text" name="halal_cert" value="{{ old('halal_cert', $umkm->halal_cert) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <label class="block text-sm font-semibold text-slate-800 mb-1">
+                        Sertifikasi Halal
+                        <span class="text-xs text-slate-400 font-normal ml-1">(BPJPH / MUI)</span>
+                    </label>
+                    <input type="text" 
+                           name="halal_cert" 
+                           id="admin-halal-input"
+                           value="{{ old('halal_cert', $umkm->halal_cert) }}" 
+                           minlength="10" 
+                           maxlength="35" 
+                           placeholder="Contoh: ID33110000789010323" 
+                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000] @error('halal_cert') border-red-500 @enderror">
+                    <div id="admin-halal-feedback" class="mt-1 text-xs"></div>
+                    @error('halal_cert')
+                        <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                    @enderror
                 </div>
                 
                 <div class="md:col-span-2 pt-4 flex justify-end">
@@ -293,6 +363,150 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Live Validator & Notifikasi Digit Kurang
+    (function setupLiveValidation() {
+        const form = document.getElementById('form-admin-umkm-edit');
+        if (!form) return;
+
+        const nibInput = document.getElementById('admin-nib-input');
+        const pirtInput = document.getElementById('admin-pirt-input');
+        const halalInput = document.getElementById('admin-halal-input');
+        const phoneInput = document.getElementById('admin-phone-input');
+        const postalInput = document.getElementById('postal_code_input');
+
+        const nibFb = document.getElementById('admin-nib-feedback');
+        const pirtFb = document.getElementById('admin-pirt-feedback');
+        const halalFb = document.getElementById('admin-halal-feedback');
+        const phoneFb = document.getElementById('admin-phone-feedback');
+        const postalFb = document.getElementById('admin-postal-feedback');
+        const alertBox = document.getElementById('admin-alert-box');
+        const alertMsg = document.getElementById('admin-alert-message');
+
+        function checkNib() {
+            if (!nibInput || !nibFb) return true;
+            const val = nibInput.value.trim();
+            if (!val) { nibFb.innerHTML = ''; nibInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 13) {
+                const sisa = 13 - val.length;
+                nibFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, wajib 13 digit)</span>`;
+                nibInput.classList.add('border-red-500'); nibInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                nibFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor NIB lengkap sesuai standar (13 digit)</span>`;
+                nibInput.classList.remove('border-red-500'); nibInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkPirt() {
+            if (!pirtInput || !pirtFb) return true;
+            const val = pirtInput.value.trim();
+            if (!val) { pirtFb.innerHTML = ''; pirtInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 15) {
+                const sisa = 15 - val.length;
+                pirtFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, minimal 15 digit)</span>`;
+                pirtInput.classList.add('border-red-500'); pirtInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                pirtFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor PIRT memenuhi jumlah minimal (15 digit)</span>`;
+                pirtInput.classList.remove('border-red-500'); pirtInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkHalal() {
+            if (!halalInput || !halalFb) return true;
+            const val = halalInput.value.trim();
+            if (!val) { halalFb.innerHTML = ''; halalInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 10) {
+                const sisa = 10 - val.length;
+                halalFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} karakter lagi (saat ini ${val.length} karakter, minimal 10 karakter)</span>`;
+                halalInput.classList.add('border-red-500'); halalInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                halalFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor Sertifikasi Halal memenuhi jumlah minimal</span>`;
+                halalInput.classList.remove('border-red-500'); halalInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkPhone() {
+            if (!phoneInput || !phoneFb) return true;
+            const val = phoneInput.value.trim();
+            if (!val) {
+                phoneFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Nomor kontak / WhatsApp wajib diisi</span>`;
+                phoneInput.classList.add('border-red-500'); phoneInput.classList.remove('border-emerald-500');
+                return false;
+            }
+            if (val.length < 10) {
+                const sisa = 10 - val.length;
+                phoneFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, minimal 10 digit)</span>`;
+                phoneInput.classList.add('border-red-500'); phoneInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                phoneFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Nomor kontak valid</span>`;
+                phoneInput.classList.remove('border-red-500'); phoneInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        function checkPostal() {
+            if (!postalInput || !postalFb) return true;
+            const val = postalInput.value.trim();
+            if (!val) { postalFb.innerHTML = ''; postalInput.classList.remove('border-red-500', 'border-emerald-500'); return true; }
+            if (val.length < 5) {
+                const sisa = 5 - val.length;
+                postalFb.innerHTML = `<span class="text-red-500 font-medium">⚠️ Kurang ${sisa} digit lagi (saat ini ${val.length} digit, wajib 5 digit)</span>`;
+                postalInput.classList.add('border-red-500'); postalInput.classList.remove('border-emerald-500');
+                return false;
+            } else {
+                postalFb.innerHTML = `<span class="text-emerald-600 font-semibold">✓ Kode pos valid (5 digit)</span>`;
+                postalInput.classList.remove('border-red-500'); postalInput.classList.add('border-emerald-500');
+                return true;
+            }
+        }
+
+        if (nibInput) { nibInput.addEventListener('input', checkNib); checkNib(); }
+        if (pirtInput) { pirtInput.addEventListener('input', checkPirt); checkPirt(); }
+        if (halalInput) { halalInput.addEventListener('input', checkHalal); checkHalal(); }
+        if (phoneInput) { phoneInput.addEventListener('input', checkPhone); checkPhone(); }
+        if (postalInput) { postalInput.addEventListener('input', checkPostal); checkPostal(); }
+
+        form.addEventListener('submit', function(e) {
+            const vNib = checkNib();
+            const vPirt = checkPirt();
+            const vHalal = checkHalal();
+            const vPhone = checkPhone();
+            const vPostal = checkPostal();
+
+            if (!vNib || !vPirt || !vHalal || !vPhone || !vPostal) {
+                e.preventDefault();
+                let errors = [];
+                if (!vPhone) errors.push('Nomor Kontak / WhatsApp minimal 10 digit (saat ini: ' + (phoneInput ? phoneInput.value.trim().length : 0) + ' digit)');
+                if (!vNib) errors.push('Nomor Induk Berusaha (NIB) harus tepat 13 digit angka (saat ini: ' + (nibInput ? nibInput.value.trim().length : 0) + ' digit)');
+                if (!vPirt) errors.push('Nomor Sertifikasi PIRT minimal 15 digit (saat ini: ' + (pirtInput ? pirtInput.value.trim().length : 0) + ' digit)');
+                if (!vHalal) errors.push('Nomor Sertifikasi Halal minimal 10 karakter (saat ini: ' + (halalInput ? halalInput.value.trim().length : 0) + ' karakter)');
+                if (!vPostal) errors.push('Kode Pos harus tepat 5 digit angka (saat ini: ' + (postalInput ? postalInput.value.trim().length : 0) + ' digit)');
+
+                if (alertBox && alertMsg) {
+                    alertMsg.innerHTML = errors.map(err => `<div>• ${err}</div>`).join('');
+                    alertBox.classList.remove('hidden');
+                    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                alert("⚠️ JUMLAH DIGIT NOMOR BELUM LENGKAP:\n\n• " + errors.join("\n• ") + "\n\nSilakan periksa dan lengkapi digit nomor sebelum menyimpan perubahan.");
+
+                if (!vPhone && phoneInput) phoneInput.focus();
+                else if (!vNib && nibInput) nibInput.focus();
+                else if (!vPirt && pirtInput) pirtInput.focus();
+                else if (!vHalal && halalInput) halalInput.focus();
+                else if (!vPostal && postalInput) postalInput.focus();
+            } else {
+                if (alertBox) alertBox.classList.add('hidden');
+            }
+        });
+    })();
 });
 </script>
 @endsection

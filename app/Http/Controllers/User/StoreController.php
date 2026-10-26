@@ -45,21 +45,8 @@ class StoreController extends Controller
             return redirect()->route('toko.create');
         }
 
-        $request->validate([
-            'business_name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:25',
-            'province' => 'nullable|string|max:100',
-            'regency' => 'nullable|string|max:100',
-            'district' => 'required|string|max:100',
-            'village' => 'required|string|max:100',
-            'postal_code' => 'nullable|string|max:10',
-            'address' => 'required|string',
-            'nib' => 'nullable|string|max:255',
-            'pirt' => 'nullable|string|max:255',
-            'halal_cert' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $request->validate($this->getUmkmValidationRules(), $this->getUmkmValidationMessages());
+
 
         $umkm->update([
             'business_name' => $request->business_name,
@@ -90,21 +77,8 @@ class StoreController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'business_name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'province' => 'nullable|string|max:100',
-            'regency' => 'nullable|string|max:100',
-            'district' => 'required|string|max:100',
-            'village' => 'required|string|max:100',
-            'postal_code' => 'nullable|string|max:10',
-            'address' => 'required|string',
-            'phone' => 'required|string|max:25',
-            'nib' => 'nullable|string|max:255',
-            'pirt' => 'nullable|string|max:255',
-            'halal_cert' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $request->validate($this->getUmkmValidationRules(), $this->getUmkmValidationMessages());
+
 
         auth()->user()->umkmProfile()->create([
             'business_name' => $request->business_name,
@@ -259,5 +233,36 @@ class StoreController extends Controller
         $product->update($data);
 
         return redirect()->route('toko.index')->with('success', 'Produk berhasil diperbarui!');
+    }
+
+    private function getUmkmValidationRules(): array
+    {
+        return [
+            'business_name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'phone' => ['required', 'string', 'min:10', 'max:25'],
+            'province' => 'nullable|string|max:100',
+            'regency' => 'nullable|string|max:100',
+            'district' => 'required|string|max:100',
+            'village' => 'required|string|max:100',
+            'postal_code' => ['nullable', 'string', 'size:5', 'regex:/^[0-9]+$/'],
+            'address' => 'required|string',
+            'nib' => ['nullable', 'string', 'regex:/^[0-9]{13}$/'],
+            'pirt' => ['nullable', 'string', 'min:15', 'max:35'],
+            'halal_cert' => ['nullable', 'string', 'min:10', 'max:35'],
+            'description' => 'nullable|string',
+        ];
+    }
+
+    private function getUmkmValidationMessages(): array
+    {
+        return [
+            'nib.regex' => 'Nomor Induk Berusaha (NIB) wajib berupa tepat 13 digit angka standar OSS.',
+            'pirt.min' => 'Nomor Sertifikasi PIRT minimal 15 karakter/digit standar BPOM/Dinkes.',
+            'halal_cert.min' => 'Nomor Sertifikasi Halal minimal 10 karakter/digit standar BPJPH/MUI.',
+            'postal_code.size' => 'Kode pos harus terdiri dari 5 digit angka.',
+            'postal_code.regex' => 'Kode pos hanya boleh berisi angka.',
+            'phone.min' => 'Nomor telepon/WhatsApp minimal 10 digit angka.',
+        ];
     }
 }

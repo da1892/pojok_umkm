@@ -59,11 +59,33 @@ class AdminController extends Controller
         // Semua UMKM terdaftar beserta daerahnya
         $allUmkms = UmkmProfile::select('id', 'business_name', 'district', 'village', 'status')->get();
 
-        // Data 25 Kecamatan dan Desanya dari JSON
+        // Data 25 Kecamatan dan 294 Desa asli Wonogiri dari master Excel
+        if (!file_exists(public_path('wonogiri_wilayah.json'))) {
+            try {
+                \App\Services\WilayahService::syncFromExcel();
+            } catch (\Throwable $e) {
+                // Silently fallback if excel not reachable
+            }
+        }
         $wilayahWonogiri = file_exists(public_path('wonogiri_wilayah.json'))
             ? json_decode(file_get_contents(public_path('wonogiri_wilayah.json')), true)
             : [];
-            
+
+        // Daftar kategori standar untuk grafik & filter produk UMKM
+        $standardCategories = [
+            'Makanan & Minuman',
+            'Batik/Fashion',
+            'Kerajinan',
+            'Olahan Hasil Pertanian',
+            'Produk Kreatif',
+        ];
+        $extraCategories = Product::whereNotNull('category')
+            ->where('category', '!=', '')
+            ->distinct()
+            ->pluck('category')
+            ->toArray();
+        $allCategoriesList = array_values(array_unique(array_merge($standardCategories, $extraCategories)));
+
         return view('admin.dashboard', compact(
             'pendingUmkms', 
             'pendingProducts', 
@@ -73,7 +95,8 @@ class AdminController extends Controller
             'categoryStats',
             'allVerifiedProducts',
             'allUmkms',
-            'wilayahWonogiri'
+            'wilayahWonogiri',
+            'allCategoriesList'
         ));
     }
 
@@ -98,6 +121,13 @@ class AdminController extends Controller
             $districtClean = trim(preg_replace('/^(Kec\.|Kecamatan)\s+/i', '', $request->district));
             $query->whereHas('umkmProfile', function($q) use ($districtClean) {
                 $q->where('district', 'ilike', '%' . $districtClean . '%');
+            });
+        }
+
+        if ($request->filled('village')) {
+            $villageClean = trim(preg_replace('/^(Ds\.|Desa|Kel\.|Kelurahan)\s+/i', '', $request->village));
+            $query->whereHas('umkmProfile', function($q) use ($villageClean) {
+                $q->where('village', 'ilike', '%' . $villageClean . '%');
             });
         }
 
@@ -133,7 +163,8 @@ class AdminController extends Controller
             'districtsWithCounts', 
             'allCategories', 
             'allKecamatanList',
-            'totalAllProducts'
+            'totalAllProducts',
+            'wilayahWonogiri'
         ));
     }
 
@@ -283,18 +314,24 @@ class AdminController extends Controller
         $request->validate([
             'business_name' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
-            'phone' => 'required|string',
+            'phone' => ['required', 'string', 'min:10', 'max:25'],
             'province' => 'nullable|string|max:100',
             'regency' => 'nullable|string|max:100',
             'district' => 'required|string',
             'village' => 'required|string',
-            'postal_code' => 'nullable|string|max:10',
+            'postal_code' => ['nullable', 'string', 'size:5', 'regex:/^[0-9]+$/'],
             'address' => 'required|string',
             'description' => 'nullable|string',
-            'nib' => 'nullable|string',
-            'pirt' => 'nullable|string',
-            'halal_cert' => 'nullable|string',
+            'nib' => ['nullable', 'string', 'regex:/^[0-9]{13}$/'],
+            'pirt' => ['nullable', 'string', 'min:15', 'max:35'],
+            'halal_cert' => ['nullable', 'string', 'min:10', 'max:35'],
             'status' => 'nullable|string|in:pending,verified,rejected'
+        ], [
+            'nib.regex' => 'Nomor Induk Berusaha (NIB) harus terdiri dari 13 digit angka standar OSS.',
+            'pirt.min' => 'Nomor Sertifikasi PIRT minimal 15 karakter/digit standar BPOM/Dinkes.',
+            'halal_cert.min' => 'Nomor Sertifikasi Halal minimal 10 karakter/digit standar BPJPH/MUI.',
+            'postal_code.size' => 'Kode pos harus terdiri dari 5 digit angka.',
+            'phone.min' => 'Nomor telepon/WhatsApp minimal 10 digit angka.',
         ]);
 
         $data = $request->only(
