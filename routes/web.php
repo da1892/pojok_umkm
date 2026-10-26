@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/toko', [StoreController::class, 'index'])->name('toko.index');
     Route::get('/toko/profil', [StoreController::class, 'profile'])->name('toko.profile');
     Route::put('/toko/profil', [StoreController::class, 'updateProfile'])->name('toko.profile.update');
+    Route::post('/toko/ajukan-ulang', [StoreController::class, 'resubmitVerification'])->name('toko.resubmit');
     Route::get('/toko/buka', [StoreController::class, 'create'])->name('toko.create');
     Route::post('/toko/buka', [StoreController::class, 'store'])->name('toko.store');
     
@@ -94,6 +95,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/toko/produk/{id}/edit', [StoreController::class, 'editProduct'])->name('toko.product.edit');
     Route::put('/toko/produk/{id}', [StoreController::class, 'updateProduct'])->name('toko.product.update');
     Route::delete('/toko/produk/{id}', [StoreController::class, 'destroyProduct'])->name('toko.product.destroy');
+    Route::delete('/toko/hapus', [StoreController::class, 'destroyStore'])->name('toko.destroy');
+    Route::delete('/toko/hapus-akun', [StoreController::class, 'destroyAccount'])->name('toko.destroyAccount');
     
     // User Consultations History
     Route::get('/toko/konsultasi', [StoreController::class, 'consultations'])->name('toko.consultations');

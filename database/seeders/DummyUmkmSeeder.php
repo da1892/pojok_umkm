@@ -32,6 +32,7 @@ class DummyUmkmSeeder extends Seeder
                     'pirt' => 'P-IRT 2153312010145-26',
                     'halal_cert' => 'ID33110000456780122',
                     'description' => 'Produsen kacang mete asli Wonogiri berbagai varian rasa (original oven, madu, wijen, pedas manis) dan olahan mete khas Ngadirojo kualitas super.',
+                    'image_path' => 'umkm/mete_wonogiri.jpg',
                     'status' => 'pending'
                 ]
             ],
@@ -54,6 +55,7 @@ class DummyUmkmSeeder extends Seeder
                     'pirt' => null,
                     'halal_cert' => null,
                     'description' => 'Kerajinan batik tulis dan cap khas Wonogiri bermotif alam perbukitan dan sejarah Kahyangan Dlepih dengan pewarnaan alami ramah lingkungan.',
+                    'image_path' => 'umkm/batik_tirtomoyo.jpg',
                     'status' => 'pending'
                 ]
             ],
@@ -76,6 +78,7 @@ class DummyUmkmSeeder extends Seeder
                     'pirt' => 'P-IRT 2153312020298-25',
                     'halal_cert' => 'ID33110000789010323',
                     'description' => 'Aneka olahan keripik singkong renyah, keripik pisang tanduk, emping jagung, dan camilan tradisional khas Wonogiri tanpa bahan pengawet.',
+                    'image_path' => 'umkm/keripik_berkah.jpg',
                     'status' => 'pending'
                 ]
             ]

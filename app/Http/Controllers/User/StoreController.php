@@ -59,9 +59,15 @@ class StoreController extends Controller
             'pirt' => 'nullable|string|max:255',
             'halal_cert' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'map_link' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ], [
+            'image.image' => 'File foto profil harus berupa gambar.',
+            'image.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran foto profil maksimal 5MB.',
         ]);
 
-        $umkm->update([
+        $data = [
             'business_name' => $request->business_name,
             'owner_name' => $request->owner_name,
             'phone' => $request->phone,
@@ -75,9 +81,43 @@ class StoreController extends Controller
             'pirt' => $request->pirt,
             'halal_cert' => $request->halal_cert,
             'description' => $request->description,
-        ]);
+            'map_link' => $request->map_link,
+        ];
 
-        return redirect()->route('toko.profile')->with('success', 'Profil UMKM berhasil diperbarui!');
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('umkm', 'public');
+        }
+
+        $wasRejected = ($umkm->status === 'rejected');
+        if ($wasRejected) {
+            $data['status'] = 'pending';
+        }
+
+        $umkm->update($data);
+
+        $successMsg = $wasRejected
+            ? 'Profil UMKM berhasil diperbarui dan diajukan ulang ke Admin! Status toko Anda saat ini kembali Menunggu Persetujuan.'
+            : 'Profil UMKM berhasil diperbarui!';
+
+        return redirect()->route('toko.profile')->with('success', $successMsg);
+    }
+
+    public function resubmitVerification()
+    {
+        $user = auth()->user();
+        $umkm = $user->umkmProfile;
+
+        if (!$umkm) {
+            return redirect()->route('toko.create');
+        }
+
+        if ($umkm->status === 'verified') {
+            return redirect()->route('toko.index')->with('success', 'Toko Anda sudah berstatus Disetujui.');
+        }
+
+        $umkm->update(['status' => 'pending']);
+
+        return redirect()->route('toko.index')->with('success', 'Pengajuan verifikasi ulang toko berhasil dikirim! Status toko Anda kini kembali Menunggu Persetujuan dari Administrator.');
     }
 
     public function create()
@@ -104,10 +144,22 @@ class StoreController extends Controller
             'pirt' => 'nullable|string|max:255',
             'halal_cert' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'map_link' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ], [
+            'image.image' => 'File foto profil harus berupa gambar.',
+            'image.mimes' => 'Format foto profil harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran foto profil maksimal 5MB.',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('umkm', 'public');
+        }
 
         auth()->user()->umkmProfile()->create([
             'business_name' => $request->business_name,
+            'image_path' => $imagePath,
             'owner_name' => $request->owner_name,
             'province' => $request->province ?: 'Jawa Tengah',
             'regency' => $request->regency ?: 'Kabupaten Wonogiri',
@@ -120,6 +172,7 @@ class StoreController extends Controller
             'pirt' => $request->pirt,
             'halal_cert' => $request->halal_cert,
             'description' => $request->description,
+            'map_link' => $request->map_link,
             'status' => 'pending'
         ]);
 
@@ -133,6 +186,10 @@ class StoreController extends Controller
             return redirect()->route('toko.index');
         }
 
+        if ($umkm->status !== 'verified') {
+            return redirect()->route('toko.index')->with('error', 'Profil UMKM Anda saat ini masih berstatus ' . ($umkm->status === 'pending' ? 'Menunggu Persetujuan' : 'Ditolak') . '. Anda belum dapat menambahkan produk baru hingga disetujui oleh admin.');
+        }
+
         return view('user.store.product_create');
     }
 
@@ -141,6 +198,10 @@ class StoreController extends Controller
         $umkm = auth()->user()->umkmProfile;
         if (!$umkm) {
             return redirect()->route('toko.index');
+        }
+
+        if ($umkm->status !== 'verified') {
+            return redirect()->route('toko.index')->with('error', 'Profil UMKM Anda belum disetujui oleh admin.');
         }
 
         $request->validate([
@@ -259,5 +320,77 @@ class StoreController extends Controller
         $product->update($data);
 
         return redirect()->route('toko.index')->with('success', 'Produk berhasil diperbarui!');
+    }
+
+    public function destroyStore(Request $request)
+    {
+        $user = auth()->user();
+        $umkm = $user->umkmProfile;
+
+        if (!$umkm) {
+            return redirect()->route('toko.index');
+        }
+
+        $businessName = $umkm->business_name;
+
+        // Bersihkan storage foto toko
+        if ($umkm->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($umkm->image_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($umkm->image_path);
+        }
+
+        // Bersihkan foto produk dan produk terkait
+        foreach ($umkm->products as $product) {
+            if ($product->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image_path);
+            }
+            if (!empty($product->images) && is_array($product->images)) {
+                foreach ($product->images as $img) {
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($img)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+                    }
+                }
+            }
+            $product->delete();
+        }
+
+        $umkm->delete();
+
+        return redirect()->route('toko.index')->with('warning', "Akun toko UMKM '{$businessName}' beserta seluruh katalog produknya telah berhasil dihapus dari sistem Pojok UMKM.");
+    }
+
+    public function destroyAccount(Request $request)
+    {
+        $user = auth()->user();
+        $umkm = $user->umkmProfile;
+
+        if ($umkm) {
+            if ($umkm->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($umkm->image_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($umkm->image_path);
+            }
+
+            foreach ($umkm->products as $product) {
+                if ($product->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image_path)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image_path);
+                }
+                if (!empty($product->images) && is_array($product->images)) {
+                    foreach ($product->images as $img) {
+                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($img)) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+                        }
+                    }
+                }
+                $product->delete();
+            }
+
+            $umkm->delete();
+        }
+
+        \Illuminate\Support\Facades\Auth::logout();
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('warning', 'Akun pengguna dan seluruh data toko Anda telah berhasil dihapus secara permanen dari sistem Pojok UMKM Wonogiri.');
     }
 }

@@ -124,7 +124,7 @@
                            name="search" 
                            value="{{ request('search') }}" 
                            placeholder="Cari nama produk, nama UMKM, desa..." 
-                           class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-100 transition-all bg-slate-50/50 hover:bg-white">
+                           class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm rounded-xl border-2 border-slate-300 focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 transition-all bg-white text-slate-900 placeholder:text-slate-400 shadow-xs">
                 </div>
 
                 <!-- Select Kecamatan (All 25 Wonogiri Districts) -->
@@ -133,7 +133,7 @@
                         <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                     </div>
                     <select name="district" 
-                            class="w-full pl-9 pr-8 py-2.5 text-xs md:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-100 transition-all bg-slate-50/50 hover:bg-white text-slate-700 appearance-none cursor-pointer">
+                            class="w-full pl-9 pr-8 py-2.5 text-xs md:text-sm rounded-xl border-2 border-slate-300 focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 transition-all bg-white text-slate-900 appearance-none cursor-pointer shadow-xs">
                         <option value="">Semua Kecamatan (25 Wilayah)</option>
                         @foreach($allKecamatanList as $kec)
                             @php
@@ -153,7 +153,7 @@
                 <!-- Select Category -->
                 <div class="lg:col-span-2 relative">
                     <select name="category" 
-                            class="w-full px-3.5 py-2.5 text-xs md:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-100 transition-all bg-slate-50/50 hover:bg-white text-slate-700 appearance-none cursor-pointer">
+                            class="w-full px-3.5 py-2.5 text-xs md:text-sm rounded-xl border-2 border-slate-300 focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 transition-all bg-white text-slate-900 appearance-none cursor-pointer shadow-xs">
                         <option value="">Semua Kategori</option>
                         @foreach($allCategories as $cat)
                             <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>

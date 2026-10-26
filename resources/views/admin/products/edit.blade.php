@@ -119,9 +119,13 @@
                 <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 p-5 space-y-3">
                     <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Informasi UMKM Pemilik</h5>
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-[#800000]/10 text-[#800000] font-black text-sm flex items-center justify-center border border-[#800000]/20">
-                            {{ substr($product->umkmProfile->business_name ?? 'UMKM', 0, 2) }}
-                        </div>
+                        @if($product->umkmProfile && $product->umkmProfile->image_path)
+                            <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0">
+                        @else
+                            <div class="w-10 h-10 rounded-xl bg-[#800000]/10 text-[#800000] font-black text-sm flex items-center justify-center border border-[#800000]/20 shrink-0">
+                                {{ substr($product->umkmProfile->business_name ?? 'UMKM', 0, 2) }}
+                            </div>
+                        @endif
                         <div class="overflow-hidden">
                             <p class="font-bold text-sm text-slate-800 truncate">{{ $product->umkmProfile->business_name ?? '-' }}</p>
                             <p class="text-xs text-slate-500 truncate">Pemilik: {{ $product->umkmProfile->owner_name ?? '-' }}</p>
@@ -149,7 +153,7 @@
                         </label>
                         <div class="relative">
                             <input type="text" name="name" value="{{ old('name', $product->name) }}" 
-                                   class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm font-semibold focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" 
+                                   class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm font-semibold focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" 
                                    placeholder="Contoh: Sambal Mete Khas Wonogiri Kemasan Botol" required>
                         </div>
                         @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
@@ -161,7 +165,7 @@
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                                 Kategori Produk <span class="text-red-500">*</span>
                             </label>
-                            <select name="category" class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm font-semibold focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" required>
+                            <select name="category" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm font-semibold focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" required>
                                 <option value="Makanan & Minuman" {{ (old('category', $product->category) == 'Makanan & Minuman' || old('category', $product->category) == 'makanan') ? 'selected' : '' }}>🍲 Makanan & Minuman</option>
                                 <option value="Batik/Fashion" {{ (old('category', $product->category) == 'Batik/Fashion' || old('category', $product->category) == 'batik') ? 'selected' : '' }}>👔 Batik / Fashion</option>
                                 <option value="Kerajinan" {{ (old('category', $product->category) == 'Kerajinan' || old('category', $product->category) == 'kerajinan') ? 'selected' : '' }}>🎨 Kerajinan Tangan</option>
@@ -194,7 +198,7 @@
                             <span class="text-[11px] text-slate-400">Jelaskan keunikan, bahan, atau rasa</span>
                         </div>
                         <textarea name="description" rows="6" 
-                                  class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm leading-relaxed focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" 
+                                  class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm leading-relaxed focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" 
                                   placeholder="Tuliskan deskripsi lengkap produk UMKM ini...">{{ old('description', $product->description) }}</textarea>
                         @error('description') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>

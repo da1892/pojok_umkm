@@ -36,31 +36,56 @@
                 </div>
             @endif
 
-            <form action="{{ route('toko.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('toko.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 
+                <!-- Foto Profil / Logo Toko -->
+                <div class="p-6 rounded-2xl bg-gradient-to-r from-red-50/70 via-slate-50 to-white border-2 border-red-100 flex flex-col sm:flex-row items-center gap-6 shadow-xs">
+                    <div class="relative shrink-0">
+                        <div id="preview-container" class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-red-200 shadow-md bg-white flex items-center justify-center">
+                            <div id="default-avatar" class="w-full h-full bg-gradient-to-br from-[#801414] to-[#b91c1c] text-white flex flex-col items-center justify-center font-extrabold shadow-inner">
+                                <svg class="w-8 h-8 opacity-90 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span class="text-[11px] uppercase tracking-wider font-bold">LOGO</span>
+                            </div>
+                            <img id="image-preview" src="#" alt="Pratinjau Foto" class="w-full h-full object-cover hidden">
+                        </div>
+                    </div>
+                    <div class="flex-1 text-center sm:text-left">
+                        <label class="block text-sm font-bold text-slate-900 mb-1">Foto Profil / Logo Toko UMKM <span class="text-slate-400 font-normal text-xs">(Opsional)</span></label>
+                        <p class="text-xs text-slate-500 mb-3 leading-relaxed">Unggah logo atau foto toko fisik Anda agar profil mudah dikenali. Format: JPG, PNG, atau WebP (Maks. 5MB).</p>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <label for="store-image-input" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#801414] hover:bg-red-900 text-white text-xs font-bold transition-all shadow-xs cursor-pointer hover:shadow-md">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                Pilih Foto / Logo
+                            </label>
+                            <span id="file-name-display" class="text-xs text-slate-500 italic">Belum ada file dipilih</span>
+                            <input type="file" name="image" id="store-image-input" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewStoreImage(this)" class="hidden">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Informasi Pokok UMKM -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1.5">Nama UMKM / Usaha <span class="text-red-500">*</span></label>
-                        <input type="text" name="business_name" value="{{ old('business_name') }}" required class="w-full rounded-xl border-slate-300 shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: Keripik Berkah Barokah">
-                        <p class="text-[11px] text-slate-400 mt-1">Nama resmi toko/brand UMKM Anda</p>
+                        <label class="block text-sm font-bold text-slate-800 mb-2">Nama UMKM / Usaha <span class="text-red-500">*</span></label>
+                        <input type="text" name="business_name" value="{{ old('business_name') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Keripik Berkah Barokah">
+                        <p class="text-[11px] text-slate-400 mt-1.5">Nama resmi toko/brand UMKM Anda</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-800 mb-1.5">Nama Pemilik <span class="text-red-500">*</span></label>
-                        <input type="text" name="owner_name" value="{{ old('owner_name') }}" required class="w-full rounded-xl border-slate-300 shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: Budi Santoso">
-                        <p class="text-[11px] text-slate-400 mt-1">Nama lengkap pemilik usaha</p>
+                        <label class="block text-sm font-bold text-slate-800 mb-2">Nama Pemilik <span class="text-red-500">*</span></label>
+                        <input type="text" name="owner_name" value="{{ old('owner_name') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Budi Santoso">
+                        <p class="text-[11px] text-slate-400 mt-1.5">Nama lengkap pemilik usaha</p>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-1.5">Nomor Kontak / WhatsApp <span class="text-red-500">*</span></label>
-                    <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full rounded-xl border-slate-300 shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: 08123456789">
-                    <p class="text-[11px] text-slate-400 mt-1">Digunakan oleh calon pembeli dan admin untuk menghubungi Anda</p>
+                    <label class="block text-sm font-bold text-slate-800 mb-2">Nomor Kontak / WhatsApp <span class="text-red-500">*</span></label>
+                    <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: 08123456789">
+                    <p class="text-[11px] text-slate-400 mt-1.5">Digunakan oleh calon pembeli dan admin untuk menghubungi Anda</p>
                 </div>
 
                 <!-- Bagian Wilayah & Alamat Lengkap Dari Provinsi sampai Desa -->
-                <div class="p-6 rounded-2xl bg-slate-50/90 border border-slate-200 space-y-5">
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-5">
                     <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                         <div class="flex items-center gap-2.5">
                             <span class="w-8 h-8 rounded-lg bg-red-100 text-[#801414] flex items-center justify-center">
@@ -82,31 +107,31 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Baturetno, Selogiri...)" class="w-full pl-10 pr-4 py-2.5 rounded-xl border-slate-300 text-sm focus:border-[#801414] focus:ring-[#801414] bg-white">
+                            <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Baturetno, Selogiri...)" class="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                             <div id="search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-200 z-50 divide-y divide-slate-100"></div>
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-1">Pilih dari hasil pencarian otomatis untuk mengisi Kecamatan dan Desa seketika.</p>
+                        <p class="text-[11px] text-slate-400 mt-1.5">Pilih dari hasil pencarian otomatis untuk mengisi Kecamatan dan Desa seketika.</p>
                     </div>
 
                     <!-- Wilayah Administratif Bertingkat (Provinsi, Kabupaten, Kecamatan, Desa) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Provinsi <span class="text-red-500">*</span></label>
-                            <input type="text" name="province" id="province-input" value="{{ old('province', 'Jawa Tengah') }}" readonly class="w-full rounded-xl border-slate-200 bg-slate-100/80 text-slate-700 text-sm font-semibold cursor-not-allowed">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Provinsi <span class="text-red-500">*</span></label>
+                            <input type="text" name="province" id="province-input" value="{{ old('province', 'Jawa Tengah') }}" readonly class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-100/90 text-slate-700 text-sm font-semibold cursor-not-allowed">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten / Kota <span class="text-red-500">*</span></label>
-                            <input type="text" name="regency" id="regency-input" value="{{ old('regency', 'Kabupaten Wonogiri') }}" readonly class="w-full rounded-xl border-slate-200 bg-slate-100/80 text-slate-700 text-sm font-semibold cursor-not-allowed">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Kabupaten / Kota <span class="text-red-500">*</span></label>
+                            <input type="text" name="regency" id="regency-input" value="{{ old('regency', 'Kabupaten Wonogiri') }}" readonly class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-100/90 text-slate-700 text-sm font-semibold cursor-not-allowed">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kecamatan <span class="text-red-500">*</span></label>
-                            <select id="district-select" name="district" required class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Kecamatan <span class="text-red-500">*</span></label>
+                            <select id="district-select" name="district" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                                 <option value="">-- Pilih Kecamatan --</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Desa / Kelurahan <span class="text-red-500">*</span></label>
-                            <select id="village-select" name="village" required class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Desa / Kelurahan <span class="text-red-500">*</span></label>
+                            <select id="village-select" name="village" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                                 <option value="">-- Pilih Desa / Kelurahan --</option>
                             </select>
                         </div>
@@ -115,53 +140,65 @@
                     <!-- Alamat Rinci & Kode Pos -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-3">
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Spesifik (Jalan, RT/RW, Dusun, Patokan Lokasi) <span class="text-red-500">*</span></label>
-                            <input type="text" id="address-input" name="address" required value="{{ old('address') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white" placeholder="Contoh: Jl. Diponegoro No. 12, RT 02 / RW 04, Dusun Jatirejo">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Spesifik (Jalan, RT/RW, Dusun, Patokan Lokasi) <span class="text-red-500">*</span></label>
+                            <input type="text" id="address-input" name="address" required value="{{ old('address') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Jl. Diponegoro No. 12, RT 02 / RW 04, Dusun Jatirejo">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kode Pos <span class="text-slate-400 font-normal">(Opsional)</span></label>
-                            <input type="text" id="postal-input" name="postal_code" value="{{ old('postal_code') }}" maxlength="10" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414] bg-white" placeholder="Contoh: 57615">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Kode Pos <span class="text-slate-400 font-normal">(Opsional)</span></label>
+                            <input type="text" id="postal-input" name="postal_code" value="{{ old('postal_code') }}" maxlength="10" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: 57615">
                         </div>
                     </div>
 
                     <!-- Pratinjau Alamat Lengkap Realtime -->
-                    <div class="p-3.5 rounded-xl bg-white border border-red-100 shadow-xs">
+                    <div class="p-4 rounded-xl bg-white border-2 border-red-100 shadow-xs">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-[#801414] block mb-1">Format Teks Alamat Lengkap:</span>
                         <p id="full-address-preview" class="text-xs text-slate-700 font-medium italic">
                             (Isi data wilayah dan alamat spesifik di atas untuk melihat format alamat lengkap)
+                        </p>
+                    </div>
+
+                    <!-- Link Titik Lokasi Google Maps -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Opsional - Agar calon pembeli tahu letak toko Anda)</span>
+                        </label>
+                        <input type="url" name="map_link" value="{{ old('map_link') }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
+                        <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
+                            💡 <em>Opsional: Peta lokasi toko akan otomatis membaca alamat, desa, dan kecamatan Anda di atas. Anda juga dapat menempelkan link Google Maps jika memiliki pin lokasi yang lebih spesifik.</em>
                         </p>
                     </div>
                 </div>
 
                 <!-- Legalitas & Sertifikasi Usaha -->
                 <div>
-                    <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Legalitas & Sertifikasi (Opsional)</h3>
+                    <h3 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-3">Legalitas & Sertifikasi (Opsional)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Induk Berusaha (NIB)</label>
-                            <input type="text" name="nib" value="{{ old('nib') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Opsional">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Induk Berusaha (NIB)</label>
+                            <input type="text" name="nib" value="{{ old('nib') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: 1234567890">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Sertifikasi PIRT</label>
-                            <input type="text" name="pirt" value="{{ old('pirt') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Opsional">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Sertifikasi PIRT</label>
+                            <input type="text" name="pirt" value="{{ old('pirt') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: P-IRT No. ...">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Sertifikasi Halal</label>
-                            <input type="text" name="halal_cert" value="{{ old('halal_cert') }}" class="w-full rounded-xl border-slate-300 text-sm shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Opsional">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Sertifikasi Halal</label>
+                            <input type="text" name="halal_cert" value="{{ old('halal_cert') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: ID3311...">
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-1">Deskripsi Singkat Usaha</label>
-                    <textarea name="description" rows="3" class="w-full rounded-xl border-slate-300 shadow-xs focus:border-[#801414] focus:ring-[#801414]" placeholder="Jelaskan jenis produk, kapasitas produksi, atau keunggulan UMKM Anda...">{{ old('description') }}</textarea>
+                    <label class="block text-sm font-bold text-slate-800 mb-2">Deskripsi Singkat Usaha</label>
+                    <textarea name="description" rows="3" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Jelaskan jenis produk, kapasitas produksi, atau keunggulan UMKM Anda...">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
                     <a href="{{ route('toko.index') }}" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
                         Batal
                     </a>
-                    <button type="submit" class="bg-[#801414] hover:bg-red-900 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+                    <button type="submit" class="bg-[#801414] hover:bg-red-900 text-white font-bold py-3.5 px-8 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Kirim Pendaftaran UMKM
                     </button>
@@ -209,6 +246,9 @@
 
     if (addressInput) addressInput.addEventListener('input', updateFullAddressPreview);
     if (postalInput) postalInput.addEventListener('input', updateFullAddressPreview);
+
+    const selectedDistrictOld = @json(old('district', ''));
+    const selectedVillageOld = @json(old('village', ''));
 
     // Muat data master wilayah Wonogiri (Kecamatan & Desa)
     fetch('/wonogiri_wilayah.json')
@@ -315,5 +355,30 @@
             searchResults.classList.add('hidden');
         }
     });
+
+    function previewStoreImage(input) {
+        const fileNameDisplay = document.getElementById('file-name-display');
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            if (fileNameDisplay) {
+                fileNameDisplay.textContent = file.name;
+                fileNameDisplay.classList.remove('italic', 'text-slate-500');
+                fileNameDisplay.classList.add('font-semibold', 'text-slate-800');
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('image-preview');
+                const defaultAvatar = document.getElementById('default-avatar');
+                if (previewImg) {
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                }
+                if (defaultAvatar) {
+                    defaultAvatar.classList.add('hidden');
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 </script>
 @endsection

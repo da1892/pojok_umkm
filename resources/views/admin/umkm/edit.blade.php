@@ -27,22 +27,22 @@
                 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Nama UMKM <span class="text-red-500">*</span></label>
-                    <input type="text" name="business_name" value="{{ old('business_name', $umkm->business_name) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]" required>
+                    <input type="text" name="business_name" value="{{ old('business_name', $umkm->business_name) }}" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" required>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Nama Pemilik <span class="text-red-500">*</span></label>
-                    <input type="text" name="owner_name" value="{{ old('owner_name', $umkm->owner_name) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]" required>
+                    <input type="text" name="owner_name" value="{{ old('owner_name', $umkm->owner_name) }}" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" required>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Nomor HP / WhatsApp <span class="text-red-500">*</span></label>
-                    <input type="text" name="phone" value="{{ old('phone', $umkm->phone) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]" required>
+                    <input type="text" name="phone" value="{{ old('phone', $umkm->phone) }}" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" required>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Status Akun UMKM</label>
-                    <select name="status" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <select name="status" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                         <option value="pending" {{ old('status', $umkm->status) == 'pending' ? 'selected' : '' }}>Menunggu Persetujuan</option>
                         <option value="verified" {{ old('status', $umkm->status) == 'verified' ? 'selected' : '' }}>Disetujui</option>
                         <option value="rejected" {{ old('status', $umkm->status) == 'rejected' ? 'selected' : '' }}>Ditolak</option>
@@ -68,8 +68,8 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1">Pencarian Cepat Wilayah (Ketik nama Desa atau Kecamatan):</label>
                         <div class="relative">
                             <input type="text" id="wilayah_search" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Selogiri...)" autocomplete="off"
-                                   class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-[#800000] focus:border-[#800000]">
-                            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                   class="w-full pl-10 pr-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
+                            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             <div id="search_results" class="hidden absolute z-30 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-lg"></div>
                         </div>
                     </div>
@@ -78,21 +78,21 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Provinsi <span class="text-red-500">*</span></label>
-                            <input type="text" name="province" id="province_input" value="{{ old('province', $umkm->province ?? 'Jawa Tengah') }}" readonly class="w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 cursor-not-allowed">
+                            <input type="text" name="province" id="province_input" value="{{ old('province', $umkm->province ?? 'Jawa Tengah') }}" readonly class="w-full px-4 py-3 bg-slate-100 border-2 border-slate-300 rounded-xl text-sm font-medium text-slate-700 cursor-not-allowed">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Kabupaten / Kota <span class="text-red-500">*</span></label>
-                            <input type="text" name="regency" id="regency_input" value="{{ old('regency', $umkm->regency ?? 'Kabupaten Wonogiri') }}" readonly class="w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 cursor-not-allowed">
+                            <input type="text" name="regency" id="regency_input" value="{{ old('regency', $umkm->regency ?? 'Kabupaten Wonogiri') }}" readonly class="w-full px-4 py-3 bg-slate-100 border-2 border-slate-300 rounded-xl text-sm font-medium text-slate-700 cursor-not-allowed">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Kecamatan <span class="text-red-500">*</span></label>
-                            <select id="district_select" name="district" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-[#800000] focus:border-[#800000]">
+                            <select id="district_select" name="district" required class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                                 <option value="">-- Pilih Kecamatan --</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Desa / Kelurahan <span class="text-red-500">*</span></label>
-                            <select id="village_select" name="village" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-[#800000] focus:border-[#800000]">
+                            <select id="village_select" name="village" required class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                                 <option value="">-- Pilih Desa / Kelurahan --</option>
                             </select>
                         </div>
@@ -102,11 +102,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-3">
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Lengkap Produksi (Jalan, RT/RW, Dusun) <span class="text-red-500">*</span></label>
-                            <textarea id="address_input" name="address" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]" required>{{ old('address', $umkm->address) }}</textarea>
+                            <textarea id="address_input" name="address" rows="2" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" required>{{ old('address', $umkm->address) }}</textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Pos</label>
-                            <input type="text" id="postal_code_input" name="postal_code" value="{{ old('postal_code', $umkm->postal_code) }}" maxlength="10" placeholder="Contoh: 57615" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-[#800000] focus:border-[#800000]">
+                            <input type="text" id="postal_code_input" name="postal_code" value="{{ old('postal_code', $umkm->postal_code) }}" maxlength="10" placeholder="Contoh: 57615" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                         </div>
                     </div>
 
@@ -121,7 +121,7 @@
                 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Deskripsi Singkat UMKM</label>
-                    <textarea name="description" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">{{ old('description', $umkm->description) }}</textarea>
+                    <textarea name="description" rows="3" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">{{ old('description', $umkm->description) }}</textarea>
                 </div>
                 
                 <!-- Legalitas -->
@@ -131,17 +131,17 @@
                 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Nomor Induk Berusaha (NIB)</label>
-                    <input type="text" name="nib" value="{{ old('nib', $umkm->nib) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <input type="text" name="nib" value="{{ old('nib', $umkm->nib) }}" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Sertifikasi PIRT</label>
-                    <input type="text" name="pirt" value="{{ old('pirt', $umkm->pirt) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <input type="text" name="pirt" value="{{ old('pirt', $umkm->pirt) }}" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">Sertifikasi Halal</label>
-                    <input type="text" name="halal_cert" value="{{ old('halal_cert', $umkm->halal_cert) }}" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                    <input type="text" name="halal_cert" value="{{ old('halal_cert', $umkm->halal_cert) }}" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                 </div>
                 
                 <div class="md:col-span-2 pt-4 flex justify-end">

@@ -340,10 +340,32 @@ class AdminController extends Controller
     public function destroyUmkm($id)
     {
         $umkm = UmkmProfile::findOrFail($id);
-        // Hapus produk terkait jika perlu, tapi biasanya sudah ada onDelete cascade.
+        $businessName = $umkm->business_name;
+        $userId = $umkm->user_id;
+
+        // Bersihkan foto toko dari storage
+        if ($umkm->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($umkm->image_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($umkm->image_path);
+        }
+
+        // Bersihkan produk dan gambar produk
+        foreach ($umkm->products as $product) {
+            if ($product->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image_path);
+            }
+            if (!empty($product->images) && is_array($product->images)) {
+                foreach ($product->images as $img) {
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($img)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+                    }
+                }
+            }
+            $product->delete();
+        }
+
         $umkm->delete();
         
-        return back()->with('success', 'Toko / UMKM berhasil dihapus.');
+        return back()->with('success', "Akun toko UMKM '{$businessName}' beserta seluruh produknya telah berhasil dihapus.");
     }
 
     // ================= BERITA & KEGIATAN CRUD =================

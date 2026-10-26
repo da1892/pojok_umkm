@@ -90,13 +90,13 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Produk <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" value="{{ old('name', $product->name) }}" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="Contoh: Keripik Singkong Balado">
+                    <label class="block text-sm font-bold text-slate-800 mb-2">Nama Produk <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" value="{{ old('name', $product->name) }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Keripik Singkong Balado">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Produk <span class="text-red-500">*</span></label>
-                    <select name="category" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]">
+                    <label class="block text-sm font-bold text-slate-800 mb-2">Kategori Produk <span class="text-red-500">*</span></label>
+                    <select name="category" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                         <option value="">Pilih Kategori...</option>
                         <option value="Makanan & Minuman" {{ $product->category == 'Makanan & Minuman' ? 'selected' : '' }}>Makanan & Minuman</option>
                         <option value="Kerajinan" {{ $product->category == 'Kerajinan' ? 'selected' : '' }}>Kerajinan</option>
@@ -108,15 +108,15 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Produk <span class="text-red-500">*</span></label>
-                    <textarea name="description" rows="5" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#801414] focus:ring-[#801414]" placeholder="Jelaskan detail produk Anda, bahan, keunggulan, dll...">{{ old('description', $product->description) }}</textarea>
+                    <label class="block text-sm font-bold text-slate-800 mb-2">Deskripsi Produk <span class="text-red-500">*</span></label>
+                    <textarea name="description" rows="5" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Jelaskan detail produk Anda, bahan, keunggulan, dll...">{{ old('description', $product->description) }}</textarea>
                 </div>
 
                 <div class="pt-4 flex justify-end gap-3">
-                    <a href="{{ route('toko.index') }}" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm">
+                    <a href="{{ route('toko.index') }}" class="bg-white border-2 border-slate-300 text-slate-700 hover:bg-slate-50 font-bold py-3 px-6 rounded-xl transition-all shadow-xs">
                         Batal
                     </a>
-                    <button type="submit" class="bg-[#801414] hover:bg-red-900 text-white font-bold py-2.5 px-6 rounded-lg transition-colors shadow flex items-center">
+                    <button type="submit" class="bg-[#801414] hover:bg-red-900 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center cursor-pointer">
                         Simpan Perubahan
                     </button>
                 </div>

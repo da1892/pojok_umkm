@@ -50,31 +50,31 @@
                         <!-- Nama Lengkap -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nama Lengkap Pemohon <span class="text-red-500">*</span></label>
-                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama lengkap Anda...">
+                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-900 placeholder:text-slate-400 shadow-xs" placeholder="Masukkan nama lengkap Anda...">
                         </div>
                         
                         <!-- Email -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Alamat Email <span class="text-red-500">*</span></label>
-                            <input type="text" name="email" value="{{ old('email') }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan email aktif Anda...">
+                            <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-900 placeholder:text-slate-400 shadow-xs" placeholder="Masukkan email aktif Anda...">
                         </div>
                         
                         <!-- Nama UMKM -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nama UMKM / Usaha (Opsional)</label>
-                            <input type="text" name="umkm_name" value="{{ old('umkm_name') }}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukkan nama badan usaha Anda...">
+                            <input type="text" name="umkm_name" value="{{ old('umkm_name') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-900 placeholder:text-slate-400 shadow-xs" placeholder="Masukkan nama badan usaha Anda...">
                         </div>
                         
                         <!-- Nomor HP -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Nomor HP / WhatsApp <span class="text-red-500">*</span></label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm" placeholder="Masukan nomor anda...">
+                            <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-900 placeholder:text-slate-400 shadow-xs" placeholder="Masukan nomor anda...">
                         </div>
                         
                         <!-- Kategori Konsultasi -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Kategori Konsultasi <span class="text-red-500">*</span></label>
-                            <select name="subject" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-500 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10">
+                            <select name="subject" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-900 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22currentColor%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10 shadow-xs">
                                 <option value="" disabled {{ old('subject') ? '' : 'selected' }}>Pilih Kategori Permasalahan</option>
                                 <option value="Pemasaran & Penjualan" {{ old('subject') == 'Pemasaran & Penjualan' ? 'selected' : '' }}>Pemasaran & Penjualan</option>
                                 <option value="Keuangan & Modal" {{ old('subject') == 'Keuangan & Modal' ? 'selected' : '' }}>Keuangan & Modal</option>
@@ -87,7 +87,7 @@
                         <!-- Uraian Singkat -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-900 mb-2">Uraian Singkat Masalah / Kebutuhan <span class="text-red-500">*</span></label>
-                            <textarea name="message" required rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all bg-white text-sm resize-none" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci...">{{ old('message') }}</textarea>
+                            <textarea name="message" required rows="4" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#991b1b] outline-none transition-all bg-white text-sm text-slate-900 placeholder:text-slate-400 resize-none shadow-xs" placeholder="Jelaskan kebutuhan konsultasi Anda secara rinci...">{{ old('message') }}</textarea>
                         </div>
                         
                         <!-- Lampiran -->

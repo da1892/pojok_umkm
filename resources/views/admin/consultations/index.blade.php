@@ -62,21 +62,42 @@
                                                 @php
                                                     $adminExt = pathinfo($adminAttach, PATHINFO_EXTENSION);
                                                     $adminIsImg = in_array(strtolower($adminExt), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                                    $adminFileExists = file_exists(public_path('storage/' . $adminAttach)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($adminAttach);
                                                 @endphp
-                                                @if($adminIsImg)
-                                                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                                                        <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="block group">
-                                                            <img src="{{ asset('storage/' . $adminAttach) }}" alt="Lampiran" class="w-14 h-14 object-cover rounded-md border border-slate-200 group-hover:opacity-90">
+                                                @if(!$adminFileExists)
+                                                    <div class="inline-flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs shadow-2xs">
+                                                        <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                        <div>
+                                                            <span class="font-semibold block">File fisik tidak ditemukan</span>
+                                                            <span class="text-[10px] text-amber-700 font-mono">{{ basename($adminAttach) }}</span>
+                                                        </div>
+                                                    </div>
+                                                @elseif($adminIsImg)
+                                                    <div class="inline-flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-sm transition-all">
+                                                        <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="relative block group overflow-hidden rounded-lg shrink-0">
+                                                            <img src="{{ asset('storage/' . $adminAttach) }}" alt="Lampiran Foto" class="w-16 h-16 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-transform duration-200">
+                                                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                            </div>
                                                         </a>
-                                                        <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1 font-medium pr-2">
-                                                            <span>Penuh</span>
-                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                                        </a>
+                                                        <div class="flex flex-col pr-2">
+                                                            <span class="text-xs font-bold text-slate-800">Foto Lampiran {{ $loop->iteration }}</span>
+                                                            <span class="text-[10px] text-slate-400 font-mono truncate max-w-[150px]" title="{{ basename($adminAttach) }}">{{ strtoupper($adminExt) }} &bull; {{ basename($adminAttach) }}</span>
+                                                            <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-xs text-[#800000] hover:text-red-700 font-semibold">
+                                                                <span>Buka Foto Penuh</span>
+                                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 @else
-                                                    <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-md hover:bg-slate-100 transition-colors shadow-sm text-xs font-medium text-slate-700">
-                                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                                        <span>Berkas ({{ strtoupper($adminExt) }})</span>
+                                                    <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs text-xs font-medium text-slate-700">
+                                                        <div class="w-8 h-8 rounded-lg bg-red-50 text-[#800000] flex items-center justify-center font-bold text-[10px]">
+                                                            {{ strtoupper($adminExt) }}
+                                                        </div>
+                                                        <div class="flex flex-col">
+                                                            <span class="text-slate-800 font-bold truncate max-w-[150px]">Dokumen {{ $loop->iteration }} ({{ strtoupper($adminExt) }})</span>
+                                                            <span class="text-[11px] text-blue-600 hover:underline">Unduh Berkas &rarr;</span>
+                                                        </div>
                                                     </a>
                                                 @endif
                                             @endforeach
@@ -90,7 +111,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                                 <div class="md:col-span-1">
                                     <label class="block text-xs font-semibold text-slate-700 mb-2">Ubah Status</label>
-                                    <select name="status" class="w-full text-sm border-slate-200 rounded-lg focus:ring-[#800000] focus:border-[#800000]">
+                                    <select name="status" class="w-full px-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
                                         <option value="menunggu" {{ strtolower($consultation->status) == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                                         <option value="diproses" {{ strtolower($consultation->status) == 'diproses' ? 'selected' : '' }}>Diproses</option>
                                         <option value="selesai" {{ strtolower($consultation->status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
@@ -98,7 +119,7 @@
                                 </div>
                                 <div class="md:col-span-3">
                                     <label class="block text-xs font-semibold text-slate-700 mb-2">Balasan Admin</label>
-                                    <textarea name="response" rows="3" class="w-full text-sm border-slate-200 rounded-lg focus:ring-[#800000] focus:border-[#800000]" placeholder="Tuliskan balasan atau tindak lanjut...">{{ $consultation->response }}</textarea>
+                                    <textarea name="response" rows="3" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan balasan atau tindak lanjut...">{{ $consultation->response }}</textarea>
                                 </div>
                             </div>
                             <div class="flex justify-end gap-2">
@@ -110,8 +131,12 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">
-                        Belum ada tiket konsultasi.
+                    <td colspan="6" class="px-6 py-16 text-center">
+                        <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-400">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 mb-1">Belum Ada Tiket Konsultasi</h4>
+                        <p class="text-xs text-slate-500 max-w-sm mx-auto">Semua data konsultasi sebelumnya telah dibersihkan. Tiket baru yang diajukan oleh UMKM akan muncul di sini.</p>
                     </td>
                 </tr>
                 @endforelse

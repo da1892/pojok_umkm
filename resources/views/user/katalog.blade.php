@@ -30,12 +30,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
                         </svg>
                     </div>
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari produk unggulan..." class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#991b1b] focus:ring-1 focus:ring-[#991b1b] text-slate-800 placeholder-slate-400">
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari produk unggulan..." class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all">
                 </div>
 
                 <!-- Dropdown Kategori -->
                 <div class="w-full md:w-56 shrink-0 relative">
-                    <select name="kategori" class="w-full appearance-none pl-3.5 pr-8 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#991b1b] text-slate-700 font-medium cursor-pointer">
+                    <select name="kategori" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
                         <option value="">Kategori: Semua</option>
                         <option value="makanan" {{ request('kategori') == 'makanan' ? 'selected' : '' }}>Makanan & Minuman</option>
                         <option value="kerajinan" {{ request('kategori') == 'kerajinan' ? 'selected' : '' }}>Kerajinan</option>
@@ -50,7 +50,7 @@
 
                 <!-- Dropdown Kecamatan -->
                 <div class="w-full md:w-56 shrink-0 relative">
-                    <select name="kecamatan" class="w-full appearance-none pl-3.5 pr-8 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#991b1b] text-slate-700 font-medium cursor-pointer">
+                    <select name="kecamatan" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
                         <option value="">Kecamatan: Semua</option>
                         <option value="wonogiri" {{ request('kecamatan') == 'wonogiri' ? 'selected' : '' }}>Kec. Wonogiri</option>
                         <option value="ngadirojo" {{ request('kecamatan') == 'ngadirojo' ? 'selected' : '' }}>Kec. Ngadirojo</option>
@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Tombol Terapkan -->
-                <button type="submit" class="w-full md:w-auto px-6 py-2 bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold rounded-lg transition-colors shadow-2xs shrink-0">
+                <button type="submit" class="w-full md:w-auto px-6 py-2.5 bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs shrink-0">
                     Terapkan
                 </button>
             </form>
@@ -133,8 +133,11 @@
                             <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
                                 {{ $product->name }}
                             </h3>
-                            <p class="text-xs text-slate-500 mt-1">
-                                oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}
+                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                                @if(!empty($product->umkmProfile->image_path))
+                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-4 h-4 rounded-full object-cover shrink-0 border border-slate-200">
+                                @endif
+                                <span class="truncate">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
                             </p>
                         </div>
                     </div>

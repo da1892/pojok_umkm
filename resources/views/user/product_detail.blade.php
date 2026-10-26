@@ -159,9 +159,19 @@
 
                         <div class="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-5 border border-slate-200/90 shadow-2xs">
                             <div class="flex items-start gap-3.5 min-w-0">
-                                <div class="w-12 h-12 rounded-xl bg-[#800000] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#800000]/20 font-bold text-lg">
-                                    {{ strtoupper(substr($product->umkmProfile->business_name ?? 'U', 0, 1)) }}
-                                </div>
+                                @if(!empty($product->umkmProfile->image_path))
+                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" 
+                                         alt="{{ $product->umkmProfile->business_name ?? 'Foto UMKM' }}" 
+                                         class="w-14 h-14 rounded-2xl object-cover shrink-0 shadow-md border-2 border-white ring-1 ring-slate-200">
+                                @elseif(!empty($product->image_path))
+                                    <img src="{{ asset('storage/' . $product->image_path) }}" 
+                                         alt="{{ $product->umkmProfile->business_name ?? 'Foto UMKM' }}" 
+                                         class="w-14 h-14 rounded-2xl object-cover shrink-0 shadow-md border-2 border-white ring-1 ring-slate-200">
+                                @else
+                                    <div class="w-14 h-14 rounded-2xl bg-[#800000] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#800000]/20 font-bold text-xl">
+                                        {{ strtoupper(substr($product->umkmProfile->business_name ?? 'U', 0, 1)) }}
+                                    </div>
+                                @endif
                                 <div class="min-w-0 flex-1">
                                     <h5 class="font-extrabold text-slate-900 text-base leading-tight truncate">
                                         {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}
@@ -197,6 +207,12 @@
                                     <a href="{{ route('direktori.show', $product->umkmProfile->id) }}" class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-2xs">
                                         <span>Profil Toko</span>
                                     </a>
+                                    @if(!empty($product->umkmProfile->google_maps_directions_url))
+                                        <a href="{{ $product->umkmProfile->google_maps_directions_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl transition-colors">
+                                            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            <span>Lokasi Maps</span>
+                                        </a>
+                                    @endif
                                 @endif
                             </div>
                         </div>

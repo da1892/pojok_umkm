@@ -19,19 +19,19 @@
         @csrf
         
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label for="email" class="block text-sm font-bold text-slate-800 mb-1.5">Email</label>
             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="nama@email.com">
         </div>
 
         <div>
-            <div class="flex items-center justify-between mb-1">
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <div class="flex items-center justify-between mb-1.5">
+                <label for="password" class="block text-sm font-bold text-slate-800">Password</label>
                 <a href="#" class="text-sm text-[#800000] hover:underline font-medium">Lupa Password?</a>
             </div>
             <input id="password" type="password" name="password" required
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="••••••••">
         </div>
 

@@ -21,7 +21,11 @@ class PublicController extends Controller
             ->take(8)
             ->get();
 
-        return view('user.welcome', compact('latestNews', 'featuredProducts'));
+        $totalUmkm = \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count();
+        $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
+        $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
+
+        return view('user.welcome', compact('latestNews', 'featuredProducts', 'totalUmkm', 'totalProducts', 'totalConsultations'));
     }
 
     public function panduan(Request $request)
@@ -190,11 +194,16 @@ class PublicController extends Controller
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 if ($file && $file->isValid()) {
-                    $attachmentPaths[] = $file->store('consultations', 'public');
+                    $cleanName = time() . '_' . \Illuminate\Support\Str::random(5) . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                    $attachmentPaths[] = $file->storeAs('consultations', $cleanName, 'public');
                 }
             }
         } elseif ($request->hasFile('attachment')) {
-            $attachmentPaths[] = $request->file('attachment')->store('consultations', 'public');
+            $file = $request->file('attachment');
+            if ($file && $file->isValid()) {
+                $cleanName = time() . '_' . \Illuminate\Support\Str::random(5) . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                $attachmentPaths[] = $file->storeAs('consultations', $cleanName, 'public');
+            }
         }
 
         $storedAttachment = !empty($attachmentPaths) ? json_encode($attachmentPaths) : null;

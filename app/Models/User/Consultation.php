@@ -17,10 +17,29 @@ class Consultation extends Model
         'phone',
         'subject',
         'message',
+        'attachment',
         'status',
         'response',
         'admin_id',
     ];
+
+    /**
+     * Get attachments as an array.
+     * Supports both new JSON array and legacy single string.
+     */
+    public function getAttachmentsListAttribute(): array
+    {
+        if (empty($this->attachment)) {
+            return [];
+        }
+
+        $decoded = json_decode($this->attachment, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        return [$this->attachment];
+    }
 
     public function user()
     {

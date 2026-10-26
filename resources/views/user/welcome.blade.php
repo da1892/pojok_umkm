@@ -181,8 +181,11 @@
                     <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
                         {{ $product->name }}
                     </h3>
-                    <p class="text-xs text-slate-500 mt-1">
-                        oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}
+                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                        @if(!empty($product->umkmProfile->image_path))
+                            <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-4 h-4 rounded-full object-cover shrink-0 border border-slate-200">
+                        @endif
+                        <span class="truncate">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
                     </p>
                 </div>
             </div>
@@ -215,15 +218,21 @@
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div class="grid grid-cols-3 gap-2 sm:gap-8 text-center items-center">
             <div class="flex flex-col items-center justify-center">
-                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">1.234+</div>
+                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">
+                    {{ number_format($totalUmkm ?? \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count(), 0, ',', '.') }}
+                </div>
                 <div class="text-white text-[10px] sm:text-xs md:text-sm font-semibold leading-tight">Jumlah UMKM Terdaftar</div>
             </div>
             <div class="flex flex-col items-center justify-center">
-                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">4.567+</div>
+                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">
+                    {{ number_format($totalProducts ?? \App\Models\User\Product::where('status', 'verified')->count(), 0, ',', '.') }}
+                </div>
                 <div class="text-white text-[10px] sm:text-xs md:text-sm font-semibold leading-tight">Produk Terpublikasi</div>
             </div>
             <div class="flex flex-col items-center justify-center">
-                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">890+</div>
+                <div class="text-xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#facc15] mb-1 sm:mb-2 leading-none tracking-tight">
+                    {{ number_format($totalConsultations ?? \App\Models\User\Consultation::where('status', 'selesai')->count(), 0, ',', '.') }}
+                </div>
                 <div class="text-white text-[10px] sm:text-xs md:text-sm font-semibold leading-tight">Konsultasi Selesai</div>
             </div>
         </div>

@@ -28,10 +28,10 @@
         <form action="{{ route('admin.news') }}" method="GET" class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
                 <div class="relative flex-1 md:w-64">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul atau topik..." class="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:ring-[#800000] focus:border-[#800000] bg-slate-50/50">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul atau topik..." class="w-full pl-9 pr-3 py-2 text-xs border-2 border-slate-300 rounded-xl focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none bg-white text-slate-900 placeholder:text-slate-400 shadow-xs transition-all">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
-                <select name="status" class="py-2 px-3 text-xs border border-slate-200 rounded-xl focus:ring-[#800000] focus:border-[#800000] bg-slate-50/50">
+                <select name="status" class="py-2 px-3 text-xs border-2 border-slate-300 rounded-xl focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none bg-white text-slate-900 shadow-xs transition-all">
                     <option value="">Semua Status Publikasi</option>
                     <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Aktif (Tampil di Publik)</option>
                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Nonaktif (Disembunyikan)</option>

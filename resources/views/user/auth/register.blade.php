@@ -19,39 +19,39 @@
         @csrf
         
         <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+            <label for="name" class="block text-sm font-bold text-slate-800 mb-1.5">Nama Lengkap</label>
             <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="Budi Santoso">
         </div>
 
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label for="email" class="block text-sm font-bold text-slate-800 mb-1.5">Email</label>
             <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="nama@email.com">
         </div>
 
         <div>
-            <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Daftar Sebagai</label>
+            <label for="role" class="block text-sm font-bold text-slate-800 mb-1.5">Daftar Sebagai</label>
             <select id="role" name="role" required
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-white">
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs">
                 <option value="user">Masyarakat Umum</option>
                 <option value="umkm">Pemilik UMKM</option>
             </select>
         </div>
 
         <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label for="password" class="block text-sm font-bold text-slate-800 mb-1.5">Password</label>
             <input id="password" type="password" name="password" required
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="Minimal 8 karakter">
         </div>
 
         <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
+            <label for="password_confirmation" class="block text-sm font-bold text-slate-800 mb-1.5">Konfirmasi Password</label>
             <input id="password_confirmation" type="password" name="password_confirmation" required
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all"
+                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="Ulangi password">
         </div>
 

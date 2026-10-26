@@ -184,7 +184,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 </div>
-                                <input type="text" id="insideDropdownSearch" autocomplete="off" placeholder="Ketik nama kecamatan atau desa..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:border-[#800000] focus:ring-1 focus:ring-[#800000] bg-white">
+                                <input type="text" id="insideDropdownSearch" autocomplete="off" placeholder="Ketik nama kecamatan atau desa..." class="w-full pl-8 pr-3 py-2 text-xs rounded-lg border-2 border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 outline-none bg-white text-slate-900 placeholder:text-slate-400">
                             </div>
                         </div>
                         <!-- Daftar Kecamatan (Bisa di-scroll di dalam satu kotak) -->

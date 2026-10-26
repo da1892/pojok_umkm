@@ -25,7 +25,7 @@
 
             <form id="cekKonsultasiForm" action="{{ route('konsultasi.cek') }}" method="GET" class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1 relative">
-                    <input type="text" id="ticketIdInput" name="ticket_id" value="{{ $ticketId ?? request('ticket_id') }}" required placeholder="Masukkan ID Tiket (UUID)..." class="w-full px-4 py-3.5 pr-10 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#991b1b] focus:border-[#991b1b] outline-none transition-all text-slate-800 font-mono text-sm sm:text-base">
+                    <input type="text" id="ticketIdInput" name="ticket_id" value="{{ $ticketId ?? request('ticket_id') }}" required placeholder="Masukkan ID Tiket (UUID)..." class="w-full px-4 py-3.5 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-slate-900 bg-white placeholder:text-slate-400 font-mono text-sm sm:text-base shadow-xs">
                     
                     @if(!empty($ticketId ?? request('ticket_id')))
                         <button type="button" onclick="document.getElementById('ticketIdInput').value=''; document.getElementById('ticketIdInput').focus();" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors" title="Kosongkan">
@@ -108,8 +108,17 @@
                                             @php
                                                 $extension = pathinfo($attachItem, PATHINFO_EXTENSION);
                                                 $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                                $attachFileExists = file_exists(public_path('storage/' . $attachItem)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($attachItem);
                                             @endphp
-                                            @if($isImage)
+                                            @if(!$attachFileExists)
+                                                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 flex items-center gap-2.5 text-xs text-amber-800">
+                                                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                    <div class="overflow-hidden">
+                                                        <span class="font-semibold block truncate">File tidak tersedia di server</span>
+                                                        <span class="text-[10px] text-amber-700 font-mono truncate block">{{ basename($attachItem) }}</span>
+                                                    </div>
+                                                </div>
+                                            @elseif($isImage)
                                                 <div class="space-y-1.5 bg-white p-2.5 rounded-xl border border-slate-200">
                                                     <a href="{{ asset('storage/' . $attachItem) }}" target="_blank" class="block group overflow-hidden rounded-lg">
                                                         <img src="{{ asset('storage/' . $attachItem) }}" alt="Lampiran" class="w-full h-36 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-all">

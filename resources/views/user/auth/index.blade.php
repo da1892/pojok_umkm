@@ -214,21 +214,21 @@
                     <!-- Kolom pengisian nama lengkap -->
                     <div>
                         <input id="name" type="text" name="name" value="{{ old('name') }}" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
                             placeholder="Nama Lengkap">
                     </div>
                     
                     <!-- Kolom pengisian alamat surat elektronik (email) -->
                     <div>
                         <input id="email_reg" type="email" name="email" value="{{ old('email') }}" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
                             placeholder="Email">
                     </div>
                     
                     <!-- Kolom pemilihan peran (role) pengguna -->
                     <div>
                         <select id="role" name="role" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white text-gray-600">
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 text-sm shadow-xs">
                             <option value="" disabled selected>Daftar Sebagai...</option>
                             <option value="user">Masyarakat Umum</option>
                             <option value="umkm">Pemilik UMKM</option>
@@ -239,7 +239,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="relative">
                             <input id="password_reg" type="password" name="password" required
-                                class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                                class="w-full px-4 py-3 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
                                 placeholder="Password">
                             <button type="button" onclick="togglePassword('password_reg', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -247,7 +247,7 @@
                         </div>
                         <div class="relative">
                             <input id="password_confirmation" type="password" name="password_confirmation" required
-                                class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                                class="w-full px-4 py-3 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
                                 placeholder="Konfirmasi">
                             <button type="button" onclick="togglePassword('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -306,14 +306,14 @@
                     <!-- Kolom pengisian alamat surat elektronik (email) -->
                     <div>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
                             placeholder="Email">
                     </div>
 
                     <!-- Kolom pengisian kata sandi -->
                     <div class="relative">
                         <input id="password" type="password" name="password" required
-                            class="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#800000] focus:border-[#800000] outline-none transition-all bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
                             placeholder="Password">
                         <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>

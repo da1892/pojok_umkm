@@ -28,7 +28,7 @@
                     Judul Berita / Kegiatan <span class="text-red-500">*</span>
                 </label>
                 <input type="text" name="title" value="{{ old('title', $news->title) }}" 
-                       class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm font-semibold focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" 
+                       class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm font-semibold placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" 
                        placeholder="Contoh: Bimtek Pemasaran Digital UMKM Wonogiri Go-Global" required>
                 @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -39,7 +39,7 @@
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                         Kategori Agenda / Berita <span class="text-red-500">*</span>
                     </label>
-                    <select name="category" class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm font-semibold focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" required>
+                    <select name="category" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm font-semibold focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" required>
                         <option value="Pelatihan & Workshop" {{ old('category', $news->category) == 'Pelatihan & Workshop' ? 'selected' : '' }}>Pelatihan & Workshop</option>
                         <option value="Sertifikasi & Legalitas" {{ old('category', $news->category) == 'Sertifikasi & Legalitas' ? 'selected' : '' }}>Sertifikasi & Legalitas</option>
                         <option value="Pameran & Bazaar" {{ old('category', $news->category) == 'Pameran & Bazaar' ? 'selected' : '' }}>Pameran & Bazaar</option>
@@ -128,7 +128,7 @@
                     <span class="text-[11px] text-slate-400">Ditampilkan pada kartu berita di halaman utama</span>
                 </div>
                 <textarea name="excerpt" rows="2" 
-                          class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" 
+                          class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" 
                           placeholder="Ringkasan 1-2 kalimat untuk preview di beranda...">{{ old('excerpt', $news->excerpt) }}</textarea>
                 @error('excerpt') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
@@ -139,7 +139,7 @@
                     Isi Lengkap Berita & Kegiatan <span class="text-red-500">*</span>
                 </label>
                 <textarea name="content" rows="8" 
-                          class="w-full px-4 py-3 bg-slate-50/50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-slate-800 text-sm leading-relaxed focus:ring-2 focus:ring-[#800000]/20 focus:border-[#800000] transition-all" 
+                          class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 text-sm leading-relaxed placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all shadow-xs" 
                           placeholder="Tuliskan berita lengkap..." required>{{ old('content', $news->content) }}</textarea>
                 @error('content') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>

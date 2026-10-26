@@ -22,7 +22,7 @@
                 <div class="w-full md:w-1/3">
                     <form action="{{ route('informasi') }}" method="GET" class="relative">
                         <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari berita atau agenda..." 
-                               class="w-full bg-white/15 border border-white/30 px-5 py-3 rounded-2xl text-white placeholder-red-200 focus:outline-none focus:ring-2 focus:ring-white text-sm">
+                               class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 px-5 py-3 rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:ring-4 focus:ring-white/20 text-sm transition-all shadow-xs">
                         <button type="submit" class="absolute right-3 top-3 text-white/70 hover:text-white">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </button>
