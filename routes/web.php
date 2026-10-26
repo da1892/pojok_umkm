@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Pengaturan
         Route::get('/admin/pengaturan', [AdminController::class, 'settings'])->name('admin.settings');
-        // Data UMKM / Toko
+        // Data UMKM
         Route::get('/admin/toko', [AdminController::class, 'stores'])->name('admin.stores');
         
         Route::get('/admin/umkm/{id}', [AdminController::class, 'showUmkm'])->name('admin.umkm.show');
@@ -82,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admin/product/{id}/reject', [AdminController::class, 'rejectProduct'])->name('admin.product.reject');
     });
 
-    // Store Routes (UMKM)
+    // UMKM Routes
     Route::get('/toko', [StoreController::class, 'index'])->name('toko.index');
     Route::get('/toko/profil', [StoreController::class, 'profile'])->name('toko.profile');
     Route::put('/toko/profil', [StoreController::class, 'updateProfile'])->name('toko.profile.update');

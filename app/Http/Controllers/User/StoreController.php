@@ -76,7 +76,7 @@ class StoreController extends Controller
         $umkm->update($data);
 
         $successMsg = $wasRejected
-            ? 'Profil UMKM berhasil diperbarui dan diajukan ulang ke Admin! Status toko Anda saat ini kembali Menunggu Persetujuan.'
+            ? 'Profil UMKM berhasil diperbarui dan diajukan ulang ke Admin! Status UMKM Anda saat ini kembali Menunggu Persetujuan.'
             : 'Profil UMKM berhasil diperbarui!';
 
         return redirect()->route('toko.profile')->with('success', $successMsg);
@@ -92,12 +92,12 @@ class StoreController extends Controller
         }
 
         if ($umkm->status === 'verified') {
-            return redirect()->route('toko.index')->with('success', 'Toko Anda sudah berstatus Disetujui.');
+            return redirect()->route('toko.index')->with('success', 'UMKM Anda sudah berstatus Disetujui.');
         }
 
         $umkm->update(['status' => 'pending']);
 
-        return redirect()->route('toko.index')->with('success', 'Pengajuan verifikasi ulang toko berhasil dikirim! Status toko Anda kini kembali Menunggu Persetujuan dari Administrator.');
+        return redirect()->route('toko.index')->with('success', 'Pengajuan verifikasi ulang UMKM berhasil dikirim! Status UMKM Anda kini kembali Menunggu Persetujuan dari Administrator.');
     }
 
     public function create()
@@ -315,7 +315,7 @@ class StoreController extends Controller
 
         $umkm->delete();
 
-        return redirect()->route('toko.index')->with('warning', "Akun toko UMKM '{$businessName}' beserta seluruh katalog produknya telah berhasil dihapus dari sistem Pojok UMKM.");
+        return redirect()->route('toko.index')->with('warning', "Akun UMKM '{$businessName}' beserta seluruh katalog produknya telah berhasil dihapus dari sistem Pojok UMKM.");
     }
 
     public function destroyAccount(Request $request)
@@ -351,7 +351,7 @@ class StoreController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('warning', 'Akun pengguna dan seluruh data toko Anda telah berhasil dihapus secara permanen dari sistem Pojok UMKM Wonogiri.');
+        return redirect('/')->with('warning', 'Akun pengguna dan seluruh data UMKM Anda telah berhasil dihapus secara permanen dari sistem Pojok UMKM Wonogiri.');
     }
 
     private function getUmkmValidationRules(): array

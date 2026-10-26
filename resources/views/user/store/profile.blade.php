@@ -19,9 +19,9 @@
                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Katalog Produk
                 </a>
-                <a href="{{ route('direktori.show', $umkm->id) }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 border border-red-200 text-[#800000] hover:bg-red-100 transition-all shadow-xs" title="Lihat tampilan profil toko Anda di direktori publik">
+                <a href="{{ route('direktori.show', $umkm->id) }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 border border-red-200 text-[#800000] hover:bg-red-100 transition-all shadow-xs" title="Lihat tampilan profil UMKM Anda di direktori publik">
                     <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    Lihat Profil Toko Publik
+                    Lihat Profil UMKM Publik
                 </a>
             </div>
         </div>
@@ -69,16 +69,16 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-red-900 text-base">Status Pengajuan Toko: Ditolak oleh Admin</h4>
+                        <h4 class="font-bold text-red-900 text-base">Status Pengajuan UMKM: Ditolak oleh Admin</h4>
                         <p class="text-xs text-red-700 mt-1 leading-relaxed">
-                            Pengajuan toko Anda belum disetujui. Anda dapat melakukan perbaikan pada tab <strong>"Formulir Edit Data"</strong> di bawah (seperti mengunggah foto profil/logo toko, melengkapi nomor NIB, atau alamat lengkap). Saat formulir disimpan, toko Anda akan <strong>otomatis diajukan ulang ke antrean verifikasi Admin</strong>.
+                            Pengajuan UMKM Anda belum disetujui. Anda dapat melakukan perbaikan pada tab <strong>"Formulir Edit Data"</strong> di bawah (seperti mengunggah foto profil/logo UMKM, melengkapi nomor NIB, atau alamat lengkap). Saat formulir disimpan, UMKM Anda akan <strong>otomatis diajukan ulang ke antrean verifikasi Admin</strong>.
                         </p>
                         <div class="mt-3.5 flex flex-wrap items-center gap-3">
                             <button type="button" onclick="switchTab('edit')" class="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-red-800 hover:bg-red-50 border border-red-300 font-bold rounded-xl text-xs transition-colors shadow-2xs">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 Buka Formulir Edit Data
                             </button>
-                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin data toko sudah siap diajukan ulang ke Admin?');">
+                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin data UMKM sudah siap diajukan ulang ke Admin?');">
                                 @csrf
                                 <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 bg-[#800000] hover:bg-red-900 text-white font-bold rounded-xl text-xs transition-all shadow-xs cursor-pointer">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -104,7 +104,7 @@
                                     {{ strtoupper(substr($umkm->business_name, 0, 1)) }}
                                 </div>
                             @endif
-                            <button type="button" onclick="switchTab('edit')" class="absolute -bottom-1 -right-1 bg-white text-slate-700 hover:text-[#800000] p-1.5 rounded-full shadow-md border border-slate-200 transition-transform hover:scale-110" title="Ganti Foto Profil / Logo Toko">
+                            <button type="button" onclick="switchTab('edit')" class="absolute -bottom-1 -right-1 bg-white text-slate-700 hover:text-[#800000] p-1.5 rounded-full shadow-md border border-slate-200 transition-transform hover:scale-110" title="Ganti Foto Profil / Logo UMKM">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             </button>
                         </div>
@@ -263,12 +263,12 @@
                             </p>
                         </div>
 
-                        <!-- Peta Lokasi Toko Otomatis -->
+                        <!-- Peta Lokasi UMKM Otomatis -->
                         <div class="mt-4 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">
                             <div class="p-3 bg-white border-b border-slate-200 flex items-center justify-between">
                                 <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    Peta Lokasi Toko (Terbaca Otomatis)
+                                    Peta Lokasi UMKM (Terbaca Otomatis)
                                 </span>
                                 <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" class="text-[11px] font-bold text-[#800000] hover:underline flex items-center gap-1">
                                     Buka Maps &rarr;
@@ -341,7 +341,7 @@
 
                     <!-- Kartu Ringkasan Aktivitas -->
                     <div class="bg-gradient-to-br from-[#800000] to-[#991b1b] rounded-3xl p-6 text-white shadow-md">
-                        <h4 class="font-bold text-sm text-red-100 uppercase tracking-wider mb-4">Aktivitas Toko Anda</h4>
+                        <h4 class="font-bold text-sm text-red-100 uppercase tracking-wider mb-4">Aktivitas UMKM Anda</h4>
                         <div class="space-y-4">
                             <div class="flex items-center justify-between border-b border-white/10 pb-3">
                                 <span class="text-sm text-red-100">Total Produk di Etalase</span>
@@ -358,7 +358,7 @@
                                     + Tambah Produk Baru
                                 </a>
                             @else
-                                <button type="button" disabled title="Toko Anda masih menunggu persetujuan admin." class="block w-full py-2.5 px-4 bg-white/40 text-white/80 cursor-not-allowed text-center font-bold rounded-xl text-xs">
+                                <button type="button" disabled title="UMKM Anda masih menunggu persetujuan admin." class="block w-full py-2.5 px-4 bg-white/40 text-white/80 cursor-not-allowed text-center font-bold rounded-xl text-xs">
                                     Menunggu Persetujuan Admin
                                 </button>
                             @endif
@@ -375,7 +375,7 @@
                 <div class="mb-8 border-b border-slate-100 pb-5 flex items-center justify-between">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Perbarui Profil UMKM</h2>
-                        <p class="text-slate-500 text-sm mt-1">Sesuaikan informasi bisnis, kontak, dan alamat toko Anda.</p>
+                        <p class="text-slate-500 text-sm mt-1">Sesuaikan informasi bisnis, kontak, dan alamat UMKM Anda.</p>
                     </div>
                     <button type="button" onclick="switchTab('view')" class="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
                         &larr; Batal
@@ -397,7 +397,7 @@
                         </div>
                     </div>
 
-                    <!-- Foto Profil / Logo Toko -->
+                    <!-- Foto Profil / Logo UMKM -->
                     <div class="p-6 rounded-2xl bg-gradient-to-r from-red-50/70 via-slate-50 to-white border-2 border-red-100 flex flex-col sm:flex-row items-center gap-6 shadow-xs">
                         <div class="relative shrink-0">
                             <div id="preview-container" class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-red-200 shadow-md bg-white flex items-center justify-center">
@@ -413,8 +413,8 @@
                             </div>
                         </div>
                         <div class="flex-1 text-center sm:text-left">
-                            <label class="block text-sm font-bold text-slate-900 mb-1">Foto Profil / Logo Toko UMKM</label>
-                            <p class="text-xs text-slate-500 mb-3 leading-relaxed">Unggah logo atau foto toko fisik Anda agar profil mudah dikenali oleh pembeli. Format: JPG, PNG, atau WebP (Maks. 5MB).</p>
+                            <label class="block text-sm font-bold text-slate-900 mb-1">Foto Profil / Logo UMKM</label>
+                            <p class="text-xs text-slate-500 mb-3 leading-relaxed">Unggah logo atau foto tempat usaha UMKM Anda agar profil mudah dikenali oleh pembeli. Format: JPG, PNG, atau WebP (Maks. 5MB).</p>
                             <div class="flex flex-wrap items-center gap-3">
                                 <label for="store-image-input" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#800000] hover:bg-red-900 text-white text-xs font-bold transition-all shadow-xs cursor-pointer hover:shadow-md">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
@@ -431,7 +431,7 @@
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-2">Nama UMKM / Usaha <span class="text-red-500">*</span></label>
                             <input type="text" name="business_name" value="{{ old('business_name', $umkm->business_name) }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
-                            <p class="text-[11px] text-slate-400 mt-1.5">Nama brand atau toko UMKM Anda</p>
+                            <p class="text-[11px] text-slate-400 mt-1.5">Nama brand atau usaha UMKM Anda</p>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-800 mb-2">Nama Pemilik Usaha <span class="text-red-500">*</span></label>
@@ -534,7 +534,7 @@
                             <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
                                 <span class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Agar pembeli tahu letak toko fisik Anda)</span>
+                                    Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Agar pembeli tahu letak lokasi UMKM Anda)</span>
                                 </span>
                                 <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" class="text-[11px] text-red-700 font-bold hover:underline flex items-center gap-1">
                                     Tes Buka di Google Maps &rarr;
@@ -542,7 +542,7 @@
                             </label>
                             <input type="url" name="map_link" value="{{ old('map_link', $umkm->map_link) }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                             <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
-                                💡 <em>Opsional: Peta toko otomatis membaca alamat, desa, dan kecamatan Anda di atas. Anda juga dapat menempelkan link Google Maps jika memiliki pin lokasi spesifik.</em>
+                                💡 <em>Opsional: Peta UMKM otomatis membaca alamat, desa, dan kecamatan Anda di atas. Anda juga dapat menempelkan link Google Maps jika memiliki pin lokasi spesifik.</em>
                             </p>
                         </div>
                     </div>
@@ -629,7 +629,7 @@
                     </div>
                 </form>
 
-                <!-- Zona Bahaya: Hapus Toko / Akun -->
+                <!-- Zona Bahaya: Hapus UMKM / Akun -->
                 <div class="mt-8 pt-6 border-t border-red-200">
                     <div class="bg-red-50/70 border border-red-200 rounded-2xl p-5 sm:p-6">
                         <div class="flex items-start gap-3.5 mb-4">
@@ -637,20 +637,20 @@
                                 <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold text-red-900">Zona Bahaya: Hapus Toko UMKM</h4>
+                                <h4 class="text-sm font-bold text-red-900">Zona Bahaya: Hapus Data UMKM</h4>
                                 <p class="text-xs text-red-700 mt-1 leading-relaxed">
-                                    Tindakan ini akan menghapus data profil toko <strong>{{ $umkm->business_name }}</strong> beserta seluruh produk yang pernah Anda unggah secara permanen. Anda dapat mendaftarkan kembali toko baru kapan saja setelah ini.
+                                    Tindakan ini akan menghapus data profil UMKM <strong>{{ $umkm->business_name }}</strong> beserta seluruh produk yang pernah Anda unggah secara permanen. Anda dapat mendaftarkan kembali UMKM baru kapan saja setelah ini.
                                 </p>
                             </div>
                         </div>
 
                         <div class="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-red-200/60">
-                            <form action="{{ route('toko.destroy') }}" method="POST" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin menghapus toko UMKM ini? Seluruh data produk dan profil toko Anda akan dihapus secara permanen.');" class="inline">
+                            <form action="{{ route('toko.destroy') }}" method="POST" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin menghapus data UMKM ini? Seluruh data produk dan profil UMKM Anda akan dihapus secara permanen.');" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center gap-1.5">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    Hapus Toko UMKM
+                                    Hapus Data UMKM
                                 </button>
                             </form>
                         </div>

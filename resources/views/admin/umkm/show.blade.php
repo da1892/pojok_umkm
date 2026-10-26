@@ -79,12 +79,12 @@
                     <span class="text-slate-400 block text-[10px] font-semibold uppercase mb-0.5">Format Alamat Lengkap</span>
                     <p class="text-sm font-bold text-slate-800">{{ $umkm->full_address }}</p>
                 </div>
-                <!-- Peta Lokasi Toko Otomatis -->
+                <!-- Peta Lokasi UMKM Otomatis -->
                 <div class="rounded-xl overflow-hidden border border-slate-200 mt-3 bg-white">
                     <div class="p-2.5 bg-slate-100 flex items-center justify-between text-xs">
                         <span class="font-bold text-slate-700 flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Peta Lokasi Toko (Terbaca Otomatis dari Alamat)
+                            Peta Lokasi UMKM (Terbaca Otomatis dari Alamat)
                         </span>
                         <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" class="text-xs font-bold text-[#800000] hover:underline flex items-center gap-1">
                             Buka di Google Maps &rarr;

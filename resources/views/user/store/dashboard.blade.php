@@ -30,8 +30,8 @@
             <div class="mb-6 bg-amber-50 border border-amber-200 text-amber-900 px-5 py-4 rounded-2xl flex items-start gap-3 shadow-xs">
                 <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 <div class="text-sm">
-                    <p class="font-bold text-amber-900">Pendaftaran Toko Sedang Menunggu Persetujuan Admin</p>
-                    <p class="text-xs text-amber-700 mt-0.5">Akun toko Anda saat ini sedang ditinjau oleh Administrator. Tombol <strong>+ Produk Baru</strong> akan otomatis aktif setelah toko Anda diverifikasi dan disetujui.</p>
+                    <p class="font-bold text-amber-900">Pendaftaran UMKM Sedang Menunggu Persetujuan Admin</p>
+                    <p class="text-xs text-amber-700 mt-0.5">Akun UMKM Anda saat ini sedang ditinjau oleh Administrator. Tombol <strong>+ Produk Baru</strong> akan otomatis aktif setelah UMKM Anda diverifikasi dan disetujui.</p>
                 </div>
             </div>
         @elseif($umkm->status == 'rejected')
@@ -41,16 +41,16 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-red-900 text-base">Pendaftaran Toko Belum Disetujui (Ditolak)</h4>
+                        <h4 class="font-bold text-red-900 text-base">Pendaftaran UMKM Belum Disetujui (Ditolak)</h4>
                         <p class="text-xs text-red-700 mt-1 leading-relaxed">
-                            Pengajuan profil toko Anda saat ini belum memenuhi kriteria verifikasi. Jangan khawatir, Anda dapat memperbaiki data toko Anda (seperti melengkapi foto profil/logo, NIB, P-IRT, atau alamat lengkap), lalu mengajukan verifikasi ulang ke Administrator di bawah ini:
+                            Pengajuan profil UMKM Anda saat ini belum memenuhi kriteria verifikasi. Jangan khawatir, Anda dapat memperbaiki data UMKM Anda (seperti melengkapi foto profil/logo, NIB, P-IRT, atau alamat lengkap), lalu mengajukan verifikasi ulang ke Administrator di bawah ini:
                         </p>
                         <div class="mt-4 flex flex-wrap items-center gap-3">
                             <a href="{{ route('toko.profile') }}#edit" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-red-800 hover:bg-red-50 border border-red-300 font-bold rounded-xl text-xs transition-colors shadow-2xs">
                                 <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                1. Perbaiki Data Profil Toko
+                                1. Perbaiki Data Profil UMKM
                             </a>
-                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin data profil toko sudah diperbaiki dan siap diajukan ulang ke Admin?');">
+                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin data profil UMKM sudah diperbaiki dan siap diajukan ulang ke Admin?');">
                                 @csrf
                                 <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#801414] hover:bg-red-900 text-white font-bold rounded-xl text-xs transition-all shadow-xs cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -99,9 +99,9 @@
                     </div>
                 </div>
                 <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-2.5">
-                    <a href="{{ route('direktori.show', $umkm->id) }}" target="_blank" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#801414] font-semibold py-2.5 px-4 rounded-full transition-all shadow-sm text-sm" title="Lihat tampilan halaman toko Anda di direktori publik">
+                    <a href="{{ route('direktori.show', $umkm->id) }}" target="_blank" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#801414] font-semibold py-2.5 px-4 rounded-full transition-all shadow-sm text-sm" title="Lihat tampilan halaman UMKM Anda di direktori publik">
                         <svg class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        Lihat Toko
+                        Lihat Profil UMKM
                     </a>
                     <a href="{{ route('toko.profile') }}" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#801414] font-semibold py-2.5 px-4 rounded-full transition-all shadow-sm text-sm group">
                         <svg class="w-4 h-4 mr-1.5 text-slate-400 group-hover:text-[#801414] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -116,7 +116,7 @@
                             + Produk Baru
                         </a>
                     @else
-                        <button type="button" disabled title="Toko Anda sedang Menunggu Persetujuan Admin sebelum dapat menambah produk baru." class="inline-flex items-center justify-center bg-slate-200 text-slate-400 font-semibold py-2.5 px-5 rounded-full cursor-not-allowed text-sm shadow-none opacity-80" onclick="alert('Pendaftaran toko Anda masih berstatus Menunggu Persetujuan admin. Anda belum dapat menambah produk baru.')">
+                        <button type="button" disabled title="UMKM Anda sedang Menunggu Persetujuan Admin sebelum dapat menambah produk baru." class="inline-flex items-center justify-center bg-slate-200 text-slate-400 font-semibold py-2.5 px-5 rounded-full cursor-not-allowed text-sm shadow-none opacity-80" onclick="alert('Pendaftaran UMKM Anda masih berstatus Menunggu Persetujuan admin. Anda belum dapat menambah produk baru.')">
                             <svg class="w-4 h-4 mr-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                             + Produk Baru
                         </button>
@@ -200,7 +200,7 @@
                     </svg>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada produk</h3>
-                <p class="text-gray-500 mb-6">Anda belum menambahkan produk apapun ke etalase toko Anda.</p>
+                <p class="text-gray-500 mb-6">Anda belum menambahkan produk apapun ke etalase UMKM Anda.</p>
                 @if($umkm->status == 'verified')
                     <a href="{{ route('toko.product.create') }}" class="inline-flex items-center gap-2 text-[#801414] font-semibold hover:underline">
                         Tambah Produk Pertama Anda &rarr;
@@ -214,12 +214,12 @@
                     <div class="inline-flex flex-col sm:flex-row items-center gap-3 bg-red-50 text-red-800 border border-red-200 px-4 py-3 rounded-2xl text-xs font-semibold shadow-xs max-w-lg mx-auto">
                         <span class="flex items-center gap-1.5 text-red-700">
                             <svg class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Toko belum disetujui oleh admin
+                            UMKM belum disetujui oleh admin
                         </span>
                         <div class="flex items-center gap-2">
                             <a href="{{ route('toko.profile') }}#edit" class="text-xs font-bold text-red-800 underline hover:text-red-950">Perbaiki Data</a>
                             <span>&bull;</span>
-                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Ajukan ulang verifikasi toko ini ke Admin?');">
+                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Ajukan ulang verifikasi UMKM ini ke Admin?');">
                                 @csrf
                                 <button type="submit" class="text-xs font-bold text-[#801414] hover:underline cursor-pointer">Ajukan Ulang &rarr;</button>
                             </form>

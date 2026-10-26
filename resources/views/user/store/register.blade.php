@@ -9,9 +9,9 @@
             </svg>
         </div>
         <h2 class="text-3xl font-bold text-[#801414] mb-4">Mulai Berjualan di Pojok UMKM</h2>
-        <p class="text-gray-600 mb-8 max-w-xl mx-auto leading-relaxed">Anda belum mendaftarkan toko UMKM Anda. Daftar sekarang untuk mempublikasikan produk unggulan Anda ke seluruh Kabupaten Wonogiri dan dapatkan fasilitas promosi gratis dari Dinas Perdagangan dan KUKM.</p>
+        <p class="text-gray-600 mb-8 max-w-xl mx-auto leading-relaxed">Anda belum mendaftarkan usaha UMKM Anda. Daftar sekarang untuk mempublikasikan produk unggulan Anda ke seluruh Kabupaten Wonogiri dan dapatkan fasilitas promosi gratis dari Dinas Perdagangan dan KUKM.</p>
         <a href="{{ route('toko.create') }}" class="bg-[#eab308] hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full transition-colors inline-block shadow hover:shadow-md">
-            Buka Toko Sekarang
+            Daftar UMKM Sekarang
         </a>
     </div>
 </div>
