@@ -190,23 +190,38 @@ class PublicController extends Controller
         // Menggunakan UUID (Universally Unique Identifier) bawaan Laravel
         $ticket_id = (string) \Illuminate\Support\Str::uuid();
 
-        $attachmentPaths = [];
+        $attachmentItems = [];
+        $filesToProcess = [];
+
         if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                if ($file && $file->isValid()) {
-                    $cleanName = time() . '_' . \Illuminate\Support\Str::random(5) . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-                    $attachmentPaths[] = $file->storeAs('consultations', $cleanName, 'public');
-                }
-            }
+            $filesToProcess = $request->file('attachments');
         } elseif ($request->hasFile('attachment')) {
-            $file = $request->file('attachment');
+            $filesToProcess = [$request->file('attachment')];
+        }
+
+        foreach ($filesToProcess as $file) {
             if ($file && $file->isValid()) {
                 $cleanName = time() . '_' . \Illuminate\Support\Str::random(5) . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-                $attachmentPaths[] = $file->storeAs('consultations', $cleanName, 'public');
+                $path = $file->storeAs('consultations', $cleanName, 'public');
+
+                $dataUri = null;
+                try {
+                    $mime = $file->getMimeType();
+                    $base64 = base64_encode(file_get_contents($file->getRealPath()));
+                    $dataUri = 'data:' . $mime . ';base64,' . $base64;
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('Gagal encode base64 lampiran: ' . $e->getMessage());
+                }
+
+                $attachmentItems[] = [
+                    'path' => $path,
+                    'name' => $file->getClientOriginalName(),
+                    'data' => $dataUri,
+                ];
             }
         }
 
-        $storedAttachment = !empty($attachmentPaths) ? json_encode($attachmentPaths) : null;
+        $storedAttachment = !empty($attachmentItems) ? json_encode($attachmentItems) : null;
 
         $consultation = \App\Models\Consultation::create([
             'user_id' => auth()->check() ? auth()->id() : null,

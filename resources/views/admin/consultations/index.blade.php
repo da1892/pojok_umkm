@@ -60,42 +60,45 @@
                                         <div class="flex flex-wrap items-center gap-3">
                                             @foreach($consultation->attachments_list as $adminAttach)
                                                 @php
-                                                    $adminExt = pathinfo($adminAttach, PATHINFO_EXTENSION);
-                                                    $adminIsImg = in_array(strtolower($adminExt), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
-                                                    $adminFileExists = file_exists(public_path('storage/' . $adminAttach)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($adminAttach);
+                                                    $adminExt = is_object($adminAttach) ? $adminAttach->extension : pathinfo((string)$adminAttach, PATHINFO_EXTENSION);
+                                                    $adminIsImg = is_object($adminAttach) ? $adminAttach->is_image : in_array(strtolower($adminExt), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                                    $adminFileExists = is_object($adminAttach) ? $adminAttach->exists : (file_exists(public_path('storage/' . $adminAttach)) || \Illuminate\Support\Facades\Storage::disk('public')->exists((string)$adminAttach));
+                                                    $adminSrc = is_object($adminAttach) ? $adminAttach->view_url : asset('storage/' . $adminAttach);
+                                                    $adminName = is_object($adminAttach) ? $adminAttach->name : basename((string)$adminAttach);
                                                 @endphp
                                                 @if(!$adminFileExists)
-                                                    <div class="inline-flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs shadow-2xs">
+                                                    <div class="inline-flex items-center gap-2.5 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs shadow-2xs">
                                                         <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                                                         <div>
-                                                            <span class="font-semibold block">File fisik tidak ditemukan</span>
-                                                            <span class="text-[10px] text-amber-700 font-mono">{{ basename($adminAttach) }}</span>
+                                                            <span class="font-semibold block">File fisik belum tersinkron</span>
+                                                            <span class="text-[10px] text-amber-700 font-mono">{{ $adminName }}</span>
+                                                            <span class="text-[9px] text-amber-600 block">(File ada di komputer pengunggah)</span>
                                                         </div>
                                                     </div>
                                                 @elseif($adminIsImg)
                                                     <div class="inline-flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-sm transition-all">
-                                                        <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="relative block group overflow-hidden rounded-lg shrink-0">
-                                                            <img src="{{ asset('storage/' . $adminAttach) }}" alt="Lampiran Foto" class="w-16 h-16 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-transform duration-200">
+                                                        <a href="{{ $adminSrc }}" target="_blank" class="relative block group overflow-hidden rounded-lg shrink-0">
+                                                            <img src="{{ $adminSrc }}" alt="Lampiran Foto" class="w-16 h-16 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-transform duration-200">
                                                             <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                                             </div>
                                                         </a>
                                                         <div class="flex flex-col pr-2">
                                                             <span class="text-xs font-bold text-slate-800">Foto Lampiran {{ $loop->iteration }}</span>
-                                                            <span class="text-[10px] text-slate-400 font-mono truncate max-w-[150px]" title="{{ basename($adminAttach) }}">{{ strtoupper($adminExt) }} &bull; {{ basename($adminAttach) }}</span>
-                                                            <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-xs text-[#800000] hover:text-red-700 font-semibold">
+                                                            <span class="text-[10px] text-slate-400 font-mono truncate max-w-[150px]" title="{{ $adminName }}">{{ strtoupper($adminExt) }} &bull; {{ $adminName }}</span>
+                                                            <a href="{{ $adminSrc }}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-xs text-[#800000] hover:text-red-700 font-semibold">
                                                                 <span>Buka Foto Penuh</span>
                                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                                                             </a>
                                                         </div>
                                                     </div>
                                                 @else
-                                                    <a href="{{ asset('storage/' . $adminAttach) }}" target="_blank" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs text-xs font-medium text-slate-700">
+                                                    <a href="{{ $adminSrc }}" target="_blank" download="{{ $adminName }}" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs text-xs font-medium text-slate-700">
                                                         <div class="w-8 h-8 rounded-lg bg-red-50 text-[#800000] flex items-center justify-center font-bold text-[10px]">
                                                             {{ strtoupper($adminExt) }}
                                                         </div>
                                                         <div class="flex flex-col">
-                                                            <span class="text-slate-800 font-bold truncate max-w-[150px]">Dokumen {{ $loop->iteration }} ({{ strtoupper($adminExt) }})</span>
+                                                            <span class="text-slate-800 font-bold truncate max-w-[150px]">{{ $adminName }} ({{ strtoupper($adminExt) }})</span>
                                                             <span class="text-[11px] text-blue-600 hover:underline">Unduh Berkas &rarr;</span>
                                                         </div>
                                                     </a>

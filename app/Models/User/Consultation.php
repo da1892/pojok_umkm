@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Support\ConsultationAttachment;
 
 class Consultation extends Model
 {
@@ -24,8 +25,10 @@ class Consultation extends Model
     ];
 
     /**
-     * Get attachments as an array.
-     * Supports both new JSON array and legacy single string.
+     * Get attachments as an array of ConsultationAttachment objects.
+     * Supports both new JSON array, hybrid payload with Base64, and legacy strings.
+     *
+     * @return ConsultationAttachment[]
      */
     public function getAttachmentsListAttribute(): array
     {
@@ -34,11 +37,18 @@ class Consultation extends Model
         }
 
         $decoded = json_decode($this->attachment, true);
-        if (is_array($decoded)) {
-            return $decoded;
+        $items = is_array($decoded) ? $decoded : [$this->attachment];
+
+        $list = [];
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $list[] = new ConsultationAttachment($item);
+            } elseif (is_string($item) && trim($item) !== '') {
+                $list[] = new ConsultationAttachment(['path' => $item]);
+            }
         }
 
-        return [$this->attachment];
+        return $list;
     }
 
     public function user()
