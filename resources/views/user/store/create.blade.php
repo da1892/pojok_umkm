@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <!-- Foto Profil / Logo Toko -->
+                <!-- Foto Profil / Logo UMKM -->
                 <div class="p-6 rounded-2xl bg-gradient-to-r from-red-50/70 via-slate-50 to-white border-2 border-red-100 flex flex-col sm:flex-row items-center gap-6 shadow-xs">
                     <div class="relative shrink-0">
                         <div id="preview-container" class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-red-200 shadow-md bg-white flex items-center justify-center">
@@ -62,8 +62,8 @@
                         </div>
                     </div>
                     <div class="flex-1 text-center sm:text-left">
-                        <label class="block text-sm font-bold text-slate-900 mb-1">Foto Profil / Logo Toko UMKM <span class="text-slate-400 font-normal text-xs">(Opsional)</span></label>
-                        <p class="text-xs text-slate-500 mb-3 leading-relaxed">Unggah logo atau foto toko fisik Anda agar profil mudah dikenali. Format: JPG, PNG, atau WebP (Maks. 5MB).</p>
+                        <label class="block text-sm font-bold text-slate-900 mb-1">Foto Profil / Logo UMKM <span class="text-slate-400 font-normal text-xs">(Opsional)</span></label>
+                        <p class="text-xs text-slate-500 mb-3 leading-relaxed">Unggah logo atau foto tempat usaha fisik Anda agar profil mudah dikenali. Format: JPG, PNG, atau WebP (Maks. 5MB).</p>
                         <div class="flex flex-wrap items-center gap-3">
                             <label for="store-image-input" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#801414] hover:bg-red-900 text-white text-xs font-bold transition-all shadow-xs cursor-pointer hover:shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
@@ -80,7 +80,7 @@
                     <div>
                         <label class="block text-sm font-bold text-slate-800 mb-2">Nama UMKM / Usaha <span class="text-red-500">*</span></label>
                         <input type="text" name="business_name" value="{{ old('business_name') }}" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Keripik Berkah Barokah">
-                        <p class="text-[11px] text-slate-400 mt-1.5">Nama resmi toko/brand UMKM Anda</p>
+                        <p class="text-[11px] text-slate-400 mt-1.5">Nama resmi UMKM / Brand usaha Anda</p>
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-800 mb-2">Nama Pemilik <span class="text-red-500">*</span></label>
@@ -187,11 +187,11 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Opsional - Agar calon pembeli tahu letak toko Anda)</span>
+                            Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Opsional - Agar calon pembeli tahu letak UMKM Anda)</span>
                         </label>
                         <input type="url" name="map_link" value="{{ old('map_link') }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                         <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
-                            💡 <em>Opsional: Peta lokasi toko akan otomatis membaca alamat, desa, dan kecamatan Anda di atas. Anda juga dapat menempelkan link Google Maps jika memiliki pin lokasi yang lebih spesifik.</em>
+                            💡 <em>Opsional: Peta lokasi UMKM akan otomatis membaca alamat, desa, dan kecamatan Anda di atas. Anda juga dapat menempelkan link Google Maps jika memiliki pin lokasi yang lebih spesifik.</em>
                         </p>
                     </div>
                 </div>

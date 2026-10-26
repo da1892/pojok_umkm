@@ -48,7 +48,7 @@ class SyncWilayahCommand extends Command
                 ]
             );
 
-            $this->info("Semua dropdown di website (Dashboard, Form Toko, Profil UMKM) sekarang telah 100% sinkron dengan data resmi file Excel Wonogiri.");
+            $this->info("Semua dropdown di website (Dashboard, Form UMKM, Profil UMKM) sekarang telah 100% sinkron dengan data resmi file Excel Wonogiri.");
             return Command::SUCCESS;
         } catch (\Throwable $e) {
             $this->error("❌ Gagal menyinkronkan data: " . $e->getMessage());
