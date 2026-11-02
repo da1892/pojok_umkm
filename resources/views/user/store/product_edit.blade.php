@@ -229,20 +229,10 @@
                     </div>
 
                     <div>
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                        <div class="mb-2">
                             <label class="block text-xs font-bold text-slate-800">
                                 Deskripsi Produk <span class="text-red-500">*</span>
                             </label>
-                            <!-- Fitur Pengisi Template Otomatis Standar Wonogiri -->
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[11px] text-slate-400 hidden md:inline">Gunakan Template Standar:</span>
-                                <button type="button" onclick="insertDescriptionTemplate('food')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300/70 transition-colors shadow-2xs flex items-center gap-1 cursor-pointer">
-                                    <span>Kuliner / Makanan</span>
-                                </button>
-                                <button type="button" onclick="insertDescriptionTemplate('craft')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300/70 transition-colors shadow-2xs flex items-center gap-1 cursor-pointer">
-                                    <span>Kerajinan / Fashion</span>
-                                </button>
-                            </div>
                         </div>
 
                         <textarea id="product-description-textarea" name="description" rows="7" required class="w-full px-4 py-3 rounded-2xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs leading-relaxed" placeholder="Jelaskan detail produk Anda, bahan utama, ukuran / netto, cara penyajian, atau keunggulan khas lokal Wonogiri...">{{ old('description', $product->description) }}</textarea>
@@ -274,27 +264,6 @@
     const imagesInput = document.getElementById('images-input');
     const photoCounter = document.getElementById('photo-counter');
 
-    // Template Otomatis Standar Deskripsi Wonogiri
-    function insertDescriptionTemplate(type) {
-        const textarea = document.getElementById('product-description-textarea');
-        if (!textarea) return;
-
-        let template = '';
-        if (type === 'food') {
-            template = `Komposisi / Bahan Utama:\n- \n\nBerat Bersih (Netto) / Isi:\n- \n\nMasa Simpan / Kedaluwarsa:\n- \n\nLegalitas & Izin Edar:\n- P-IRT : (Isi jika ada)\n- Halal : (Isi jika ada)\n\nKeunggulan Produk:\n- Diolah secara higienis menggunakan bahan berkualitas khas Kabupaten Wonogiri.`;
-        } else if (type === 'craft') {
-            template = `Bahan / Material Utama:\n- \n\nUkuran / Dimensi Produk:\n- \n\nMotif / Ciri Khas:\n- Khas Kabupaten Wonogiri\n\nKeunggulan & Perawatan:\n- Dibuat secara teliti oleh pengrajin lokal Wonogiri menggunakan bahan awet dan ramah lingkungan.`;
-        }
-
-        if (textarea.value.trim() !== '') {
-            if (!confirm('Teks deskripsi yang sudah Anda ketik akan digantikan dengan format standar. Lanjutkan?')) {
-                return;
-            }
-        }
-
-        textarea.value = template;
-        textarea.focus();
-    }
 
     imagesInput.addEventListener('change', function(event) {
         const newFiles = Array.from(event.target.files);
