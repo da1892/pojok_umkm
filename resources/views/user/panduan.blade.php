@@ -29,7 +29,7 @@
 
             <!-- Search Bar ("Tempat Pencarian") -->
             <div class="max-w-3xl mx-auto relative shadow-2xl rounded-2xl">
-                <div class="relative flex items-center bg-white rounded-2xl overflow-hidden border-2 border-white/80 p-1.5 sm:p-2 focus-within:ring-4 focus-within:ring-red-300 transition-all">
+                <form id="guide-search-form" onsubmit="event.preventDefault(); triggerSearch(true);" class="relative flex items-center bg-white rounded-2xl overflow-hidden border-2 border-white/80 p-1.5 sm:p-2 focus-within:ring-4 focus-within:ring-red-300 transition-all">
                     <div class="pl-3 sm:pl-4 text-slate-400">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#991b1b]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -41,25 +41,25 @@
                            class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-slate-800 text-sm sm:text-base outline-none bg-transparent placeholder-slate-400"
                            autocomplete="off">
 
-                    <button type="button" id="clear-search-btn" class="hidden text-slate-400 hover:text-slate-600 px-2 transition-colors" title="Hapus pencarian">
+                    <button type="button" id="clear-search-btn" class="hidden text-slate-400 hover:text-slate-600 px-2 transition-colors cursor-pointer" title="Hapus pencarian">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
 
-                    <button type="button" onclick="focusSearch()" class="bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl transition-all shrink-0">
+                    <button type="submit" id="submit-search-btn" class="bg-[#991b1b] hover:bg-[#801414] active:scale-95 text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl transition-all shrink-0 cursor-pointer shadow-sm hover:shadow">
                         Cari
                     </button>
-                </div>
+                </form>
             </div>
 
             <!-- Quick Search Tag Chips -->
             <div class="flex items-center justify-center flex-wrap gap-2 mt-4 text-xs">
                 <span class="text-red-200 font-medium">Kategori Populer:</span>
-                <button type="button" onclick="filterByKeyword('')" class="filter-chip active px-3 py-1 rounded-full bg-white text-[#800000] font-bold shadow-xs hover:bg-red-50 transition-all">Semua</button>
-                <button type="button" onclick="filterByKeyword('halal')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Sertifikasi Halal</button>
-                <button type="button" onclick="filterByKeyword('pirt')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Izin Edar PIRT</button>
-                <button type="button" onclick="filterByKeyword('nib')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Legalitas NIB</button>
-                <button type="button" onclick="filterByKeyword('merek')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Hak Merek (HAKI)</button>
-                <button type="button" onclick="filterByKeyword('kemasan')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Standar Kemasan</button>
+                <button type="button" onclick="filterByKeyword('')" class="filter-chip active px-3 py-1 rounded-full bg-white text-[#800000] font-bold shadow-xs hover:bg-red-50 transition-all cursor-pointer">Semua</button>
+                <button type="button" onclick="filterByKeyword('halal')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all cursor-pointer">Sertifikasi Halal</button>
+                <button type="button" onclick="filterByKeyword('pirt')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all cursor-pointer">Izin Edar PIRT</button>
+                <button type="button" onclick="filterByKeyword('nib')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all cursor-pointer">Legalitas NIB</button>
+                <button type="button" onclick="filterByKeyword('merek')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all cursor-pointer">Hak Merek (HAKI)</button>
+                <button type="button" onclick="filterByKeyword('kemasan')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all cursor-pointer">Standar Kemasan</button>
             </div>
         </div>
     </div>
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Section Title & Search Counter -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2">
+        <div id="panduan-koleksi" class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2 scroll-mt-24">
             <div>
                 <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Koleksi Panduan Lengkap</h2>
                 <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Pilih modul panduan di bawah untuk membaca syarat, tahapan, dan link resmi perizinan.</p>
@@ -619,22 +619,27 @@
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("guide-search");
         const clearBtn = document.getElementById("clear-search-btn");
+        const searchForm = document.getElementById("guide-search-form");
         const cards = document.querySelectorAll(".guide-card");
         const countSpan = document.getElementById("count-number");
         const noResultNotice = document.getElementById("no-result-notice");
         const chips = document.querySelectorAll(".filter-chip");
 
-        function filterGuides(query) {
-            const cleanQuery = query.toLowerCase().trim();
+        function filterGuides(query, autoScroll = false) {
+            const cleanQuery = (query || "").toLowerCase().trim();
             let visibleCount = 0;
+            let firstMatch = null;
 
             cards.forEach(card => {
-                const keywords = card.getAttribute("data-keywords").toLowerCase();
-                const textContent = card.innerText.toLowerCase();
+                const keywords = (card.getAttribute("data-keywords") || "").toLowerCase();
+                const textContent = (card.innerText || "").toLowerCase();
 
                 if (cleanQuery === "" || keywords.includes(cleanQuery) || textContent.includes(cleanQuery)) {
                     card.style.display = "block";
                     visibleCount++;
+                    if (!firstMatch) {
+                        firstMatch = card;
+                    }
                 } else {
                     card.style.display = "none";
                 }
@@ -662,13 +667,34 @@
                     clearBtn.classList.add("hidden");
                 }
             }
+
+            // Smooth scroll to results
+            if (autoScroll) {
+                const targetScroll = firstMatch || noResultNotice || document.getElementById("panduan-koleksi");
+                if (targetScroll) {
+                    targetScroll.scrollIntoView({ behavior: "smooth", block: "start" });
+                    if (firstMatch) {
+                        firstMatch.classList.add("ring-4", "ring-[#991b1b]", "ring-offset-4");
+                        setTimeout(() => {
+                            firstMatch.classList.remove("ring-4", "ring-[#991b1b]", "ring-offset-4");
+                        }, 2000);
+                    }
+                }
+            }
         }
 
         if (searchInput) {
             searchInput.addEventListener("input", function () {
-                filterGuides(this.value);
+                filterGuides(this.value, false);
                 // Reset active chips
                 chips.forEach(c => c.classList.remove("active", "bg-white", "text-[#800000]"));
+            });
+
+            searchInput.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    triggerSearch(true);
+                }
             });
         }
 
@@ -678,11 +704,23 @@
             });
         }
 
+        if (searchForm) {
+            searchForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                triggerSearch(true);
+            });
+        }
+
+        window.triggerSearch = function (autoScroll = true) {
+            const query = searchInput ? searchInput.value : "";
+            filterGuides(query, autoScroll);
+        };
+
         window.filterByKeyword = function (keyword) {
             if (searchInput) {
                 searchInput.value = keyword;
-                filterGuides(keyword);
             }
+            filterGuides(keyword, keyword !== "");
 
             chips.forEach(c => {
                 c.classList.remove("active", "bg-white", "text-[#800000]");
@@ -703,21 +741,19 @@
         window.resetSearch = function () {
             if (searchInput) {
                 searchInput.value = "";
-                filterGuides("");
+                filterGuides("", false);
             }
             filterByKeyword("");
         };
 
         window.focusSearch = function () {
-            if (searchInput) {
-                searchInput.focus();
-            }
+            triggerSearch(true);
         };
 
         window.scrollToGuide = function (elementId) {
             const target = document.getElementById(elementId);
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 target.classList.add('ring-4', 'ring-[#991b1b]', 'ring-offset-4');
                 setTimeout(() => {
                     target.classList.remove('ring-4', 'ring-[#991b1b]', 'ring-offset-4');
