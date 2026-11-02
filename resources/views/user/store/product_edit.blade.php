@@ -5,20 +5,14 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header Halaman -->
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                    <span class="w-9 h-9 rounded-xl bg-red-100 text-[#801414] flex items-center justify-center font-bold shadow-2xs">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                    </span>
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Edit Data Produk</h2>
-                </div>
-                <p class="text-xs sm:text-sm text-slate-500">Perbarui informasi produk unggulan Anda agar memenuhi standar kurasi UMKM Kabupaten Wonogiri.</p>
+        <div class="mb-6">
+            <div class="flex items-center gap-2.5 mb-1.5">
+                <span class="w-9 h-9 rounded-xl bg-red-100 text-[#801414] flex items-center justify-center font-bold shadow-2xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </span>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Edit Data Produk</h2>
             </div>
-            <a href="{{ route('toko.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-2xs transition-all self-start sm:self-auto">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                <span>Kembali ke Dashboard</span>
-            </a>
+            <p class="text-xs sm:text-sm text-slate-500">Perbarui informasi produk unggulan Anda agar memenuhi standar kurasi UMKM Kabupaten Wonogiri.</p>
         </div>
 
 

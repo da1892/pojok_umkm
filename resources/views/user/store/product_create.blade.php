@@ -5,20 +5,14 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header Halaman -->
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                    <span class="w-9 h-9 rounded-xl bg-red-100 text-[#801414] flex items-center justify-center font-bold shadow-2xs">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                    </span>
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Tambah Produk Baru</h2>
-                </div>
-                <p class="text-xs sm:text-sm text-slate-500">Daftarkan produk unggulan UMKM Anda agar tayang di Katalog Resmi Kabupaten Wonogiri.</p>
+        <div class="mb-6">
+            <div class="flex items-center gap-2.5 mb-1.5">
+                <span class="w-9 h-9 rounded-xl bg-red-100 text-[#801414] flex items-center justify-center font-bold shadow-2xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                </span>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Tambah Produk Baru</h2>
             </div>
-            <a href="{{ route('toko.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-2xs transition-all self-start sm:self-auto">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                <span>Kembali ke Dashboard</span>
-            </a>
+            <p class="text-xs sm:text-sm text-slate-500">Daftarkan produk unggulan UMKM Anda agar tayang di Katalog Resmi Kabupaten Wonogiri.</p>
         </div>
 
 
