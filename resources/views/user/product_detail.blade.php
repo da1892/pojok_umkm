@@ -1,24 +1,8 @@
 @extends('user.layouts.app')
 
 @section('content')
-<div class="bg-[#FAF9F6] min-h-screen py-8 md:py-12">
+<div class="bg-[#FAF9F6] min-h-screen py-6 md:py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Breadcrumb & Back Button -->
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <nav class="flex items-center gap-2 text-sm text-slate-500 font-medium">
-                <a href="/" class="hover:text-[#800000] transition-colors">Beranda</a>
-                <span>/</span>
-                <a href="{{ route('katalog') }}" class="hover:text-[#800000] transition-colors">Katalog</a>
-                <span>/</span>
-                <span class="text-slate-800 font-semibold truncate max-w-xs">{{ $product->name }}</span>
-            </nav>
-            <a href="{{ url()->previous() ?: route('katalog') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#800000] bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Kembali
-            </a>
-        </div>
-
         @php
             $images = $product->all_images;
             if (empty($images)) {
