@@ -211,10 +211,8 @@
                 <!-- Col 1: Brand & Contact -->
                 <div class="md:col-span-6 lg:col-span-4">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-[#eab308] text-white flex items-center justify-center shrink-0 shadow-sm">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                            </svg>
+                        <div class="w-11 h-11 rounded-xl bg-white p-1.5 flex items-center justify-center shrink-0 shadow-md">
+                            <img src="{{ asset('img/kukm_wonogiri.png') }}" alt="Logo Kabupaten Wonogiri" class="w-full h-full object-contain">
                         </div>
                         <div>
                             <div class="text-base font-extrabold text-white leading-tight tracking-tight">Pojok UMKM Wonogiri</div>
