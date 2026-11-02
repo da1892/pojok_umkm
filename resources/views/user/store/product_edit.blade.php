@@ -21,56 +21,7 @@
             </a>
         </div>
 
-        <!-- ======================================================== -->
-        <!-- PANDUAN & STANDAR KURASI PRODUK UMKM KABUPATEN WONOGIRI  -->
-        <!-- ======================================================== -->
-        <div class="mb-6 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50/90 via-amber-50/40 to-white p-5 shadow-xs">
-            <div class="flex items-start justify-between gap-3 mb-3.5">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                    </span>
-                    <div>
-                        <h3 class="text-sm font-black text-amber-950 uppercase tracking-wider">Standar Produk Lolos Kurasi UMKM Wonogiri</h3>
-                        <p class="text-xs text-amber-800">Pastikan data produk memenuhi 4 kriteria kurasi resmi berikut:</p>
-                    </div>
-                </div>
-                <span class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-amber-100 text-amber-900 border border-amber-300/60">
-                    Panduan Kurasi
-                </span>
-            </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="bg-white/95 p-3 rounded-xl border border-amber-200/70 shadow-2xs">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">1</span>
-                        <h4 class="text-xs font-bold text-slate-800">Foto Asli & Jelas</h4>
-                    </div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Gunakan foto asli dengan pencahayaan terang. Tampilkan kemasan depan dan label merek.</p>
-                </div>
-                <div class="bg-white/95 p-3 rounded-xl border border-amber-200/70 shadow-2xs">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">2</span>
-                        <h4 class="text-xs font-bold text-slate-800">Nama Terstruktur</h4>
-                    </div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Format standar: <strong>Merek + Jenis + Varian/Netto</strong> (Cth: Mete Wonogiri Rasa Bawang 250g).</p>
-                </div>
-                <div class="bg-white/95 p-3 rounded-xl border border-amber-200/70 shadow-2xs">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">3</span>
-                        <h4 class="text-xs font-bold text-slate-800">Rincian Komposisi</h4>
-                    </div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Cantumkan komposisi bahan, berat bersih (netto) atau ukuran, dan daya tahan simpan.</p>
-                </div>
-                <div class="bg-white/95 p-3 rounded-xl border border-amber-200/70 shadow-2xs">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-extrabold">4</span>
-                        <h4 class="text-xs font-bold text-slate-800">Legalitas & Khas</h4>
-                    </div>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Cantumkan PIRT/Halal (jika ada) serta keistimewaan bahan lokal Wonogiri.</p>
-                </div>
-            </div>
-        </div>
 
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
             @if($product->status == 'rejected')
