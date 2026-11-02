@@ -279,9 +279,18 @@ class StoreController extends Controller
             $data['image_path'] = $newImagePaths[0];
         }
 
+        $wasRejected = ($product->status === 'rejected');
+        if ($wasRejected) {
+            $data['status'] = 'pending';
+        }
+
         $product->update($data);
 
-        return redirect()->route('toko.index')->with('success', 'Produk berhasil diperbarui!');
+        $successMsg = $wasRejected 
+            ? 'Produk berhasil diperbarui dan diajukan ulang ke Admin! Status produk saat ini kembali Menunggu Persetujuan.' 
+            : 'Produk berhasil diperbarui!';
+
+        return redirect()->route('toko.index')->with('success', $successMsg);
     }
 
     public function destroyStore(Request $request)

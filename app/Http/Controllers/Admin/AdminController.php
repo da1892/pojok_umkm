@@ -462,15 +462,30 @@ class AdminController extends Controller
     public function verifyProduct($id)
     {
         $product = Product::findOrFail($id);
-        $product->update(['status' => 'verified']);
-        return back()->with('success', 'Produk berhasil diverifikasi.');
+        $product->update([
+            'status' => 'verified',
+            'rejection_note' => null
+        ]);
+        return back()->with('success', "Produk '{$product->name}' berhasil diverifikasi dan disetujui.");
     }
 
-    public function rejectProduct($id)
+    public function rejectProduct(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-        $product->update(['status' => 'rejected']);
-        return back()->with('success', 'Produk ditolak.');
+
+        $request->validate([
+            'rejection_note' => 'required|string|max:1000'
+        ], [
+            'rejection_note.required' => 'Wajib mengetikkan komentar atau alasan penolakan saat menolak produk.',
+            'rejection_note.max' => 'Alasan penolakan maksimal 1000 karakter.'
+        ]);
+
+        $product->update([
+            'status' => 'rejected',
+            'rejection_note' => $request->rejection_note
+        ]);
+
+        return back()->with('success', "Pengajuan produk '{$product->name}' telah ditolak dengan catatan alasan penolakan.");
     }
 
     public function editProduct($id)

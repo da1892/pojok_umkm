@@ -13,6 +13,31 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            @if($product->status == 'rejected')
+                <div class="mb-6 p-5 rounded-2xl bg-gradient-to-br from-red-50 to-white border border-red-200 shadow-sm">
+                    <div class="flex items-center gap-2.5 mb-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-600 text-white shadow-2xs">Perlu Perbaikan</span>
+                        <h4 class="font-bold text-red-950 text-base">Produk Ini Belum Disetujui Admin</h4>
+                    </div>
+
+                    @if(!empty($product->rejection_note))
+                        <div class="mt-3.5 mb-3 p-4 bg-white rounded-2xl border border-red-200 shadow-2xs">
+                            <div class="flex items-center gap-2 mb-2 text-xs font-bold text-red-800 uppercase tracking-wider">
+                                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                                <span>Catatan & Alasan Penolakan dari Admin Dinas:</span>
+                            </div>
+                            <div class="text-sm text-slate-800 font-medium leading-relaxed bg-red-50/50 p-3.5 rounded-xl border border-red-100">
+                                {!! nl2br(e($product->rejection_note)) !!}
+                            </div>
+                        </div>
+                    @endif
+
+                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                        Silakan perbaiki foto, nama, kategori, atau deskripsi produk Anda di formulir bawah ini. Setelah Anda klik tombol <strong>"Simpan Perubahan"</strong>, status produk akan otomatis kembali menjadi <strong>Menunggu Persetujuan</strong> agar dapat ditinjau ulang oleh Admin.
+                    </p>
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
                     <div class="flex">

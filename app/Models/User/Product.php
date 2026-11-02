@@ -18,6 +18,7 @@ class Product extends Model
         'image_path',
         'images',
         'status',
+        'rejection_note',
     ];
 
     protected $casts = [

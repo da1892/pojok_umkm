@@ -275,6 +275,11 @@
                                 <span class="w-1.5 h-1.5 rounded-full {{ $statusInfo['dot'] }}"></span>
                                 {{ $statusInfo['label'] }}
                             </span>
+                            @if($product->status == 'rejected' && !empty($product->rejection_note))
+                                <div class="text-[10px] text-red-600 font-medium mt-1 max-w-[160px] truncate" title="Alasan: {{ $product->rejection_note }}">
+                                    Catatan: {{ $product->rejection_note }}
+                                </div>
+                            @endif
                         </td>
 
                         <!-- Actions -->

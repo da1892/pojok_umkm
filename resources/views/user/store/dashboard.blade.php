@@ -190,6 +190,19 @@
                         <h4 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">{{ $product->name }}</h4>
                         <p class="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">{{ $product->description }}</p>
                         
+                        @if($product->status == 'rejected' && !empty($product->rejection_note))
+                            <div class="mb-4 p-3 bg-red-50 border border-red-200/90 rounded-xl text-xs text-red-900 shadow-2xs">
+                                <div class="font-bold flex items-center gap-1.5 text-red-800 mb-1">
+                                    <svg class="w-3.5 h-3.5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    <span>Alasan Penolakan:</span>
+                                </div>
+                                <p class="text-[11px] text-red-700 leading-relaxed italic">{!! nl2br(e($product->rejection_note)) !!}</p>
+                                <a href="{{ route('toko.product.edit', $product->id) }}" class="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-red-800 hover:text-red-950 hover:underline">
+                                    <span>Perbaiki produk ini</span> &rarr;
+                                </a>
+                            </div>
+                        @endif
+                        
                         <div class="mt-auto border-t border-slate-100 pt-4 flex items-center justify-between">
                             <a href="{{ route('toko.product.edit', $product->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
