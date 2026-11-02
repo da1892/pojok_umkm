@@ -568,46 +568,7 @@
                             </div>
                         </div>
 
-                        <!-- Info Peta Otomatis & Link Manual Opsional -->
-                        <div class="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 space-y-2.5">
-                            <div class="flex items-start justify-between gap-2.5">
-                                <div class="flex items-start gap-2.5">
-                                    <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
-                                    </span>
-                                    <div>
-                                        <h4 class="text-xs font-bold text-emerald-950">Peta & Rute Google Maps Otomatis Aktif</h4>
-                                        <p class="text-[11px] text-emerald-800 leading-relaxed mt-0.5">
-                                            Calon pembeli dapat melihat peta dan petunjuk arah otomatis ke lokasi UMKM Anda berdasarkan nama jalan, desa, dan kecamatan <strong>tanpa Anda wajib mencari tautan Google Maps</strong>.
-                                        </p>
-                                    </div>
-                                </div>
-                                <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" class="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 px-2.5 py-1.5 rounded-lg transition-colors flex-shrink-0">
-                                    <span>Tes Buka Peta</span>
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                </a>
-                            </div>
-
-                            <!-- Dropdown Akordeon Opsional untuk Link Manual -->
-                            <div class="pt-2 border-t border-emerald-200/70">
-                                <div class="flex items-center justify-between">
-                                    <button type="button" onclick="toggleMapLinkField('profile-map-link-container', 'profile-toggle-map-icon')" class="text-xs font-medium text-emerald-900 hover:text-emerald-700 flex items-center gap-1.5 focus:outline-none transition-colors">
-                                        <svg id="profile-toggle-map-icon" class="w-3.5 h-3.5 transition-transform text-emerald-700 {{ old('map_link', $umkm->map_link) ? 'rotate-45' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                        <span>Punya titik link Google Maps khusus? <span class="text-emerald-700/70 font-normal">(Opsional - Klik jika ingin memasukkan link manual)</span></span>
-                                    </button>
-                                    <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" class="sm:hidden text-[11px] font-bold text-emerald-900 hover:underline">
-                                        Tes Peta &rarr;
-                                    </a>
-                                </div>
-                                
-                                <div id="profile-map-link-container" class="{{ old('map_link', $umkm->map_link) ? '' : 'hidden' }} mt-2.5 pl-5 space-y-1.5">
-                                    <input type="url" name="map_link" value="{{ old('map_link', $umkm->map_link) }}" placeholder="Tempel link Google Maps di sini (contoh: https://maps.app.goo.gl/...)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 focus:outline-none transition-all shadow-xs">
-                                    <p class="text-[11px] text-slate-500">
-                                        Biarkan kosong jika tidak punya link. Sistem sudah otomatis membuatkan peta dan navigasi pembeli secara akurat.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <input type="hidden" name="map_link" value="{{ old('map_link', $umkm->map_link) }}">
                     </div>
 
                     <!-- Legalitas & Sertifikasi -->
@@ -758,20 +719,6 @@
             document.addEventListener('DOMContentLoaded', () => switchTab('edit'));
         }
     @endif
-
-    // Toggle field map link manual (opsional)
-    function toggleMapLinkField(containerId, iconId) {
-        const container = document.getElementById(containerId);
-        const icon = document.getElementById(iconId);
-        if (!container) return;
-        if (container.classList.contains('hidden')) {
-            container.classList.remove('hidden');
-            if (icon) icon.classList.add('rotate-45');
-        } else {
-            container.classList.add('hidden');
-            if (icon) icon.classList.remove('rotate-45');
-        }
-    }
 
     // Logika Data Wilayah Wonogiri
     let wilayahData = {};

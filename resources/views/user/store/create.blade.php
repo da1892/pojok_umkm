@@ -218,35 +218,7 @@
                         </div>
                     </div>
 
-                    <!-- Info Peta Otomatis & Link Manual Opsional -->
-                    <div class="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 space-y-2.5">
-                        <div class="flex items-start gap-2.5">
-                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
-                            </span>
-                            <div>
-                                <h4 class="text-xs font-bold text-emerald-950">Peta & Rute Google Maps Otomatis Dibuat Sistem</h4>
-                                <p class="text-[11px] text-emerald-800 leading-relaxed mt-0.5">
-                                    Calon pembeli bisa langsung melihat peta dan tombol petunjuk arah ke toko Anda. Sistem otomatis memetakan lokasi berdasarkan nama jalan, desa, dan kecamatan di atas <strong>tanpa Anda perlu repot mencari link Google Maps</strong>.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Dropdown Akordeon Opsional untuk Link Manual -->
-                        <div class="pt-2 border-t border-emerald-200/70">
-                            <button type="button" onclick="toggleMapLinkField('create-map-link-container', 'create-toggle-map-icon')" class="text-xs font-medium text-emerald-900 hover:text-emerald-700 flex items-center gap-1.5 focus:outline-none transition-colors">
-                                <svg id="create-toggle-map-icon" class="w-3.5 h-3.5 transition-transform text-emerald-700 {{ old('map_link') ? 'rotate-45' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                <span>Punya titik link Google Maps khusus? <span class="text-emerald-700/70 font-normal">(Opsional - Klik jika ingin memasukkan link manual)</span></span>
-                            </button>
-                            
-                            <div id="create-map-link-container" class="{{ old('map_link') ? '' : 'hidden' }} mt-2.5 pl-5 space-y-1.5">
-                                <input type="url" name="map_link" value="{{ old('map_link') }}" placeholder="Tempel link Google Maps di sini (contoh: https://maps.app.goo.gl/...)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/10 focus:outline-none transition-all shadow-xs">
-                                <p class="text-[11px] text-slate-500">
-                                    Biarkan kosong jika tidak punya link. Sistem sudah otomatis membuatkan peta dan navigasi pembeli secara akurat.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <input type="hidden" name="map_link" value="{{ old('map_link', '') }}">
                 </div>
 
                 <!-- Legalitas & Sertifikasi Usaha -->
@@ -333,19 +305,6 @@
 </div>
 
 <script>
-    function toggleMapLinkField(containerId, iconId) {
-        const container = document.getElementById(containerId);
-        const icon = document.getElementById(iconId);
-        if (!container) return;
-        if (container.classList.contains('hidden')) {
-            container.classList.remove('hidden');
-            if (icon) icon.classList.add('rotate-45');
-        } else {
-            container.classList.add('hidden');
-            if (icon) icon.classList.remove('rotate-45');
-        }
-    }
-
     let wilayahData = {};
     const districtSelect = document.getElementById('district-select');
     const villageSelect = document.getElementById('village-select');
