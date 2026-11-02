@@ -95,7 +95,8 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1">Pencarian Cepat Wilayah (Ketik nama Desa atau Kecamatan):</label>
                         <div class="relative">
                             <input type="text" id="wilayah_search" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Selogiri...)" autocomplete="off"
-                                   class="w-full pl-10 pr-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
+                                   class="w-full search-input-padding pl-11 pr-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all"
+                                   style="padding-left: 2.75rem !important;">
                             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             <div id="search_results" class="hidden absolute z-30 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-lg"></div>
                         </div>

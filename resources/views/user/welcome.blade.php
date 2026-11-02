@@ -578,7 +578,8 @@
                         <input type="text" 
                                id="map-search-input" 
                                placeholder="Cari nama UMKM, produk, desa..." 
-                               class="w-full pl-9 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs">
+                               class="w-full search-input-padding pl-11 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs"
+                               style="padding-left: 2.75rem !important;">
                     </div>
 
                     <!-- Dropdown Kecamatan (1/3 cols) Custom Modern -->
@@ -613,7 +614,8 @@
                                            id="map-dist-search" 
                                            placeholder="Ketik nama kecamatan..." 
                                            autocomplete="off"
-                                           class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] text-slate-800">
+                                           class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] text-slate-800"
+                                           style="padding-left: 2.25rem !important;">
                                 </div>
                                 <div class="overflow-y-auto space-y-1 max-h-56 sm:max-h-64 pr-1 scrollbar-thin">
                                     <button type="button" 

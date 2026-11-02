@@ -22,7 +22,7 @@ select,
 textarea {
     border: 2px solid #cbd5e1 !important;
     background-color: #ffffff !important;
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 1rem;
     font-size: 0.875rem !important;
     line-height: 1.25rem !important;
     border-radius: 0.75rem !important;
@@ -31,9 +31,44 @@ textarea {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-.search-input-padding {
+/* Pastikan semua input & select yang memiliki ikon di sebelah kiri memiliki padding kiri yang lega agar teks tidak bertumpuk/kedobol dengan ikon */
+.search-input-padding,
+.has-icon-left,
+input.search-input-padding,
+select.search-input-padding,
+input.pl-9,
+input.pl-10,
+input.pl-11,
+input.pl-12,
+select.pl-9,
+select.pl-10,
+input[class*="pl-9"],
+input[class*="pl-10"],
+input[class*="pl-11"],
+input[class*="pl-12"],
+select[class*="pl-9"],
+select[class*="pl-10"] {
     padding-left: 2.75rem !important;
+}
+
+input.pl-8,
+input.pl-7,
+select.pl-8,
+input[class*="pl-8"],
+input[class*="pl-7"],
+select[class*="pl-8"] {
+    padding-left: 2.25rem !important;
+}
+
+input[class*="pr-10"],
+input[class*="pr-11"],
+input[class*="pr-12"] {
     padding-right: 2.5rem !important;
+}
+
+input[class*="pr-16"],
+input[class*="pr-20"] {
+    padding-right: 4.5rem !important;
 }
 
 input[type="text"]:focus,

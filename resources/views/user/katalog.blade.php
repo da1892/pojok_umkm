@@ -36,7 +36,8 @@
                            value="{{ request('q') }}" 
                            autocomplete="off"
                            placeholder="Cari produk unggulan..." 
-                           class="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all">
+                           class="w-full search-input-padding pl-11 pr-10 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all"
+                           style="padding-left: 2.75rem !important; padding-right: 2.5rem !important;">
                     
                     <!-- Subtle Spinner saat Auto-Filter Memuat -->
                     <div id="katalog-search-spinner" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#991b1b]">
@@ -169,7 +170,8 @@
                                        id="dist-search-input" 
                                        placeholder="Ketik nama kecamatan..." 
                                        autocomplete="off"
-                                       class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#991b1b] focus:ring-2 focus:ring-red-500/10 text-slate-800">
+                                       class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#991b1b] focus:ring-2 focus:ring-red-500/10 text-slate-800"
+                                       style="padding-left: 2.25rem !important;">
                             </div>
 
                             <!-- Options List with Smooth Scrolling -->

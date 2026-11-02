@@ -36,8 +36,9 @@
                                    name="q" 
                                    value="{{ request('q') }}" 
                                    autocomplete="off"
-                                   placeholder="Ketik kata kunci atau tanggal (cth: 31 Oktober 2026)..." 
-                                   class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 pl-9 sm:pl-10 pr-16 sm:pr-20 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/25 focus:ring-4 focus:ring-white/20 text-xs sm:text-sm transition-all shadow-xs">
+                                   placeholder="Cari berita atau agenda..." 
+                                   class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 search-input-padding pl-11 pr-16 sm:pr-20 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/25 focus:ring-4 focus:ring-white/20 text-xs sm:text-sm transition-all shadow-xs"
+                                   style="padding-left: 2.75rem !important;">
                             
                             <!-- Spinner Loading saat Auto-Filter Memuat -->
                             <div id="news-search-spinner" class="hidden absolute inset-y-0 right-12 sm:right-14 pr-1 flex items-center pointer-events-none text-white">
