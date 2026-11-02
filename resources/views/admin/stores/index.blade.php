@@ -53,7 +53,12 @@
                             {{ $umkm->phone }}
                         </div>
                     </td>
-                    <td class="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">{{ $umkm->owner_name }}</td>
+                    <td class="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+                        <div>{{ $umkm->owner_name }}</div>
+                        @if($umkm->gender)
+                            <span class="text-[11px] text-slate-400 font-normal">({{ $umkm->gender }})</span>
+                        @endif
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="font-medium text-slate-800">{{ $umkm->district ?? '-' }}</div>
                         @if($umkm->village)
@@ -76,6 +81,11 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                                 Ditolak
                             </span>
+                            @if(!empty($umkm->rejection_note))
+                                <div class="text-[10px] text-red-600 font-medium mt-1 max-w-[140px] truncate" title="Alasan: {{ $umkm->rejection_note }}">
+                                    Catatan: {{ $umkm->rejection_note }}
+                                </div>
+                            @endif
                         @endif
                     </td>
                     <td class="px-6 py-4 text-center">

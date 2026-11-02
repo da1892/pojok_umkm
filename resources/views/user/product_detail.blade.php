@@ -27,11 +27,11 @@
         @endphp
 
         <!-- Main Product Card -->
-        <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200/80">
+        <div class="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-slate-200/80">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
                 
                 <!-- Left Column: Gallery & Carousel (6 cols on lg) -->
-                <div class="lg:col-span-6 p-6 sm:p-8 bg-slate-50/70 border-b lg:border-b-0 lg:border-r border-slate-100 flex flex-col justify-start">
+                <div class="lg:col-span-6 p-3.5 sm:p-8 bg-slate-50/70 border-b lg:border-b-0 lg:border-r border-slate-100 flex flex-col justify-start">
                     
                     <!-- Main Carousel Viewport with Sliding Track -->
                     <div id="carousel-container" class="carousel-main-viewport group">
@@ -116,7 +116,7 @@
                 </div>
 
                 <!-- Right Column: Product Info & Seller (6 cols on lg) -->
-                <div class="lg:col-span-6 p-6 sm:p-10 flex flex-col justify-between">
+                <div class="lg:col-span-6 p-4 sm:p-10 flex flex-col justify-between">
                     <div>
                         <!-- Category Tag -->
                         <div class="flex items-center gap-2 mb-3">

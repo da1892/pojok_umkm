@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-red-50 min-h-screen py-12">
+<div class="bg-red-50 min-h-screen py-8 sm:py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Hero Section Konsultasi -->
-        <div class="bg-[#800000] rounded-3xl p-10 text-white shadow-xl mb-12 relative overflow-hidden reveal">
+        <div class="bg-[#800000] rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-white shadow-xl mb-8 sm:mb-12 relative overflow-hidden reveal">
             <!-- Decorative blobs -->
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600 rounded-full mix-blend-overlay filter blur-3xl opacity-50"></div>
             <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-orange-500 rounded-full mix-blend-overlay filter blur-3xl opacity-30"></div>
             
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
-                <div class="md:w-3/5">
-                    <div class="inline-block bg-white text-[#800000] text-xs font-bold px-3 py-1 rounded-full mb-4 reveal delay-100 uppercase tracking-wider">Layanan Ekstra</div>
-                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 reveal delay-200 leading-tight">Konsultasi Bisnis<br>UMKM Gratis</h1>
-                    <p class="text-red-100 text-lg reveal delay-300 mb-8">Punya kendala bisnis? Diskusikan langsung dengan pakar kami di bidang Pemasaran, Keuangan, Izin Usaha, dan lain-lain untuk memajukan UMKM Anda.</p>
-                    <div class="flex flex-wrap gap-4 reveal delay-400">
-                        <a href="{{ route('konsultasi.cek') }}" class="bg-white text-[#800000] font-bold px-8 py-3 rounded-full hover:bg-red-50 transition-colors shadow-lg">Cek Konsultasi</a>
-                        <a href="{{ route('panduan') }}" class="border-2 border-white/80 text-white hover:bg-white/10 font-bold px-6 py-3 rounded-full transition-colors flex items-center gap-2">
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-10">
+                <div class="md:w-3/5 text-center md:text-left">
+                    <div class="inline-block bg-white text-[#800000] text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full mb-3 sm:mb-4 reveal delay-100 uppercase tracking-wider">Layanan Ekstra</div>
+                    <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-3 sm:mb-4 reveal delay-200 leading-tight">Konsultasi Bisnis<br class="hidden sm:inline"> UMKM Gratis</h1>
+                    <p class="text-red-100 text-xs sm:text-base md:text-lg reveal delay-300 mb-6 sm:mb-8 leading-relaxed">Punya kendala bisnis? Diskusikan langsung dengan pakar kami di bidang Pemasaran, Keuangan, Izin Usaha, dan lain-lain untuk memajukan UMKM Anda.</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 reveal delay-400">
+                        <a href="{{ route('konsultasi.cek') }}" class="bg-white text-[#800000] font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full hover:bg-red-50 transition-colors shadow-lg text-xs sm:text-sm">Cek Konsultasi</a>
+                        <a href="{{ route('panduan') }}" class="border-2 border-white/80 text-white hover:bg-white/10 font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors flex items-center gap-2 text-xs sm:text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                             Baca Info & Panduan
                         </a>
@@ -34,12 +34,12 @@
             </div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
             
             <!-- Form Panel (Kiri, 8 columns) -->
             <div class="md:col-span-8" id="form-konsultasi">
-                <div class="bg-white rounded-[24px] p-8 md:p-10 shadow-sm border border-slate-100 reveal delay-100">
-                    <h2 class="text-[22px] font-bold text-slate-900 mb-8">Formulir Pengajuan Layanan</h2>
+                <div class="bg-white rounded-2xl sm:rounded-[24px] p-5 sm:p-8 md:p-10 shadow-sm border border-slate-100 reveal delay-100">
+                    <h2 class="text-lg sm:text-[22px] font-bold text-slate-900 mb-6 sm:mb-8">Formulir Pengajuan Layanan</h2>
                     
                     @if(session('success'))
                         <!-- SweetAlert will handle this -->

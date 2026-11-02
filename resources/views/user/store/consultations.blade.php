@@ -36,20 +36,44 @@
                                 @php
                                     $statusColor = match(strtolower($consultation->status)) {
                                         'menunggu' => 'bg-yellow-50 text-yellow-700 border-yellow-200',
+                                        'diterima' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
                                         'diproses' => 'bg-blue-50 text-blue-700 border-blue-200',
                                         'selesai' => 'bg-green-50 text-green-700 border-green-200',
+                                        'ditolak' => 'bg-red-50 text-red-700 border-red-200',
                                         default => 'bg-slate-50 text-slate-700 border-slate-200'
                                     };
                                 @endphp
-                                <span class="px-2.5 py-1 rounded-md text-xs font-medium border {{ $statusColor }}">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border {{ $statusColor }}">
+                                    @if($consultation->status == 'diterima' || $consultation->status == 'selesai')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    @elseif($consultation->status == 'ditolak')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                    @elseif($consultation->status == 'diproses')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                    @else
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                    @endif
                                     {{ ucfirst($consultation->status) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
                                 @if($consultation->response)
-                                    <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-green-800 text-xs leading-relaxed max-w-sm">
-                                        {{ $consultation->response }}
-                                    </div>
+                                    @if($consultation->status == 'ditolak')
+                                        <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-red-900 text-xs leading-relaxed max-w-sm shadow-2xs">
+                                            <span class="font-bold block text-red-800 uppercase tracking-wider text-[10px] mb-1">Alasan Penolakan:</span>
+                                            {{ $consultation->response }}
+                                        </div>
+                                    @elseif($consultation->status == 'diterima')
+                                        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-emerald-950 text-xs leading-relaxed max-w-sm shadow-2xs">
+                                            <span class="font-bold block text-emerald-800 uppercase tracking-wider text-[10px] mb-1">Catatan Penerimaan:</span>
+                                            {{ $consultation->response }}
+                                        </div>
+                                    @else
+                                        <div class="bg-green-50 border border-green-100 p-3 rounded-lg text-green-800 text-xs leading-relaxed max-w-sm">
+                                            <span class="font-bold block text-green-800 uppercase tracking-wider text-[10px] mb-1">Tanggapan Admin:</span>
+                                            {{ $consultation->response }}
+                                        </div>
+                                    @endif
                                 @else
                                     <span class="text-slate-400 italic text-xs">Belum ada balasan</span>
                                 @endif

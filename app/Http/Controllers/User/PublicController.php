@@ -12,20 +12,75 @@ class PublicController extends Controller
         // Hanya ambil berita yang aktif (is_published = true / 1)
         $latestNews = \App\Models\User\NewsInformation::where('is_published', true)
             ->latest()
-            ->take(3)
+            ->take(12)
             ->get();
 
         $featuredProducts = \App\Models\User\Product::with('umkmProfile')
             ->where('status', 'verified')
             ->latest()
-            ->take(8)
+            ->take(6)
             ->get();
 
+        // 1. Data Agregat Pokok
         $totalUmkm = \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count();
+        $totalVerifiedUmkm = \App\Models\User\UmkmProfile::where('status', 'verified')->count();
         $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
         $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
+        $totalDistricts = \App\Models\User\UmkmProfile::whereNotNull('district')
+            ->where('district', '!=', '')
+            ->distinct('district')
+            ->count('district');
 
-        return view('user.welcome', compact('latestNews', 'featuredProducts', 'totalUmkm', 'totalProducts', 'totalConsultations'));
+        // 2. Data Agregat Kategori Produk
+        $categoryStats = \App\Models\User\Product::where('status', 'verified')
+            ->select('category', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            ->groupBy('category')
+            ->orderByDesc('count')
+            ->get();
+
+        // 3. Data Agregat Legalitas & Sertifikasi
+        $legalitasStats = [
+            'nib' => \App\Models\User\UmkmProfile::whereNotNull('nib')->where('nib', '!=', '')->count(),
+            'halal' => \App\Models\User\UmkmProfile::whereNotNull('halal_cert')->where('halal_cert', '!=', '')->count(),
+            'pirt' => \App\Models\User\UmkmProfile::whereNotNull('pirt')->where('pirt', '!=', '')->count(),
+        ];
+
+        // 4. Data Agregat Demografi Gender Pemilik UMKM
+        $genderStats = [
+            'male' => \App\Models\User\UmkmProfile::where('gender', 'Laki-laki')->count(),
+            'female' => \App\Models\User\UmkmProfile::where('gender', 'Perempuan')->count(),
+            'total_specified' => \App\Models\User\UmkmProfile::whereIn('gender', ['Laki-laki', 'Perempuan'])->count(),
+        ];
+
+        // 5. Data Agregat Sebaran Wilayah per Kecamatan (Top 6)
+        $districtStats = \App\Models\User\UmkmProfile::whereNotNull('district')
+            ->where('district', '!=', '')
+            ->select('district', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            ->groupBy('district')
+            ->orderByDesc('count')
+            ->take(6)
+            ->get();
+
+        // 6. Data Koordinat & Marker Persebaran UMKM untuk Peta Interaktif Wonogiri
+        $umkmMapList = \App\Models\User\UmkmProfile::with('products')
+            ->where('status', 'verified')
+            ->get()
+            ->map->toMapPayload();
+
+        return view('user.welcome', compact(
+            'latestNews', 
+            'featuredProducts', 
+            'totalUmkm', 
+            'totalVerifiedUmkm',
+            'totalProducts', 
+            'totalConsultations',
+            'totalDistricts',
+            'categoryStats',
+            'legalitasStats',
+            'genderStats',
+            'districtStats',
+            'umkmMapList'
+        ));
     }
 
     public function panduan(Request $request)
@@ -37,33 +92,236 @@ class PublicController extends Controller
     {
         $query = \App\Models\User\NewsInformation::where('is_published', true);
 
+        // Filter direct tanggal (misal dari input kalender YYYY-MM-DD)
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        // Filter pencarian cerdas kata kunci + tanggal
         if ($request->filled('q')) {
-            $q = $request->q;
-            $query->where(function($b) use ($q) {
-                $b->where('title', 'like', "%{$q}%")
-                  ->orWhere('excerpt', 'like', "%{$q}%")
-                  ->orWhere('content', 'like', "%{$q}%");
-            });
+            $parsed = $this->parseDateAndKeywords($request->q);
+
+            // Jika ada deteksi tanggal (misal '31 Oktober 2026', '31 Oktober', 'Oktober 2026', '31', dll)
+            if ($parsed['date']) {
+                $d = $parsed['date'];
+                if ($d['type'] === 'full') {
+                    $query->whereDay('created_at', $d['day'])
+                          ->whereMonth('created_at', $d['month'])
+                          ->whereYear('created_at', $d['year']);
+                } elseif ($d['type'] === 'day_month') {
+                    $query->whereDay('created_at', $d['day'])
+                          ->whereMonth('created_at', $d['month']);
+                } elseif ($d['type'] === 'month_year') {
+                    $query->whereMonth('created_at', $d['month'])
+                          ->whereYear('created_at', $d['year']);
+                } elseif ($d['type'] === 'month') {
+                    $query->whereMonth('created_at', $d['month']);
+                } elseif ($d['type'] === 'year') {
+                    $query->whereYear('created_at', $d['year']);
+                } elseif ($d['type'] === 'day') {
+                    $dayVal = $d['day'];
+                    $query->where(function($b) use ($dayVal) {
+                        $b->whereDay('created_at', $dayVal)
+                          ->orWhere('title', 'ilike', "%{$dayVal}%")
+                          ->orWhere('content', 'ilike', "%{$dayVal}%");
+                    });
+                }
+            }
+
+            // Jika ada sisa kata kunci teks (atau kata kunci umum)
+            if (!empty($parsed['text'])) {
+                $txt = $parsed['text'];
+                $query->where(function($b) use ($txt) {
+                    $b->where('title', 'ilike', "%{$txt}%")
+                      ->orWhere('excerpt', 'ilike', "%{$txt}%")
+                      ->orWhere('content', 'ilike', "%{$txt}%")
+                      ->orWhere('category', 'ilike', "%{$txt}%");
+                });
+            }
         }
 
         if ($request->filled('kategori')) {
             $query->where('category', $request->kategori);
         }
 
-        $newsList = $query->latest()->paginate(6)->withQueryString();
+        $newsList = $query->latest()->paginate(9)->withQueryString();
+
         return view('user.informasi', compact('newsList'));
+    }
+
+    /**
+     * Parsing teks pencarian untuk mendeteksi tanggal (Indonesia, Inggris, angka) serta kata kunci teks.
+     */
+    private function parseDateAndKeywords($raw)
+    {
+        $months = [
+            'januari' => 1, 'jan' => 1, 'january' => 1,
+            'februari' => 2, 'feb' => 2, 'pebruari' => 2, 'february' => 2,
+            'maret' => 3, 'mar' => 3, 'march' => 3,
+            'april' => 4, 'apr' => 4,
+            'mei' => 5, 'may' => 5,
+            'juni' => 6, 'jun' => 6, 'june' => 6,
+            'juli' => 7, 'jul' => 7, 'july' => 7,
+            'agustus' => 8, 'agu' => 8, 'agt' => 8, 'aug' => 8, 'august' => 8,
+            'september' => 9, 'sep' => 9, 'sept' => 9,
+            'oktober' => 10, 'okt' => 10, 'oct' => 10, 'october' => 10,
+            'november' => 11, 'nov' => 11, 'nopember' => 11,
+            'desember' => 12, 'des' => 12, 'dec' => 12, 'december' => 12,
+        ];
+
+        $trimmed = trim($raw);
+        $lower = strtolower($trimmed);
+        $dateCondition = null;
+        $remainingText = $trimmed;
+
+        // 1. DD Month YYYY (cth: "31 Oktober 2026" atau "31 Okt 2026")
+        if (preg_match('/\b(\d{1,2})\s+([a-z]+)\s+(\d{4})\b/i', $lower, $m, PREG_OFFSET_CAPTURE)) {
+            $mName = strtolower($m[2][0]);
+            if (isset($months[$mName])) {
+                $dateCondition = [
+                    'type' => 'full',
+                    'day' => (int)$m[1][0],
+                    'month' => $months[$mName],
+                    'year' => (int)$m[3][0],
+                    'label' => (int)$m[1][0] . ' ' . ucfirst($mName) . ' ' . (int)$m[3][0]
+                ];
+                $remainingText = trim(substr_replace($remainingText, '', $m[0][1], strlen($m[0][0])));
+            }
+        }
+        // 2. YYYY-MM-DD
+        elseif (preg_match('/\b(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\b/', $lower, $m, PREG_OFFSET_CAPTURE)) {
+            $dateCondition = [
+                'type' => 'full',
+                'year' => (int)$m[1][0],
+                'month' => (int)$m[2][0],
+                'day' => (int)$m[3][0],
+                'label' => (int)$m[3][0] . '-' . (int)$m[2][0] . '-' . (int)$m[1][0]
+            ];
+            $remainingText = trim(substr_replace($remainingText, '', $m[0][1], strlen($m[0][0])));
+        }
+        // 3. DD-MM-YYYY atau DD/MM/YYYY
+        elseif (preg_match('/\b(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})\b/', $lower, $m, PREG_OFFSET_CAPTURE)) {
+            $dateCondition = [
+                'type' => 'full',
+                'day' => (int)$m[1][0],
+                'month' => (int)$m[2][0],
+                'year' => (int)$m[3][0],
+                'label' => (int)$m[1][0] . '-' . (int)$m[2][0] . '-' . (int)$m[3][0]
+            ];
+            $remainingText = trim(substr_replace($remainingText, '', $m[0][1], strlen($m[0][0])));
+        }
+        // 4. DD Month (cth: "31 Oktober" atau "31 okt")
+        elseif (preg_match('/\b(\d{1,2})\s+([a-z]+)\b/i', $lower, $m, PREG_OFFSET_CAPTURE)) {
+            $mName = strtolower($m[2][0]);
+            if (isset($months[$mName])) {
+                $dateCondition = [
+                    'type' => 'day_month',
+                    'day' => (int)$m[1][0],
+                    'month' => $months[$mName],
+                    'label' => (int)$m[1][0] . ' ' . ucfirst($mName)
+                ];
+                $remainingText = trim(substr_replace($remainingText, '', $m[0][1], strlen($m[0][0])));
+            }
+        }
+        // 5. DD-MM atau DD/MM (cth: "31/10" atau "31-10")
+        elseif (preg_match('/^\s*(\d{1,2})[-\/](\d{1,2})\s*$/', $lower, $m)) {
+            $dVal = (int)$m[1];
+            $mVal = (int)$m[2];
+            if ($dVal >= 1 && $dVal <= 31 && $mVal >= 1 && $mVal <= 12) {
+                $dateCondition = [
+                    'type' => 'day_month',
+                    'day' => $dVal,
+                    'month' => $mVal,
+                    'label' => $dVal . '/' . $mVal
+                ];
+                $remainingText = '';
+            }
+        }
+        // 6. Month YYYY (cth: "Oktober 2026")
+        elseif (preg_match('/\b([a-z]+)\s+(\d{4})\b/i', $lower, $m, PREG_OFFSET_CAPTURE)) {
+            $mName = strtolower($m[1][0]);
+            if (isset($months[$mName])) {
+                $dateCondition = [
+                    'type' => 'month_year',
+                    'month' => $months[$mName],
+                    'year' => (int)$m[2][0],
+                    'label' => ucfirst($mName) . ' ' . (int)$m[2][0]
+                ];
+                $remainingText = trim(substr_replace($remainingText, '', $m[0][1], strlen($m[0][0])));
+            }
+        }
+        // 7. Nama bulan saja (cth: "Oktober" atau "okt")
+        elseif (isset($months[$lower])) {
+            $dateCondition = [
+                'type' => 'month',
+                'month' => $months[$lower],
+                'label' => ucfirst($lower)
+            ];
+            $remainingText = '';
+        }
+        // 8. Tahun 4 digit saja (cth: "2026")
+        elseif (preg_match('/^\s*(20\d{2})\s*$/', $lower, $m)) {
+            $dateCondition = [
+                'type' => 'year',
+                'year' => (int)$m[1],
+                'label' => 'Tahun ' . $m[1]
+            ];
+            $remainingText = '';
+        }
+        // 9. Tanggal hari saja 1-31 (cth: "31" atau "12")
+        elseif (preg_match('/^\s*(\d{1,2})\s*$/', $lower, $m)) {
+            $dayNum = (int)$m[1];
+            if ($dayNum >= 1 && $dayNum <= 31) {
+                $dateCondition = [
+                    'type' => 'day',
+                    'day' => $dayNum,
+                    'label' => 'Tanggal ' . $dayNum
+                ];
+                $remainingText = '';
+            }
+        }
+
+        $remainingText = trim(preg_replace('/[,\-\/]+/', ' ', $remainingText));
+
+        return [
+            'date' => $dateCondition,
+            'text' => $remainingText,
+        ];
     }
 
     public function showNews($id)
     {
         $news = \App\Models\User\NewsInformation::where('is_published', true)->findOrFail($id);
+
+        // Navigasi Berita Sebelumnya & Selanjutnya
+        $prevNews = \App\Models\User\NewsInformation::where('is_published', true)
+            ->where('id', '<', $id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $nextNews = \App\Models\User\NewsInformation::where('is_published', true)
+            ->where('id', '>', $id)
+            ->orderBy('id', 'asc')
+            ->first();
+
+        // Berita Terkait (utamakan kategori yang sama)
         $otherNews = \App\Models\User\NewsInformation::where('is_published', true)
             ->where('id', '!=', $id)
+            ->when($news->category, function($q) use ($news) {
+                $q->orderByRaw("CASE WHEN category = ? THEN 0 ELSE 1 END", [$news->category]);
+            })
             ->latest()
-            ->take(3)
+            ->take(4)
             ->get();
 
-        return view('user.news_detail', compact('news', 'otherNews'));
+        // Berita Terbaru untuk Sidebar
+        $recentNews = \App\Models\User\NewsInformation::where('is_published', true)
+            ->where('id', '!=', $id)
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view('user.news_detail', compact('news', 'otherNews', 'prevNews', 'nextNews', 'recentNews'));
     }
 
     public function katalog(Request $request)
@@ -181,8 +439,38 @@ class PublicController extends Controller
         }
         
         $umkms = $query->latest()->paginate(12)->withQueryString();
+
+        $umkmMapList = \App\Models\User\UmkmProfile::with('products')
+            ->where('status', 'verified')
+            ->get()
+            ->map->toMapPayload();
         
-        return view('user.direktori', compact('umkms'));
+        return view('user.direktori', compact('umkms', 'umkmMapList'));
+    }
+
+    public function getMapUmkmData(Request $request)
+    {
+        $query = \App\Models\User\UmkmProfile::with('products')->where('status', 'verified');
+        
+        if ($request->filled('kecamatan')) {
+            $kec = strtolower(trim($request->kecamatan));
+            $query->where(function($q) use ($kec) {
+                $q->whereRaw('LOWER(district) LIKE ?', ['%' . $kec . '%'])
+                  ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $kec . '%']);
+            });
+        }
+
+        if ($request->filled('q')) {
+            $search = strtolower(trim($request->q));
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(business_name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(address) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(district) LIKE ?', ['%' . $search . '%']);
+            });
+        }
+
+        $list = $query->get()->map->toMapPayload();
+        return response()->json($list);
     }
 
     public function showProduct($id)

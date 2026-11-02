@@ -60,6 +60,10 @@
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.news*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"></path></svg>
                     Berita & Kegiatan
                 </a>
+                <a href="{{ route('admin.visitors') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.visitors*') || request()->routeIs('admin.reports*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
+                    <svg class="w-5 h-5 {{ request()->routeIs('admin.visitors*') || request()->routeIs('admin.reports*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Statistik Pengunjung
+                </a>
             </nav>
 
             <!-- User Profile (Bottom) -->

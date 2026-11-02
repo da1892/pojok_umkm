@@ -47,6 +47,15 @@
                 </div>
                 
                 <div>
+                    <label class="block text-sm font-semibold text-slate-800 mb-2">Jenis Kelamin Pemilik</label>
+                    <select name="gender" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all">
+                        <option value="">-- Pilih Jenis Kelamin --</option>
+                        <option value="Laki-laki" {{ old('gender', $umkm->gender) == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="Perempuan" {{ old('gender', $umkm->gender) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
+                </div>
+                
+                <div>
                     <label class="block text-sm font-semibold text-slate-800 mb-2">
                         Nomor HP / WhatsApp <span class="text-red-500">*</span>
                         <span class="text-xs text-slate-400 font-normal ml-1">(Min. 10 Digit)</span>

@@ -14,6 +14,7 @@ Route::get('/katalog/{id}', [PublicController::class, 'showProduct'])->name('kat
 
 Route::get('/direktori', [PublicController::class, 'direktori'])->name('direktori');
 Route::get('/direktori/{id}', [PublicController::class, 'showUmkm'])->name('direktori.show');
+Route::get('/api/peta-umkm', [PublicController::class, 'getMapUmkmData'])->name('api.peta.umkm');
 Route::get('/informasi', [PublicController::class, 'informasi'])->name('informasi');
 Route::get('/informasi/{id}', [PublicController::class, 'showNews'])->name('informasi.show');
 
@@ -54,8 +55,9 @@ Route::middleware(['auth'])->group(function () {
         // Verifikasi Data
         Route::get('/admin/verifikasi', [AdminController::class, 'verifications'])->name('admin.verifications');
         
-        // Laporan
-        Route::get('/admin/laporan', [AdminController::class, 'reports'])->name('admin.reports');
+        // Laporan & Statistik Pengunjung
+        Route::get('/admin/pengunjung', [AdminController::class, 'visitorStats'])->name('admin.visitors');
+        Route::get('/admin/laporan', [AdminController::class, 'visitorStats'])->name('admin.reports');
         
         // Kelola Berita & Kegiatan
         Route::get('/admin/berita', [AdminController::class, 'news'])->name('admin.news');

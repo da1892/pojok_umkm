@@ -71,15 +71,25 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 Menunggu Balasan
                             </span>
+                        @elseif($consultation->status == 'diterima')
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Konsultasi Diterima
+                            </span>
                         @elseif($consultation->status == 'diproses')
                             <span class="inline-flex items-center gap-1.5 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                 Sedang Diproses
                             </span>
+                        @elseif($consultation->status == 'ditolak')
+                            <span class="inline-flex items-center gap-1.5 bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                Konsultasi Ditolak
+                            </span>
                         @else
                             <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Sudah Dijawab
+                                Selesai Dijawab
                             </span>
                         @endif
                     </div>
@@ -151,18 +161,52 @@
                     <!-- Admin Response -->
                     <div class="pt-2">
                         @if($consultation->response)
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-[#800000] flex items-center justify-center text-white font-bold">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            @if($consultation->status == 'ditolak')
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-red-900">Alasan Penolakan oleh Admin Dinas Perdagangan & KUKM</p>
+                                        <p class="text-xs text-red-600">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="font-bold text-slate-900">Admin Dinas Perdagangan</p>
-                                    <p class="text-xs text-slate-500">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
+                                <div class="bg-red-50 p-5 rounded-2xl text-red-950 text-sm leading-relaxed border-2 border-red-200 ml-0 sm:ml-13 shadow-xs">
+                                    <div class="flex items-start gap-2.5">
+                                        <div class="flex-1">
+                                            <p class="font-bold text-red-900 text-xs uppercase tracking-wider mb-1">Catatan / Alasan Penolakan:</p>
+                                            <div class="text-sm font-medium">{!! nl2br(e($consultation->response)) !!}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="bg-red-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border border-red-100 ml-0 sm:ml-13 shadow-sm">
-                                {!! nl2br(e($consultation->response)) !!}
-                            </div>
+                            @elseif($consultation->status == 'diterima')
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-emerald-900">Konfirmasi Penerimaan oleh Admin Dinas Perdagangan & KUKM</p>
+                                        <p class="text-xs text-emerald-600">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
+                                    </div>
+                                </div>
+                                <div class="bg-emerald-50 p-5 rounded-2xl text-emerald-950 text-sm leading-relaxed border-2 border-emerald-200 ml-0 sm:ml-13 shadow-xs">
+                                    <p class="font-bold text-emerald-900 text-xs uppercase tracking-wider mb-1">Komentar & Arahan Lanjut:</p>
+                                    <div class="text-sm font-medium">{!! nl2br(e($consultation->response)) !!}</div>
+                                </div>
+                            @else
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-[#800000] flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-900">Tanggapan Resmi Admin Dinas Perdagangan & KUKM</p>
+                                        <p class="text-xs text-slate-500">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border border-slate-200 ml-0 sm:ml-13 shadow-xs">
+                                    {!! nl2br(e($consultation->response)) !!}
+                                </div>
+                            @endif
                         @else
                             <div class="flex items-center gap-3 mb-3">
                                 <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 font-bold">

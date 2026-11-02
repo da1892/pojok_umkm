@@ -3,25 +3,25 @@
 @section('content')
 
 <!-- Hero Header Section with Dark Red Background & Wonogiri Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-28 pb-16 sm:pt-36 sm:pb-20"
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-12 sm:pt-36 sm:pb-20"
      style="background: linear-gradient(rgba(120, 15, 15, 0.78), rgba(90, 10, 10, 0.88)), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3.5 tracking-tight [text-shadow:_0_2px_10px_rgba(0,0,0,0.6)]">
+        <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3.5 tracking-tight [text-shadow:_0_2px_10px_rgba(0,0,0,0.6)]">
             Produk Unggulan UMKM Wonogiri
         </h1>
-        <p class="text-sm sm:text-base md:text-lg text-white/95 max-w-2xl mx-auto font-medium leading-relaxed [text-shadow:_0_1px_6px_rgba(0,0,0,0.6)]">
+        <p class="text-xs sm:text-base md:text-lg text-white/95 max-w-2xl mx-auto font-medium leading-relaxed [text-shadow:_0_1px_6px_rgba(0,0,0,0.6)]">
             Temukan aneka ragam produk lokal berkualitas tinggi hasil produksi langsung putra-putri Wonogiri.
         </p>
     </div>
 </div>
 
 <!-- Main Catalog Content on #FAF9F6 Background -->
-<div style="background-color: #FAF9F6;" class="min-h-screen py-10 sm:py-14">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div style="background-color: #FAF9F6;" class="min-h-screen py-6 sm:py-14">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
 
         <!-- Search & Filter Card -->
-        <div class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs border border-slate-200/80 mb-8 sm:mb-10 reveal delay-100">
-            <form id="katalog-filter-form" action="/katalog" method="GET" class="flex flex-col md:flex-row items-center gap-3 sm:gap-3.5">
+        <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-xs border border-slate-200/80 mb-6 sm:mb-10 reveal delay-100">
+            <form id="katalog-filter-form" action="/katalog" method="GET" class="flex flex-col md:flex-row items-center gap-2.5 sm:gap-3.5">
                 
                 <!-- Search Input -->
                 <div class="relative flex-1 w-full">
@@ -47,22 +47,18 @@
                     </div>
                 </div>
 
-                <!-- Dropdown Kategori -->
-                <div class="w-full md:w-56 shrink-0 relative">
-                    <select id="katalog-category-select" name="kategori" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
-                        <option value="">Kategori: Semua</option>
-                        <option value="makanan" {{ in_array(strtolower(request('kategori', '')), ['makanan', 'makanan & minuman']) ? 'selected' : '' }}>Makanan & Minuman</option>
-                        <option value="kerajinan" {{ in_array(strtolower(request('kategori', '')), ['kerajinan', 'kerajinan tangan']) ? 'selected' : '' }}>Kerajinan</option>
-                        <option value="batik" {{ in_array(strtolower(request('kategori', '')), ['batik', 'batik/fashion', 'fashion']) ? 'selected' : '' }}>Batik/Fashion</option>
-                        <option value="pertanian" {{ in_array(strtolower(request('kategori', '')), ['pertanian', 'olahan hasil pertanian']) ? 'selected' : '' }}>Olahan Hasil Pertanian</option>
-                        <option value="kreatif" {{ in_array(strtolower(request('kategori', '')), ['kreatif', 'produk kreatif']) ? 'selected' : '' }}>Produk Kreatif</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-                    </div>
-                </div>
-
                 @php
+                    $currentKategori = strtolower(trim(request('kategori', '')));
+                    $kategoriOptions = [
+                        '' => 'Kategori: Semua',
+                        'makanan' => 'Makanan & Minuman',
+                        'kerajinan' => 'Kerajinan',
+                        'batik' => 'Batik/Fashion',
+                        'pertanian' => 'Olahan Hasil Pertanian',
+                        'kreatif' => 'Produk Kreatif',
+                    ];
+                    $currentKategoriLabel = $kategoriOptions[$currentKategori] ?? 'Kategori: Semua';
+
                     $wilayahJsonPath = public_path('wonogiri_wilayah.json');
                     $kecamatanList = file_exists($wilayahJsonPath)
                         ? array_keys(json_decode(file_get_contents($wilayahJsonPath), true))
@@ -74,24 +70,136 @@
                             'Sidoharjo', 'Slogohimo', 'Tirtomoyo', 'Wonogiri', 'Wuryantoro'
                         ];
                     sort($kecamatanList);
+
+                    $currentKecamatan = strtolower(trim(request('kecamatan', '')));
+                    $currentKecamatanLabel = 'Kecamatan: Semua';
+                    if ($currentKecamatan !== '') {
+                        foreach ($kecamatanList as $kec) {
+                            if (strtolower(trim($kec)) === $currentKecamatan) {
+                                $currentKecamatanLabel = 'Kec. ' . $kec;
+                                break;
+                            }
+                        }
+                    }
                 @endphp
 
-                <!-- Dropdown Kecamatan (25 Kecamatan Resmi Wonogiri) -->
-                <div class="w-full md:w-56 shrink-0 relative">
-                    <select id="katalog-district-select" name="kecamatan" class="w-full appearance-none pl-3.5 pr-8 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
-                        <option value="">Kecamatan: Semua</option>
-                        @foreach($kecamatanList as $kec)
-                            @php
-                                $kecVal = strtolower(trim($kec));
-                                $isSelected = strtolower(trim(request('kecamatan', ''))) === $kecVal;
-                            @endphp
-                            <option value="{{ $kecVal }}" {{ $isSelected ? 'selected' : '' }}>
-                                Kec. {{ $kec }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                <!-- Dropdown Kategori Modern Custom -->
+                <div class="w-full md:w-56 shrink-0 relative" id="cat-dropdown-container">
+                    <input type="hidden" id="katalog-category-select" name="kategori" value="{{ $currentKategori }}">
+                    
+                    <button type="button" 
+                            id="cat-dropdown-btn"
+                            class="w-full flex items-center justify-between pl-3.5 pr-3 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 hover:border-[#991b1b]/60 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
+                        <span id="cat-dropdown-label" class="truncate">{{ $currentKategoriLabel }}</span>
+                        <svg id="cat-dropdown-arrow" class="w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ml-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                    </button>
+
+                    <!-- Dropdown Panel (Bottom Sheet on mobile, floating menu on desktop) -->
+                    <div id="cat-dropdown-panel" class="hidden fixed sm:absolute inset-0 sm:inset-auto sm:top-full sm:left-0 sm:right-0 sm:mt-1.5 z-50 flex flex-col justify-end sm:justify-start">
+                        <!-- Mobile Backdrop -->
+                        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs sm:hidden transition-opacity" onclick="closeAllCustomDropdowns()"></div>
+                        
+                        <!-- Panel Content -->
+                        <div class="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-2 max-h-[80vh] sm:max-h-80 overflow-y-auto z-10">
+                            <!-- Mobile Header Handle -->
+                            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-3 sm:hidden"></div>
+                            <div class="sm:hidden flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#800000]"></span>
+                                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Pilih Kategori Produk</span>
+                                </div>
+                                <button type="button" onclick="closeAllCustomDropdowns()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+
+                            <!-- Options List -->
+                            <div class="space-y-1">
+                                @foreach($kategoriOptions as $val => $lbl)
+                                    @php $isActive = ($currentKategori === (string)$val); @endphp
+                                    <button type="button" 
+                                            onclick="selectKategori('{{ $val }}', '{{ $lbl }}')"
+                                            class="cat-option-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-left {{ $isActive ? 'bg-red-50 text-[#800000]' : 'text-slate-700 hover:bg-slate-50' }}"
+                                            data-val="{{ $val }}">
+                                        <span>{{ $lbl }}</span>
+                                        <svg class="check-icon w-4 h-4 text-[#800000] shrink-0 {{ $isActive ? '' : 'hidden' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown Kecamatan Modern Custom (25 Kecamatan Resmi Wonogiri) -->
+                <div class="w-full md:w-56 shrink-0 relative" id="dist-dropdown-container">
+                    <input type="hidden" id="katalog-district-select" name="kecamatan" value="{{ $currentKecamatan }}">
+                    
+                    <button type="button" 
+                            id="dist-dropdown-btn"
+                            class="w-full flex items-center justify-between pl-3.5 pr-3 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 hover:border-[#991b1b]/60 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 font-medium cursor-pointer shadow-xs transition-all">
+                        <span id="dist-dropdown-label" class="truncate">{{ $currentKecamatanLabel }}</span>
+                        <svg id="dist-dropdown-arrow" class="w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ml-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                    </button>
+
+                    <!-- Dropdown Panel (Bottom Sheet on mobile, floating menu on desktop) -->
+                    <div id="dist-dropdown-panel" class="hidden fixed sm:absolute inset-0 sm:inset-auto sm:top-full sm:left-0 sm:right-0 sm:mt-1.5 z-50 flex flex-col justify-end sm:justify-start">
+                        <!-- Mobile Backdrop -->
+                        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs sm:hidden transition-opacity" onclick="closeAllCustomDropdowns()"></div>
+                        
+                        <!-- Panel Content -->
+                        <div class="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-2.5 max-h-[85vh] sm:max-h-96 flex flex-col z-10">
+                            <!-- Mobile Header Handle -->
+                            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-3 sm:hidden"></div>
+                            <div class="sm:hidden flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-[#800000]"></span>
+                                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Pilih Kecamatan (25 Wilayah)</span>
+                                </div>
+                                <button type="button" onclick="closeAllCustomDropdowns()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+
+                            <!-- Live Filter Input Inside Dropdown -->
+                            <div class="relative mb-2">
+                                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                                <input type="text" 
+                                       id="dist-search-input" 
+                                       placeholder="Ketik nama kecamatan..." 
+                                       autocomplete="off"
+                                       class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#991b1b] focus:ring-2 focus:ring-red-500/10 text-slate-800">
+                            </div>
+
+                            <!-- Options List with Smooth Scrolling -->
+                            <div id="dist-options-list" class="overflow-y-auto space-y-1 max-h-56 sm:max-h-64 pr-1 scrollbar-thin">
+                                @php $isAllActive = ($currentKecamatan === ''); @endphp
+                                <button type="button" 
+                                        onclick="selectKecamatan('', 'Kecamatan: Semua')"
+                                        class="dist-option-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-left {{ $isAllActive ? 'bg-red-50 text-[#800000]' : 'text-slate-700 hover:bg-slate-50' }}"
+                                        data-val=""
+                                        data-name="semua kecamatan">
+                                    <span>Kecamatan: Semua</span>
+                                    <svg class="check-icon w-4 h-4 text-[#800000] shrink-0 {{ $isAllActive ? '' : 'hidden' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                </button>
+
+                                @foreach($kecamatanList as $kec)
+                                    @php 
+                                        $kecVal = strtolower(trim($kec));
+                                        $isActive = ($currentKecamatan === $kecVal); 
+                                    @endphp
+                                    <button type="button" 
+                                            onclick="selectKecamatan('{{ $kecVal }}', 'Kec. {{ $kec }}')"
+                                            class="dist-option-item w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-left {{ $isActive ? 'bg-red-50 text-[#800000]' : 'text-slate-700 hover:bg-slate-50' }}"
+                                            data-val="{{ $kecVal }}"
+                                            data-name="kec. {{ strtolower($kec) }} {{ strtolower($kec) }}">
+                                        <span>Kec. {{ $kec }}</span>
+                                        <svg class="check-icon w-4 h-4 text-[#800000] shrink-0 {{ $isActive ? '' : 'hidden' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -153,44 +261,46 @@
         <!-- Katalog Content Container -->
         <div id="katalog-grid-container" class="reveal delay-200">
             @if ($products->count() > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 @foreach ($products as $product)
-                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-red-200 transition-all duration-300 group flex flex-col justify-between block cursor-pointer">
+                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-red-200 transition-all duration-300 group flex flex-col justify-between block cursor-pointer">
                     <div>
-                        <div class="h-52 sm:h-56 w-full overflow-hidden bg-slate-100 relative">
+                        <div class="h-36 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <svg class="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                             @endif
-                        </div>
-                        <div class="p-5 pb-0">
-                            <span class="inline-block bg-red-50 text-[#991b1b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md mb-2">
+                            @if($product->category)
+                            <span class="absolute top-2 left-2 bg-white/95 backdrop-blur-xs text-[#991b1b] text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md shadow-2xs">
                                 {{ $product->category }}
                             </span>
-                            <h3 class="text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug">
+                            @endif
+                        </div>
+                        <div class="p-3 sm:p-5 pb-0">
+                            <h3 class="text-xs sm:text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[3rem]">
                                 {{ $product->name }}
                             </h3>
-                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1">
                                 @if(!empty($product->umkmProfile->image_path))
-                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-4 h-4 rounded-full object-cover shrink-0 border border-slate-200">
+                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full object-cover shrink-0 border border-slate-200">
                                 @endif
                                 <span class="truncate">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
                             </p>
                         </div>
                     </div>
-                    <div class="p-5 pt-4">
-                        <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-                            <div class="flex items-center gap-1.5 text-slate-500 font-medium">
-                                <svg class="w-3.5 h-3.5 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <div class="p-3 pt-2 sm:p-5 sm:pt-4">
+                        <div class="flex items-center justify-between pt-2 sm:pt-3 border-t border-slate-100 text-[10px] sm:text-xs">
+                            <div class="flex items-center gap-1 text-slate-400 font-medium">
+                                <svg class="w-3 h-3 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                                 </svg>
-                                <span class="line-clamp-1 max-w-[120px]">{{ $product->umkmProfile->address ?? 'Wonogiri' }}</span>
+                                <span class="line-clamp-1 max-w-[65px] sm:max-w-[120px]">{{ $product->umkmProfile->address ?? 'Wonogiri' }}</span>
                             </div>
                             <span class="text-[#991b1b] font-bold group-hover:underline">
-                                Lihat Detail
+                                Lihat <span class="hidden sm:inline">Detail</span>
                             </span>
                         </div>
                     </div>
@@ -355,21 +465,128 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Pilih salah satu kategori langsung otomatis terfilter
-    if (catSelect) {
-        catSelect.addEventListener('change', function() {
-            clearTimeout(debounceTimer);
-            triggerAutoFilter();
+    // Dropdown Handlers
+    const catBtn = document.getElementById('cat-dropdown-btn');
+    const distBtn = document.getElementById('dist-dropdown-btn');
+    const catPanel = document.getElementById('cat-dropdown-panel');
+    const distPanel = document.getElementById('dist-dropdown-panel');
+    const catArrow = document.getElementById('cat-dropdown-arrow');
+    const distArrow = document.getElementById('dist-dropdown-arrow');
+    const distSearch = document.getElementById('dist-search-input');
+
+    window.closeAllCustomDropdowns = function() {
+        if (catPanel) catPanel.classList.add('hidden');
+        if (distPanel) distPanel.classList.add('hidden');
+        if (catArrow) catArrow.classList.remove('rotate-180');
+        if (distArrow) distArrow.classList.remove('rotate-180');
+    };
+
+    if (catBtn) {
+        catBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isClosed = catPanel.classList.contains('hidden');
+            closeAllCustomDropdowns();
+            if (isClosed) {
+                catPanel.classList.remove('hidden');
+                if (catArrow) catArrow.classList.add('rotate-180');
+            }
         });
     }
 
-    // 3. Pilih salah satu kecamatan langsung otomatis terfilter
-    if (distSelect) {
-        distSelect.addEventListener('change', function() {
-            clearTimeout(debounceTimer);
-            triggerAutoFilter();
+    if (distBtn) {
+        distBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isClosed = distPanel.classList.contains('hidden');
+            closeAllCustomDropdowns();
+            if (isClosed) {
+                distPanel.classList.remove('hidden');
+                if (distArrow) distArrow.classList.add('rotate-180');
+                if (distSearch) {
+                    setTimeout(() => distSearch.focus(), 100);
+                }
+            }
         });
     }
+
+    // Live search inside kecamatan dropdown
+    if (distSearch) {
+        distSearch.addEventListener('input', function() {
+            const q = this.value.toLowerCase().trim();
+            document.querySelectorAll('.dist-option-item').forEach(item => {
+                const name = (item.getAttribute('data-name') || '').toLowerCase();
+                if (name.includes(q)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Select Kategori
+    window.selectKategori = function(val, label) {
+        if (catSelect) catSelect.value = val;
+        const labelEl = document.getElementById('cat-dropdown-label');
+        if (labelEl) labelEl.textContent = label;
+
+        document.querySelectorAll('.cat-option-item').forEach(item => {
+            const itemVal = item.getAttribute('data-val');
+            const check = item.querySelector('.check-icon');
+            if (itemVal === val) {
+                item.classList.add('bg-red-50', 'text-[#800000]');
+                item.classList.remove('text-slate-700', 'hover:bg-slate-50');
+                if (check) check.classList.remove('hidden');
+            } else {
+                item.classList.remove('bg-red-50', 'text-[#800000]');
+                item.classList.add('text-slate-700', 'hover:bg-slate-50');
+                if (check) check.classList.add('hidden');
+            }
+        });
+
+        closeAllCustomDropdowns();
+        clearTimeout(debounceTimer);
+        triggerAutoFilter();
+    };
+
+    // Select Kecamatan
+    window.selectKecamatan = function(val, label) {
+        if (distSelect) distSelect.value = val;
+        const labelEl = document.getElementById('dist-dropdown-label');
+        if (labelEl) labelEl.textContent = label;
+
+        document.querySelectorAll('.dist-option-item').forEach(item => {
+            const itemVal = item.getAttribute('data-val');
+            const check = item.querySelector('.check-icon');
+            if (itemVal === val) {
+                item.classList.add('bg-red-50', 'text-[#800000]');
+                item.classList.remove('text-slate-700', 'hover:bg-slate-50');
+                if (check) check.classList.remove('hidden');
+            } else {
+                item.classList.remove('bg-red-50', 'text-[#800000]');
+                item.classList.add('text-slate-700', 'hover:bg-slate-50');
+                if (check) check.classList.add('hidden');
+            }
+        });
+
+        closeAllCustomDropdowns();
+        clearTimeout(debounceTimer);
+        triggerAutoFilter();
+    };
+
+    // Close when clicking outside or pressing Escape
+    document.addEventListener('click', function(e) {
+        const catBox = document.getElementById('cat-dropdown-container');
+        const distBox = document.getElementById('dist-dropdown-container');
+        if (catBox && !catBox.contains(e.target) && distBox && !distBox.contains(e.target)) {
+            closeAllCustomDropdowns();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllCustomDropdowns();
+        }
+    });
 
     // 4. Submit form (jika menekan Enter di kolom pencarian)
     if (form) {

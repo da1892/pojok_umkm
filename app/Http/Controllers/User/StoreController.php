@@ -50,6 +50,7 @@ class StoreController extends Controller
         $data = [
             'business_name' => $request->business_name,
             'owner_name' => $request->owner_name,
+            'gender' => $request->gender,
             'phone' => $request->phone,
             'province' => $request->province ?: 'Jawa Tengah',
             'regency' => $request->regency ?: 'Kabupaten Wonogiri',
@@ -121,6 +122,7 @@ class StoreController extends Controller
             'business_name' => $request->business_name,
             'image_path' => $imagePath,
             'owner_name' => $request->owner_name,
+            'gender' => $request->gender,
             'province' => $request->province ?: 'Jawa Tengah',
             'regency' => $request->regency ?: 'Kabupaten Wonogiri',
             'district' => $request->district,
@@ -359,6 +361,7 @@ class StoreController extends Controller
         return [
             'business_name' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
+            'gender' => 'required|string|in:Laki-laki,Perempuan',
             'phone' => ['required', 'string', 'min:10', 'max:25'],
             'province' => 'nullable|string|max:100',
             'regency' => 'nullable|string|max:100',
@@ -379,6 +382,8 @@ class StoreController extends Controller
     {
         return [
             'nib.regex' => 'Nomor Induk Berusaha (NIB) wajib berupa tepat 13 digit angka standar OSS.',
+            'gender.required' => 'Jenis kelamin pemilik UMKM wajib dipilih.',
+            'gender.in' => 'Pilihan jenis kelamin tidak valid.',
             'pirt.min' => 'Nomor Sertifikasi PIRT minimal 15 karakter/digit standar BPOM/Dinkes.',
             'halal_cert.min' => 'Nomor Sertifikasi Halal minimal 10 karakter/digit standar BPJPH/MUI.',
             'postal_code.size' => 'Kode pos harus terdiri dari 5 digit angka.',

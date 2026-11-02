@@ -181,22 +181,27 @@
         <!-- ==============================================================
              SEGMEN FORM PENDAFTARAN (REGISTER)
              ============================================================== -->
-        <div class="form-container sign-up-container flex flex-col justify-center md:px-12 bg-white">
-            <div class="w-full">
+        <!-- ==============================================================
+             SEGMEN FORM PENDAFTARAN (REGISTER)
+             ============================================================== -->
+        <div class="form-container sign-up-container flex flex-col justify-center px-6 md:px-10 lg:px-12 py-8 bg-white overflow-y-auto">
+            <div class="w-full max-w-sm mx-auto">
                 <!-- Elemen logo khusus tampilan seluler -->
-                <a href="/" class="flex items-center justify-center gap-2 text-xl font-bold text-[#800000] mb-8 md:hidden">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    Pojok UMKM
+                <a href="/" class="flex items-center justify-center gap-2 text-xl font-bold text-[#800000] mb-6 md:hidden">
+                    <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-8 h-8 object-contain" alt="Logo">
+                    <span>Pojok UMKM</span>
                 </a>
                 
                 <!-- Identitas form pendaftaran -->
-                <h2 class="text-3xl font-bold mb-2 text-gray-900 text-center">Buat Akun Baru</h2>
-                <p class="text-gray-600 mb-6 text-center">Daftarkan bisnis Anda di UMKM Wonogiri</p>
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Daftar Akun Baru</h2>
+                    <p class="text-slate-500 text-xs md:text-sm mt-1">Lengkapi data diri Anda untuk membuat akun</p>
+                </div>
 
                 <!-- Blok penanganan pesan kesalahan pada proses pendaftaran -->
                 @if ($errors->any() && session('form') === 'register')
-                    <div class="mb-4 p-3 rounded-lg bg-red-50 text-red-600 border border-red-100 text-sm">
-                        <ul class="list-disc list-inside">
+                    <div class="mb-4 p-3.5 rounded-xl bg-red-50 text-red-600 border border-red-100 text-xs leading-relaxed">
+                        <ul class="list-disc list-inside space-y-0.5">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -205,67 +210,73 @@
                 @endif
 
                 <!-- Form utama pendaftaran -->
-                <form method="POST" action="/register" class="space-y-4">
+                <form method="POST" action="/register" class="space-y-3.5">
                     @csrf 
                     
-                    <!-- Variabel identifikasi jenis form yang dikirimkan -->
                     <input type="hidden" name="form_type" value="register">
                     
                     <!-- Kolom pengisian nama lengkap -->
                     <div>
-                        <input id="name" type="text" name="name" value="{{ old('name') }}" required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
-                            placeholder="Nama Lengkap">
+                        <label for="name" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 outline-none transition text-sm text-slate-900 placeholder:text-slate-400 bg-white"
+                            placeholder="Nama lengkap Anda">
                     </div>
                     
                     <!-- Kolom pengisian alamat surat elektronik (email) -->
                     <div>
-                        <input id="email_reg" type="email" name="email" value="{{ old('email') }}" required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
-                            placeholder="Email">
+                        <label for="email_reg" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Alamat Email</label>
+                        <input id="email_reg" type="email" name="email" value="{{ old('email') }}" required autocomplete="email"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 outline-none transition text-sm text-slate-900 placeholder:text-slate-400 bg-white"
+                            placeholder="nama@email.com">
                     </div>
                     
-                    <!-- Kolom pemilihan peran (role) pengguna -->
+                    <!-- Kolom pengisian kata sandi -->
                     <div>
-                        <select id="role" name="role" required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 text-sm shadow-xs">
-                            <option value="" disabled selected>Daftar Sebagai...</option>
-                            <option value="user">Masyarakat Umum</option>
-                            <option value="umkm">Pemilik UMKM</option>
-                        </select>
+                        <label for="password_reg" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kata Sandi</label>
+                        <div class="relative">
+                            <input id="password_reg" type="password" name="password" required autocomplete="new-password"
+                                class="w-full px-4 pr-11 py-2.5 rounded-xl border border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 outline-none transition text-sm text-slate-900 placeholder:text-slate-400 bg-white"
+                                placeholder="Minimal 8 karakter">
+                            <button type="button" onclick="togglePassword('password_reg', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
                     </div>
-                    
-                    <!-- Kolom pengisian kata sandi dan konfirmasi -->
-                    <div class="grid grid-cols-2 gap-4">
+
+                    <!-- Kolom konfirmasi kata sandi -->
+                    <div>
+                        <label for="password_confirmation" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Konfirmasi Kata Sandi</label>
                         <div class="relative">
-                            <input id="password_reg" type="password" name="password" required
-                                class="w-full px-4 py-3 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
-                                placeholder="Password">
-                            <button type="button" onclick="togglePassword('password_reg', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                            <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                                class="w-full px-4 pr-11 py-2.5 rounded-xl border border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 outline-none transition text-sm text-slate-900 placeholder:text-slate-400 bg-white"
+                                placeholder="Ulangi kata sandi">
+                            <button type="button" onclick="togglePassword('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                             </button>
                         </div>
-                        <div class="relative">
-                            <input id="password_confirmation" type="password" name="password_confirmation" required
-                                class="w-full px-4 py-3 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
-                                placeholder="Konfirmasi">
-                            <button type="button" onclick="togglePassword('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            </button>
-                        </div>
+                    </div>
+
+                    <!-- reCAPTCHA Pendaftaran -->
+                    <div class="flex flex-col items-center justify-center pt-2">
+                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') ?? env('RECAPTCHA_SITE_KEY') }}"></div>
+                        @if ($errors->has('g-recaptcha-response') && session('form') === 'register')
+                            <p class="text-xs text-red-600 mt-1 font-medium">{{ $errors->first('g-recaptcha-response') }}</p>
+                        @endif
                     </div>
 
                     <!-- Tombol eksekusi pendaftaran -->
                     <button type="submit"
-                        class="w-full bg-[#800000] text-white py-3 rounded-xl hover:bg-[#600000] transition-colors font-bold shadow-lg mt-2">
-                        Daftar
+                        class="w-full bg-[#800000] hover:bg-[#680000] text-white py-3 px-4 rounded-xl font-bold shadow-md shadow-red-950/20 hover:shadow-lg transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2 mt-4 cursor-pointer">
+                        <span>Daftar Sekarang</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </button>
                 </form>
 
                 <!-- Tautan navigasi alternatif pada perangkat seluler -->
-                <div class="mt-6 text-center text-sm text-gray-600 md:hidden">
+                <div class="mt-6 text-center text-xs md:text-sm text-slate-600 md:hidden">
                     Sudah punya akun? 
-                    <a href="#" id="mobileToSignIn" class="text-[#800000] font-bold">Masuk</a>
+                    <a href="#" id="mobileToSignIn" class="text-[#800000] font-bold hover:underline">Masuk</a>
                 </div>
             </div>
         </div>
@@ -273,22 +284,24 @@
         <!-- ==============================================================
              SEGMEN FORM AUTENTIKASI (LOGIN)
              ============================================================== -->
-        <div class="form-container sign-in-container flex flex-col justify-center md:px-12 bg-white">
-            <div class="w-full">
+        <div class="form-container sign-in-container flex flex-col justify-center px-6 md:px-10 lg:px-12 py-8 bg-white overflow-y-auto">
+            <div class="w-full max-w-sm mx-auto">
                 <!-- Elemen logo khusus tampilan seluler -->
-                <a href="/" class="flex items-center justify-center gap-2 text-2xl font-bold text-[#800000] mb-10 md:hidden">
-                    <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-8 h-8" alt="Logo">
-                    Pojok UMKM
+                <a href="/" class="flex items-center justify-center gap-2 text-xl font-bold text-[#800000] mb-6 md:hidden">
+                    <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-8 h-8 object-contain" alt="Logo">
+                    <span>Pojok UMKM</span>
                 </a>
 
                 <!-- Identitas form login -->
-                <h2 class="text-3xl font-bold mb-2 text-gray-900 text-center">Masuk Akun</h2>
-                <p class="text-gray-600 mb-8 text-center">Gunakan email Anda untuk login</p>
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Masuk Akun</h2>
+                    <p class="text-slate-500 text-xs md:text-sm mt-1">Gunakan akun Anda untuk melanjutkan</p>
+                </div>
 
                 <!-- Blok penanganan pesan kesalahan pada proses login -->
                 @if ($errors->any() && (!session('form') || session('form') === 'login'))
-                    <div class="mb-6 p-4 rounded-lg bg-red-50 text-red-600 border border-red-100 text-sm">
-                        <ul class="list-disc list-inside">
+                    <div class="mb-4 p-3.5 rounded-xl bg-red-50 text-red-600 border border-red-100 text-xs leading-relaxed">
+                        <ul class="list-disc list-inside space-y-0.5">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -297,53 +310,60 @@
                 @endif
 
                 <!-- Form utama autentikasi -->
-                <form method="POST" action="/login" class="space-y-5">
+                <form method="POST" action="/login" class="space-y-4">
                     @csrf
                     
-                    <!-- Variabel identifikasi jenis form yang dikirimkan -->
                     <input type="hidden" name="form_type" value="login">
                     
-                    <!-- Kolom pengisian alamat surat elektronik (email) -->
+                    <!-- Kolom pengisian email -->
                     <div>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
-                            placeholder="Email">
+                        <label for="email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Alamat Email</label>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 outline-none transition text-sm text-slate-900 placeholder:text-slate-400 bg-white"
+                            placeholder="nama@email.com">
                     </div>
 
                     <!-- Kolom pengisian kata sandi -->
-                    <div class="relative">
-                        <input id="password" type="password" name="password" required
-                            class="w-full px-4 py-3 pr-10 rounded-xl border-2 border-slate-300 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400 text-sm shadow-xs"
-                            placeholder="Password">
-                        <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        </button>
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="password" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Kata Sandi</label>
+                            <a href="#" class="text-xs text-[#800000] hover:underline font-medium">Lupa Password?</a>
+                        </div>
+                        <div class="relative">
+                            <input id="password" type="password" name="password" required autocomplete="current-password"
+                                class="w-full px-4 pr-11 py-2.5 rounded-xl border border-slate-300 focus:border-[#800000] focus:ring-4 focus:ring-red-500/10 outline-none transition text-sm text-slate-900 placeholder:text-slate-400 bg-white"
+                                placeholder="Masukkan kata sandi">
+                            <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     
-                    <!-- Opsi kelola sesi dan reset kata sandi -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input id="remember_me" type="checkbox" name="remember" class="w-4 h-4 text-[#800000] border-gray-300 rounded focus:ring-[#800000]">
-                            <label for="remember_me" class="ml-2 block text-sm text-gray-700">Ingat Saya</label>
-                        </div>
-                        <a href="#" class="text-sm text-[#800000] font-medium hover:underline">Lupa Password?</a>
+                    <!-- Opsi kelola sesi -->
+                    <div class="flex items-center">
+                        <input id="remember_me" type="checkbox" name="remember" class="w-4 h-4 text-[#800000] border-slate-300 rounded focus:ring-[#800000]">
+                        <label for="remember_me" class="ml-2 block text-xs font-medium text-slate-600">Ingat Saya</label>
                     </div>
 
-                    <!-- Tombol eksekusi login -->
-                    <div class="flex justify-center mt-2 mb-2">
-                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                    <!-- reCAPTCHA -->
+                    <div class="flex flex-col items-center justify-center pt-1">
+                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') ?? env('RECAPTCHA_SITE_KEY') }}"></div>
+                        @if ($errors->has('g-recaptcha-response') && (!session('form') || session('form') === 'login'))
+                            <p class="text-xs text-red-600 mt-1 font-medium">{{ $errors->first('g-recaptcha-response') }}</p>
+                        @endif
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-[#800000] text-white py-3 rounded-xl hover:bg-[#600000] transition-colors font-bold shadow-lg mt-4">
-                        Masuk
+                        class="w-full bg-[#800000] hover:bg-[#680000] text-white py-3 px-4 rounded-xl font-bold shadow-md shadow-red-950/20 hover:shadow-lg transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2 mt-2 cursor-pointer">
+                        <span>Masuk</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </button>
                 </form>
 
                 <!-- Tautan navigasi alternatif pada perangkat seluler -->
-                <div class="mt-8 text-center text-sm text-gray-600 md:hidden">
+                <div class="mt-6 text-center text-xs md:text-sm text-slate-600 md:hidden">
                     Belum punya akun? 
-                    <a href="#" id="mobileToSignUp" class="text-[#800000] font-bold">Daftar sekarang</a>
+                    <a href="#" id="mobileToSignUp" class="text-[#800000] font-bold hover:underline">Daftar sekarang</a>
                 </div>
             </div>
         </div>
@@ -357,31 +377,27 @@
                 <!-- Latar belakang pola geometris pada overlay -->
                 <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
                 
-                <!-- Teks informasi sisi kiri overlay -->
+                <!-- Teks informasi sisi kiri overlay (saat form registrasi tampil) -->
                 <div class="overlay-panel overlay-left">
-                    <h1 class="text-4xl font-extrabold mb-4 leading-tight">Selamat Datang Kembali!</h1>
-                    <p class="mb-8 text-lg opacity-90 font-medium">Tetap terhubung dan kelola bisnis UMKM Anda dengan mudah.</p>
+                    <h1 class="text-3xl lg:text-4xl font-extrabold mb-3 leading-tight">Selamat Datang Kembali!</h1>
+                    <p class="mb-8 text-sm lg:text-base opacity-90 font-normal leading-relaxed">Sudah memiliki akun? Masuk untuk melanjutkan aktivitas Anda di Pojok UMKM Wonogiri.</p>
                     
-                    <!-- Tombol interaktif untuk memicu transisi ke form login -->
-                    <button class="bg-transparent border-2 border-white text-white rounded-full px-12 py-3 font-bold hover:bg-white hover:text-[#800000] transition-colors" id="signInBtn">
+                    <button class="bg-transparent border-2 border-white text-white rounded-xl px-10 py-2.5 font-bold hover:bg-white hover:text-[#800000] transition-all duration-200 shadow-sm cursor-pointer" id="signInBtn">
                         Masuk Sekarang
                     </button>
                 </div>
                 
-                <!-- Teks informasi sisi kanan overlay -->
+                <!-- Teks informasi sisi kanan overlay (saat form login tampil) -->
                 <div class="overlay-panel overlay-right">
-                    
-                    <!-- Tautan kembali ke halaman utama -->
-                    <a href="/" class="absolute top-8 left-8 text-white hover:text-red-200 transition-colors hidden lg:flex items-center gap-2">
-                        <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-8 h-8" alt="Logo">
-                        Beranda
+                    <a href="/" class="absolute top-8 left-8 text-white hover:text-red-200 transition-colors hidden lg:flex items-center gap-2 font-semibold text-sm">
+                        <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-7 h-7 object-contain" alt="Logo">
+                        <span>Beranda</span>
                     </a>
                     
-                    <h1 class="text-4xl font-extrabold mb-4 leading-tight">Halo, Kawan UMKM!</h1>
-                    <p class="mb-8 text-lg opacity-90 font-medium">Bergabunglah dan kembangkan pasar bisnis lokal Wonogiri bersama kami.</p>
+                    <h1 class="text-3xl lg:text-4xl font-extrabold mb-3 leading-tight">Halo, Kawan UMKM!</h1>
+                    <p class="mb-8 text-sm lg:text-base opacity-90 font-normal leading-relaxed">Belum memiliki akun? Daftarkan diri Anda dan mari kembangkan potensi UMKM Wonogiri bersama kami.</p>
                     
-                    <!-- Tombol interaktif untuk memicu transisi ke form registrasi -->
-                    <button class="bg-transparent border-2 border-white text-white rounded-full px-12 py-3 font-bold hover:bg-white hover:text-[#800000] transition-colors shadow-[0_0_15px_rgba(255,255,255,0.3)]" id="signUpBtn">
+                    <button class="bg-transparent border-2 border-white text-white rounded-xl px-10 py-2.5 font-bold hover:bg-white hover:text-[#800000] transition-all duration-200 shadow-[0_0_15px_rgba(255,255,255,0.25)] cursor-pointer" id="signUpBtn">
                         Daftar Sekarang
                     </button>
                 </div>

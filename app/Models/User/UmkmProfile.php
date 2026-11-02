@@ -14,6 +14,7 @@ class UmkmProfile extends Model
         'business_name',
         'image_path',
         'owner_name',
+        'gender',
         'nib',
         'pirt',
         'halal_cert',
@@ -27,6 +28,7 @@ class UmkmProfile extends Model
         'description',
         'map_link',
         'status',
+        'rejection_note',
     ];
 
     public function getFullAddressAttribute()
@@ -121,6 +123,138 @@ class UmkmProfile extends Model
         }
 
         return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($query);
+    }
+
+    public static function getDistrictCentroids(): array
+    {
+        return [
+            'wonogiri'     => [-7.8136, 110.9254],
+            'selogiri'     => [-7.7818, 110.8932],
+            'ngadirojo'    => [-7.8285, 111.0022],
+            'sidoharjo'    => [-7.8542, 111.0827],
+            'jatisrono'    => [-7.8441, 111.1465],
+            'jatipurno'    => [-7.7428, 111.1444],
+            'girimarto'    => [-7.7533, 111.0667],
+            'slogohimo'    => [-7.8222, 111.1963],
+            'bulukerto'    => [-7.7651, 111.2389],
+            'puhpelem'     => [-7.7412, 111.2917],
+            'purwantoro'   => [-7.8488, 111.2662],
+            'kismantoro'   => [-7.9252, 111.2415],
+            'jatiroto'     => [-7.8978, 111.1425],
+            'tirtomoyo'    => [-7.9234, 111.0543],
+            'nguntoronadi' => [-7.8863, 110.9904],
+            'batuwarno'    => [-7.9482, 110.9972],
+            'karangtengah' => [-8.0163, 111.0475],
+            'baturetno'    => [-7.9867, 110.9389],
+            'giriwoyo'     => [-8.0433, 110.9258],
+            'giritontro'   => [-8.0772, 110.8778],
+            'paranggupito' => [-8.1967, 110.8464],
+            'pracimantoro' => [-8.0583, 110.8167],
+            'eromoko'      => [-7.9717, 110.8356],
+            'wuryantoro'   => [-7.8936, 110.8658],
+            'manyaran'     => [-7.8631, 110.7711],
+        ];
+    }
+
+    public function getCoordinatesAttribute(): array
+    {
+        $centroids = self::getDistrictCentroids();
+
+        // 1. Coba deteksi koordinat eksplisit dari map_link (jika ada)
+        if (!empty($this->map_link)) {
+            $link = $this->map_link;
+            if (preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/', $link, $m)) {
+                return ['lat' => (float)$m[1], 'lng' => (float)$m[2], 'is_exact' => true, 'source' => 'map_link'];
+            }
+            if (preg_match('/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/', $link, $m)) {
+                return ['lat' => (float)$m[1], 'lng' => (float)$m[2], 'is_exact' => true, 'source' => 'map_link'];
+            }
+            if (preg_match('/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/', $link, $m)) {
+                return ['lat' => (float)$m[1], 'lng' => (float)$m[2], 'is_exact' => true, 'source' => 'map_link'];
+            }
+        }
+
+        // 2. Deteksi kecamatan dari field district
+        $districtKey = null;
+        if (!empty($this->district)) {
+            $dClean = strtolower(trim($this->district));
+            if (isset($centroids[$dClean])) {
+                $districtKey = $dClean;
+            } else {
+                foreach ($centroids as $key => $coord) {
+                    if (str_contains($dClean, $key)) {
+                        $districtKey = $key;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 3. Fallback deteksi dari alamat atau desa jika district kosong/tidak cocok
+        if (!$districtKey) {
+            $combinedAddress = strtolower(($this->village ?? '') . ' ' . ($this->address ?? ''));
+            foreach ($centroids as $key => $coord) {
+                if (preg_match('/\b' . preg_quote($key, '/') . '\b/i', $combinedAddress)) {
+                    $districtKey = $key;
+                    break;
+                }
+            }
+        }
+
+        // 4. Fallback ke Wonogiri pusat jika masih belum terdeteksi
+        if (!$districtKey) {
+            $districtKey = 'wonogiri';
+        }
+
+        $base = $centroids[$districtKey];
+
+        // 5. Berikan radial jitter halus berbasis hash id & desa agar titik tidak bertumpuk persis di satu koordinat
+        $hashStr = (string)$this->id . '-' . ($this->village ?? '') . '-' . substr(md5($this->business_name ?? ''), 0, 4);
+        $seed = hexdec(substr(md5($hashStr), 0, 8));
+        $angle = ($seed % 360) * (M_PI / 180);
+        // Radius variasi antara 0.003 (~330m) hingga 0.012 (~1.3km)
+        $distance = 0.003 + (($seed % 100) / 100.0) * 0.009;
+
+        $lat = round($base[0] + ($distance * sin($angle)), 6);
+        $lng = round($base[1] + ($distance * cos($angle) * 1.05), 6);
+
+        return [
+            'lat' => $lat,
+            'lng' => $lng,
+            'is_exact' => false,
+            'district' => ucfirst($districtKey),
+            'source' => 'district_centroid'
+        ];
+    }
+
+    public function toMapPayload(): array
+    {
+        $coords = $this->coordinates;
+        $products = $this->relationLoaded('products') ? $this->products : $this->products()->where('status', 'verified')->get();
+        $productSamples = $products->take(3)->pluck('name')->values()->all();
+        $firstProduct = $products->first();
+        $primaryCategory = $firstProduct ? $firstProduct->category : 'UMKM & Industri Kreatif';
+
+        return [
+            'id' => $this->id,
+            'name' => $this->business_name,
+            'owner' => $this->owner_name ?? 'Pelaku UMKM',
+            'district' => $this->district ?: ($coords['district'] ?? 'Wonogiri'),
+            'village' => $this->village ?? '',
+            'address' => $this->full_address,
+            'phone' => $this->phone ?? '',
+            'category' => $primaryCategory,
+            'image' => $this->image_path ? asset('storage/' . $this->image_path) : ($firstProduct && $firstProduct->image_path ? asset('storage/' . $firstProduct->image_path) : asset('img/hero_wonogiri_3.jpg')),
+            'status' => $this->status,
+            'products_count' => $products->count(),
+            'product_samples' => $productSamples,
+            'detail_url' => route('direktori.show', $this->id),
+            'directions_url' => $this->google_maps_directions_url,
+            'whatsapp_url' => !empty($this->phone) ? 'https://wa.me/' . preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $this->phone)) : null,
+            'lat' => $coords['lat'],
+            'lng' => $coords['lng'],
+            'is_exact' => $coords['is_exact'] ?? false,
+        ];
     }
 
     public function user()

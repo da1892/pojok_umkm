@@ -19,11 +19,11 @@
             </div>
 
             <!-- Headline -->
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-4">
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-3 sm:mb-4">
                 Panduan Lengkap Sertifikasi Halal, PIRT & Legalitas NIB Gratis
             </h1>
 
-            <p class="text-red-100 text-sm sm:text-base md:text-lg max-w-3xl mx-auto mb-8 font-normal leading-relaxed">
+            <p class="text-red-100 text-xs sm:text-base md:text-lg max-w-3xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed">
                 Panduan praktis langkah demi langkah bagi pelaku usaha baru di Kabupaten Wonogiri untuk mengurus perizinan resmi, izin edar, sertifikasi halal, hingga perlindungan merek secara mudah dan bebas biaya.
             </p>
 

@@ -32,14 +32,6 @@
                 placeholder="nama@email.com">
         </div>
 
-        <div>
-            <label for="role" class="block text-sm font-bold text-slate-800 mb-1.5">Daftar Sebagai</label>
-            <select id="role" name="role" required
-                class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs">
-                <option value="user">Masyarakat Umum</option>
-                <option value="umkm">Pemilik UMKM</option>
-            </select>
-        </div>
 
         <div>
             <label for="password" class="block text-sm font-bold text-slate-800 mb-1.5">Password</label>
@@ -53,6 +45,14 @@
             <input id="password_confirmation" type="password" name="password_confirmation" required
                 class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-slate-900 bg-white placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none transition-all text-sm shadow-xs"
                 placeholder="Ulangi password">
+        </div>
+
+        <!-- reCAPTCHA Pendaftaran -->
+        <div class="flex flex-col items-center justify-center pt-2">
+            <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') ?? env('RECAPTCHA_SITE_KEY') }}"></div>
+            @error('g-recaptcha-response')
+                <p class="text-xs text-red-600 mt-1 font-medium">{{ $message }}</p>
+            @enderror
         </div>
 
         <button type="submit"

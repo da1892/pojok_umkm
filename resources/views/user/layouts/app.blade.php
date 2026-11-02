@@ -53,102 +53,144 @@
         .delay-400 { transition-delay: 400ms; }
         .delay-500 { transition-delay: 500ms; }
     </style>
+    @stack('styles')
 </head>
 <body class="font-sans antialiased bg-slate-50 text-slate-900 scroll-smooth">
     
     <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-white text-slate-800 shadow-sm transition-all duration-300 border-b border-slate-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Brand / Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="flex items-center gap-3 group">
-                        <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-10 h-10 object-contain group-hover:scale-105 transition-transform" alt="Logo Wonogiri">
+            <div class="flex items-center justify-between h-20 gap-4 xl:gap-6">
+                <!-- Brand / Logo (Left) -->
+                <div class="flex items-center shrink-0">
+                    <a href="/" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+                        <img src="{{ asset('img/kukm_wonogiri.png') }}" class="w-9 h-9 sm:w-10 sm:h-10 object-contain group-hover:scale-105 transition-transform" alt="Logo Wonogiri">
                         <div class="flex flex-col text-left">
-                            <span class="text-xl font-black text-[#991b1b] leading-tight tracking-tight">Pojok UMKM</span>
-                            <span class="text-xs text-slate-500 font-medium">Kabupaten Wonogiri</span>
+                            <span class="text-lg sm:text-xl font-black text-[#991b1b] leading-tight tracking-tight">Pojok UMKM</span>
+                            <span class="text-[10px] sm:text-xs text-slate-500 font-medium">Kabupaten Wonogiri</span>
                         </div>
                     </a>
                 </div>
 
-                <!-- Navigation Links (Center/Right Desktop) -->
-                <div class="hidden lg:flex items-center space-x-5 xl:space-x-7">
-                    <a href="/" class="relative py-2 text-sm font-semibold {{ request()->is('/') ? 'text-[#991b1b] after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
-                        Beranda
-                    </a>
-                    <a href="/katalog" class="relative py-2 text-sm font-medium {{ request()->is('katalog*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
-                        Produk Unggulan
-                    </a>
-                    <a href="/direktori" class="relative py-2 text-sm font-medium {{ request()->is('direktori*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
-                        Direktori UMKM
-                    </a>
-                    <a href="/panduan" class="relative py-2 text-sm font-medium {{ request()->is('panduan*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
-                        Info & Panduan
-                    </a>
-                    <a href="/konsultasi" class="relative py-2 text-sm font-medium {{ request()->is('konsultasi*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
-                        Konsultasi
-                    </a>
-                    <a href="/informasi" class="relative py-2 text-sm font-medium {{ request()->is('informasi*') ? 'text-[#991b1b] font-semibold after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#991b1b]' : 'text-slate-600 hover:text-[#991b1b] transition-colors' }}">
-                        Informasi
-                    </a>
-                    <a href="#kontak" onclick="event.preventDefault(); document.getElementById('kontak')?.scrollIntoView({behavior: 'smooth'}); history.pushState(null, null, '#kontak');" class="text-sm font-medium text-slate-600 hover:text-[#991b1b] transition-colors cursor-pointer">
-                        Kontak
-                    </a>
+                <!-- Navigation Links (Center Desktop - Balanced & Harmonious) -->
+                <div class="hidden lg:flex items-center justify-center shrink-0">
+                    <div class="flex items-center gap-1 xl:gap-2">
+                        <a href="/" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm transition-all duration-200 {{ request()->is('/') ? 'bg-red-50 text-[#991b1b] font-bold shadow-2xs border border-red-100/70' : 'text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 font-medium' }}">
+                            Beranda
+                        </a>
+                        <a href="/katalog" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm transition-all duration-200 {{ request()->is('katalog*') ? 'bg-red-50 text-[#991b1b] font-bold shadow-2xs border border-red-100/70' : 'text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 font-medium' }}">
+                            Produk Unggulan
+                        </a>
+                        <a href="/direktori" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm transition-all duration-200 {{ request()->is('direktori*') ? 'bg-red-50 text-[#991b1b] font-bold shadow-2xs border border-red-100/70' : 'text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 font-medium' }}">
+                            Direktori UMKM
+                        </a>
+                        <a href="/panduan" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm transition-all duration-200 {{ request()->is('panduan*') ? 'bg-red-50 text-[#991b1b] font-bold shadow-2xs border border-red-100/70' : 'text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 font-medium' }}">
+                            Info & Panduan
+                        </a>
+                        <a href="/konsultasi" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm transition-all duration-200 {{ request()->is('konsultasi*') ? 'bg-red-50 text-[#991b1b] font-bold shadow-2xs border border-red-100/70' : 'text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 font-medium' }}">
+                            Konsultasi
+                        </a>
+                        <a href="/informasi" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm transition-all duration-200 {{ request()->is('informasi*') ? 'bg-red-50 text-[#991b1b] font-bold shadow-2xs border border-red-100/70' : 'text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 font-medium' }}">
+                            Informasi
+                        </a>
+                        <a href="{{ request()->is('/') ? '#statistik-agregat' : '/#statistik-agregat' }}" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm font-medium text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 transition-all duration-200">
+                            Statistik
+                        </a>
+                        <a href="#kontak" onclick="event.preventDefault(); document.getElementById('kontak')?.scrollIntoView({behavior: 'smooth'}); history.pushState(null, null, '#kontak');" class="px-2.5 xl:px-3.5 py-1.5 rounded-xl text-xs xl:text-sm font-medium text-slate-600 hover:text-[#991b1b] hover:bg-slate-100/80 transition-all duration-200 cursor-pointer">
+                            Kontak
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Auth Action Button -->
-                <div class="hidden sm:flex items-center space-x-3">
-                    @auth
-                        @if(auth()->user()->role === 'admin')
-                            <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Dashboard Admin</a>
+                <!-- Auth Action Button & Mobile Toggle (Right) -->
+                <div class="flex items-center justify-end shrink-0 space-x-3">
+                    <div class="hidden sm:flex items-center space-x-3">
+                        @auth
+                            @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">Dashboard Admin</a>
+                            @else
+                                <a href="{{ route('toko.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">UMKM</a>
+                            @endif
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition-colors">Keluar</button>
+                            </form>
                         @else
-                            <a href="{{ route('toko.index') }}" class="text-sm font-semibold text-slate-700 hover:text-[#991b1b] px-3 py-2 transition-colors">UMKM</a>
-                        @endif
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Keluar</button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="bg-[#a31d1d] hover:bg-[#8b1818] text-white px-7 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all hover:shadow hover:-translate-y-0.5">
+                            <a href="{{ route('login') }}" class="bg-[#991b1b] hover:bg-[#800000] text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow transition-all hover:-translate-y-0.5">
+                                Login
+                            </a>
+                        @endauth
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <div class="flex lg:hidden items-center gap-2">
+                        @guest
+                        <a href="{{ route('login') }}" class="bg-[#a31d1d] text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold sm:hidden">
                             Login
                         </a>
-                    @endauth
-                </div>
-                
-                <!-- Mobile Menu Button -->
-                <div class="flex lg:hidden items-center gap-2">
-                    @guest
-                    <a href="{{ route('login') }}" class="bg-[#a31d1d] text-white px-4 py-1.5 rounded-lg text-xs font-semibold sm:hidden">
-                        Login
-                    </a>
-                    @endguest
-                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-[#991b1b] focus:outline-none p-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                    </button>
+                        @endguest
+                        <button id="mobile-menu-btn" class="text-slate-700 hover:text-[#991b1b] focus:outline-none p-2 rounded-lg hover:bg-slate-100 transition-colors" aria-label="Buka Menu">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-100 shadow-xl">
-            <div class="px-4 pt-3 pb-5 space-y-1.5">
-                <a href="/" class="block px-3 py-2 rounded-lg text-sm font-semibold {{ request()->is('/') ? 'bg-red-50 text-[#991b1b]' : 'text-slate-700 hover:bg-slate-50' }}">Beranda</a>
-                <a href="/katalog" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Produk Unggulan</a>
-                <a href="/direktori" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Direktori UMKM</a>
-                <a href="/panduan" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->is('panduan*') ? 'bg-red-50 text-[#991b1b]' : 'text-slate-700 hover:bg-slate-50' }}">Info & Panduan</a>
-                <a href="/konsultasi" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Konsultasi</a>
-                <a href="/informasi" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Informasi</a>
-                <a href="#kontak" onclick="document.getElementById('mobile-menu')?.classList.add('hidden'); document.getElementById('kontak')?.scrollIntoView({behavior: 'smooth'}); history.pushState(null, null, '#kontak');" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer">Kontak</a>
+        <!-- Mobile Menu Dropdown (App-style Elegant Navigation) -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-xl transition-all duration-300">
+            <div class="px-4 pt-3 pb-6 space-y-1.5">
+                <a href="/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->is('/') ? 'bg-red-50 text-[#991b1b] shadow-2xs border border-red-100' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 {{ request()->is('/') ? 'text-[#991b1b]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Beranda</span>
+                </a>
+                <a href="/katalog" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->is('katalog*') ? 'bg-red-50 text-[#991b1b] shadow-2xs border border-red-100' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 {{ request()->is('katalog*') ? 'text-[#991b1b]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                    <span>Produk Unggulan</span>
+                </a>
+                <a href="/direktori" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->is('direktori*') ? 'bg-red-50 text-[#991b1b] shadow-2xs border border-red-100' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 {{ request()->is('direktori*') ? 'text-[#991b1b]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <span>Direktori UMKM</span>
+                </a>
+                <a href="/panduan" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->is('panduan*') ? 'bg-red-50 text-[#991b1b] shadow-2xs border border-red-100' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 {{ request()->is('panduan*') ? 'text-[#991b1b]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                    <span>Info & Panduan</span>
+                </a>
+                <a href="/konsultasi" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->is('konsultasi*') ? 'bg-red-50 text-[#991b1b] shadow-2xs border border-red-100' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 {{ request()->is('konsultasi*') ? 'text-[#991b1b]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    <span>Konsultasi</span>
+                </a>
+                <a href="/informasi" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->is('informasi*') ? 'bg-red-50 text-[#991b1b] shadow-2xs border border-red-100' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 {{ request()->is('informasi*') ? 'text-[#991b1b]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"/></svg>
+                    <span>Informasi</span>
+                </a>
+                <a href="{{ request()->is('/') ? '#statistik-agregat' : '/#statistik-agregat' }}" onclick="document.getElementById('mobile-menu')?.classList.add('hidden');" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span>Statistik</span>
+                </a>
+                <a href="#kontak" onclick="document.getElementById('mobile-menu')?.classList.add('hidden'); document.getElementById('kontak')?.scrollIntoView({behavior: 'smooth'}); history.pushState(null, null, '#kontak');" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>Kontak</span>
+                </a>
                 @auth
-                <div class="pt-2 border-t border-slate-100 flex flex-col gap-1">
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-1.5">
                     @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Dashboard Admin</a>
+                        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                            <span>Dashboard Admin</span>
+                        </a>
                     @else
-                        <a href="{{ route('toko.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">UMKM</a>
+                        <a href="{{ route('toko.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            <span>Kelola Toko UMKM</span>
+                        </a>
                     @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="w-full text-left px-3 py-2 text-sm text-red-600 font-medium">Keluar</button>
+                        <button type="submit" class="w-full flex items-center gap-3 text-left px-3.5 py-2 rounded-xl text-xs text-red-600 font-bold hover:bg-red-50 transition-colors">
+                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                            <span>Keluar</span>
+                        </button>
                     </form>
                 </div>
                 @endauth
@@ -302,5 +344,6 @@
             }
         });
     </script>
-</body>
+    @stack('scripts')
+<!--  --></body>
 </html>

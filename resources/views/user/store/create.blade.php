@@ -89,18 +89,45 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-slate-800 mb-1.5">
-                        Nomor Kontak / WhatsApp <span class="text-red-500">*</span>
-                        <span class="text-[10px] text-slate-400 font-normal ml-1">(Min. 10 Digit)</span>
-                    </label>
-                    <input type="tel" name="phone" id="create-phone-input" value="{{ old('phone') }}" required minlength="10" maxlength="15" pattern="[0-9]{10,15}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs @error('phone') border-red-500 @enderror" placeholder="Contoh: 081234567890 (minimal 10 digit)">
-                    <div id="create-phone-feedback" class="mt-1 text-xs"></div>
-                    @error('phone')
-                        <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
-                    @else
-                        <p class="text-[11px] text-slate-400 mt-1">Digunakan oleh calon pembeli dan admin untuk menghubungi Anda (10-15 digit)</p>
-                    @enderror
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-800 mb-2">Jenis Kelamin Pemilik <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2.5 p-3 rounded-xl border-2 border-slate-300 cursor-pointer hover:border-[#801414] transition-all has-[:checked]:border-[#801414] has-[:checked]:bg-red-50/50 shadow-2xs">
+                                <input type="radio" name="gender" value="Laki-laki" {{ old('gender', 'Laki-laki') === 'Laki-laki' ? 'checked' : '' }} required class="w-4 h-4 text-[#801414] focus:ring-[#801414]">
+                                <span class="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    Laki-laki
+                                </span>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-3 rounded-xl border-2 border-slate-300 cursor-pointer hover:border-[#801414] transition-all has-[:checked]:border-[#801414] has-[:checked]:bg-red-50/50 shadow-2xs">
+                                <input type="radio" name="gender" value="Perempuan" {{ old('gender') === 'Perempuan' ? 'checked' : '' }} required class="w-4 h-4 text-[#801414] focus:ring-[#801414]">
+                                <span class="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    Perempuan
+                                </span>
+                            </label>
+                        </div>
+                        @error('gender')
+                            <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                        @else
+                            <p class="text-[11px] text-slate-400 mt-1.5">Pilih jenis kelamin pemilik UMKM</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-slate-800 mb-1.5">
+                            Nomor Kontak / WhatsApp <span class="text-red-500">*</span>
+                            <span class="text-[10px] text-slate-400 font-normal ml-1">(Min. 10 Digit)</span>
+                        </label>
+                        <input type="tel" name="phone" id="create-phone-input" value="{{ old('phone') }}" required minlength="10" maxlength="15" pattern="[0-9]{10,15}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs @error('phone') border-red-500 @enderror" placeholder="Contoh: 081234567890 (minimal 10 digit)">
+                        <div id="create-phone-feedback" class="mt-1 text-xs"></div>
+                        @error('phone')
+                            <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
+                        @else
+                            <p class="text-[11px] text-slate-400 mt-1">Digunakan oleh calon pembeli dan admin untuk menghubungi Anda (10-15 digit)</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <!-- Bagian Wilayah & Alamat Lengkap Dari Provinsi sampai Desa -->

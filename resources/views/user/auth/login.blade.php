@@ -40,6 +40,14 @@
             <label for="remember_me" class="ml-2 block text-sm text-gray-700">Ingat Saya</label>
         </div>
 
+        <!-- reCAPTCHA -->
+        <div class="flex flex-col items-center justify-center pt-2">
+            <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') ?? env('RECAPTCHA_SITE_KEY') }}"></div>
+            @error('g-recaptcha-response')
+                <p class="text-xs text-red-600 mt-1 font-medium">{{ $message }}</p>
+            @enderror
+        </div>
+
         <button type="submit"
             class="w-full bg-[#800000] text-white py-3 rounded-xl hover:bg-[#600000] transition-colors font-medium text-lg shadow-lg shadow-red-900/20 active:scale-[0.98]">
             Masuk

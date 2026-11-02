@@ -40,7 +40,7 @@ class AuthController extends Controller
             }
 
             $response = Http::withoutVerifying()->asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'secret' => config('services.recaptcha.secret_key') ?? env('RECAPTCHA_SECRET_KEY'),
                 'response' => $recaptchaResponse,
                 'remoteip' => $request->ip()
             ]);
@@ -92,14 +92,41 @@ class AuthController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
-                'role' => ['required', 'in:user,umkm'],
+            ], [
+                'name.required' => 'Nama lengkap wajib diisi.',
+                'email.required' => 'Alamat email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email ini sudah terdaftar.',
+                'password.required' => 'Kata sandi wajib diisi.',
+                'password.min' => 'Kata sandi minimal terdiri dari 8 karakter.',
+                'password.confirmed' => 'Konfirmasi kata sandi tidak sesuai.',
             ]);
+
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            
+            if (empty($recaptchaResponse)) {
+                throw ValidationException::withMessages([
+                    'g-recaptcha-response' => 'Harap centang kotak verifikasi captcha terlebih dahulu.',
+                ]);
+            }
+
+            $response = Http::withoutVerifying()->asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => config('services.recaptcha.secret_key') ?? env('RECAPTCHA_SECRET_KEY'),
+                'response' => $recaptchaResponse,
+                'remoteip' => $request->ip()
+            ]);
+
+            if (!$response->json('success')) {
+                throw ValidationException::withMessages([
+                    'g-recaptcha-response' => 'Validasi captcha gagal, silakan coba lagi.',
+                ]);
+            }
 
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $request->role,
+                'role' => 'user',
             ]);
 
             Auth::login($user);

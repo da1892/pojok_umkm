@@ -13,6 +13,9 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Google reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900">
     <div class="min-h-screen flex">

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User\UmkmProfile;
 use App\Models\User\Product;
+use App\Models\VisitorLog;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -86,6 +89,67 @@ class AdminController extends Controller
             ->toArray();
         $allCategoriesList = array_values(array_unique(array_merge($standardCategories, $extraCategories)));
 
+        // -------------------------------------------------------------
+        // Data Statistik & Analitik Pengunjung Website (Real-time & History)
+        // -------------------------------------------------------------
+        $today = Carbon::today();
+        $thisMonthStart = Carbon::now()->startOfMonth();
+
+        $visitorSummary = [
+            'today_visitors' => VisitorLog::whereDate('visited_at', $today)->distinct('session_id')->count('session_id'),
+            'today_views' => VisitorLog::whereDate('visited_at', $today)->count(),
+            'month_visitors' => VisitorLog::where('visited_at', '>=', $thisMonthStart)->distinct('session_id')->count('session_id'),
+            'month_views' => VisitorLog::where('visited_at', '>=', $thisMonthStart)->count(),
+            'total_visitors' => VisitorLog::distinct('session_id')->count('session_id'),
+            'total_views' => VisitorLog::count(),
+        ];
+
+        // 14 Hari Terakhir untuk Grafik Tren Kunjungan Harian
+        $chartStartDate = Carbon::now()->subDays(13)->startOfDay();
+        $dailyData = VisitorLog::where('visited_at', '>=', $chartStartDate)
+            ->selectRaw("DATE(visited_at) as visit_date, count(*) as views, count(DISTINCT session_id) as visitors")
+            ->groupByRaw("DATE(visited_at)")
+            ->orderByRaw("DATE(visited_at)")
+            ->get()
+            ->keyBy(function($item) {
+                return Carbon::parse($item->visit_date)->toDateString();
+            });
+
+        $visitorDailyChart = [
+            'labels' => [],
+            'views' => [],
+            'visitors' => [],
+        ];
+        for ($i = 13; $i >= 0; $i--) {
+            $dt = Carbon::now()->subDays($i);
+            $key = $dt->toDateString();
+            $visitorDailyChart['labels'][] = $dt->translatedFormat('d M');
+            $visitorDailyChart['views'][] = isset($dailyData[$key]) ? (int) $dailyData[$key]->views : 0;
+            $visitorDailyChart['visitors'][] = isset($dailyData[$key]) ? (int) $dailyData[$key]->visitors : 0;
+        }
+
+        // Distribusi Perangkat (Mobile vs Desktop vs Tablet)
+        $visitorDeviceStats = VisitorLog::select('device', DB::raw('count(*) as count'))
+            ->groupBy('device')
+            ->orderByDesc('count')
+            ->get();
+
+        // Distribusi Browser
+        $visitorBrowserStats = VisitorLog::select('browser', DB::raw('count(*) as count'))
+            ->groupBy('browser')
+            ->orderByDesc('count')
+            ->get();
+
+        // 6 Halaman Terpopuler
+        $visitorTopPages = VisitorLog::select('page_name', 'url', DB::raw('count(*) as count'))
+            ->groupBy('page_name', 'url')
+            ->orderByDesc('count')
+            ->take(6)
+            ->get();
+
+        // 8 Log Kunjungan Terkini
+        $recentVisitors = VisitorLog::latest('visited_at')->take(8)->get();
+
         return view('admin.dashboard', compact(
             'pendingUmkms', 
             'pendingProducts', 
@@ -96,7 +160,13 @@ class AdminController extends Controller
             'allVerifiedProducts',
             'allUmkms',
             'wilayahWonogiri',
-            'allCategoriesList'
+            'allCategoriesList',
+            'visitorSummary',
+            'visitorDailyChart',
+            'visitorDeviceStats',
+            'visitorBrowserStats',
+            'visitorTopPages',
+            'recentVisitors'
         ));
     }
 
@@ -179,8 +249,15 @@ class AdminController extends Controller
         $consultation = \App\Models\Consultation::findOrFail($id);
         
         $request->validate([
-            'status' => 'required',
-            'response' => 'nullable|string'
+            'status' => 'required|in:menunggu,diterima,diproses,selesai,ditolak',
+            'response' => $request->status === 'menunggu' ? 'nullable|string|max:3000' : 'required|string|max:3000',
+        ], [
+            'status.required' => 'Status konsultasi wajib dipilih.',
+            'status.in' => 'Status konsultasi yang dipilih tidak valid.',
+            'response.required' => $request->status === 'ditolak' 
+                ? 'Wajib mengetikkan alasan / komentar penolakan konsultasi.' 
+                : 'Wajib mengetikkan tanggapan / komentar untuk pemohon konsultasi.',
+            'response.max' => 'Tanggapan / komentar maksimal 3000 karakter.'
         ]);
         
         $consultation->update([
@@ -189,7 +266,16 @@ class AdminController extends Controller
             'admin_id' => auth()->id()
         ]);
         
-        return back()->with('success', 'Tiket konsultasi berhasil diperbarui.');
+        $statusLabels = [
+            'diterima' => 'diterima',
+            'diproses' => 'diproses',
+            'selesai' => 'diselesaikan',
+            'ditolak' => 'ditolak',
+            'menunggu' => 'diperbarui',
+        ];
+        $label = $statusLabels[$request->status] ?? 'diperbarui';
+
+        return back()->with('success', "Tiket konsultasi #{$consultation->ticket_id} berhasil {$label} dengan catatan/tanggapan admin.");
     }
 
     public function verifications()
@@ -199,9 +285,138 @@ class AdminController extends Controller
         return view('admin.verifications.index', compact('pendingUmkms', 'pendingProducts'));
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
-        return view('admin.reports.index');
+        return $this->visitorStats($request);
+    }
+
+    public function visitorStats(Request $request)
+    {
+        $period = $request->get('period', '30_days');
+        $now = Carbon::now();
+
+        $query = VisitorLog::query();
+
+        switch ($period) {
+            case 'today':
+                $query->whereDate('visited_at', Carbon::today());
+                $periodLabel = 'Hari Ini (' . $now->translatedFormat('d F Y') . ')';
+                $daysForChart = 1;
+                break;
+            case '7_days':
+                $query->where('visited_at', '>=', Carbon::now()->subDays(6)->startOfDay());
+                $periodLabel = '7 Hari Terakhir';
+                $daysForChart = 7;
+                break;
+            case 'this_month':
+                $query->where('visited_at', '>=', Carbon::now()->startOfMonth());
+                $periodLabel = 'Bulan Ini (' . $now->translatedFormat('F Y') . ')';
+                $daysForChart = max(1, $now->day);
+                break;
+            case 'all_time':
+                $periodLabel = 'Sepanjang Waktu';
+                $daysForChart = 30;
+                break;
+            case '30_days':
+            default:
+                $query->where('visited_at', '>=', Carbon::now()->subDays(29)->startOfDay());
+                $periodLabel = '30 Hari Terakhir';
+                $daysForChart = 30;
+                break;
+        }
+
+        // Summary cards untuk periode yang dipilih
+        $totalViews = (clone $query)->count();
+        $uniqueVisitors = (clone $query)->distinct('session_id')->count('session_id');
+
+        // Ringkasan Tetap (Hari Ini & Bulan Ini)
+        $todayViews = VisitorLog::whereDate('visited_at', Carbon::today())->count();
+        $todayVisitors = VisitorLog::whereDate('visited_at', Carbon::today())->distinct('session_id')->count('session_id');
+        $monthViews = VisitorLog::where('visited_at', '>=', Carbon::now()->startOfMonth())->count();
+        $monthVisitors = VisitorLog::where('visited_at', '>=', Carbon::now()->startOfMonth())->distinct('session_id')->count('session_id');
+
+        // Chart Data Kunjungan
+        $chartStartDate = Carbon::now()->subDays($daysForChart - 1)->startOfDay();
+        $dailyData = VisitorLog::where('visited_at', '>=', $chartStartDate)
+            ->selectRaw("DATE(visited_at) as visit_date, count(*) as views, count(DISTINCT session_id) as visitors")
+            ->groupByRaw("DATE(visited_at)")
+            ->orderByRaw("DATE(visited_at)")
+            ->get()
+            ->keyBy(function($item) {
+                return Carbon::parse($item->visit_date)->toDateString();
+            });
+
+        $chartLabels = [];
+        $chartViews = [];
+        $chartVisitors = [];
+        for ($i = $daysForChart - 1; $i >= 0; $i--) {
+            $dt = Carbon::now()->subDays($i);
+            $key = $dt->toDateString();
+            $chartLabels[] = $dt->translatedFormat('d M');
+            $chartViews[] = isset($dailyData[$key]) ? (int) $dailyData[$key]->views : 0;
+            $chartVisitors[] = isset($dailyData[$key]) ? (int) $dailyData[$key]->visitors : 0;
+        }
+
+        // Breakdown Perangkat (Device)
+        $deviceStats = (clone $query)->select('device', DB::raw('count(*) as count'))
+            ->groupBy('device')
+            ->orderByDesc('count')
+            ->get();
+
+        // Breakdown Browser
+        $browserStats = (clone $query)->select('browser', DB::raw('count(*) as count'))
+            ->groupBy('browser')
+            ->orderByDesc('count')
+            ->get();
+
+        // Breakdown Platform/OS
+        $platformStats = (clone $query)->select('platform', DB::raw('count(*) as count'))
+            ->groupBy('platform')
+            ->orderByDesc('count')
+            ->get();
+
+        // Top Pages
+        $topPages = (clone $query)->select('page_name', 'url', DB::raw('count(*) as count'))
+            ->groupBy('page_name', 'url')
+            ->orderByDesc('count')
+            ->take(10)
+            ->get();
+
+        // Log Kunjungan dengan filter & pagination
+        $logQuery = VisitorLog::latest('visited_at');
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $logQuery->where(function($b) use ($q) {
+                $b->where('ip_address', 'like', "%{$q}%")
+                  ->orWhere('page_name', 'like', "%{$q}%")
+                  ->orWhere('url', 'like', "%{$q}%")
+                  ->orWhere('browser', 'like', "%{$q}%")
+                  ->orWhere('platform', 'like', "%{$q}%");
+            });
+        }
+        if ($request->filled('device_filter')) {
+            $logQuery->where('device', $request->device_filter);
+        }
+        $visitorLogs = $logQuery->paginate(15)->withQueryString();
+
+        return view('admin.visitors.index', compact(
+            'period',
+            'periodLabel',
+            'totalViews',
+            'uniqueVisitors',
+            'todayViews',
+            'todayVisitors',
+            'monthViews',
+            'monthVisitors',
+            'chartLabels',
+            'chartViews',
+            'chartVisitors',
+            'deviceStats',
+            'browserStats',
+            'platformStats',
+            'topPages',
+            'visitorLogs'
+        ));
     }
 
     public function settings()
@@ -218,15 +433,30 @@ class AdminController extends Controller
     public function verifyUmkm($id)
     {
         $umkm = UmkmProfile::findOrFail($id);
-        $umkm->update(['status' => 'verified']);
-        return back()->with('success', 'UMKM Profil berhasil diverifikasi.');
+        $umkm->update([
+            'status' => 'verified',
+            'rejection_note' => null
+        ]);
+        return back()->with('success', "UMKM '{$umkm->business_name}' berhasil diverifikasi dan disetujui.");
     }
 
-    public function rejectUmkm($id)
+    public function rejectUmkm(Request $request, $id)
     {
         $umkm = UmkmProfile::findOrFail($id);
-        $umkm->update(['status' => 'rejected']);
-        return back()->with('success', 'UMKM Profil ditolak.');
+        
+        $request->validate([
+            'rejection_note' => 'required|string|max:1000'
+        ], [
+            'rejection_note.required' => 'Wajib mengetikkan komentar atau alasan penolakan saat menolak pengajuan buka toko UMKM.',
+            'rejection_note.max' => 'Alasan penolakan maksimal 1000 karakter.'
+        ]);
+
+        $umkm->update([
+            'status' => 'rejected',
+            'rejection_note' => $request->rejection_note
+        ]);
+
+        return back()->with('success', "Pengajuan buka toko UMKM '{$umkm->business_name}' telah ditolak dengan catatan alasan penolakan.");
     }
 
     public function verifyProduct($id)
@@ -314,6 +544,7 @@ class AdminController extends Controller
         $request->validate([
             'business_name' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
+            'gender' => 'nullable|string|in:Laki-laki,Perempuan',
             'phone' => ['required', 'string', 'min:10', 'max:25'],
             'province' => 'nullable|string|max:100',
             'regency' => 'nullable|string|max:100',
@@ -327,6 +558,7 @@ class AdminController extends Controller
             'halal_cert' => ['nullable', 'string', 'min:10', 'max:35'],
             'status' => 'nullable|string|in:pending,verified,rejected'
         ], [
+            'gender.in' => 'Pilihan jenis kelamin tidak valid.',
             'nib.regex' => 'Nomor Induk Berusaha (NIB) harus terdiri dari 13 digit angka standar OSS.',
             'pirt.min' => 'Nomor Sertifikasi PIRT minimal 15 karakter/digit standar BPOM/Dinkes.',
             'halal_cert.min' => 'Nomor Sertifikasi Halal minimal 10 karakter/digit standar BPJPH/MUI.',
@@ -335,7 +567,7 @@ class AdminController extends Controller
         ]);
 
         $data = $request->only(
-            'business_name', 'owner_name', 'phone', 'province', 'regency',
+            'business_name', 'owner_name', 'gender', 'phone', 'province', 'regency',
             'district', 'village', 'postal_code', 'address',
             'description', 'nib', 'pirt', 'halal_cert'
         );
