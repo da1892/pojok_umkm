@@ -201,6 +201,22 @@
                         </div>
                     </div>
 
+                    <!-- Pengaturan Produk Unggulan (Tampil di Beranda Utama) -->
+                    <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-50/90 via-amber-50/40 to-white border-2 {{ old('is_featured', $product->is_featured) ? 'border-amber-400 ring-2 ring-amber-300/40' : 'border-slate-200' }} transition-all">
+                        <label class="flex items-start gap-3.5 cursor-pointer">
+                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }} class="mt-1 w-5 h-5 rounded-md border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-extrabold text-slate-900">⭐ Jadikan Produk Unggulan</span>
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300">Beranda Publik</span>
+                                </div>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Produk yang ditandai sebagai <strong>Unggulan</strong> akan otomatis diprioritaskan tampil langsung di halaman <strong>Beranda Publik UMKM Wonogiri</strong> dan diberi lencana bintang emas agar lebih mudah dilihat calon pembeli.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
                     <!-- Deskripsi Produk -->
                     <div>
                         <div class="flex items-center justify-between mb-2">

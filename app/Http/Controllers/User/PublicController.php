@@ -17,9 +17,21 @@ class PublicController extends Controller
 
         $featuredProducts = \App\Models\User\Product::with('umkmProfile')
             ->where('status', 'verified')
+            ->where('is_featured', true)
             ->latest()
             ->take(6)
             ->get();
+
+        if ($featuredProducts->count() < 6) {
+            $needed = 6 - $featuredProducts->count();
+            $fillers = \App\Models\User\Product::with('umkmProfile')
+                ->where('status', 'verified')
+                ->whereNotIn('id', $featuredProducts->pluck('id'))
+                ->latest()
+                ->take($needed)
+                ->get();
+            $featuredProducts = $featuredProducts->concat($fillers);
+        }
 
         // 1. Data Agregat Pokok
         $totalUmkm = \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count();

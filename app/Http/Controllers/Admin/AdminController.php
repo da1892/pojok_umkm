@@ -205,6 +205,10 @@ class AdminController extends Controller
             $query->where('category', $request->category);
         }
 
+        if ($request->filled('featured')) {
+            $query->where('is_featured', $request->featured == '1' || $request->featured == 'true');
+        }
+
         $products = $query->paginate(10)->withQueryString();
 
         // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat
@@ -227,6 +231,7 @@ class AdminController extends Controller
         sort($allKecamatanList);
 
         $totalAllProducts = Product::count();
+        $totalFeaturedProducts = Product::where('is_featured', true)->count();
 
         return view('admin.products.index', compact(
             'products', 
@@ -234,6 +239,7 @@ class AdminController extends Controller
             'allCategories', 
             'allKecamatanList',
             'totalAllProducts',
+            'totalFeaturedProducts',
             'wilayahWonogiri'
         ));
     }
@@ -516,6 +522,7 @@ class AdminController extends Controller
             'name' => $request->name,
             'category' => $request->category,
             'description' => $request->description,
+            'is_featured' => $request->boolean('is_featured'),
         ];
 
         $newImagePaths = [];
@@ -544,6 +551,25 @@ class AdminController extends Controller
         $product = Product::findOrFail($id);
         $product->delete();
         return back()->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function toggleFeaturedProduct(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $product->is_featured = !$product->is_featured;
+        $product->save();
+
+        $statusText = $product->is_featured ? 'dijadikan Produk Unggulan' : 'dihapus dari Produk Unggulan';
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_featured' => (bool)$product->is_featured,
+                'message' => "Produk \"{$product->name}\" berhasil {$statusText}."
+            ]);
+        }
+
+        return back()->with('success', "Produk \"{$product->name}\" berhasil {$statusText}.");
     }
 
     public function editUmkm($id)

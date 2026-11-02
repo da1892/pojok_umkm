@@ -18,11 +18,13 @@ class Product extends Model
         'image_path',
         'images',
         'status',
+        'is_featured',
         'rejection_note',
     ];
 
     protected $casts = [
         'images' => 'array',
+        'is_featured' => 'boolean',
     ];
 
     public function getAllImagesAttribute(): array
