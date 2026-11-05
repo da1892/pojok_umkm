@@ -15,22 +15,21 @@ class PublicController extends Controller
             ->take(12)
             ->get();
 
+        // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin
         $featuredProducts = \App\Models\User\Product::with('umkmProfile')
             ->where('status', 'verified')
             ->where('is_featured', true)
             ->latest()
-            ->take(6)
+            ->take(12)
             ->get();
 
-        if ($featuredProducts->count() < 6) {
-            $needed = 6 - $featuredProducts->count();
-            $fillers = \App\Models\User\Product::with('umkmProfile')
+        // Fallback hanya jika belum ada satu pun produk yang diaktifkan sebagai unggulan
+        if ($featuredProducts->isEmpty()) {
+            $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                 ->where('status', 'verified')
-                ->whereNotIn('id', $featuredProducts->pluck('id'))
                 ->latest()
-                ->take($needed)
+                ->take(6)
                 ->get();
-            $featuredProducts = $featuredProducts->concat($fillers);
         }
 
         // 1. Data Agregat Pokok

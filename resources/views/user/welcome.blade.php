@@ -145,23 +145,22 @@
 
 <!-- Produk Unggulan Terbaru -->
 @php
-    if (!isset($featuredProducts) || $featuredProducts->isEmpty()) {
+    if (!isset($featuredProducts)) {
+        // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin
         $featuredProducts = \App\Models\User\Product::with('umkmProfile')
             ->where('status', 'verified')
             ->where('is_featured', true)
             ->latest()
-            ->take(6)
+            ->take(12)
             ->get();
 
-        if ($featuredProducts->count() < 6) {
-            $needed = 6 - $featuredProducts->count();
-            $fillers = \App\Models\User\Product::with('umkmProfile')
+        // Fallback hanya jika belum ada produk unggulan yang diaktifkan sama sekali
+        if ($featuredProducts->isEmpty()) {
+            $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                 ->where('status', 'verified')
-                ->whereNotIn('id', $featuredProducts->pluck('id'))
                 ->latest()
-                ->take($needed)
+                ->take(6)
                 ->get();
-            $featuredProducts = $featuredProducts->concat($fillers);
         }
     }
 @endphp
@@ -189,7 +188,7 @@
             <div>
                 <div class="h-36 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
                     @if($product->image_path)
-                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
                             <svg class="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
