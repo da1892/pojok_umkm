@@ -23,15 +23,6 @@ class PublicController extends Controller
             ->take(12)
             ->get();
 
-        // Fallback hanya jika belum ada satu pun produk yang diaktifkan sebagai unggulan
-        if ($featuredProducts->isEmpty()) {
-            $featuredProducts = \App\Models\User\Product::with('umkmProfile')
-                ->where('status', 'verified')
-                ->latest()
-                ->take(6)
-                ->get();
-        }
-
         // 1. Data Agregat Pokok
         $totalUmkm = \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count();
         $totalVerifiedUmkm = \App\Models\User\UmkmProfile::where('status', 'verified')->count();
