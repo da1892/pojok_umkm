@@ -205,7 +205,7 @@
                     @forelse($products as $product)
                     <tr class="hover:bg-slate-50/70 transition-colors group">
                         <!-- Product Info & Image -->
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 min-w-[260px]">
                             <div class="flex items-center gap-3.5">
                                 <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shrink-0 group-hover:shadow-xs transition-shadow">
                                     <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -302,6 +302,17 @@
                                 <span class="w-1.5 h-1.5 rounded-full {{ $statusInfo['dot'] }}"></span>
                                 {{ $statusInfo['label'] }}
                             </span>
+                            @if($product->status == 'pending')
+                                <div class="mt-2 flex items-center justify-center gap-1.5">
+                                    <form action="{{ route('admin.product.verify', $product->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer" title="Setujui Produk Ini agar tayang ke publik">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Setujui
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                             @if($product->status == 'rejected' && !empty($product->rejection_note))
                                 <div class="text-[10px] text-red-600 font-medium mt-1 max-w-[160px] truncate" title="Alasan: {{ $product->rejection_note }}">
                                     Catatan: {{ $product->rejection_note }}

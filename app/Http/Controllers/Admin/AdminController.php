@@ -541,6 +541,11 @@ class AdminController extends Controller
             $data['image_path'] = $newImagePaths[0];
         }
 
+        if ($request->boolean('is_featured') && $product->status !== 'verified') {
+            $data['status'] = 'verified';
+            $data['rejection_note'] = null;
+        }
+
         $product->update($data);
 
         return redirect()->route('admin.products')->with('success', 'Data produk berhasil diperbarui.');
@@ -557,14 +562,30 @@ class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->is_featured = !$product->is_featured;
+
+        // Jika dijadikan Produk Unggulan tetapi statusnya belum verified, otomatis setujui produk agar langsung tayang di Beranda
+        $wasPending = false;
+        if ($product->is_featured && $product->status !== 'verified') {
+            $product->status = 'verified';
+            $product->rejection_note = null;
+            $wasPending = true;
+        }
+
         $product->save();
 
-        $statusText = $product->is_featured ? 'dijadikan Produk Unggulan' : 'dihapus dari Produk Unggulan';
+        if ($product->is_featured) {
+            $statusText = $wasPending 
+                ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda' 
+                : 'dijadikan Produk Unggulan dan tampil di Beranda';
+        } else {
+            $statusText = 'dihapus dari daftar Produk Unggulan';
+        }
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'is_featured' => (bool)$product->is_featured,
+                'status' => $product->status,
                 'message' => "Produk \"{$product->name}\" berhasil {$statusText}."
             ]);
         }
