@@ -149,11 +149,11 @@
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">
                             Pencarian Cepat Wilayah <span class="font-normal text-slate-500">(Ketik nama Desa atau Kecamatan):</span>
                         </label>
-                        <div class="relative">
+                        <div class="relative z-30">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Baturetno, Selogiri...)" class="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
+                            <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Baturetno, Selogiri...)" class="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" style="padding-left: 2.75rem !important;">
                             <div id="search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-200 z-50 divide-y divide-slate-100"></div>
                         </div>
                         <p class="text-[11px] text-slate-400 mt-1.5">Pilih dari hasil pencarian otomatis untuk mengisi Kecamatan dan Desa seketika.</p>
@@ -212,9 +212,14 @@
 
                     <!-- Link Titik Lokasi Google Maps -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
-                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Opsional - Agar calon pembeli tahu letak UMKM Anda)</span>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Opsional - Agar calon pembeli tahu letak UMKM Anda)</span>
+                            </span>
+                            <a href="https://maps.google.com" target="_blank" onclick="openCurrentMapLink(event, this)" class="text-[11px] text-red-700 font-bold hover:underline flex items-center gap-1">
+                                Buka Google Maps &rarr;
+                            </a>
                         </label>
                         <input type="url" name="map_link" value="{{ old('map_link') }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                         <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
@@ -622,5 +627,13 @@
             }
         });
     })();
+
+    function openCurrentMapLink(e, el) {
+        const input = document.querySelector('input[name="map_link"]');
+        if (input && input.value.trim() && (input.value.trim().startsWith('http://') || input.value.trim().startsWith('https://'))) {
+            e.preventDefault();
+            window.open(input.value.trim(), '_blank');
+        }
+    }
 </script>
 @endsection

@@ -66,9 +66,9 @@
                                 <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 1. Perbaiki Data Toko
                             </a>
-                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin data profil UMKM sudah diperbaiki dan siap diajukan ulang ke Admin?');">
+                            <form id="resubmit-store-form-main" action="{{ route('toko.resubmit') }}" method="POST" class="inline">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-[#800000] hover:from-red-700 hover:to-red-900 text-white font-bold rounded-xl text-xs transition-all shadow-sm shadow-red-500/20 active:scale-98 cursor-pointer">
+                                <button type="button" onclick="confirmResubmitStore('resubmit-store-form-main')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-[#800000] hover:from-red-700 hover:to-red-900 text-white font-bold rounded-xl text-xs transition-all shadow-sm shadow-red-500/20 active:scale-98 cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                     2. Ajukan Verifikasi Ulang Sekarang &rarr;
                                 </button>
@@ -195,10 +195,10 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 Edit
                             </a>
-                            <form action="{{ route('toko.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');" class="inline">
+                            <form id="delete-product-form-{{ $product->id }}" action="{{ route('toko.product.destroy', $product->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-semibold flex items-center gap-1">
+                                <button type="button" onclick="confirmDeleteStoreProduct('delete-product-form-{{ $product->id }}', '{{ addslashes($product->name) }}')" class="text-red-600 hover:text-red-800 text-sm font-semibold flex items-center gap-1 cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     Hapus
                                 </button>
@@ -235,9 +235,9 @@
                         <div class="flex items-center gap-2">
                             <a href="{{ route('toko.profile') }}#edit" class="text-xs font-bold text-red-800 underline hover:text-red-950">Perbaiki Data</a>
                             <span>&bull;</span>
-                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Ajukan ulang verifikasi UMKM ini ke Admin?');">
+                            <form id="resubmit-store-form-empty" action="{{ route('toko.resubmit') }}" method="POST" class="inline">
                                 @csrf
-                                <button type="submit" class="text-xs font-bold text-[#801414] hover:underline cursor-pointer">Ajukan Ulang &rarr;</button>
+                                <button type="button" onclick="confirmResubmitStore('resubmit-store-form-empty')" class="text-xs font-bold text-[#801414] hover:underline cursor-pointer">Ajukan Ulang &rarr;</button>
                             </form>
                         </div>
                     </div>

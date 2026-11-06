@@ -5,8 +5,8 @@
 @section('content')
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="p-6 border-b border-slate-200">
-        <h3 class="font-bold text-slate-800 text-lg">Tiket Konsultasi UMKM</h3>
-        <p class="text-slate-500 text-sm mt-1">Daftar pertanyaan dan masalah yang diajukan oleh pelaku UMKM Wonogiri.</p>
+        <h3 class="font-bold text-slate-800 text-lg">Konsultasi UMKM</h3>
+        <p class="text-slate-500 text-sm mt-1">Daftar pertanyaan dan masalah pelaku UMKM Wonogiri.</p>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
@@ -15,7 +15,7 @@
                     <th class="px-6 py-4">ID Tiket</th>
                     <th class="px-6 py-4">Nama / UMKM</th>
                     <th class="px-6 py-4">Kategori</th>
-                    <th class="px-6 py-4">Tanggal</th>
+                    <th class="px-6 py-4">Waktu Masuk</th>
                     <th class="px-6 py-4">Status</th>
                     <th class="px-6 py-4 text-right">Aksi</th>
                 </tr>
@@ -29,167 +29,212 @@
                         <div class="text-xs text-slate-500">{{ $consultation->email ?? $consultation->phone }}</div>
                     </td>
                     <td class="px-6 py-4">{{ $consultation->subject }}</td>
-                    <td class="px-6 py-4">{{ $consultation->created_at->format('d M Y') }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-slate-900">{{ $consultation->created_at->translatedFormat('d M Y') }}</div>
+                        <div class="text-xs text-slate-500 font-mono flex items-center gap-1.5 mt-0.5">
+                            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>{{ $consultation->created_at->format('H:i') }} WIB</span>
+                            <span class="text-[10px] text-slate-400">({{ $consultation->created_at->diffForHumans() }})</span>
+                        </div>
+                    </td>
                     <td class="px-6 py-4">
                         @php
                             $statusColor = match(strtolower($consultation->status)) {
-                                'menunggu' => 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                                'diterima' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                'menunggu' => 'bg-yellow-50 text-yellow-800 border-yellow-200',
                                 'diproses' => 'bg-blue-50 text-blue-700 border-blue-200',
-                                'selesai' => 'bg-green-50 text-green-700 border-green-200',
+                                'selesai', 'diterima' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
                                 'ditolak' => 'bg-red-50 text-red-700 border-red-200',
                                 default => 'bg-slate-50 text-slate-700 border-slate-200'
                             };
+
+                            $statusText = match(strtolower($consultation->status)) {
+                                'menunggu' => 'Menunggu Balasan',
+                                'diproses' => 'Sedang Diproses',
+                                'selesai' => 'Selesai Dijawab',
+                                'diterima' => 'Diterima',
+                                'ditolak' => 'Ditolak',
+                                default => ucfirst($consultation->status ?? 'menunggu')
+                            };
                         @endphp
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border {{ $statusColor }}">
-                            @if($consultation->status == 'diterima' || $consultation->status == 'selesai')
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            @elseif($consultation->status == 'ditolak')
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            @if($consultation->status == 'menunggu')
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                             @elseif($consultation->status == 'diproses')
                                 <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                            @elseif($consultation->status == 'ditolak')
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                             @else
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                             @endif
-                            {{ ucfirst($consultation->status ?? 'menunggu') }}
+                            {{ $statusText }}
                         </span>
                     </td>
                     <td class="px-6 py-4 text-right">
                         <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.toggle('hidden')" class="px-3 py-1.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-md text-xs font-semibold hover:bg-slate-200 transition-colors shadow-2xs">
-                            Tindak Lanjut & Balasan
+                            Tindak Lanjut
                         </button>
                     </td>
                 </tr>
                 <tr id="reply-form-{{ $consultation->id }}" class="hidden bg-slate-50/70 border-t border-slate-200">
                     <td colspan="6" class="p-6">
-                        <div class="mb-5">
-                            <h4 class="font-bold text-slate-800 mb-1.5 text-sm flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                                Isi Pertanyaan / Masalah Konsultasi:
-                            </h4>
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-                                <p class="text-sm text-slate-700 leading-relaxed">{{ $consultation->message }}</p>
-                                
-                                @if(!empty($consultation->attachments_list))
-                                    <div class="pt-3 mt-3 border-t border-slate-100">
-                                        <p class="text-xs font-semibold text-slate-500 mb-2">Berkas Pendukung ({{ count($consultation->attachments_list) }}):</p>
-                                        <div class="flex flex-wrap items-center gap-3">
-                                            @foreach($consultation->attachments_list as $adminAttach)
-                                                @php
-                                                    $adminExt = is_object($adminAttach) ? $adminAttach->extension : pathinfo((string)$adminAttach, PATHINFO_EXTENSION);
-                                                    $adminIsImg = is_object($adminAttach) ? $adminAttach->is_image : in_array(strtolower($adminExt), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
-                                                    $adminFileExists = is_object($adminAttach) ? $adminAttach->exists : (file_exists(public_path('storage/' . $adminAttach)) || \Illuminate\Support\Facades\Storage::disk('public')->exists((string)$adminAttach));
-                                                    $adminSrc = is_object($adminAttach) ? $adminAttach->view_url : asset('storage/' . $adminAttach);
-                                                    $adminName = is_object($adminAttach) ? $adminAttach->name : basename((string)$adminAttach);
-                                                @endphp
-                                                @if(!$adminFileExists)
-                                                    <div class="inline-flex items-center gap-2.5 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs shadow-2xs">
-                                                        <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                                                        <div>
-                                                            <span class="font-semibold block">File fisik belum tersinkron</span>
-                                                            <span class="text-[10px] text-amber-700 font-mono">{{ $adminName }}</span>
-                                                            <span class="text-[9px] text-amber-600 block">(File ada di komputer pengunggah)</span>
-                                                        </div>
+                        <!-- Riwayat Percakapan (Saling Jawab) -->
+                        <div class="mb-5 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                                    Riwayat Tanya-Jawab Konsultasi ({{ count($consultation->thread_messages) }} Pesan):
+                                </h4>
+                                <span class="text-xs text-slate-500 font-mono">Tiket: #{{ $consultation->ticket_id }}</span>
+                            </div>
+
+                            <div class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                                @forelse($consultation->thread_messages as $threadMsg)
+                                    @if($threadMsg->sender_type == 'user')
+                                        <!-- Pesan dari Pemohon / Pengguna -->
+                                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                            <div class="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-slate-100">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold">
+                                                        {{ substr($threadMsg->sender_name ?: $consultation->name, 0, 1) }}
+                                                    </span>
+                                                    <span class="text-xs font-bold text-slate-900">{{ $threadMsg->sender_name ?: $consultation->name }}</span>
+                                                    <span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">Pemohon</span>
+                                                </div>
+                                                <span class="text-[11px] text-slate-400 font-mono">{{ $threadMsg->created_at ? $threadMsg->created_at->format('d M Y, H:i') : '' }} WIB</span>
+                                            </div>
+
+                                            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{{ $threadMsg->message }}</p>
+
+                                            @if(!empty($threadMsg->attachments_list))
+                                                <div class="pt-3 mt-3 border-t border-slate-100">
+                                                    <p class="text-xs font-semibold text-slate-500 mb-2">Berkas Pendukung ({{ count($threadMsg->attachments_list) }}):</p>
+                                                    <div class="flex flex-wrap items-center gap-3">
+                                                        @foreach($threadMsg->attachments_list as $adminAttach)
+                                                            @php
+                                                                $adminExt = is_object($adminAttach) ? $adminAttach->extension : pathinfo((string)$adminAttach, PATHINFO_EXTENSION);
+                                                                $adminIsImg = is_object($adminAttach) ? $adminAttach->is_image : in_array(strtolower($adminExt), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                                                $adminFileExists = is_object($adminAttach) ? $adminAttach->exists : (file_exists(public_path('storage/' . $adminAttach)) || \Illuminate\Support\Facades\Storage::disk('public')->exists((string)$adminAttach));
+                                                                $adminSrc = is_object($adminAttach) ? $adminAttach->view_url : asset('storage/' . $adminAttach);
+                                                                $adminName = is_object($adminAttach) ? $adminAttach->name : basename((string)$adminAttach);
+                                                            @endphp
+                                                            @if(!$adminFileExists)
+                                                                <div class="inline-flex items-center gap-2.5 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs shadow-2xs">
+                                                                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                                    <div>
+                                                                        <span class="font-semibold block">File fisik belum tersinkron</span>
+                                                                        <span class="text-[10px] text-amber-700 font-mono">{{ $adminName }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            @elseif($adminIsImg)
+                                                                <div class="inline-flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-sm transition-all">
+                                                                    <a href="{{ $adminSrc }}" target="_blank" class="relative block group overflow-hidden rounded-lg shrink-0">
+                                                                        <img src="{{ $adminSrc }}" alt="Lampiran Foto" class="w-16 h-16 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-transform duration-200">
+                                                                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                                        </div>
+                                                                    </a>
+                                                                    <div class="flex flex-col pr-2">
+                                                                        <span class="text-xs font-bold text-slate-800">Foto Lampiran {{ $loop->iteration }}</span>
+                                                                        <span class="text-[10px] text-slate-400 font-mono truncate max-w-[150px]" title="{{ $adminName }}">{{ strtoupper($adminExt) }} &bull; {{ $adminName }}</span>
+                                                                        <a href="{{ $adminSrc }}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-xs text-[#800000] hover:text-red-700 font-semibold">
+                                                                            <span>Buka Foto Penuh</span>
+                                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <a href="{{ $adminSrc }}" target="_blank" download="{{ $adminName }}" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs text-xs font-medium text-slate-700">
+                                                                    <div class="w-8 h-8 rounded-lg bg-red-50 text-[#800000] flex items-center justify-center font-bold text-[10px]">
+                                                                        {{ strtoupper($adminExt) }}
+                                                                    </div>
+                                                                    <div class="flex flex-col">
+                                                                        <span class="text-slate-800 font-bold truncate max-w-[150px]">{{ $adminName }} ({{ strtoupper($adminExt) }})</span>
+                                                                        <span class="text-[11px] text-blue-600 hover:underline">Unduh Berkas &rarr;</span>
+                                                                    </div>
+                                                                </a>
+                                                            @endif
+                                                        @endforeach
                                                     </div>
-                                                @elseif($adminIsImg)
-                                                    <div class="inline-flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs hover:shadow-sm transition-all">
-                                                        <a href="{{ $adminSrc }}" target="_blank" class="relative block group overflow-hidden rounded-lg shrink-0">
-                                                            <img src="{{ $adminSrc }}" alt="Lampiran Foto" class="w-16 h-16 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-transform duration-200">
-                                                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                                            </div>
-                                                        </a>
-                                                        <div class="flex flex-col pr-2">
-                                                            <span class="text-xs font-bold text-slate-800">Foto Lampiran {{ $loop->iteration }}</span>
-                                                            <span class="text-[10px] text-slate-400 font-mono truncate max-w-[150px]" title="{{ $adminName }}">{{ strtoupper($adminExt) }} &bull; {{ $adminName }}</span>
-                                                            <a href="{{ $adminSrc }}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-xs text-[#800000] hover:text-red-700 font-semibold">
-                                                                <span>Buka Foto Penuh</span>
-                                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <a href="{{ $adminSrc }}" target="_blank" download="{{ $adminName }}" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs text-xs font-medium text-slate-700">
-                                                        <div class="w-8 h-8 rounded-lg bg-red-50 text-[#800000] flex items-center justify-center font-bold text-[10px]">
-                                                            {{ strtoupper($adminExt) }}
-                                                        </div>
-                                                        <div class="flex flex-col">
-                                                            <span class="text-slate-800 font-bold truncate max-w-[150px]">{{ $adminName }} ({{ strtoupper($adminExt) }})</span>
-                                                            <span class="text-[11px] text-blue-600 hover:underline">Unduh Berkas &rarr;</span>
-                                                        </div>
-                                                    </a>
-                                                @endif
-                                            @endforeach
+                                                </div>
+                                            @endif
                                         </div>
+                                    @else
+                                        <!-- Balasan dari Admin -->
+                                        <div class="bg-gradient-to-r from-red-50/60 to-rose-50/40 p-4 rounded-xl border border-red-200/80 shadow-2xs">
+                                            <div class="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-red-100">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-6 h-6 rounded-full bg-[#800000] text-white flex items-center justify-center text-xs font-bold">
+                                                        A
+                                                    </span>
+                                                    <span class="text-xs font-bold text-red-950">{{ $threadMsg->sender_name ?: 'Admin Dinas Perdagangan & KUKM' }}</span>
+                                                    <span class="text-[10px] bg-red-100 text-[#800000] font-bold px-1.5 py-0.5 rounded border border-red-200">Respon Resmi</span>
+                                                </div>
+                                                <span class="text-[11px] text-slate-400 font-mono">{{ $threadMsg->created_at ? $threadMsg->created_at->format('d M Y, H:i') : '' }} WIB</span>
+                                            </div>
+                                            <p class="text-sm text-slate-800 leading-relaxed whitespace-pre-line font-medium">{{ $threadMsg->message }}</p>
+                                        </div>
+                                    @endif
+                                @empty
+                                    <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs text-slate-500 italic text-center">
+                                        Belum ada riwayat percakapan.
                                     </div>
-                                @endif
+                                @endforelse
                             </div>
                         </div>
 
-                        <!-- Form Tindak Lanjut: Terima / Tolak / Balas dengan Komentar -->
+                        <!-- Form Balasan Admin dengan Aksi Status Otomatis -->
                         <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" id="form-reply-{{ $consultation->id }}">
                             @csrf
 
-                            <!-- Tombol Aksi Cepat Terima / Tolak -->
-                            <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <span class="text-xs font-bold text-slate-600 mr-1">Tindakan Cepat:</span>
-                                <button type="button" onclick="setConsultationStatus('{{ $consultation->id }}', 'diterima', 'Konsultasi Anda telah diterima oleh Admin Dinas Perdagangan dan KUKM Wonogiri. Silakan menunggu arahan atau tindak lanjut lebih lanjut dari tim kami.')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-300 transition-all shadow-2xs">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    Terima Konsultasi
-                                </button>
-                                <button type="button" onclick="setConsultationStatus('{{ $consultation->id }}', 'ditolak', 'Mohon maaf, pengajuan konsultasi Anda belum dapat kami proses karena berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-red-50 text-red-700 hover:bg-red-100 border border-red-300 transition-all shadow-2xs">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    Tolak Konsultasi
-                                </button>
-                                <button type="button" onclick="setConsultationStatus('{{ $consultation->id }}', 'selesai', '')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-300 transition-all shadow-2xs">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    Selesai Dijawab
-                                </button>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3">
-                                <div class="md:col-span-1">
-                                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Status Konsultasi</label>
-                                    <select name="status" id="status-select-{{ $consultation->id }}" onchange="updateFormMode('{{ $consultation->id }}')" class="w-full px-3.5 py-2.5 bg-white border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all cursor-pointer">
-                                        <option value="menunggu" {{ strtolower($consultation->status) == 'menunggu' ? 'selected' : '' }}>Menunggu Tinjauan</option>
-                                        <option value="diterima" {{ strtolower($consultation->status) == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                                        <option value="diproses" {{ strtolower($consultation->status) == 'diproses' ? 'selected' : '' }}>Sedang Diproses</option>
-                                        <option value="selesai" {{ strtolower($consultation->status) == 'selesai' ? 'selected' : '' }}>Selesai Dijawab</option>
-                                        <option value="ditolak" {{ strtolower($consultation->status) == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                    </select>
-                                    <p class="text-[11px] text-slate-500 mt-1" id="status-hint-{{ $consultation->id }}">
-                                        Pilih status untuk menentukan tindakan respon.
-                                    </p>
-                                </div>
-                                <div class="md:col-span-3">
-                                    <label class="block text-xs font-bold text-slate-700 mb-1.5" id="response-label-{{ $consultation->id }}">
-                                        Komentar / Balasan Admin Dinas <span class="text-red-500">*</span>
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                    <label class="block text-xs font-bold text-slate-800">
+                                        Tulis Tanggapan <span class="text-red-500">*</span>
                                     </label>
-                                    <textarea name="response" id="response-text-{{ $consultation->id }}" rows="3" required class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan komentar, tanggapan, atau alasan penolakan di sini...">{{ $consultation->response }}</textarea>
+                                    <span class="text-[11px] text-slate-400">Pilih template cepat di bawah jika diperlukan</span>
+                                </div>
 
-                                    <!-- Rekomendasi Template Cepat -->
-                                    <div class="mt-2 flex flex-wrap items-center gap-1.5 text-xs" id="chips-container-{{ $consultation->id }}">
-                                        <span class="text-[11px] text-slate-500 font-semibold mr-1">Template Cepat:</span>
-                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Konsultasi Anda telah diterima oleh Dinas Perdagangan dan KUKM. Mohon tunggu informasi jadwal pendampingan lebih lanjut.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
-                                            + Terima & Jadwalkan
+                                <!-- Rekomendasi Template Cepat -->
+                                <div class="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
+                                    <span class="text-[11px] text-slate-500 font-semibold mr-1">Template Cepat:</span>
+                                    <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Konsultasi telah diselesaikan. Seluruh informasi dan solusi telah kami berikan. Terima kasih telah memanfaatkan layanan konsultasi bisnis Pojok UMKM Wonogiri.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
+                                        + Selesai Dijawab
+                                    </button>
+                                    <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena topik yang diajukan berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
+                                        + Tolak: Di luar kewenangan
+                                    </button>
+                                    <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena data atau berkas yang dilampirkan belum lengkap. Silakan ajukan konsultasi baru dengan rincian yang lebih jelas.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
+                                        + Tolak: Berkas belum lengkap
+                                    </button>
+                                </div>
+
+                                <textarea name="response" id="response-text-{{ $consultation->id }}" rows="3" required class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan komentar balasan, arahan solusi, atau alasan penolakan di sini..."></textarea>
+
+                                <!-- Tombol Aksi Status Otomatis & Notifikasi Email -->
+                                <div class="mt-3.5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 pt-3 border-t border-slate-200">
+                                    <div class="text-[11.5px] text-slate-500 flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>Status otomatis disesuaikan & notifikasi email otomatis terkirim ke <strong class="text-slate-700 font-semibold">{{ $consultation->email ?? 'email pemohon' }}</strong></span>
+                                    </div>
+
+                                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                        <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.add('hidden')" class="px-3.5 py-2.5 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+                                            Batal
                                         </button>
-                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena topik di luar kewenangan Dinas Perdagangan dan KUKM Wonogiri. Silakan mengajukan ke instansi terkait.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
-                                            + Tolak: Di luar kewenangan
+
+                                        <!-- Tombol Merah: Otomatis Status Ditolak -->
+                                        <button type="submit" name="action" value="tolak" class="px-4 py-2.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl transition-all shadow-2xs flex items-center gap-1.5 active:scale-95" title="Tolak pengajuan dan kirim alasan ke pemohon">
+                                            <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            Tolak Konsultasi
                                         </button>
-                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena data atau berkas yang dilampirkan belum lengkap. Silakan ajukan konsultasi baru dengan rincian yang lebih jelas.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
-                                            + Tolak: Data belum lengkap
+
+                                        <!-- Tombol Hijau: Otomatis Status Selesai -->
+                                        <button type="submit" name="action" value="selesai" class="px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-all flex items-center gap-1.5 active:scale-95" title="Kirim solusi akhir dan tandai selesai">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Selesai Dijawab
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
-                                <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors">
-                                    Batal
-                                </button>
-                                <button type="submit" id="submit-btn-{{ $consultation->id }}" class="px-5 py-2 text-xs font-bold text-white bg-[#800000] rounded-lg hover:bg-red-900 shadow-sm transition-all flex items-center gap-1.5">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    Simpan Tanggapan
-                                </button>
                             </div>
                         </form>
                     </td>
@@ -216,80 +261,6 @@
 </div>
 
 <script>
-    function setConsultationStatus(id, status, defaultComment) {
-        var form = document.getElementById('reply-form-' + id);
-        if (form && form.classList.contains('hidden')) {
-            form.classList.remove('hidden');
-        }
-        var select = document.getElementById('status-select-' + id);
-        if (select) {
-            select.value = status;
-        }
-        var textarea = document.getElementById('response-text-' + id);
-        if (textarea && defaultComment) {
-            if (!textarea.value.trim() || textarea.value.trim() === '') {
-                textarea.value = defaultComment;
-            }
-        }
-        updateFormMode(id);
-        if (textarea) {
-            textarea.focus();
-        }
-    }
-
-    function updateFormMode(id) {
-        var select = document.getElementById('status-select-' + id);
-        var label = document.getElementById('response-label-' + id);
-        var textarea = document.getElementById('response-text-' + id);
-        var submitBtn = document.getElementById('submit-btn-' + id);
-        var hint = document.getElementById('status-hint-' + id);
-
-        if (!select) return;
-        var val = select.value;
-
-        if (val === 'ditolak') {
-            if (label) label.innerHTML = 'Alasan Penolakan / Komentar untuk Pemohon <span class="text-red-600 font-black">* (Wajib)</span>';
-            if (textarea) textarea.placeholder = 'Tuliskan alasan penolakan secara jelas (misal: di luar kewenangan dinas, data tidak lengkap)...';
-            if (submitBtn) {
-                submitBtn.className = 'px-5 py-2 text-xs font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-sm transition-all flex items-center gap-1.5';
-                submitBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Simpan & Tolak Konsultasi';
-            }
-            if (hint) hint.textContent = 'Konsultasi akan ditandai ditolak dengan komentar di samping.';
-        } else if (val === 'diterima') {
-            if (label) label.innerHTML = 'Komentar / Balasan Penerimaan Konsultasi <span class="text-emerald-600 font-black">* (Wajib)</span>';
-            if (textarea) textarea.placeholder = 'Tuliskan komentar penerimaan, jadwal, atau petunjuk lanjut untuk pemohon...';
-            if (submitBtn) {
-                submitBtn.className = 'px-5 py-2 text-xs font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-sm transition-all flex items-center gap-1.5';
-                submitBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Simpan & Terima Konsultasi';
-            }
-            if (hint) hint.textContent = 'Konsultasi diterima dan menunggu tindak lanjut dinas.';
-        } else if (val === 'selesai') {
-            if (label) label.innerHTML = 'Jawaban Akhir / Solusi Konsultasi <span class="text-blue-600 font-black">*</span>';
-            if (textarea) textarea.placeholder = 'Tuliskan jawaban tuntas atau solusi konsultasi...';
-            if (submitBtn) {
-                submitBtn.className = 'px-5 py-2 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-all flex items-center gap-1.5';
-                submitBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Simpan Jawaban Selesai';
-            }
-            if (hint) hint.textContent = 'Konsultasi akan ditandai selesai.';
-        } else if (val === 'diproses') {
-            if (label) label.innerHTML = 'Catatan Sedang Diproses <span class="text-slate-600 font-black">*</span>';
-            if (textarea) textarea.placeholder = 'Tuliskan catatan proses penanganan konsultasi...';
-            if (submitBtn) {
-                submitBtn.className = 'px-5 py-2 text-xs font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm transition-all flex items-center gap-1.5';
-                submitBtn.innerHTML = 'Simpan Status Diproses';
-            }
-            if (hint) hint.textContent = 'Konsultasi sedang dalam proses kajian dinas.';
-        } else {
-            if (label) label.innerHTML = 'Komentar / Balasan Admin Dinas';
-            if (textarea) textarea.placeholder = 'Tuliskan komentar atau catatan...';
-            if (submitBtn) {
-                submitBtn.className = 'px-5 py-2 text-xs font-bold text-white bg-[#800000] rounded-lg hover:bg-red-900 shadow-sm transition-all flex items-center gap-1.5';
-                submitBtn.innerHTML = 'Simpan Tanggapan';
-            }
-            if (hint) hint.textContent = 'Pilih status untuk menentukan tindakan respon.';
-        }
-    }
-
     function insertTemplate(id, text) {
         var textarea = document.getElementById('response-text-' + id);
         if (textarea) {

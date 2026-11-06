@@ -20,7 +20,7 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
 
         <!-- Search & Filter Card -->
-        <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-xs border border-slate-200/80 mb-6 sm:mb-10 reveal delay-100">
+        <div id="katalog-filter-container" class="relative z-30 bg-white rounded-2xl p-3 sm:p-4 shadow-xs border border-slate-200/80 mb-6 sm:mb-10">
             <form id="katalog-filter-form" action="/katalog" method="GET" class="flex flex-col md:flex-row items-center gap-2.5 sm:gap-3.5">
                 
                 <!-- Search Input -->
@@ -36,7 +36,8 @@
                            value="{{ request('q') }}" 
                            autocomplete="off"
                            placeholder="Cari produk unggulan..." 
-                           class="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all">
+                           class="w-full pl-11 pr-10 py-2.5 text-xs sm:text-sm bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#991b1b] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all"
+                           style="padding-left: 2.75rem !important;">
                     
                     <!-- Subtle Spinner saat Auto-Filter Memuat -->
                     <div id="katalog-search-spinner" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#991b1b]">
@@ -84,7 +85,7 @@
                 @endphp
 
                 <!-- Dropdown Kategori Modern Custom -->
-                <div class="w-full md:w-56 shrink-0 relative" id="cat-dropdown-container">
+                <div class="w-full md:w-56 shrink-0 relative z-20" id="cat-dropdown-container">
                     <input type="hidden" id="katalog-category-select" name="kategori" value="{{ $currentKategori }}">
                     
                     <button type="button" 
@@ -131,7 +132,7 @@
                 </div>
 
                 <!-- Dropdown Kecamatan Modern Custom (25 Kecamatan Resmi Wonogiri) -->
-                <div class="w-full md:w-56 shrink-0 relative" id="dist-dropdown-container">
+                <div class="w-full md:w-56 shrink-0 relative z-10" id="dist-dropdown-container">
                     <input type="hidden" id="katalog-district-select" name="kecamatan" value="{{ $currentKecamatan }}">
                     
                     <button type="button" 
@@ -169,7 +170,8 @@
                                        id="dist-search-input" 
                                        placeholder="Ketik nama kecamatan..." 
                                        autocomplete="off"
-                                       class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#991b1b] focus:ring-2 focus:ring-red-500/10 text-slate-800">
+                                       class="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#991b1b] focus:ring-2 focus:ring-red-500/10 text-slate-800"
+                                       style="padding-left: 2.25rem !important;">
                             </div>
 
                             <!-- Options List with Smooth Scrolling -->
@@ -259,7 +261,7 @@
         <div id="katalog-anchor" class="scroll-mt-24"></div>
 
         <!-- Katalog Content Container -->
-        <div id="katalog-grid-container" class="reveal delay-200">
+        <div id="katalog-grid-container" class="relative z-10 reveal delay-200">
             @if ($products->count() > 0)
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 @foreach ($products as $product)
@@ -473,12 +475,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const catArrow = document.getElementById('cat-dropdown-arrow');
     const distArrow = document.getElementById('dist-dropdown-arrow');
     const distSearch = document.getElementById('dist-search-input');
+    const catBox = document.getElementById('cat-dropdown-container');
+    const distBox = document.getElementById('dist-dropdown-container');
+    const filterContainer = document.getElementById('katalog-filter-container');
 
     window.closeAllCustomDropdowns = function() {
         if (catPanel) catPanel.classList.add('hidden');
         if (distPanel) distPanel.classList.add('hidden');
         if (catArrow) catArrow.classList.remove('rotate-180');
         if (distArrow) distArrow.classList.remove('rotate-180');
+        if (catBox) {
+            catBox.classList.remove('z-40');
+            catBox.classList.add('z-20');
+        }
+        if (distBox) {
+            distBox.classList.remove('z-40');
+            distBox.classList.add('z-10');
+        }
+        if (filterContainer) {
+            filterContainer.classList.remove('z-40');
+            filterContainer.classList.add('z-30');
+        }
     };
 
     if (catBtn) {
@@ -489,6 +506,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isClosed) {
                 catPanel.classList.remove('hidden');
                 if (catArrow) catArrow.classList.add('rotate-180');
+                if (catBox) {
+                    catBox.classList.remove('z-20');
+                    catBox.classList.add('z-40');
+                }
+                if (filterContainer) {
+                    filterContainer.classList.remove('z-30');
+                    filterContainer.classList.add('z-40');
+                }
             }
         });
     }
@@ -501,6 +526,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isClosed) {
                 distPanel.classList.remove('hidden');
                 if (distArrow) distArrow.classList.add('rotate-180');
+                if (distBox) {
+                    distBox.classList.remove('z-10');
+                    distBox.classList.add('z-40');
+                }
+                if (filterContainer) {
+                    filterContainer.classList.remove('z-30');
+                    filterContainer.classList.add('z-40');
+                }
                 if (distSearch) {
                     setTimeout(() => distSearch.focus(), 100);
                 }

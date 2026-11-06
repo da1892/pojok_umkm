@@ -26,6 +26,78 @@ class Consultation extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(ConsultationMessage::class, 'consultation_id')->orderBy('id', 'asc');
+    }
+
+    /**
+     * Memeriksa apakah pengguna (pengkonsultasi) diizinkan membalas:
+     * Pengguna HANYA bisa menjawab jika pesan terakhir di thread berasal dari 'admin'.
+     */
+    public function canUserReply(): bool
+    {
+        $lastMessage = $this->hasMany(ConsultationMessage::class, 'consultation_id')
+            ->reorder()
+            ->orderByDesc('id')
+            ->first();
+
+        if ($lastMessage) {
+            return $lastMessage->sender_type === 'admin';
+        }
+
+        // Fallback jika belum ada baris di consultation_messages:
+        // Diizinkan hanya jika admin sudah pernah memberikan respon
+        return !empty($this->response);
+    }
+
+    /**
+     * Mengambil seluruh percakapan thread pesan secara urut.
+     */
+    public function getThreadMessagesAttribute()
+    {
+        $msgs = $this->messages()->with('user')->get();
+
+        if ($msgs->isNotEmpty()) {
+            return $msgs;
+        }
+
+        // Fallback kompatibilitas untuk data lama yang belum terisi di consultation_messages
+        $fallback = collect();
+        if (!empty($this->message)) {
+            $fallback->push(new ConsultationMessage([
+                'id' => 0,
+                'consultation_id' => $this->id,
+                'sender_type' => 'user',
+                'sender_name' => $this->name ?: 'Pengguna',
+                'user_id' => $this->user_id,
+                'message' => $this->message,
+                'attachment' => $this->attachment,
+                'created_at' => $this->created_at ?: now(),
+            ]));
+        }
+
+        if (!empty($this->response)) {
+            $fallback->push(new ConsultationMessage([
+                'id' => 0,
+                'consultation_id' => $this->id,
+                'sender_type' => 'admin',
+                'sender_name' => 'Admin Dinas Perdagangan & KUKM',
+                'user_id' => $this->admin_id,
+                'message' => $this->response,
+                'attachment' => null,
+                'created_at' => $this->updated_at ?: now(),
+            ]));
+        }
+
+        return $fallback;
+    }
+
     /**
      * Get attachments as an array of ConsultationAttachment objects.
      * Supports both new JSON array, hybrid payload with Base64, and legacy strings.

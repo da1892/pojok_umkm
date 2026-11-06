@@ -20,121 +20,113 @@
 
             <!-- Headline -->
             <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-3 sm:mb-4">
-                Panduan Lengkap Sertifikasi Halal, PIRT & Legalitas NIB Gratis
+                Panduan Legalitas Usaha: NIB, Halal, Kemasan, PIRT & Hak Merek
             </h1>
 
             <p class="text-red-100 text-xs sm:text-base md:text-lg max-w-3xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed">
-                Panduan praktis langkah demi langkah bagi pelaku usaha baru di Kabupaten Wonogiri untuk mengurus perizinan resmi, izin edar, sertifikasi halal, hingga perlindungan merek secara mudah dan bebas biaya.
+                Panduan resmi pengurusan izin usaha bagi pelaku UMKM di Kabupaten Wonogiri. Seluruh proses perizinan dasar, izin edar PIRT, hingga sertifikasi halal difasilitasi tanpa dipungut biaya.
             </p>
-
-            <!-- Search Bar ("Tempat Pencarian") -->
-            <div class="max-w-3xl mx-auto relative shadow-2xl rounded-2xl">
-                <div class="relative flex items-center bg-white rounded-2xl overflow-hidden border-2 border-white/80 p-1.5 sm:p-2 focus-within:ring-4 focus-within:ring-red-300 transition-all">
-                    <div class="pl-3 sm:pl-4 text-slate-400">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#991b1b]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
-
-                    <input type="text" id="guide-search" 
-                           placeholder="Cari panduan... (contoh: Halal, NIB, PIRT, OSS, syarat, kemasan, biaya)" 
-                           class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-slate-800 text-sm sm:text-base outline-none bg-transparent placeholder-slate-400"
-                           autocomplete="off">
-
-                    <button type="button" id="clear-search-btn" class="hidden text-slate-400 hover:text-slate-600 px-2 transition-colors" title="Hapus pencarian">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
-
-                    <button type="button" onclick="focusSearch()" class="bg-[#991b1b] hover:bg-[#801414] text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl transition-all shrink-0">
-                        Cari
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Search Tag Chips -->
-            <div class="flex items-center justify-center flex-wrap gap-2 mt-4 text-xs">
-                <span class="text-red-200 font-medium">Kategori Populer:</span>
-                <button type="button" onclick="filterByKeyword('')" class="filter-chip active px-3 py-1 rounded-full bg-white text-[#800000] font-bold shadow-xs hover:bg-red-50 transition-all">Semua</button>
-                <button type="button" onclick="filterByKeyword('halal')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Sertifikasi Halal</button>
-                <button type="button" onclick="filterByKeyword('pirt')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Izin Edar PIRT</button>
-                <button type="button" onclick="filterByKeyword('nib')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Legalitas NIB</button>
-                <button type="button" onclick="filterByKeyword('merek')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Hak Merek (HAKI)</button>
-                <button type="button" onclick="filterByKeyword('kemasan')" class="filter-chip px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium transition-all">Standar Kemasan</button>
-            </div>
         </div>
     </div>
 
     <!-- Main Content Container -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20">
 
-        <!-- 4 Steps Success Roadmap for Beginners -->
+        <!-- 5 Steps Success Roadmap for Beginners -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/90 mb-10">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-4 border-b border-slate-100 gap-2">
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                        <span>Alur 4 Langkah Legalitas UMKM Pemula</span>
-                        <span class="text-xs font-bold bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full">Mudah Dipahami</span>
-                    </h2>
-                    <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Urutan ideal yang dianjurkan Dinas KUKM Kabupaten Wonogiri untuk produk pangan & kriya.</p>
-                </div>
-                <div class="text-xs text-slate-400 font-medium">
-                    Status: <span class="text-green-600 font-bold">100% Fasilitasi Gratis</span>
-                </div>
+            <div class="mb-6 pb-4 border-b border-slate-100 text-center sm:text-left">
+                <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                    Alur 5 Langkah Legalitas & Standarisasi UMKM
+                </h2>
+                <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Tahapan rekomendasi bagi pelaku usaha Wonogiri dari perizinan dasar, sertifikasi halal, standarisasi kemasan, izin edar PIRT, hingga perlindungan merek.</p>
             </div>
 
-            <!-- Steps Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative">
+            <!-- Steps Grid: 3 Kotak di Atas & 2 Kotak di Bawah -->
+            <div class="space-y-4 sm:space-y-5">
                 
-                <!-- Step 1 -->
-                <div onclick="scrollToGuide('guide-nib')" class="p-4 sm:p-5 rounded-2xl bg-amber-50/60 border border-amber-200/80 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer group">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shadow-xs">1</span>
-                        <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md uppercase">Wajib Pertama</span>
+                <!-- Baris 1: 3 Kotak Panduan -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+                    
+                    <!-- Kotak 1: NIB -->
+                    <div onclick="scrollToGuide('guide-nib')" class="p-5 rounded-2xl bg-amber-50/60 border border-slate-200/80 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shadow-xs">1</span>
+                                <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md uppercase">Legalitas</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-amber-800 transition-colors mb-1.5">Legalitas NIB</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Izin usaha resmi secara daring melalui sistem OSS Kementerian Investasi.</p>
+                        </div>
+                        <div class="mt-4 text-[11px] font-bold text-amber-700 flex items-center gap-1">
+                            Lihat panduan &rarr;
+                        </div>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-amber-800 transition-colors mb-1.5">Legalitas NIB (OSS)</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">Identitas tunggal izin usaha. Dibuat mandiri via ponsel hanya butuh KTP dan gratis.</p>
-                    <div class="mt-3 text-[11px] font-bold text-amber-700 flex items-center gap-1">
-                        Lihat panduan &rarr;
+
+                    <!-- Kotak 2: Halal -->
+                    <div onclick="scrollToGuide('guide-halal')" class="p-5 rounded-2xl bg-emerald-50/60 border border-slate-200/80 hover:border-emerald-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shadow-xs">2</span>
+                                <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md uppercase">Kepercayaan</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-emerald-800 transition-colors mb-1.5">Sertifikasi Halal</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Fasilitasi Sertifikasi Halal gratis BPJPH (Program SEHATI) bagi usaha mikro.</p>
+                        </div>
+                        <div class="mt-4 text-[11px] font-bold text-emerald-700 flex items-center gap-1">
+                            Lihat panduan &rarr;
+                        </div>
                     </div>
+
+                    <!-- Kotak 3: Standar Kemasan -->
+                    <div onclick="scrollToGuide('guide-kemasan')" class="p-5 rounded-2xl bg-rose-50/60 border border-slate-200/80 hover:border-rose-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-8 h-8 rounded-full bg-rose-600 text-white font-black text-sm flex items-center justify-center shadow-xs">3</span>
+                                <span class="text-[10px] font-bold text-rose-800 bg-rose-100 px-2 py-0.5 rounded-md uppercase">Standarisasi</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-rose-800 transition-colors mb-1.5">Standar Kemasan</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Ketentuan label, informasi gizi, dan material kemasan higienis BPOM.</p>
+                        </div>
+                        <div class="mt-4 text-[11px] font-bold text-rose-700 flex items-center gap-1">
+                            Lihat panduan &rarr;
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Step 2 -->
-                <div onclick="scrollToGuide('guide-pirt')" class="p-4 sm:p-5 rounded-2xl bg-blue-50/60 border border-blue-200/80 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer group">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shadow-xs">2</span>
-                        <span class="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-md uppercase">Izin Edar</span>
+                <!-- Baris 2: 2 Kotak Panduan (Centered Seimbang) -->
+                <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-5">
+                    
+                    <!-- Kotak 4: Izin Edar PIRT -->
+                    <div onclick="scrollToGuide('guide-pirt')" class="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.85rem)] p-5 rounded-2xl bg-blue-50/60 border border-slate-200/80 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shadow-xs">4</span>
+                                <span class="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-md uppercase">Izin Edar</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-800 transition-colors mb-1.5">Izin PIRT (Dinkes)</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Izin edar resmi Dinas Kesehatan agar produk pangan legal beredar luas.</p>
+                        </div>
+                        <div class="mt-4 text-[11px] font-bold text-blue-700 flex items-center gap-1">
+                            Lihat panduan &rarr;
+                        </div>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-800 transition-colors mb-1.5">Izin PIRT (Dinkes)</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">Sertifikat produksi pangan industri rumah tangga agar produk aman beredar di pasar/minimarket.</p>
-                    <div class="mt-3 text-[11px] font-bold text-blue-700 flex items-center gap-1">
-                        Lihat panduan &rarr;
-                    </div>
-                </div>
 
-                <!-- Step 3 -->
-                <div onclick="scrollToGuide('guide-halal')" class="p-4 sm:p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 hover:border-emerald-400 hover:shadow-md transition-all cursor-pointer group">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shadow-xs">3</span>
-                        <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md uppercase">Kepatuhan</span>
+                    <!-- Kotak 5: Hak Merek -->
+                    <div onclick="scrollToGuide('guide-merek')" class="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.85rem)] p-5 rounded-2xl bg-purple-50/60 border border-slate-200/80 hover:border-purple-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="w-8 h-8 rounded-full bg-purple-600 text-white font-black text-sm flex items-center justify-center shadow-xs">5</span>
+                                <span class="text-[10px] font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-md uppercase">Perlindungan</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-purple-800 transition-colors mb-1.5">Hak Merek (HAKI)</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Pendaftaran nama dan logo brand ke DJKI Kemenkumham dengan subsidi dinas.</p>
+                        </div>
+                        <div class="mt-4 text-[11px] font-bold text-purple-700 flex items-center gap-1">
+                            Lihat panduan &rarr;
+                        </div>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-emerald-800 transition-colors mb-1.5">Sertifikasi Halal</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">Sertifikasi halal resmi BPJPH program SEHATI (Self Declare) 100% gratis bagi pelaku usaha mikro.</p>
-                    <div class="mt-3 text-[11px] font-bold text-emerald-700 flex items-center gap-1">
-                        Lihat panduan &rarr;
-                    </div>
-                </div>
 
-                <!-- Step 4 -->
-                <div onclick="scrollToGuide('guide-merek')" class="p-4 sm:p-5 rounded-2xl bg-purple-50/60 border border-purple-200/80 hover:border-purple-400 hover:shadow-md transition-all cursor-pointer group">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="w-8 h-8 rounded-full bg-purple-600 text-white font-black text-sm flex items-center justify-center shadow-xs">4</span>
-                        <span class="text-[10px] font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-md uppercase">Perlindungan</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-purple-800 transition-colors mb-1.5">Hak Merek (HAKI)</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">Patenkan nama dagang usaha Anda di DJKI Kemenkumham agar tidak dicuri pihak lain.</p>
-                    <div class="mt-3 text-[11px] font-bold text-purple-700 flex items-center gap-1">
-                        Lihat panduan &rarr;
-                    </div>
                 </div>
 
             </div>
@@ -159,7 +151,7 @@
             <h3 class="text-lg font-bold text-slate-800">Panduan Tidak Ditemukan</h3>
             <p class="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-5">Tidak ada panduan yang cocok dengan kata kunci pencarian Anda. Coba kata kunci lain atau ajukan konsultasi langsung.</p>
             <div class="flex justify-center gap-3">
-                <button type="button" onclick="resetSearch()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">Reset Pencarian</button>
+                <button type="button" onclick="filterByKeyword('')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors">Tampilkan Semua Panduan</button>
                 <a href="{{ route('konsultasi') }}" class="px-5 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white font-bold text-xs transition-colors">Ajukan Konsultasi Gratis</a>
             </div>
         </div>
@@ -188,7 +180,7 @@
                     </div>
 
                     <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
-                        <strong>NIB (Nomor Induk Berusaha)</strong> adalah kartu identitas resmi bagi pelaku usaha di seluruh Indonesia yang diterbitkan oleh Kementerian Investasi/BKPM melalui sistem OSS. NIB berfungsi sebagai Tanda Daftar Perusahaan (TDP), Angka Pengenal Importir (API), dan akses kepabeanan sekaligus.
+                        Nomor Induk Berusaha (NIB) merupakan identitas resmi setiap pelaku usaha di Indonesia yang diterbitkan melalui sistem OSS Kementerian Investasi/BKPM. Selain sebagai bukti legalitas dasar, NIB berfungsi sebagai Tanda Daftar Perusahaan (TDP) dan menjadi syarat utama untuk mengakses pembiayaan perbankan serta program bantuan pemerintah.
                     </p>
 
                     <!-- Requirements & Steps Grid -->
@@ -224,14 +216,13 @@
                     </div>
 
                     <!-- Benefits & Actions -->
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <span class="font-bold text-slate-700">Manfaat Utama:</span>
-                            Akses Kredit Usaha Rakyat (KUR) bank, perlindungan hukum, dan syarat mutlak bantuan hibah pemerintah.
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-5 border-t border-slate-100">
+                        <div class="text-xs text-slate-600 leading-relaxed max-w-xl">
+                            <strong class="font-bold text-slate-800">Manfaat Utama:</strong> Syarat pengajuan KUR perbankan, kepesertaan pelatihan dan pameran daerah, serta kepastian perlindungan hukum usaha.
                         </div>
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
                             <a href="https://oss.go.id" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
-                                Kunjungi Portal OSS.go.id &nearr;
+                                Portal OSS.go.id &nearr;
                             </a>
                             <a href="{{ route('konsultasi') }}?subject=Perizinan+Usaha" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white text-xs font-bold transition-colors shadow-2xs">
                                 Butuh Bantuan? Ajukan Pendampingan
@@ -298,12 +289,11 @@
                     </div>
 
                     <!-- Benefits & Actions -->
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <span class="font-bold text-slate-700">Masa Berlaku:</span>
-                            Sertifikat Halal sekarang berlaku <strong>SEUMUR HIDUP</strong> selama komposisi dan proses bahan tidak berubah!
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-5 border-t border-slate-100">
+                        <div class="text-xs text-slate-600 leading-relaxed max-w-xl">
+                            <strong class="font-bold text-slate-800">Masa Berlaku:</strong> Sertifikat Halal kini berlaku <strong class="text-slate-800 font-bold">seumur hidup</strong> sepanjang komposisi bahan dan proses produksi tidak mengalami perubahan.
                         </div>
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
                             <a href="https://ptsp.halal.go.id" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
                                 Portal SiHalal Kemenag &nearr;
                             </a>
@@ -315,153 +305,7 @@
                 </div>
             </div>
 
-            <!-- GUIDE 3: IZIN EDAR PIRT (DINKES) -->
-            <div id="guide-pirt" class="guide-card bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300"
-                 data-keywords="pirt spp-irt sppirt dinas kesehatan izin edar pangan industri rumah tangga pkp penyuluhan keamanan pangan dinkes label kemasan tanggal kedaluwarsa izin makanan keripik roti kopi kue">
-                <div class="p-6 sm:p-8 lg:p-10">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
-                                🥫
-                            </div>
-                            <div>
-                                <span class="text-[11px] font-extrabold tracking-wider uppercase text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">Langkah 3 &bull; Keamanan Konsumsi</span>
-                                <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Pengurusan SPP-IRT (Izin Edar PIRT Dinas Kesehatan)</h3>
-                            </div>
-                        </div>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 self-start sm:self-auto">
-                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            Bebas Retribusi Pemda
-                        </span>
-                    </div>
-
-                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
-                        <strong>SPP-IRT (Sertifikat Produksi Pangan Industri Rumah Tangga)</strong> adalah jaminan tertulis dari Bupati Wonogiri melalui Dinas Kesehatan bahwa pangan olahan hasil produksi rumahan Anda telah memenuhi syarat sanitasi, higienitas, dan standar keamanan pangan nasional.
-                    </p>
-
-                    <!-- Requirements & Steps Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/70 p-5 sm:p-6 rounded-2xl border border-slate-100 mb-6">
-                        <!-- Left: Requirements -->
-                        <div>
-                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Ketentuan Produk yang Boleh PIRT:
-                            </h4>
-                            <ul class="space-y-2 text-xs sm:text-sm text-slate-600">
-                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">&bull;</span> Pangan kering dengan kadar air rendah (kue kering, keripik, rengginang, mete, sambal kemasan, abon, dsb).</li>
-                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">&bull;</span> Daya tahan simpan suhu ruang minimal 7 hari.</li>
-                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">&bull;</span> <em>Catatan:</em> Produk susu, daging basah, atau frozen food beku berisiko tinggi wajib mendaftar izin edar BPOM MD (bukan PIRT).</li>
-                            </ul>
-                        </div>
-
-                        <!-- Right: Steps -->
-                        <div>
-                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
-                                Alur Penerbitan SPP-IRT Terintegrasi:
-                            </h4>
-                            <ol class="space-y-2 text-xs sm:text-sm text-slate-600 list-decimal list-inside">
-                                <li>Masuk ke akun OSS Anda, ajukan perizinan berusaha UMK olahan pangan.</li>
-                                <li>Sistem OSS otomatis mengarahkan ke aplikasi <strong>sppirt.pom.go.id</strong>.</li>
-                                <li>Unggah rancangan label kemasan produk sesuai standar BPOM.</li>
-                                <li>Nomor 15 digit SPP-IRT diterbitkan secara otomatis secara online.</li>
-                                <li>Mengikuti Penyuluhan Keamanan Pangan (PKP) dan inspeksi fasilitas dapur oleh Dinas Kesehatan Wonogiri.</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    <!-- Benefits & Actions -->
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <span class="font-bold text-slate-700">Dukungan:</span>
-                            Dinas Kesehatan & Disperindagkop UKM Wonogiri rutin mengadakan pelatihan PKP gratis setiap triwulan.
-                        </div>
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
-                            <a href="https://sppirt.pom.go.id" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
-                                Portal SPPIRT BPOM &nearr;
-                            </a>
-                            <a href="{{ route('konsultasi') }}?subject=Sertifikasi+Halal+/+PIRT" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white text-xs font-bold transition-colors shadow-2xs">
-                                Konsultasi SPP-IRT Sekarang
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GUIDE 4: HAK MEREK DAGANG (HAKI - DJKI) -->
-            <div id="guide-merek" class="guide-card bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300"
-                 data-keywords="merek dagang haki hak kekayaan intelektual djki kemenkumham paten logo nama brand perlindungan hukum subsidi dinas">
-                <div class="p-6 sm:p-8 lg:p-10">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
-                                🏷️
-                            </div>
-                            <div>
-                                <span class="text-[11px] font-extrabold tracking-wider uppercase text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-md">Langkah 4 &bull; Aset Masa Depan</span>
-                                <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Pendaftaran Hak Merek Dagang (DJKI Kemenkumham)</h3>
-                            </div>
-                        </div>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 self-start sm:self-auto">
-                            Tarif Khusus UMKM Binaan
-                        </span>
-                    </div>
-
-                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
-                        Jangan tunggu nama usaha Anda ditiru orang lain! Merek dagang adalah hak eksklusif yang melindungi nama brand dan logo produk Anda di seluruh wilayah Republik Indonesia selama <strong>10 tahun</strong> dan dapat diperpanjang.
-                    </p>
-
-                    <!-- Requirements & Steps Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/70 p-5 sm:p-6 rounded-2xl border border-slate-100 mb-6">
-                        <!-- Left: Requirements -->
-                        <div>
-                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Syarat Mendapatkan Tarif Subsidi UMKM:
-                            </h4>
-                            <ul class="space-y-2 text-xs sm:text-sm text-slate-600">
-                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> Surat Rekomendasi UMKM Binaan dari Dinas KUKM Kabupaten Wonogiri.</li>
-                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> NIB dan KTP Pemohon.</li>
-                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> Gambar/Logo Merek dalam format JPG resolusi tinggi.</li>
-                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> Tanda tangan digital pemohon di atas kertas putih.</li>
-                            </ul>
-                        </div>
-
-                        <!-- Right: Steps -->
-                        <div>
-                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
-                                Keuntungan Tarif Subsidi Disperindagkop:
-                            </h4>
-                            <div class="space-y-3 text-xs sm:text-sm text-slate-600">
-                                <p>Biaya pendaftaran merek umum non-UMKM adalah <strong>Rp 1.800.000</strong> per kelas.</p>
-                                <p class="bg-purple-100 text-purple-900 p-3 rounded-xl font-medium">
-                                    Dengan surat binaan Dinas KUKM Wonogiri, tarif pendaftaran menjadi hanya <strong>Rp 500.000</strong> per kelas barang/jasa!
-                                </p>
-                                <p>Pengecekan kesamaan nama merek dapat dilakukan secara gratis melalui situs <strong><a href="https://pdki-indonesia.dgip.go.id" target="_blank" rel="noopener noreferrer" class="text-[#991b1b] underline font-bold">pdki-indonesia.dgip.go.id</a></strong>.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Benefits & Actions -->
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <span class="font-bold text-slate-700">Perlindungan:</span>
-                            Memberikan hak hukum menggugat pihak yang menjiplak atau membajak nama produk Anda.
-                        </div>
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
-                            <a href="https://merek.dgip.go.id" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
-                                Portal DJKI Kemenkumham &nearr;
-                            </a>
-                            <a href="{{ route('konsultasi') }}?subject=Perizinan+Usaha" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white text-xs font-bold transition-colors shadow-2xs">
-                                Ajukan Surat Rekomendasi
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GUIDE 5: STANDAR KEMASAN & LABELING BPOM -->
+            <!-- GUIDE 3: STANDAR KEMASAN & LABELING BPOM -->
             <div id="guide-kemasan" class="guide-card bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300"
                  data-keywords="kemasan label standar labeling bpom desain kemasan komposisi berat bersih netto kedaluwarsa kode produksi packaging kemasan menarik kurasi produk">
                 <div class="p-6 sm:p-8 lg:p-10">
@@ -471,7 +315,7 @@
                                 📦
                             </div>
                             <div>
-                                <span class="text-[11px] font-extrabold tracking-wider uppercase text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-md">Standarisasi & Kurasi</span>
+                                <span class="text-[11px] font-extrabold tracking-wider uppercase text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-md">Langkah 3 &bull; Desain & Standar Kemasan</span>
                                 <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Standar Label Kemasan Produk Sesuai Regulasi BPOM</h3>
                             </div>
                         </div>
@@ -481,7 +325,7 @@
                     </div>
 
                     <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
-                        Agar produk UMKM Wonogiri dapat tembus ke supermarket, toko oleh-oleh modern, dan pasar ekspor, label kemasan wajib memuat <strong>7 Informasi Pokok</strong> sesuai UU Pangan dan Peraturan BPOM No. 31 Tahun 2018.
+                        Agar produk olahan pangan UMKM dapat diterima di minimarket, toko modern, dan pusat oleh-oleh, label kemasan wajib memuat informasi pokok sesuai ketentuan UU Pangan dan Peraturan BPOM No. 31 Tahun 2018. Label yang informatif dan higienis turut meningkatkan daya saing produk.
                     </p>
 
                     <!-- Requirements & Checklist Grid -->
@@ -519,17 +363,160 @@
                     </div>
 
                     <!-- Benefits & Actions -->
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <span class="font-bold text-slate-700">Fasilitasi:</span>
-                            Pojok UMKM Wonogiri menyediakan konsultasi desain kemasan gratis bagi produk unggulan lokal.
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-5 border-t border-slate-100">
+                        <div class="text-xs text-slate-600 leading-relaxed max-w-xl">
+                            <strong class="font-bold text-slate-800">Fasilitasi:</strong> Pojok UMKM Wonogiri menyediakan layanan konsultasi kelayakan kemasan dan informasi izin edar bagi produk unggulan lokal.
                         </div>
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
                             <a href="{{ route('katalog') }}" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
                                 Lihat Contoh Produk Katalog &nearr;
                             </a>
                             <a href="{{ route('konsultasi') }}?subject=Pemasaran+%26+Penjualan" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white text-xs font-bold transition-colors shadow-2xs">
                                 Konsultasi Desain Kemasan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GUIDE 4: IZIN EDAR PIRT (DINKES) -->
+            <div id="guide-pirt" class="guide-card bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300"
+                 data-keywords="pirt spp-irt sppirt dinas kesehatan izin edar pangan industri rumah tangga pkp penyuluhan keamanan pangan dinkes label kemasan tanggal kedaluwarsa izin makanan keripik roti kopi kue">
+                <div class="p-6 sm:p-8 lg:p-10">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
+                                🥫
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-extrabold tracking-wider uppercase text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">Langkah 4 &bull; Keamanan Konsumsi (Izin Edar)</span>
+                                <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Pengurusan SPP-IRT (Izin Edar PIRT Dinas Kesehatan)</h3>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 self-start sm:self-auto">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            Bebas Retribusi Pemda
+                        </span>
+                    </div>
+
+                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+                        Sertifikat Produksi Pangan Industri Rumah Tangga (SPP-IRT) diterbitkan oleh Dinas Kesehatan sebagai jaminan resmi bahwa produk olahan pangan yang diproduksi telah memenuhi standar higienitas dan keamanan pangan sebelum diedarkan luas ke konsumen.
+                    </p>
+
+                    <!-- Requirements & Steps Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/70 p-5 sm:p-6 rounded-2xl border border-slate-100 mb-6">
+                        <!-- Left: Requirements -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Ketentuan Produk yang Boleh PIRT:
+                            </h4>
+                            <ul class="space-y-2 text-xs sm:text-sm text-slate-600">
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">&bull;</span> Pangan kering dengan kadar air rendah (kue kering, keripik, rengginang, mete, sambal kemasan, abon, dsb).</li>
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">&bull;</span> Daya tahan simpan suhu ruang minimal 7 hari.</li>
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">&bull;</span> <em>Catatan:</em> Produk susu, daging basah, atau frozen food beku berisiko tinggi wajib mendaftar izin edar BPOM MD (bukan PIRT).</li>
+                            </ul>
+                        </div>
+
+                        <!-- Right: Steps -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
+                                Alur Penerbitan SPP-IRT Terintegrasi:
+                            </h4>
+                            <ol class="space-y-2 text-xs sm:text-sm text-slate-600 list-decimal list-inside">
+                                <li>Masuk ke akun OSS Anda, ajukan perizinan berusaha UMK olahan pangan.</li>
+                                <li>Sistem OSS otomatis mengarahkan ke aplikasi <strong>sppirt.pom.go.id</strong>.</li>
+                                <li>Unggah rancangan label kemasan produk sesuai standar BPOM.</li>
+                                <li>Nomor 15 digit SPP-IRT diterbitkan secara otomatis secara online.</li>
+                                <li>Mengikuti Penyuluhan Keamanan Pangan (PKP) dan inspeksi fasilitas dapur oleh Dinas Kesehatan Wonogiri.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Benefits & Actions -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-5 border-t border-slate-100">
+                        <div class="text-xs text-slate-600 leading-relaxed max-w-xl">
+                            <strong class="font-bold text-slate-800">Dukungan:</strong> Dinas Kesehatan dan Disperindagkop UKM Wonogiri menyelenggarakan Penyuluhan Keamanan Pangan (PKP) secara berkala bagi pelaku usaha.
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
+                            <a href="https://sppirt.pom.go.id" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
+                                Portal SPPIRT BPOM &nearr;
+                            </a>
+                            <a href="{{ route('konsultasi') }}?subject=Sertifikasi+Halal+/+PIRT" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white text-xs font-bold transition-colors shadow-2xs">
+                                Konsultasi SPP-IRT Sekarang
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GUIDE 5: HAK MEREK DAGANG (HAKI - DJKI) -->
+            <div id="guide-merek" class="guide-card bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300"
+                 data-keywords="merek dagang haki hak kekayaan intelektual djki kemenkumham paten logo nama brand perlindungan hukum subsidi dinas">
+                <div class="p-6 sm:p-8 lg:p-10">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
+                                🏷️
+                            </div>
+                            <div>
+                                <span class="text-[11px] font-extrabold tracking-wider uppercase text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-md">Langkah 5 &bull; Perlindungan Hak Merek</span>
+                                <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Pendaftaran Hak Merek Dagang (DJKI Kemenkumham)</h3>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 self-start sm:self-auto">
+                            Tarif Khusus UMKM Binaan
+                        </span>
+                    </div>
+
+                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+                        Merek dagang memberikan hak eksklusif atas nama brand dan logo produk Anda di seluruh wilayah Indonesia selama <strong>10 tahun</strong> dan dapat diperpanjang. Mendaftarkan merek sejak dini penting untuk mencegah pihak lain menggunakan atau meniru identitas usaha yang telah Anda bangun.
+                    </p>
+
+                    <!-- Requirements & Steps Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/70 p-5 sm:p-6 rounded-2xl border border-slate-100 mb-6">
+                        <!-- Left: Requirements -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Syarat Mendapatkan Tarif Subsidi UMKM:
+                            </h4>
+                            <ul class="space-y-2 text-xs sm:text-sm text-slate-600">
+                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> Surat Rekomendasi UMKM Binaan dari Dinas KUKM Kabupaten Wonogiri.</li>
+                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> NIB dan KTP Pemohon.</li>
+                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> Gambar/Logo Merek dalam format JPG resolusi tinggi.</li>
+                                <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">&bull;</span> Tanda tangan digital pemohon di atas kertas putih.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Right: Steps -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
+                                Keuntungan Tarif Subsidi Disperindagkop:
+                            </h4>
+                            <div class="space-y-3 text-xs sm:text-sm text-slate-600">
+                                <p>Biaya pendaftaran merek umum non-UMKM adalah <strong>Rp 1.800.000</strong> per kelas.</p>
+                                <p class="bg-purple-100 text-purple-900 p-3 rounded-xl font-medium">
+                                    Dengan surat binaan Dinas KUKM Wonogiri, tarif pendaftaran menjadi hanya <strong>Rp 500.000</strong> per kelas barang/jasa!
+                                </p>
+                                <p>Pengecekan kesamaan nama merek dapat dilakukan secara gratis melalui situs <strong><a href="https://pdki-indonesia.dgip.go.id" target="_blank" rel="noopener noreferrer" class="text-[#991b1b] underline font-bold">pdki-indonesia.dgip.go.id</a></strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Benefits & Actions -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-5 border-t border-slate-100">
+                        <div class="text-xs text-slate-600 leading-relaxed max-w-xl">
+                            <strong class="font-bold text-slate-800">Perlindungan:</strong> Memberikan perlindungan hukum yang berkekuatan tetap apabila terjadi sengketa atau peniruan nama merek dagang.
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
+                            <a href="https://merek.dgip.go.id" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
+                                Portal DJKI Kemenkumham &nearr;
+                            </a>
+                            <a href="{{ route('konsultasi') }}?subject=Perizinan+Usaha" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#991b1b] hover:bg-[#801414] text-white text-xs font-bold transition-colors shadow-2xs">
+                                Ajukan Surat Rekomendasi
                             </a>
                         </div>
                     </div>
@@ -542,8 +529,8 @@
         <div class="mt-14 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm">
             <div class="text-center max-w-2xl mx-auto mb-10">
                 <span class="text-xs font-bold uppercase tracking-wider text-[#991b1b] bg-red-50 px-3 py-1 rounded-full">Tanya Jawab Populer</span>
-                <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2">Pertanyaan yang Sering Diajukan Pemula (FAQ)</h3>
-                <p class="text-slate-500 text-xs sm:text-sm mt-1">Jawaban praktis seputar legalitas bagi Anda yang baru pertama kali merintis usaha.</p>
+                <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2">Pertanyaan yang Sering Diajukan (FAQ)</h3>
+                <p class="text-slate-500 text-xs sm:text-sm mt-1">Informasi praktis seputar pengurusan legalitas usaha bagi pelaku UMKM di Kabupaten Wonogiri.</p>
             </div>
 
             <div class="space-y-4 max-w-4xl mx-auto">
@@ -551,29 +538,29 @@
                 <!-- FAQ 1 -->
                 <div class="border border-slate-200 rounded-2xl p-5 hover:border-red-200 transition-colors">
                     <h4 class="text-sm sm:text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
-                        <span>Apakah pengurusan NIB, PIRT, dan Sertifikat Halal ini benar-benar gratis?</span>
+                        <span>Apakah pengurusan NIB, PIRT, dan Sertifikasi Halal ini dipungut biaya?</span>
                         <span class="text-[#991b1b] font-bold text-xl">&plus;</span>
                     </h4>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        <strong>Ya, 100% GRATIS!</strong> Pendaftaran NIB di sistem OSS bebas biaya, pengurusan SPP-IRT di Dinas Kesehatan Wonogiri tidak dipungut retribusi, dan program Sertifikasi Halal SEHATI (Self Declare) dari BPJPH dibiayai penuh oleh APBN. Waspadai calo atau oknum yang meminta imbalan uang atas nama dinas.
+                        <strong>Tidak dipungut biaya (gratis).</strong> Pendaftaran NIB melalui sistem OSS bebas biaya, penerbitan SPP-IRT di Dinas Kesehatan Kabupaten Wonogiri tidak dikenakan retribusi daerah, dan sertifikasi halal program SEHATI dibiayai oleh pemerintah. Pelaku usaha diimbau untuk tidak menggunakan jasa perantara atau calo yang meminta imbalan.
                     </p>
                 </div>
 
                 <!-- FAQ 2 -->
                 <div class="border border-slate-200 rounded-2xl p-5 hover:border-red-200 transition-colors">
                     <h4 class="text-sm sm:text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
-                        <span>Usaha saya baru beroperasi rumahan dan berskala kecil, apakah sudah wajib punya NIB?</span>
+                        <span>Apakah usaha berskala mikro dan rumahan wajib memiliki NIB?</span>
                         <span class="text-[#991b1b] font-bold text-xl">&plus;</span>
                     </h4>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        <strong>Sangat dianjurkan!</strong> NIB dirancang untuk melindungi semua skala usaha, termasuk pedagang keliling, warung rumahan, hingga pengrajin kriya. Dengan memiliki NIB, status usaha Anda diakui hukum negara dan berhak menerima berbagai program bantuan serta pelatihan gratis dari Pemkab Wonogiri.
+                        Sangat disarankan. NIB merupakan identitas legalitas dasar untuk seluruh skala usaha, termasuk usaha mikro dan industri rumahan. Memiliki NIB memberikan kepastian hukum dan menjadi syarat utama untuk mengikuti berbagai program pembinaan, pameran daerah, serta fasilitas pembiayaan seperti KUR.
                     </p>
                 </div>
 
                 <!-- FAQ 3 -->
                 <div class="border border-slate-200 rounded-2xl p-5 hover:border-red-200 transition-colors">
                     <h4 class="text-sm sm:text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
-                        <span>Bagaimana jika saya gaptek atau bingung mengisi formulir online di sistem OSS dan SiHalal?</span>
+                        <span>Bagaimana jika pelaku usaha mengalami kendala saat melakukan pendaftaran daring?</span>
                         <span class="text-[#991b1b] font-bold text-xl">&plus;</span>
                     </h4>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -584,11 +571,11 @@
                 <!-- FAQ 4 -->
                 <div class="border border-slate-200 rounded-2xl p-5 hover:border-red-200 transition-colors">
                     <h4 class="text-sm sm:text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
-                        <span>Berapa lama waktu yang dibutuhkan hingga sertifikat Halal dan NIB terbit?</span>
+                        <span>Berapa lama estimasi waktu penerbitan dokumen perizinan?</span>
                         <span class="text-[#991b1b] font-bold text-xl">&plus;</span>
                     </h4>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        NIB terbit secara <strong>instan (kurang dari 10 menit)</strong> setelah pengisian formulir selesai. Untuk SPP-IRT terbit 1-3 hari kerja. Sementara Sertifikasi Halal Self Declare membutuhkan waktu sekitar 14-25 hari kerja setelah dilakukan verifikasi oleh Pendamping PPH dan penetapan Fatwa MUI/Kemenag.
+                        NIB dapat terbit langsung pada hari yang sama setelah seluruh formulir selesai diisi. SPP-IRT umumnya memerlukan waktu 1 hingga 3 hari kerja. Sementara Sertifikasi Halal jalur Self-Declare memerlukan waktu sekitar 14 hingga 25 hari kerja setelah proses verifikasi oleh Pendamping PPH dan penetapan fatwa resmi.
                     </p>
                 </div>
 
@@ -599,9 +586,9 @@
         <div class="mt-12 bg-gradient-to-r from-[#800000] to-[#a31d1d] rounded-3xl p-8 sm:p-12 text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
             <div class="relative z-10 max-w-2xl">
                 <span class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase mb-3 text-red-100">Bantuan Langsung Dinas</span>
-                <h3 class="text-2xl sm:text-3xl font-black mb-2">Masih Bingung atau Butuh Pendampingan?</h3>
+                <h3 class="text-2xl sm:text-3xl font-black mb-2">Memerlukan Bimbingan atau Informasi Tambahan?</h3>
                 <p class="text-red-100 text-xs sm:text-sm leading-relaxed">
-                    Ajukan permohonan pendampingan gratis. Petugas kami akan memandu langkah demi langkah pengisian berkas Anda hingga izin NIB dan Sertifikat Halal berhasil diterbitkan.
+                    Petugas Pojok UMKM Wonogiri siap mendampingi Anda dalam memahami tahapan pengurusan izin usaha hingga dokumen legalitas resmi diterbitkan.
                 </p>
             </div>
             <div class="relative z-10 flex flex-col sm:flex-row gap-3 shrink-0 w-full sm:w-auto">
@@ -614,25 +601,23 @@
     </div>
 </div>
 
-<!-- Interactive Search Script -->
+<!-- Interactive Category Filter Script -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.getElementById("guide-search");
-        const clearBtn = document.getElementById("clear-search-btn");
         const cards = document.querySelectorAll(".guide-card");
         const countSpan = document.getElementById("count-number");
         const noResultNotice = document.getElementById("no-result-notice");
         const chips = document.querySelectorAll(".filter-chip");
 
         function filterGuides(query) {
-            const cleanQuery = query.toLowerCase().trim();
+            const cleanQuery = (query || "").toLowerCase().trim();
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const keywords = card.getAttribute("data-keywords").toLowerCase();
-                const textContent = card.innerText.toLowerCase();
+                const keywords = card.getAttribute("data-keywords") ? card.getAttribute("data-keywords").toLowerCase() : "";
+                const cardId = card.id ? card.id.toLowerCase() : "";
 
-                if (cleanQuery === "" || keywords.includes(cleanQuery) || textContent.includes(cleanQuery)) {
+                if (cleanQuery === "" || keywords.includes(cleanQuery) || cardId.includes(cleanQuery)) {
                     card.style.display = "block";
                     visibleCount++;
                 } else {
@@ -640,12 +625,10 @@
                 }
             });
 
-            // Update counter
             if (countSpan) {
                 countSpan.textContent = visibleCount;
             }
 
-            // Show / hide no result alert
             if (noResultNotice) {
                 if (visibleCount === 0) {
                     noResultNotice.classList.remove("hidden");
@@ -653,64 +636,35 @@
                     noResultNotice.classList.add("hidden");
                 }
             }
-
-            // Toggle clear button
-            if (clearBtn) {
-                if (cleanQuery.length > 0) {
-                    clearBtn.classList.remove("hidden");
-                } else {
-                    clearBtn.classList.add("hidden");
-                }
-            }
-        }
-
-        if (searchInput) {
-            searchInput.addEventListener("input", function () {
-                filterGuides(this.value);
-                // Reset active chips
-                chips.forEach(c => c.classList.remove("active", "bg-white", "text-[#800000]"));
-            });
-        }
-
-        if (clearBtn) {
-            clearBtn.addEventListener("click", function () {
-                resetSearch();
-            });
         }
 
         window.filterByKeyword = function (keyword) {
-            if (searchInput) {
-                searchInput.value = keyword;
-                filterGuides(keyword);
-            }
+            const cleanKey = (keyword || "").toLowerCase().trim();
 
             chips.forEach(c => {
-                c.classList.remove("active", "bg-white", "text-[#800000]");
-                c.classList.add("bg-white/20", "text-white");
+                c.classList.remove("active", "bg-white", "text-[#800000]", "shadow-md");
+                c.classList.add("bg-white/15", "text-white", "border", "border-white/25");
             });
 
             const activeBtn = Array.from(chips).find(c => {
-                if (!keyword) return c.textContent.trim().toLowerCase() === "semua";
-                return c.textContent.toLowerCase().includes(keyword.toLowerCase());
+                const onclickAttr = c.getAttribute("onclick") || "";
+                return onclickAttr.includes(`'${cleanKey}'`);
             });
 
             if (activeBtn) {
-                activeBtn.classList.add("active", "bg-white", "text-[#800000]");
-                activeBtn.classList.remove("bg-white/20", "text-white");
+                activeBtn.classList.add("active", "bg-white", "text-[#800000]", "shadow-md");
+                activeBtn.classList.remove("bg-white/15", "text-white", "border", "border-white/25");
             }
-        };
 
-        window.resetSearch = function () {
-            if (searchInput) {
-                searchInput.value = "";
-                filterGuides("");
-            }
-            filterByKeyword("");
-        };
+            filterGuides(cleanKey);
 
-        window.focusSearch = function () {
-            if (searchInput) {
-                searchInput.focus();
+            // Jika memilih modul spesifik, scroll ke area modul
+            if (cleanKey !== "") {
+                const container = document.getElementById("guides-container");
+                if (container) {
+                    const topPos = container.getBoundingClientRect().top + window.pageYOffset - 90;
+                    window.scrollTo({ top: topPos, behavior: 'smooth' });
+                }
             }
         };
 

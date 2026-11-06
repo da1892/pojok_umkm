@@ -24,7 +24,11 @@
                                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto 14px auto;">
                                     <tr>
                                         <td align="center">
-                                            <img src="{{ $message->embed(public_path('images/logo-wonogiri.png')) }}" alt="Logo Wonogiri" width="60" height="auto" style="display: block; max-width: 60px; height: auto; border: 0; outline: none; text-decoration: none;">
+                                            @if(isset($message))
+                                                <img src="{{ $message->embed(public_path('images/logo-wonogiri.png')) }}" alt="Logo Wonogiri" width="60" height="auto" style="display: block; max-width: 60px; height: auto; border: 0; outline: none; text-decoration: none;">
+                                            @else
+                                                <img src="{{ asset('images/logo-wonogiri.png') }}" alt="Logo Wonogiri" width="60" height="auto" style="display: block; max-width: 60px; height: auto; border: 0; outline: none; text-decoration: none;">
+                                            @endif
                                         </td>
                                     </tr>
                                 </table>

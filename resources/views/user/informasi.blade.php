@@ -17,7 +17,7 @@
                         Berita & Kegiatan UMKM Wonogiri
                     </h1>
                     <p class="text-red-100 text-[11px] sm:text-sm md:text-base leading-relaxed max-w-xl">
-                        Update terpercaya mengenai program bimbingan teknis, fasilitasi perizinan, sertifikasi halal gratis, dan festival produk UMKM di Kabupaten Wonogiri.
+                        Informasi terkini mengenai agenda pelatihan, fasilitasi perizinan, pameran produk, dan program pembinaan UMKM di Kabupaten Wonogiri.
                     </p>
                 </div>
                 
@@ -36,8 +36,9 @@
                                    name="q" 
                                    value="{{ request('q') }}" 
                                    autocomplete="off"
-                                   placeholder="Ketik kata kunci atau tanggal (cth: 31 Oktober 2026)..." 
-                                   class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 pl-9 sm:pl-10 pr-16 sm:pr-20 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/25 focus:ring-4 focus:ring-white/20 text-xs sm:text-sm transition-all shadow-xs">
+                                   placeholder="Cari berita atau agenda kegiatan... (contoh: pelatihan, kurasi, pameran)" 
+                                   class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 pl-11 pr-16 sm:pr-20 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/25 focus:ring-4 focus:ring-white/20 text-xs sm:text-sm transition-all shadow-xs"
+                                   style="padding-left: 2.75rem !important;">
                             
                             <!-- Spinner Loading saat Auto-Filter Memuat -->
                             <div id="news-search-spinner" class="hidden absolute inset-y-0 right-12 sm:right-14 pr-1 flex items-center pointer-events-none text-white">
@@ -143,7 +144,7 @@
 
                     <!-- Footer Kartu -->
                     <div class="px-2.5 pb-2.5 sm:px-5 sm:pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-[9.5px] sm:text-xs">
-                        <span class="text-slate-400 font-medium truncate max-w-[65px] sm:max-w-none">Admin</span>
+                        <span class="text-slate-400 font-medium truncate max-w-[65px] sm:max-w-none">Diskominfo Wonogiri</span>
                         <a href="{{ route('informasi.show', $item->id) }}" class="font-bold text-[#800000] hover:text-red-900 inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">
                             <span>Baca</span>
                             <span class="hidden sm:inline">Lengkap</span>
@@ -158,13 +159,13 @@
                 <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"></path></svg>
                 </div>
-                <h3 class="font-bold text-slate-700 text-base">Tidak ada informasi yang sesuai</h3>
-                <p class="text-xs text-slate-400 mt-1">Coba gunakan kata kunci lain atau tanggal yang berbeda.</p>
+                <h3 class="font-bold text-slate-700 text-base">Belum ada berita yang cocok</h3>
+                <p class="text-xs text-slate-400 mt-1">Coba ubah kata kunci, atau klik tombol di bawah untuk lihat semua berita.</p>
                 <div class="mt-4">
                     <button type="button" 
                             onclick="clearNewsSearch()" 
                             class="inline-flex items-center gap-1.5 px-4 py-2 bg-[#800000] text-white text-xs font-bold rounded-xl shadow-xs hover:bg-red-900 transition-colors cursor-pointer">
-                        Tampilkan Semua Berita
+                        Lihat Semua Berita
                     </button>
                 </div>
             </div>

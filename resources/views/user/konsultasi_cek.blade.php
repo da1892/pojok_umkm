@@ -6,11 +6,18 @@
         
         <div class="text-center mb-10 reveal">
             <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Cek Status Konsultasi</h1>
-            <p class="text-slate-600">Masukkan ID Tiket (UUID) Anda untuk melihat riwayat pertanyaan dan jawaban dari Admin Dinas Perdagangan Wonogiri.</p>
+            <p class="text-slate-600">Masukkan ID Tiket (UUID) Anda untuk melihat riwayat tanya-jawab dan jawaban resmi dari Admin Dinas Perdagangan Wonogiri.</p>
         </div>
 
         <!-- Search Card -->
         <div class="bg-white rounded-[24px] p-6 sm:p-8 shadow-sm border border-slate-100 mb-8 reveal delay-100">
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl font-medium text-sm text-center flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
             @if(session('error'))
                 <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl font-medium text-sm text-center">
                     {{ session('error') }}
@@ -96,131 +103,191 @@
                 </div>
 
                 <div class="p-6 md:p-8 space-y-6">
-                    <!-- User Question -->
-                    <div>
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
-                                {{ substr($consultation->name, 0, 1) }}
-                            </div>
-                            <div>
-                                <p class="font-bold text-slate-900">{{ $consultation->name }}</p>
-                                <p class="text-xs text-slate-500">{{ $consultation->created_at->format('d M Y, H:i') }} • Topik: {{ $consultation->subject }}</p>
-                            </div>
-                        </div>
-                        <div class="bg-slate-50 p-5 rounded-2xl text-slate-700 text-sm leading-relaxed border border-slate-100 ml-0 sm:ml-13">
-                            {{ $consultation->message }}
-                            
-                            @if(!empty($consultation->attachments_list))
-                                <div class="mt-4 pt-4 border-t border-slate-200">
-                                    <p class="text-xs font-semibold text-slate-500 mb-2.5">Lampiran Berkas ({{ count($consultation->attachments_list) }}):</p>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                                        @foreach($consultation->attachments_list as $attachItem)
-                                            @php
-                                                $extension = is_object($attachItem) ? $attachItem->extension : pathinfo((string)$attachItem, PATHINFO_EXTENSION);
-                                                $isImage = is_object($attachItem) ? $attachItem->is_image : in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
-                                                $attachFileExists = is_object($attachItem) ? $attachItem->exists : (file_exists(public_path('storage/' . $attachItem)) || \Illuminate\Support\Facades\Storage::disk('public')->exists((string)$attachItem));
-                                                $attachSrc = is_object($attachItem) ? $attachItem->view_url : asset('storage/' . $attachItem);
-                                                $attachName = is_object($attachItem) ? $attachItem->name : basename((string)$attachItem);
-                                            @endphp
-                                            @if(!$attachFileExists)
-                                                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 flex items-center gap-2.5 text-xs text-amber-800">
-                                                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                                                    <div class="overflow-hidden">
-                                                        <span class="font-semibold block truncate">File belum tersinkron</span>
-                                                        <span class="text-[10px] text-amber-700 font-mono truncate block">{{ $attachName }}</span>
-                                                    </div>
-                                                </div>
-                                            @elseif($isImage)
-                                                <div class="space-y-1.5 bg-white p-2.5 rounded-xl border border-slate-200">
-                                                    <a href="{{ $attachSrc }}" target="_blank" class="block group overflow-hidden rounded-lg">
-                                                        <img src="{{ $attachSrc }}" alt="Lampiran" class="w-full h-36 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-all">
-                                                    </a>
-                                                    <a href="{{ $attachSrc }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-[#800000] font-semibold hover:underline">
-                                                        <span>Lihat Gambar Penuh</span>
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
-                                                    <div class="flex items-center gap-2 overflow-hidden">
-                                                        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                                        <span class="text-xs font-semibold text-slate-700 truncate">{{ $attachName }} ({{ strtoupper($extension) }})</span>
-                                                    </div>
-                                                    <a href="{{ $attachSrc }}" target="_blank" download="{{ $attachName }}" class="shrink-0 text-xs text-[#800000] font-bold hover:underline ml-2">
-                                                        Unduh &rarr;
-                                                    </a>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+                    <!-- Thread Percakapan (Saling Jawab) -->
+                    <div class="space-y-6">
+                        @php
+                            $hasAdminReply = false;
+                        @endphp
 
-                    <!-- Admin Response -->
-                    <div class="pt-2">
-                        @if($consultation->response)
-                            @if($consultation->status == 'ditolak')
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    </div>
-                                    <div>
-                                        <p class="font-bold text-red-900">Alasan Penolakan oleh Admin Dinas Perdagangan & KUKM</p>
-                                        <p class="text-xs text-red-600">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
-                                    </div>
-                                </div>
-                                <div class="bg-red-50 p-5 rounded-2xl text-red-950 text-sm leading-relaxed border-2 border-red-200 ml-0 sm:ml-13 shadow-xs">
-                                    <div class="flex items-start gap-2.5">
-                                        <div class="flex-1">
-                                            <p class="font-bold text-red-900 text-xs uppercase tracking-wider mb-1">Catatan / Alasan Penolakan:</p>
-                                            <div class="text-sm font-medium">{!! nl2br(e($consultation->response)) !!}</div>
+                        @foreach($consultation->thread_messages as $msg)
+                            @if($msg->sender_type == 'user')
+                                <!-- Pesan Pengguna (Pemohon) -->
+                                <div class="reveal">
+                                    <div class="flex items-center gap-3 mb-2.5">
+                                        <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-sm shadow-2xs shrink-0">
+                                            {{ substr($msg->sender_name ?: $consultation->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <p class="font-bold text-slate-900 text-sm sm:text-base">{{ $msg->sender_name ?: $consultation->name }}</p>
+                                                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Pemohon</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 font-mono">
+                                                {{ $msg->created_at ? $msg->created_at->format('d M Y, H:i') : '' }} WIB
+                                                @if($loop->first)
+                                                    &bull; Topik: <span class="font-semibold text-slate-700">{{ $consultation->subject }}</span>
+                                                @endif
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
-                            @elseif($consultation->status == 'diterima')
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    
+                                    <div class="bg-slate-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border border-slate-200 ml-0 sm:ml-13 shadow-2xs">
+                                        <div class="whitespace-pre-line">{{ $msg->message }}</div>
+                                        
+                                        @if(!empty($msg->attachments_list))
+                                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                                <p class="text-xs font-semibold text-slate-500 mb-2.5">Lampiran Berkas ({{ count($msg->attachments_list) }}):</p>
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                                    @foreach($msg->attachments_list as $attachItem)
+                                                        @php
+                                                            $extension = is_object($attachItem) ? $attachItem->extension : pathinfo((string)$attachItem, PATHINFO_EXTENSION);
+                                                            $isImage = is_object($attachItem) ? $attachItem->is_image : in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+                                                            $attachFileExists = is_object($attachItem) ? $attachItem->exists : (file_exists(public_path('storage/' . $attachItem)) || \Illuminate\Support\Facades\Storage::disk('public')->exists((string)$attachItem));
+                                                            $attachSrc = is_object($attachItem) ? $attachItem->view_url : asset('storage/' . $attachItem);
+                                                            $attachName = is_object($attachItem) ? $attachItem->name : basename((string)$attachItem);
+                                                        @endphp
+                                                        @if(!$attachFileExists)
+                                                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 flex items-center gap-2.5 text-xs text-amber-800">
+                                                                <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                                <div class="overflow-hidden">
+                                                                    <span class="font-semibold block truncate">File belum tersinkron</span>
+                                                                    <span class="text-[10px] text-amber-700 font-mono truncate block">{{ $attachName }}</span>
+                                                                </div>
+                                                            </div>
+                                                        @elseif($isImage)
+                                                            <div class="space-y-1.5 bg-white p-2.5 rounded-xl border border-slate-200">
+                                                                <a href="{{ $attachSrc }}" target="_blank" class="block group overflow-hidden rounded-lg">
+                                                                    <img src="{{ $attachSrc }}" alt="Lampiran" class="w-full h-36 object-cover rounded-lg border border-slate-100 group-hover:scale-105 transition-all">
+                                                                </a>
+                                                                <a href="{{ $attachSrc }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-[#800000] font-semibold hover:underline">
+                                                                    <span>Lihat Gambar Penuh</span>
+                                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                </a>
+                                                            </div>
+                                                        @else
+                                                            <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
+                                                                <div class="flex items-center gap-2 overflow-hidden">
+                                                                    <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                                                    <span class="text-xs font-semibold text-slate-700 truncate">{{ $attachName }} ({{ strtoupper($extension) }})</span>
+                                                                </div>
+                                                                <a href="{{ $attachSrc }}" target="_blank" download="{{ $attachName }}" class="shrink-0 text-xs text-[#800000] font-bold hover:underline ml-2">
+                                                                    Unduh &rarr;
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
-                                    <div>
-                                        <p class="font-bold text-emerald-900">Konfirmasi Penerimaan oleh Admin Dinas Perdagangan & KUKM</p>
-                                        <p class="text-xs text-emerald-600">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
-                                    </div>
-                                </div>
-                                <div class="bg-emerald-50 p-5 rounded-2xl text-emerald-950 text-sm leading-relaxed border-2 border-emerald-200 ml-0 sm:ml-13 shadow-xs">
-                                    <p class="font-bold text-emerald-900 text-xs uppercase tracking-wider mb-1">Komentar & Arahan Lanjut:</p>
-                                    <div class="text-sm font-medium">{!! nl2br(e($consultation->response)) !!}</div>
                                 </div>
                             @else
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="w-10 h-10 rounded-full bg-[#800000] flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                @php
+                                    $hasAdminReply = true;
+                                @endphp
+                                <!-- Balasan / Tanggapan Admin Dinas -->
+                                <div class="reveal">
+                                    <div class="flex items-center gap-3 mb-2.5">
+                                        <div class="w-10 h-10 rounded-full bg-[#800000] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <p class="font-bold text-slate-900 text-sm sm:text-base">{{ $msg->sender_name ?: 'Admin Dinas Perdagangan & KUKM' }}</p>
+                                                <span class="bg-red-100 text-[#800000] text-[10px] font-bold px-2 py-0.5 rounded-full border border-red-200">Admin Resmi</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 font-mono">{{ $msg->created_at ? $msg->created_at->format('d M Y, H:i') : '' }} WIB</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="font-bold text-slate-900">Tanggapan Resmi Admin Dinas Perdagangan & KUKM</p>
-                                        <p class="text-xs text-slate-500">{{ $consultation->updated_at->format('d M Y, H:i') }}</p>
+                                    
+                                    <div class="bg-gradient-to-r from-red-50/50 via-rose-50/30 to-slate-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border-2 border-red-100 ml-0 sm:ml-13 shadow-xs">
+                                        <div class="flex items-center gap-2 mb-2 text-[#800000] font-bold text-xs uppercase tracking-wider">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                                            <span>Tanggapan Admin:</span>
+                                        </div>
+                                        <div class="whitespace-pre-line text-slate-800 font-normal leading-relaxed">{!! nl2br(e($msg->message)) !!}</div>
                                     </div>
-                                </div>
-                                <div class="bg-slate-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border border-slate-200 ml-0 sm:ml-13 shadow-xs">
-                                    {!! nl2br(e($consultation->response)) !!}
                                 </div>
                             @endif
-                        @else
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 font-bold">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        @endforeach
+
+                        @if(!$hasAdminReply)
+                            <!-- Placeholder Jika Admin Belum Memberikan Tanggapan -->
+                            <div class="reveal">
+                                <div class="flex items-center gap-3 mb-2.5">
+                                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 font-bold shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-400">Admin</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="font-bold text-slate-400">Admin</p>
+                                <div class="bg-slate-50 p-5 rounded-2xl text-slate-400 text-sm italic border border-slate-100 ml-0 sm:ml-13 text-center">
+                                    Admin belum memberikan balasan untuk pertanyaan ini.
                                 </div>
-                            </div>
-                            <div class="bg-slate-50 p-5 rounded-2xl text-slate-400 text-sm italic border border-slate-100 ml-0 sm:ml-13 text-center">
-                                Admin belum memberikan balasan untuk pertanyaan ini.
                             </div>
                         @endif
                     </div>
+
+                    <!-- Area Balasan Saling Jawab (Turn Constraint) -->
+                    @if($consultation->canUserReply())
+                        <!-- Form Balas Aktif: Hanya muncul jika pertanyaan sudah dijawab admin -->
+                        <div class="mt-8 pt-8 border-t border-slate-200 reveal">
+                            <div class="bg-gradient-to-r from-red-50/70 via-rose-50/50 to-white border-2 border-red-200 rounded-2xl p-6 sm:p-7 shadow-xs">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-9 h-9 rounded-full bg-[#800000] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-base">Balas Tanggapan Admin</h4>
+                                        <p class="text-xs text-slate-500">Pertanyaan Anda telah dijawab oleh Admin. Anda dapat mengirimkan pertanyaan atau balasan lanjutan di bawah ini.</p>
+                                    </div>
+                                </div>
+
+                                <form action="{{ route('konsultasi.cek.balas', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                    @csrf
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Pesan / Tanggapan Balasan <span class="text-red-500">*</span></label>
+                                        <textarea name="message" rows="4" required placeholder="Tuliskan balasan atau pertanyaan lanjutan Anda untuk Admin Dinas di sini..." class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all resize-y"></textarea>
+                                        @error('message')
+                                            <p class="text-xs text-red-600 mt-1 font-medium">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Lampirkan Berkas Pendukung (Opsional, Maks. 3 file @ 5MB):</label>
+                                        <input type="file" name="attachments[]" multiple accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-[#800000] hover:file:bg-red-100 cursor-pointer border border-slate-200 rounded-xl bg-white p-1.5">
+                                        <p class="text-[11px] text-slate-400 mt-1">Format file didukung: JPG, PNG, WEBP, PDF, DOC, DOCX.</p>
+                                    </div>
+
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
+                                        <span class="text-[11.5px] text-slate-500 italic">
+                                            * Catatan: Anda baru dapat mengirim balasan berikutnya setelah Admin memberikan jawaban kembali.
+                                        </span>
+                                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-[#800000] hover:bg-[#600000] text-white font-bold text-sm rounded-xl shadow-md transition-all active:scale-95 shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                            <span>Kirim Balasan</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <!-- Form Terkunci: Menunggu Tanggapan Admin -->
+                        <div class="mt-8 pt-6 border-t border-slate-200 reveal">
+                            <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-center gap-3.5 text-center sm:text-left shadow-2xs">
+                                <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
+                                    <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold uppercase tracking-wider text-amber-900">Menunggu Tanggapan Admin Dinas</h5>
+                                    <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
+                                        Pertanyaan terakhir Anda sedang ditinjau oleh Admin Dinas Perdagangan & KUKM Wonogiri. Tombol balas akan otomatis terbuka kembali setelah Admin memberikan tanggapan untuk pertanyaan Anda.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
             @endforeach
@@ -351,20 +418,24 @@
         @endif
 
         @if(session('success'))
+            var successMessage = {!! json_encode(session('success')) !!};
+            var isReply = successMessage.toLowerCase().includes('balasan');
             Swal.fire({
                 icon: 'success',
-                title: 'Konsultasi Berhasil Dikirim!',
+                title: isReply ? 'Balasan Terkirim!' : 'Konsultasi Berhasil Dikirim!',
                 html: `
                     <p class="text-sm text-slate-600 mb-4">{!! session('success') !!}</p>
                     <div class="bg-red-50 border border-red-200 rounded-xl p-3.5 mb-3 text-center">
                         <span class="text-xs font-bold text-red-700 uppercase tracking-wider block mb-1">ID Tiket (UUID) Anda</span>
                         <span class="font-mono font-black text-[#800000] text-sm sm:text-base select-all break-all">{{ $ticketId ?? session('ticket_id') }}</span>
                     </div>
+                    @if(session('auto_copy'))
                     <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 mb-2">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                         <span>ID Tiket telah otomatis tersalin ke clipboard</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2">URL di address bar browser Anda saat ini telah memuat ID Tiket tersebut. Simpan atau bookmark URL ini untuk melihat riwayat konsultasi.</p>
+                    @endif
+                    <p class="text-xs text-slate-500 mt-2">Simpan atau bookmark tautan ini untuk terus memantau tanggapan dan perkembangan konsultasi Anda.</p>
                 `,
                 confirmButtonColor: '#800000',
                 confirmButtonText: 'Tutup & Mengerti',

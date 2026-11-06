@@ -33,11 +33,12 @@
         <table class="w-full text-left text-sm">
             <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
                 <tr>
-                    <th class="px-6 py-4 w-1/4">Nama UMKM</th>
-                    <th class="px-6 py-4 w-40 whitespace-nowrap">No HP / WhatsApp</th>
-                    <th class="px-6 py-4 w-1/6 whitespace-nowrap">Pemilik</th>
-                    <th class="px-6 py-4 w-1/5 whitespace-nowrap">Wilayah (Kecamatan & Desa)</th>
-                    <th class="px-6 py-4 w-28 whitespace-nowrap">Status</th>
+                    <th class="px-6 py-4">Nama UMKM</th>
+                    <th class="px-6 py-4 whitespace-nowrap">No HP / WhatsApp</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Pemilik</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Gender</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Wilayah (Kecamatan & Desa)</th>
+                    <th class="px-6 py-4 whitespace-nowrap">Status</th>
                     <th class="px-6 py-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
@@ -54,10 +55,10 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
-                        <div>{{ $umkm->owner_name }}</div>
-                        @if($umkm->gender)
-                            <span class="text-[11px] text-slate-400 font-normal">({{ $umkm->gender }})</span>
-                        @endif
+                        {{ $umkm->owner_name }}
+                    </td>
+                    <td class="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+                        {{ $umkm->gender ?: '-' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="font-medium text-slate-800">{{ $umkm->district ?? '-' }}</div>
@@ -88,27 +89,48 @@
                             @endif
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <div class="flex items-center justify-center gap-3">
-                            <a href="{{ route('admin.umkm.show', $umkm->id) }}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Lihat Detail</a>
-                            <a href="{{ route('admin.umkm.edit', $umkm->id) }}" class="text-[#800000] hover:text-red-700 font-medium text-sm">Edit</a>
-                            <form action="{{ route('admin.umkm.destroy', $umkm->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus UMKM ini beserta seluruh produknya?');" class="inline">
+                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                        <div class="flex items-center justify-center gap-2">
+                            <!-- Lihat Detail -->
+                            <a href="{{ route('admin.umkm.show', $umkm->id) }}" 
+                               data-tooltip="Lihat Detail" 
+                               title="Lihat Detail"
+                               class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs">
+                                <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </a>
+
+                            <!-- Edit -->
+                            <a href="{{ route('admin.umkm.edit', $umkm->id) }}" 
+                               data-tooltip="Edit UMKM" 
+                               title="Edit UMKM"
+                               class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-600 hover:text-white border border-amber-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs">
+                                <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            </a>
+
+                            <!-- Hapus -->
+                            <button type="button" 
+                                    onclick="confirmDeleteUmkm('{{ $umkm->id }}', '{{ addslashes($umkm->business_name) }}')" 
+                                    data-tooltip="Hapus UMKM" 
+                                    title="Hapus UMKM"
+                                    class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs">
+                                <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                            <form id="delete-umkm-form-{{ $umkm->id }}" action="{{ route('admin.umkm.destroy', $umkm->id) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-sm">Hapus</button>
                             </form>
                         </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">
                         Belum ada UMKM yang terdaftar.
                     </td>
                 </tr>
                 @endforelse
                 <tr id="no-match-row" class="hidden">
-                    <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+                    <td colspan="7" class="px-6 py-8 text-center text-slate-500">
                         Tidak ada UMKM yang sesuai dengan kata kunci pencarian.
                     </td>
                 </tr>

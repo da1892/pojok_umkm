@@ -53,9 +53,9 @@
                                         <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                         Detail
                                     </button>
-                                    <form action="{{ route('admin.umkm.verify', $umkm->id) }}" method="POST" class="inline">
+                                    <form id="verify-umkm-form-{{ $umkm->id }}" action="{{ route('admin.umkm.verify', $umkm->id) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 rounded-md transition-colors" title="Setujui Langsung">
+                                        <button type="button" onclick="confirmVerifyUmkm('verify-umkm-form-{{ $umkm->id }}', '{{ addslashes($umkm->business_name) }}')" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 rounded-md transition-colors" title="Setujui Langsung">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                         </button>
                                     </form>
@@ -125,15 +125,15 @@
                                         <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                         Detail
                                     </button>
-                                    <form action="{{ route('admin.product.verify', $product->id) }}" method="POST" class="inline">
+                                    <form id="verify-product-form-{{ $product->id }}" action="{{ route('admin.product.verify', $product->id) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 rounded-md transition-colors" title="Setujui Langsung">
+                                        <button type="button" onclick="confirmVerifyProduct('verify-product-form-{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ addslashes($product->umkmProfile->business_name ?? '') }}')" class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 rounded-md transition-colors" title="Setujui Langsung">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                         </button>
                                     </form>
-                                    <form action="{{ route('admin.product.reject', $product->id) }}" method="POST" class="inline" onsubmit="return confirm('Tolak produk ini?');">
+                                    <form id="reject-product-form-{{ $product->id }}" action="{{ route('admin.product.reject', $product->id) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-md transition-colors" title="Tolak Langsung">
+                                        <button type="button" onclick="confirmRejectProduct('reject-product-form-{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ addslashes($product->umkmProfile->business_name ?? '') }}')" class="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-md transition-colors" title="Tolak Langsung">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                         </button>
                                     </form>
@@ -262,9 +262,9 @@
                 <button type="button" onclick="openRejectUmkmModal('{{ route('admin.umkm.reject', $umkm->id) }}', '{{ addslashes($umkm->business_name) }}')" class="px-4 py-2 text-xs font-bold rounded-lg bg-white border border-red-300 text-red-600 hover:bg-red-50 transition-colors shadow-sm">
                     Tolak Pengajuan
                 </button>
-                <form action="{{ route('admin.umkm.verify', $umkm->id) }}" method="POST">
+                <form id="modal-verify-umkm-form-{{ $umkm->id }}" action="{{ route('admin.umkm.verify', $umkm->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm flex items-center gap-1.5">
+                    <button type="button" onclick="confirmVerifyUmkm('modal-verify-umkm-form-{{ $umkm->id }}', '{{ addslashes($umkm->business_name) }}')" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                         Setujui & Verifikasi
                     </button>
@@ -364,15 +364,15 @@
                 Tutup
             </button>
             <div class="flex items-center gap-2">
-                <form action="{{ route('admin.product.reject', $product->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menolak produk ini?');">
+                <form id="modal-reject-product-form-{{ $product->id }}" action="{{ route('admin.product.reject', $product->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="px-4 py-2 text-xs font-bold rounded-lg bg-white border border-red-300 text-red-600 hover:bg-red-50 transition-colors shadow-sm">
+                    <button type="button" onclick="confirmRejectProduct('modal-reject-product-form-{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ addslashes($product->umkmProfile->business_name ?? '') }}')" class="px-4 py-2 text-xs font-bold rounded-lg bg-white border border-red-300 text-red-600 hover:bg-red-50 transition-colors shadow-sm">
                         Tolak Produk
                     </button>
                 </form>
-                <form action="{{ route('admin.product.verify', $product->id) }}" method="POST">
+                <form id="modal-verify-product-form-{{ $product->id }}" action="{{ route('admin.product.verify', $product->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm flex items-center gap-1.5">
+                    <button type="button" onclick="confirmVerifyProduct('modal-verify-product-form-{{ $product->id }}', '{{ addslashes($product->name) }}', '{{ addslashes($product->umkmProfile->business_name ?? '') }}')" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                         Setujui Produk
                     </button>

@@ -94,9 +94,9 @@
                                 <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 Buka Formulir Edit Data
                             </button>
-                            <form action="{{ route('toko.resubmit') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin data UMKM sudah siap diajukan ulang ke Admin?');">
+                            <form id="resubmit-profile-form" action="{{ route('toko.resubmit') }}" method="POST" class="inline">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-[#800000] hover:from-red-700 hover:to-red-900 text-white font-bold rounded-xl text-xs transition-all shadow-sm shadow-red-500/20 active:scale-98 cursor-pointer">
+                                <button type="button" onclick="confirmResubmitStore('resubmit-profile-form')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-[#800000] hover:from-red-700 hover:to-red-900 text-white font-bold rounded-xl text-xs transition-all shadow-sm shadow-red-500/20 active:scale-98 cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                     Ajukan Verifikasi Ulang Sekarang &rarr;
                                 </button>
@@ -526,11 +526,11 @@
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">
                                 Pencarian Cepat Wilayah <span class="font-normal text-slate-500">(Ketik nama Desa atau Kecamatan):</span>
                             </label>
-                            <div class="relative">
+                            <div class="relative z-30">
                                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 </div>
-                                <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Ngadirojo, Selogiri...)" class="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
+                                <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Ngadirojo, Selogiri...)" class="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" style="padding-left: 2.75rem !important;">
                                 <div id="search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-200 z-50 divide-y divide-slate-100"></div>
                             </div>
                         </div>
@@ -593,8 +593,8 @@
                                     <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                     Tautan Titik Lokasi Google Maps <span class="text-slate-400 font-normal">(Agar pembeli tahu letak lokasi UMKM Anda)</span>
                                 </span>
-                                <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" class="text-[11px] text-red-700 font-bold hover:underline flex items-center gap-1">
-                                    Tes Buka di Google Maps &rarr;
+                                <a href="{{ $umkm->google_maps_directions_url }}" target="_blank" onclick="openCurrentMapLink(event, this)" class="text-[11px] text-red-700 font-bold hover:underline flex items-center gap-1">
+                                    Buka Google Maps &rarr;
                                 </a>
                             </label>
                             <input type="url" name="map_link" value="{{ old('map_link', $umkm->map_link) }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
@@ -702,10 +702,10 @@
                         </div>
 
                         <div class="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-red-200/60">
-                            <form action="{{ route('toko.destroy') }}" method="POST" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin menghapus data UMKM ini? Seluruh data produk dan profil UMKM Anda akan dihapus secara permanen.');" class="inline">
+                            <form id="delete-store-form" action="{{ route('toko.destroy') }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center gap-1.5">
+                                <button type="button" onclick="confirmDeleteStore('delete-store-form')" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer flex items-center gap-1.5">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     Hapus Data UMKM
                                 </button>
@@ -1074,6 +1074,14 @@
             }
         });
     })();
+
+    function openCurrentMapLink(e, el) {
+        const input = document.querySelector('input[name="map_link"]');
+        if (input && input.value.trim() && (input.value.trim().startsWith('http://') || input.value.trim().startsWith('https://'))) {
+            e.preventDefault();
+            window.open(input.value.trim(), '_blank');
+        }
+    }
 </script>
 @endsection
 

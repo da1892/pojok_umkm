@@ -22,7 +22,10 @@ select,
 textarea {
     border: 2px solid #cbd5e1 !important;
     background-color: #ffffff !important;
-    padding: 0.75rem 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     font-size: 0.875rem !important;
     line-height: 1.25rem !important;
     border-radius: 0.75rem !important;
@@ -31,9 +34,57 @@ textarea {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Dukungan padding ikon kiri agar teks input tidak pernah bertabrakan dengan ikon */
+input[class*="pl-12"],
+select[class*="pl-12"] {
+    padding-left: 3rem !important;
+}
+
+input[class*="pl-11"],
+select[class*="pl-11"],
 .search-input-padding {
     padding-left: 2.75rem !important;
+}
+
+input[class*="pl-10"],
+select[class*="pl-10"] {
+    padding-left: 2.625rem !important;
+}
+
+input[class*="pl-9"],
+select[class*="pl-9"] {
+    padding-left: 2.35rem !important;
+}
+
+input[class*="pl-8"],
+select[class*="pl-8"] {
+    padding-left: 2.15rem !important;
+}
+
+/* Dukungan padding ikon kanan agar teks tidak bertabrakan dengan tombol toggle/spinner */
+input[class*="pr-12"],
+select[class*="pr-12"] {
+    padding-right: 3rem !important;
+}
+
+input[class*="pr-11"],
+select[class*="pr-11"] {
+    padding-right: 2.75rem !important;
+}
+
+input[class*="pr-10"],
+select[class*="pr-10"] {
     padding-right: 2.5rem !important;
+}
+
+input[class*="pr-9"],
+select[class*="pr-9"] {
+    padding-right: 2.25rem !important;
+}
+
+input[class*="pr-8"],
+select[class*="pr-8"] {
+    padding-right: 2rem !important;
 }
 
 input[type="text"]:focus,
@@ -76,4 +127,16 @@ textarea:read-only {
 input::placeholder,
 textarea::placeholder {
     color: #94a3b8 !important;
+}
+
+/* Custom Dropdown & Popover Layering Protection (selalu mengapung di depan kartu/grid produk) */
+#cat-dropdown-panel,
+#dist-dropdown-panel,
+#dir-dist-panel,
+#map-dist-panel,
+#map-cat-panel,
+#districtDropdownMenu,
+#villageDropdownMenu,
+#search-results {
+    z-index: 1000 !important;
 }

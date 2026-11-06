@@ -14,6 +14,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         /* Custom animations & utilities */
@@ -41,11 +42,11 @@
         .reveal {
             opacity: 0;
             transform: translateY(40px);
-            transition: all 0.8s ease-out;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
         .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
         }
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
@@ -341,6 +342,150 @@
                 }, 200);
             }
         });
+
+        // Global User/Store SweetAlert Confirmation Functions
+        function confirmResubmitStore(formId) {
+            Swal.fire({
+                title: 'Ajukan Verifikasi Ulang?',
+                html: `Apakah Anda yakin data profil UMKM sudah diperbaiki dan siap diajukan ulang ke Admin?<br><span style="font-size: 12px; color: #64748b; margin-top: 8px; display: block;">Status UMKM akan dialihkan kembali menjadi <strong>Menunggu Persetujuan</strong> dari Dinas KUKM & Perdagangan.</span>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#800000',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Ajukan Ulang',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border border-slate-100 p-6',
+                    confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-sm shadow-sm',
+                    cancelButton: 'rounded-xl font-semibold px-6 py-2.5 text-sm shadow-sm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            });
+        }
+
+        function confirmDeleteStoreProduct(formId, productName) {
+            Swal.fire({
+                title: 'Hapus Produk?',
+                html: `Apakah Anda yakin ingin menghapus produk <strong>"${productName}"</strong>?<br><span style="font-size: 12px; color: #ef4444; margin-top: 8px; display: block;">Produk akan dihapus permanen dari etalase toko Anda.</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border border-slate-100 p-6',
+                    confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-sm shadow-sm',
+                    cancelButton: 'rounded-xl font-semibold px-6 py-2.5 text-sm shadow-sm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            });
+        }
+
+        function confirmDeleteStore(formId) {
+            Swal.fire({
+                title: 'PERINGATAN!',
+                html: `Apakah Anda yakin ingin menghapus data UMKM ini?<br><span style="font-size: 12px; color: #ef4444; margin-top: 8px; display: block;">Seluruh data produk dan profil UMKM Anda akan dihapus secara permanen.</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Hapus Permanen',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border border-slate-100 p-6',
+                    confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-sm shadow-sm',
+                    cancelButton: 'rounded-xl font-semibold px-6 py-2.5 text-sm shadow-sm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            });
+        }
+    </script>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawMsg = {!! json_encode(session('success')) !!};
+            const lowerMsg = (rawMsg || '').toLowerCase();
+            
+            const isRejected = lowerMsg.includes('tolak') || lowerMsg.includes('ditolak');
+
+            if (isRejected) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pemberitahuan',
+                    html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">${rawMsg}</div>`,
+                    confirmButtonColor: '#dc2626',
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl border-2 border-red-100 p-6',
+                        title: 'text-red-600 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-red-600 hover:bg-red-700 text-white'
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">${rawMsg}</div>`,
+                    confirmButtonColor: '#059669',
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl border-2 border-emerald-100 p-6',
+                        title: 'text-emerald-700 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-emerald-600 hover:bg-emerald-700 text-white'
+                    }
+                });
+            }
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+                html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">{!! json_encode(session('error')) !!}</div>`,
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'Oke',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: true,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border-2 border-red-100 p-6',
+                    title: 'text-red-600 font-bold text-xl mb-1',
+                    confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-red-600 hover:bg-red-700 text-white'
+                }
+            });
+        });
+    </script>
+    @endif
     </script>
     @stack('scripts')
 <!--  --></body>

@@ -6,6 +6,7 @@
     <title>@yield('title', 'Admin Dashboard - Pojok UMKM Wonogiri')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -36,9 +37,22 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
-                    <svg class="w-5 h-5 {{ request()->routeIs('dashboard') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                    Dashboard
+                @php
+                    $unansweredConsultationsCount = \App\Models\Consultation::where('status', 'menunggu')->count();
+                    $pendingUmkmCount = \App\Models\User\UmkmProfile::where('status', 'pending')->count();
+                    $pendingProductsCount = \App\Models\User\Product::where('status', 'pending')->count();
+                    $pendingVerificationsCount = $pendingUmkmCount + $pendingProductsCount;
+                @endphp
+                <a href="{{ route('dashboard') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 {{ request()->routeIs('dashboard') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <span>Dashboard</span>
+                    </div>
+                    @if($pendingVerificationsCount > 0)
+                        <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-black rounded-full bg-amber-400 text-slate-900 shadow-xs animate-pulse" title="{{ $pendingVerificationsCount }} data baru menunggu verifikasi ({{ $pendingUmkmCount }} Profil UMKM, {{ $pendingProductsCount }} Produk)">
+                            {{ $pendingVerificationsCount }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('admin.products') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.products*') || request()->routeIs('admin.product.*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.products*') || request()->routeIs('admin.product.*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -48,13 +62,27 @@
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.stores*') || request()->routeIs('admin.umkm.*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                     Data UMKM
                 </a>
-                <a href="{{ route('admin.consultations') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.consultations*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.consultations*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    Kelola Konsultasi
+                <a href="{{ route('admin.consultations') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.consultations*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 {{ request()->routeIs('admin.consultations*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        <span>Kelola Konsultasi</span>
+                    </div>
+                    @if($unansweredConsultationsCount > 0)
+                        <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-black rounded-full bg-amber-400 text-slate-900 shadow-xs animate-pulse" title="{{ $unansweredConsultationsCount }} pesan konsultasi belum dijawab">
+                            {{ $unansweredConsultationsCount }}
+                        </span>
+                    @endif
                 </a>
-                <a href="{{ route('admin.verifications') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.verifications*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.verifications*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Verifikasi Data
+                <a href="{{ route('admin.verifications') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.verifications*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 {{ request()->routeIs('admin.verifications*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Verifikasi Data</span>
+                    </div>
+                    @if($pendingVerificationsCount > 0)
+                        <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-black rounded-full bg-amber-400 text-slate-900 shadow-xs animate-pulse" title="{{ $pendingVerificationsCount }} data baru menunggu verifikasi ({{ $pendingUmkmCount }} Profil UMKM, {{ $pendingProductsCount }} Produk)">
+                            {{ $pendingVerificationsCount }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('admin.news') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.news*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.news*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"></path></svg>
@@ -171,7 +199,445 @@
             if(sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
             if(sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
         });
+
+        // Global SweetAlert Confirmation Functions
+        function confirmVerifyUmkm(formId, umkmName) {
+            Swal.fire({
+                title: 'Setujui Profil UMKM?',
+                html: `
+                    <div class="mt-2 text-center">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2.5 shadow-2xs">
+                            PROFIL TOKO UMKM
+                        </div>
+                        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Nama Toko UMKM</p>
+                            <p class="text-base font-black text-slate-900 break-words leading-snug">"${umkmName}"</p>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+                            Apakah Anda yakin ingin menyetujui pendaftaran profil UMKM ini?<br>Toko akan langsung aktif dan terdaftar resmi di sistem Pojok UMKM.
+                        </p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#059669',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Setujui Toko',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border border-slate-100 p-6',
+                    title: 'text-slate-800 font-black text-lg mb-0',
+                    confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-xs shadow-md bg-emerald-600 hover:bg-emerald-700 text-white',
+                    cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            });
+        }
+
+        function confirmVerifyProduct(formId, productName, umkmName = '') {
+            const umkmInfo = umkmName ? `
+                <div class="mt-1.5 flex items-center justify-center gap-1.5 text-xs text-slate-500">
+                    <span>Milik Toko UMKM:</span>
+                    <strong class="text-slate-800 font-bold">${umkmName}</strong>
+                </div>` : '';
+
+            Swal.fire({
+                title: 'Setujui Produk Baru?',
+                html: `
+                    <div class="mt-2 text-center">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider mb-2.5 shadow-2xs">
+                            PRODUK UMKM
+                        </div>
+                        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Nama Produk</p>
+                            <p class="text-base font-black text-slate-900 break-words leading-snug">"${productName}"</p>
+                            ${umkmInfo}
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+                            Apakah Anda yakin ingin menyetujui produk ini?<br>Produk akan langsung tayang dan dapat dilihat publik di katalog.
+                        </p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#059669',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Setujui Produk',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border border-slate-100 p-6',
+                    title: 'text-slate-800 font-black text-lg mb-0',
+                    confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-xs shadow-md bg-emerald-600 hover:bg-emerald-700 text-white',
+                    cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            });
+        }
+
+        function confirmRejectProduct(formId, productName, umkmName = '') {
+            const umkmInfo = umkmName ? `
+                <div class="mt-1.5 flex items-center justify-center gap-1.5 text-xs text-red-600/80">
+                    <span>Milik Toko UMKM:</span>
+                    <strong class="text-red-950 font-bold">${umkmName}</strong>
+                </div>` : '';
+
+            Swal.fire({
+                title: 'Tolak Produk Ini?',
+                html: `
+                    <div class="mt-2 text-center">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-800 text-[11px] font-extrabold uppercase tracking-wider mb-2.5 shadow-2xs">
+                            PRODUK UMKM
+                        </div>
+                        <div class="p-3.5 bg-red-50/70 border border-red-200 rounded-2xl">
+                            <p class="text-[10px] font-bold text-red-400 uppercase tracking-wider mb-0.5">Nama Produk</p>
+                            <p class="text-base font-black text-red-950 break-words leading-snug">"${productName}"</p>
+                            ${umkmInfo}
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+                            Apakah Anda yakin ingin menolak produk ini?<br>Produk ini tidak akan ditampilkan pada katalog publik.
+                        </p>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Tolak Produk',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border border-red-100 p-6',
+                    title: 'text-red-600 font-black text-lg mb-0',
+                    confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-xs shadow-md bg-red-600 hover:bg-red-700 text-white',
+                    cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(formId);
+                    if (form) form.submit();
+                }
+            });
+        }
+        
+        function confirmDeleteUmkm(umkmId, umkmName) {
+            Swal.fire({
+                title: 'Hapus Data UMKM?',
+                html: `Apakah Anda yakin ingin menghapus data UMKM <strong>"${umkmName}"</strong>?<br><span class="text-xs text-red-500 mt-2 block font-medium">Peringatan: Seluruh produk dan informasi terkait UMKM ini akan dihapus secara permanen.</span>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'rounded-2xl shadow-2xl border border-slate-100',
+                    confirmButton: 'rounded-xl font-bold px-5 py-2.5 text-sm shadow-sm',
+                    cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-sm shadow-sm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('delete-umkm-form-' + umkmId);
+                    if (form) form.submit();
+                }
+            });
+        }
+        // Global Floating Tooltip System
+        (function() {
+            let tip = null;
+
+            function getOrCreateTooltip() {
+                if (!tip) {
+                    tip = document.createElement('div');
+                    tip.id = 'app-global-tooltip';
+                    tip.style.cssText = 'position:fixed; z-index:999999; pointer-events:none; background:#0f172a; color:#ffffff; font-size:11px; font-weight:600; padding:5px 10px; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.25); transition:opacity 0.15s ease, transform 0.15s ease; opacity:0; transform:scale(0.95); white-space:nowrap; letter-spacing:0.2px; font-family:Inter,sans-serif;';
+                    
+                    const arrow = document.createElement('div');
+                    arrow.id = 'app-global-tooltip-arrow';
+                    arrow.style.cssText = 'position:absolute; width:6px; height:6px; background:#0f172a; transform:rotate(45deg);';
+                    tip.appendChild(arrow);
+                    
+                    const textNode = document.createElement('span');
+                    textNode.id = 'app-global-tooltip-text';
+                    tip.appendChild(textNode);
+
+                    document.body.appendChild(tip);
+                }
+                return tip;
+            }
+
+            document.addEventListener('mouseover', function(e) {
+                const target = e.target.closest('[data-tooltip]');
+                if (!target) return;
+
+                const text = target.getAttribute('data-tooltip');
+                if (!text) return;
+
+                const tooltip = getOrCreateTooltip();
+                const textSpan = tooltip.querySelector('#app-global-tooltip-text');
+                const arrow = tooltip.querySelector('#app-global-tooltip-arrow');
+                if (textSpan) textSpan.textContent = text;
+
+                tooltip.style.opacity = '0';
+                tooltip.style.display = 'block';
+
+                const targetRect = target.getBoundingClientRect();
+                const tipRect = tooltip.getBoundingClientRect();
+
+                let top = targetRect.top - tipRect.height - 8;
+                let isAbove = true;
+
+                if (top < 10) {
+                    top = targetRect.bottom + 8;
+                    isAbove = false;
+                }
+
+                let left = targetRect.left + (targetRect.width - tipRect.width) / 2;
+                if (left < 8) left = 8;
+                if (left + tipRect.width > window.innerWidth - 8) {
+                    left = window.innerWidth - tipRect.width - 8;
+                }
+
+                if (arrow) {
+                    arrow.style.left = 'calc(50% - 3px)';
+                    if (isAbove) {
+                        arrow.style.top = 'auto';
+                        arrow.style.bottom = '-3px';
+                    } else {
+                        arrow.style.bottom = 'auto';
+                        arrow.style.top = '-3px';
+                    }
+                }
+
+                tooltip.style.top = top + 'px';
+                tooltip.style.left = left + 'px';
+                tooltip.style.opacity = '1';
+                tooltip.style.transform = 'scale(1)';
+            });
+
+            document.addEventListener('mouseout', function(e) {
+                const target = e.target.closest('[data-tooltip]');
+                if (!target) return;
+
+                if (tip) {
+                    tip.style.opacity = '0';
+                    tip.style.transform = 'scale(0.95)';
+                }
+            });
+        })();
     </script>
+
+    @if(session('success') || session('verified_item'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const verifiedItem = {!! json_encode(session('verified_item')) !!};
+            const rawMsg = {!! json_encode(session('success')) !!} || '';
+            const lowerMsg = (rawMsg || '').toLowerCase();
+            
+            // Tentukan status penolakan atau persetujuan
+            let isRejected = false;
+            if (verifiedItem && verifiedItem.action === 'rejected') {
+                isRejected = true;
+            } else if (lowerMsg.includes('tolak') || lowerMsg.includes('ditolak')) {
+                isRejected = true;
+            }
+
+            // A. Jika ada data verified_item terstruktur dari Controller
+            if (verifiedItem) {
+                const isProduct = verifiedItem.type === 'product';
+                const badgeLabel = isProduct ? 'PRODUK UMKM' : 'PROFIL TOKO UMKM';
+                const badgeBg = isRejected ? '#fee2e2' : '#dcfce7';
+                const badgeColor = isRejected ? '#991b1b' : '#166534';
+                const cardBg = isRejected ? '#fef2f2' : '#f0fdf4';
+                const cardBorder = isRejected ? '#fecaca' : '#bbf7d0';
+                const confirmBtnColor = isRejected ? '#dc2626' : '#059669';
+
+                const subInfo = isProduct 
+                    ? `<div style="display:inline-flex; align-items:center; gap:6px; margin-top:8px; padding:4px 12px; background:#ffffff; border:1px solid ${cardBorder}; border-radius:10px; font-size:12px; color:#475569;">
+                         <span style="color:#64748b;">Milik Toko UMKM:</span>
+                         <strong style="color:${isRejected ? '#991b1b' : '#166534'};">${verifiedItem.umkm_name || 'UMKM'}</strong>
+                       </div>`
+                    : (verifiedItem.owner ? `<div style="font-size:12px; color:#64748b; margin-top:6px;">Pemilik Usaha: <strong style="color:#1e293b;">${verifiedItem.owner}</strong></div>` : '');
+
+                const noteInfo = verifiedItem.note ? `
+                    <div style="margin-top:10px; text-align:left; background:#ffffff; border:1px dashed #f87171; border-radius:10px; padding:8px 12px; font-size:11px; color:#7f1d1d;">
+                        <strong>Catatan Alasan:</strong> ${verifiedItem.note}
+                    </div>` : '';
+
+                Swal.fire({
+                    icon: isRejected ? 'error' : 'success',
+                    title: isRejected ? 'Pengajuan Ditolak' : 'Berhasil Disetujui!',
+                    html: `
+                        <div style="text-align:center; padding: 4px 0;">
+                            <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 14px; border-radius:9999px; background:${badgeBg}; color:${badgeColor}; font-size:11px; font-weight:800; letter-spacing:0.5px; margin-bottom:12px;">
+                                ${badgeLabel}
+                            </div>
+                            <div style="background:${cardBg}; border:1.5px solid ${cardBorder}; border-radius:18px; padding:16px 18px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                                <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                                    ${isProduct ? (isRejected ? 'Nama Produk Ditolak' : 'Nama Produk Disetujui') : (isRejected ? 'Nama Toko UMKM Ditolak' : 'Nama Toko UMKM Disetujui')}
+                                </div>
+                                <div style="font-size:19px; font-weight:900; color:#0f172a; line-height:1.3; word-break:break-word;">
+                                    "${verifiedItem.name}"
+                                </div>
+                                ${subInfo}
+                                ${noteInfo}
+                            </div>
+                            <div style="font-size:13px; color:#64748b; margin-top:12px; line-height:1.5; font-weight:500;">
+                                ${verifiedItem.message || ''}
+                            </div>
+                        </div>
+                    `,
+                    confirmButtonColor: confirmBtnColor,
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl p-6 border-2 ' + (isRejected ? 'border-red-100' : 'border-emerald-100'),
+                        title: (isRejected ? 'text-red-600' : 'text-emerald-700') + ' font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md text-white'
+                    }
+                });
+                return;
+            }
+
+            // B. Fallback Regex Parsing jika verified_item tidak ada tapi ada rawMsg verifikasi
+            const isProduct = lowerMsg.includes('produk');
+            const isUmkm = lowerMsg.includes('profil umkm') || lowerMsg.includes('umkm');
+
+            if (isProduct || isUmkm) {
+                const nameMatch = rawMsg.match(/'([^']+)'/) || rawMsg.match(/"([^"]+)"/);
+                const itemName = nameMatch ? nameMatch[1] : (isProduct ? 'Produk UMKM' : 'Profil UMKM');
+                const umkmMatch = rawMsg.match(/\(UMKM:\s*([^)]+)\)/i);
+                const umkmDetail = umkmMatch ? umkmMatch[1] : '';
+
+                const badgeLabel = isProduct ? 'PRODUK UMKM' : 'PROFIL TOKO UMKM';
+                const badgeBg = isRejected ? '#fee2e2' : '#dcfce7';
+                const badgeColor = isRejected ? '#991b1b' : '#166534';
+                const cardBg = isRejected ? '#fef2f2' : '#f0fdf4';
+                const cardBorder = isRejected ? '#fecaca' : '#bbf7d0';
+                const confirmBtnColor = isRejected ? '#dc2626' : '#059669';
+
+                const subInfo = (isProduct && umkmDetail) 
+                    ? `<div style="display:inline-flex; align-items:center; gap:6px; margin-top:8px; padding:4px 12px; background:#ffffff; border:1px solid ${cardBorder}; border-radius:10px; font-size:12px; color:#475569;">
+                         <span style="color:#64748b;">Milik Toko UMKM:</span>
+                         <strong style="color:${isRejected ? '#991b1b' : '#166534'};">${umkmDetail}</strong>
+                       </div>`
+                    : '';
+
+                const actionDesc = isRejected
+                    ? (isProduct ? 'Produk telah ditolak dan tidak akan ditampilkan pada katalog produk UMKM.' : 'Pengajuan profil UMKM telah ditolak dengan catatan alasan perbaikan.')
+                    : (isProduct ? 'Produk berhasil diverifikasi dan langsung tayang pada katalog produk publik.' : 'Pendaftaran profil UMKM telah resmi disetujui & aktif di sistem.');
+
+                Swal.fire({
+                    icon: isRejected ? 'error' : 'success',
+                    title: isRejected ? 'Pengajuan Ditolak' : 'Berhasil Disetujui!',
+                    html: `
+                        <div style="text-align:center; padding: 4px 0;">
+                            <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 14px; border-radius:9999px; background:${badgeBg}; color:${badgeColor}; font-size:11px; font-weight:800; letter-spacing:0.5px; margin-bottom:12px;">
+                                ${badgeLabel}
+                            </div>
+                            <div style="background:${cardBg}; border:1.5px solid ${cardBorder}; border-radius:18px; padding:16px 18px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                                <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                                    ${isProduct ? (isRejected ? 'Nama Produk Ditolak' : 'Nama Produk Disetujui') : (isRejected ? 'Nama Toko UMKM Ditolak' : 'Nama Toko UMKM Disetujui')}
+                                </div>
+                                <div style="font-size:19px; font-weight:900; color:#0f172a; line-height:1.3; word-break:break-word;">
+                                    "${itemName}"
+                                </div>
+                                ${subInfo}
+                            </div>
+                            <div style="font-size:13px; color:#64748b; margin-top:12px; line-height:1.5; font-weight:500;">
+                                ${actionDesc}
+                            </div>
+                        </div>
+                    `,
+                    confirmButtonColor: confirmBtnColor,
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl p-6 border-2 ' + (isRejected ? 'border-red-100' : 'border-emerald-100'),
+                        title: (isRejected ? 'text-red-600' : 'text-emerald-700') + ' font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md text-white'
+                    }
+                });
+                return;
+            }
+
+            // C. Pesan Umum Sukses / Gagal Lainnya
+            if (isRejected) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pemberitahuan',
+                    html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">${rawMsg}</div>`,
+                    confirmButtonColor: '#dc2626',
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl border-2 border-red-100 p-6',
+                        title: 'text-red-600 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-red-600 hover:bg-red-700 text-white'
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">${rawMsg}</div>`,
+                    confirmButtonColor: '#059669',
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl border-2 border-emerald-100 p-6',
+                        title: 'text-emerald-700 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-emerald-600 hover:bg-emerald-700 text-white'
+                    }
+                });
+            }
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Pemberitahuan',
+                html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">{!! json_encode(session('error')) !!}</div>`,
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'Oke',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: true,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border-2 border-red-100 p-6',
+                    title: 'text-red-600 font-bold text-xl mb-1',
+                    confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-red-600 hover:bg-red-700 text-white'
+                }
+            });
+        });
+    </script>
+    @endif
     @stack('scripts')
 </body>
 </html>

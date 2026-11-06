@@ -581,6 +581,16 @@ class PublicController extends Controller
             'status' => 'menunggu',
         ]);
 
+        // Simpan pesan awal ke percakapan consultation_messages
+        \App\Models\ConsultationMessage::create([
+            'consultation_id' => $consultation->id,
+            'sender_type' => 'user',
+            'sender_name' => $consultation->name,
+            'user_id' => $consultation->user_id,
+            'message' => $consultation->message,
+            'attachment' => $storedAttachment,
+        ]);
+
         // Mengirimkan email konfirmasi HTML resmi berisi UUID ke pengguna
         try {
             \Illuminate\Support\Facades\Mail::to($consultation->email)
@@ -611,7 +621,8 @@ class PublicController extends Controller
         $consultations = collect();
 
         if (!empty($ticketId)) {
-            $consultations = \App\Models\Consultation::where('ticket_id', $ticketId)
+            $consultations = \App\Models\Consultation::with('messages')
+                                ->where('ticket_id', $ticketId)
                                 ->orderBy('created_at', 'desc')
                                 ->get();
             
@@ -622,5 +633,83 @@ class PublicController extends Controller
         }
 
         return view('user.konsultasi_cek', compact('consultations', 'ticketId'));
+    }
+
+    public function replyKonsultasiUser(Request $request, $ticket_id)
+    {
+        $consultation = \App\Models\Consultation::where('ticket_id', $ticket_id)->firstOrFail();
+
+        // Validasi aturan: Pengkonsultasi HANYA bisa menjawab jika pertanyaan pengkonsultasi sudah dijawab oleh admin
+        if (!$consultation->canUserReply()) {
+            return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+                ->with('warning', 'Anda belum dapat membalas karena pertanyaan Anda sedang menunggu tanggapan resmi dari Admin Dinas.');
+        }
+
+        $request->validate([
+            'message' => 'required|string|max:3000',
+            'attachments' => 'nullable|array|max:3',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,webp,pdf,doc,docx|max:5120',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf,doc,docx|max:5120',
+        ], [
+            'message.required' => 'Pesan atau tanggapan balasan wajib diisi.',
+            'message.max' => 'Pesan balasan maksimal 3000 karakter.',
+            'attachments.max' => 'Maksimal 3 file lampiran yang dapat diunggah.',
+            'attachments.*.mimes' => 'Format file lampiran harus berupa JPG, PNG, WEBP, PDF, atau DOC.',
+            'attachments.*.max' => 'Ukuran masing-masing file lampiran tidak boleh lebih dari 5MB.',
+            'attachment.mimes' => 'Format file lampiran harus berupa JPG, PNG, WEBP, PDF, atau DOC.',
+            'attachment.max' => 'Ukuran file lampiran tidak boleh lebih dari 5MB.',
+        ]);
+
+        $attachmentItems = [];
+        $filesToProcess = [];
+
+        if ($request->hasFile('attachments')) {
+            $filesToProcess = $request->file('attachments');
+        } elseif ($request->hasFile('attachment')) {
+            $filesToProcess = [$request->file('attachment')];
+        }
+
+        foreach ($filesToProcess as $file) {
+            if ($file && $file->isValid()) {
+                $cleanName = time() . '_' . \Illuminate\Support\Str::random(5) . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('consultations', $cleanName, 'public');
+
+                $dataUri = null;
+                try {
+                    $mime = $file->getMimeType();
+                    $base64 = base64_encode(file_get_contents($file->getRealPath()));
+                    $dataUri = 'data:' . $mime . ';base64,' . $base64;
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning('Gagal encode base64 lampiran balasan: ' . $e->getMessage());
+                }
+
+                $attachmentItems[] = [
+                    'path' => $path,
+                    'name' => $file->getClientOriginalName(),
+                    'data' => $dataUri,
+                ];
+            }
+        }
+
+        $storedAttachment = !empty($attachmentItems) ? json_encode($attachmentItems) : null;
+
+        \App\Models\ConsultationMessage::create([
+            'consultation_id' => $consultation->id,
+            'sender_type' => 'user',
+            'sender_name' => $consultation->name,
+            'user_id' => auth()->check() ? auth()->id() : $consultation->user_id,
+            'message' => $request->message,
+            'attachment' => $storedAttachment,
+        ]);
+
+        // Perbarui status konsultasi secara otomatis ke 'menunggu' (Menunggu Balasan)
+        // sehingga admin langsung melihat indikator bahwa tiket ini menunggu tanggapan admin berikutnya
+        $consultation->update([
+            'status' => 'menunggu',
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+            ->with('success', 'Balasan Anda berhasil terkirim ke Admin Dinas Perdagangan & KUKM Wonogiri. Mohon menunggu tanggapan selanjutnya.');
     }
 }

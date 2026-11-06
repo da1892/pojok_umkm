@@ -567,7 +567,7 @@
             </div>
 
             <!-- Filter & Search Bar di Atas Peta -->
-            <div class="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200/90 shadow-2xs mb-5">
+            <div id="map-filter-container" class="relative z-30 bg-white rounded-2xl p-3 sm:p-4 border border-slate-200/90 shadow-2xs mb-5">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 items-center">
                     
                     <!-- Search Input (1/3 cols) -->
@@ -578,11 +578,12 @@
                         <input type="text" 
                                id="map-search-input" 
                                placeholder="Cari nama UMKM, produk, desa..." 
-                               class="w-full pl-9 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs">
+                               class="w-full pl-11 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs"
+                               style="padding-left: 2.75rem !important;">
                     </div>
 
                     <!-- Dropdown Kecamatan (1/3 cols) Custom Modern -->
-                    <div class="relative" id="map-dist-container">
+                    <div class="relative z-20" id="map-dist-container">
                         <input type="hidden" id="map-district-select" value="">
                         
                         <button type="button" 
@@ -613,7 +614,8 @@
                                            id="map-dist-search" 
                                            placeholder="Ketik nama kecamatan..." 
                                            autocomplete="off"
-                                           class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] text-slate-800">
+                                           class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] text-slate-800"
+                                           style="padding-left: 2.25rem !important;">
                                 </div>
                                 <div class="overflow-y-auto space-y-1 max-h-56 sm:max-h-64 pr-1 scrollbar-thin">
                                     <button type="button" 
@@ -649,7 +651,7 @@
                     </div>
 
                     <!-- Dropdown Kategori (1/3 cols) Custom Modern -->
-                    <div class="relative" id="map-cat-container">
+                    <div class="relative z-10" id="map-cat-container">
                         <input type="hidden" id="map-category-select" value="">
                         
                         <button type="button" 
@@ -701,7 +703,7 @@
             </div>
 
             <!-- Layout Utama Peta: Kiri Peta (8 cols), Kanan Sidebar Drawer UMKM (4 cols) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                 
                 <!-- Map Container (8 cols) -->
                 <div class="lg:col-span-8 bg-white rounded-2xl p-2 sm:p-2.5 border border-slate-200/90 shadow-sm relative overflow-hidden">
@@ -1587,10 +1589,25 @@
         const catPanel = document.getElementById('map-cat-panel');
         const distArrow = document.getElementById('map-dist-arrow');
         const catArrow = document.getElementById('map-cat-arrow');
+        const distBox = document.getElementById('map-dist-container');
+        const catBox = document.getElementById('map-cat-container');
+        const mapFilterCard = document.getElementById('map-filter-container');
         if (distPanel) distPanel.classList.add('hidden');
         if (catPanel) catPanel.classList.add('hidden');
         if (distArrow) distArrow.classList.remove('rotate-180');
         if (catArrow) catArrow.classList.remove('rotate-180');
+        if (distBox) {
+            distBox.classList.remove('z-40');
+            distBox.classList.add('z-20');
+        }
+        if (catBox) {
+            catBox.classList.remove('z-40');
+            catBox.classList.add('z-10');
+        }
+        if (mapFilterCard) {
+            mapFilterCard.classList.remove('z-40');
+            mapFilterCard.classList.add('z-30');
+        }
     };
 
     window.selectMapDistrict = function(dist, label) {
@@ -1690,6 +1707,10 @@
         const catArrow = document.getElementById('map-cat-arrow');
         const distSearch = document.getElementById('map-dist-search');
 
+        const distBox = document.getElementById('map-dist-container');
+        const catBox = document.getElementById('map-cat-container');
+        const mapFilterCard = document.getElementById('map-filter-container');
+
         if (distBtn) {
             distBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -1698,6 +1719,14 @@
                 if (isClosed) {
                     distPanel.classList.remove('hidden');
                     if (distArrow) distArrow.classList.add('rotate-180');
+                    if (distBox) {
+                        distBox.classList.remove('z-20');
+                        distBox.classList.add('z-40');
+                    }
+                    if (mapFilterCard) {
+                        mapFilterCard.classList.remove('z-30');
+                        mapFilterCard.classList.add('z-40');
+                    }
                     if (distSearch) {
                         setTimeout(() => distSearch.focus(), 100);
                     }
@@ -1713,6 +1742,14 @@
                 if (isClosed) {
                     catPanel.classList.remove('hidden');
                     if (catArrow) catArrow.classList.add('rotate-180');
+                    if (catBox) {
+                        catBox.classList.remove('z-10');
+                        catBox.classList.add('z-40');
+                    }
+                    if (mapFilterCard) {
+                        mapFilterCard.classList.remove('z-30');
+                        mapFilterCard.classList.add('z-40');
+                    }
                 }
             });
         }

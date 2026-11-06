@@ -26,6 +26,7 @@ Route::get('/info-panduan', function() { return redirect()->route('panduan'); })
 Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsultasi');
 Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
 Route::get('/konsultasi/cek/{ticket_id?}', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
+Route::post('/konsultasi/cek/{ticket_id}/balas', [PublicController::class, 'replyKonsultasiUser'])->name('konsultasi.cek.balas');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {

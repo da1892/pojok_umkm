@@ -33,7 +33,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Compact Search & Filter Card -->
-        <div class="bg-white rounded-xl p-2.5 sm:p-3 shadow-2xs border border-slate-200/80 mb-5">
+        <div id="dir-filter-container" class="relative z-30 bg-white rounded-xl p-2.5 sm:p-3 shadow-2xs border border-slate-200/80 mb-5">
             <form action="/direktori" method="GET">
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
                     <!-- Search Input (8 cols) -->
@@ -47,8 +47,8 @@
                                name="q" 
                                value="{{ request('q') }}" 
                                placeholder="Cari nama UMKM, pemilik, produk, atau alamat..." 
-                               class="w-full pl-9 pr-3 py-2 text-xs font-medium bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all"
-                               style="padding-left: 2.25rem !important;">
+                               class="w-full pl-10 pr-3 py-2 text-xs font-medium bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all"
+                               style="padding-left: 2.5rem !important;">
                     </div>
 
                     <!-- Dropdown Kecamatan & Tombol Cari (4 cols) -->
@@ -77,7 +77,7 @@
                             }
                         @endphp
                         
-                        <div class="relative flex-1" id="dir-dist-container">
+                        <div class="relative z-20 flex-1" id="dir-dist-container">
                             <input type="hidden" id="dir-district-input" name="kecamatan" value="{{ $currentKec }}">
 
                             <button type="button" 
@@ -111,7 +111,8 @@
                                                id="dir-dist-search" 
                                                placeholder="Ketik nama kecamatan..." 
                                                autocomplete="off"
-                                               class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] text-slate-800">
+                                               class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] text-slate-800"
+                                               style="padding-left: 2.25rem !important;">
                                     </div>
 
                                     <div id="dir-dist-list" class="overflow-y-auto space-y-1 max-h-56 sm:max-h-64 pr-1 scrollbar-thin">
@@ -157,7 +158,7 @@
         </div>
 
         <!-- Results Toolbar Header with View Switcher -->
-        <div id="direktori-anchor" class="scroll-mt-24 mb-3.5 flex items-center justify-between gap-3">
+        <div id="direktori-anchor" class="relative z-10 scroll-mt-24 mb-3.5 flex items-center justify-between gap-3">
             <div>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Daftar Mitra UMKM</h2>
                 <p class="text-xs text-slate-500">
@@ -718,10 +719,20 @@
         const dirPanel = document.getElementById('dir-dist-panel');
         const dirArrow = document.getElementById('dir-dist-arrow');
         const dirSearch = document.getElementById('dir-dist-search');
+        const dirBox = document.getElementById('dir-dist-container');
+        const dirFilterCard = document.getElementById('dir-filter-container');
 
         window.closeDirDistDropdown = function() {
             if (dirPanel) dirPanel.classList.add('hidden');
             if (dirArrow) dirArrow.classList.remove('rotate-180');
+            if (dirBox) {
+                dirBox.classList.remove('z-40');
+                dirBox.classList.add('z-20');
+            }
+            if (dirFilterCard) {
+                dirFilterCard.classList.remove('z-40');
+                dirFilterCard.classList.add('z-30');
+            }
         };
 
         if (dirBtn) {
@@ -731,6 +742,14 @@
                 if (isClosed) {
                     dirPanel.classList.remove('hidden');
                     if (dirArrow) dirArrow.classList.add('rotate-180');
+                    if (dirBox) {
+                        dirBox.classList.remove('z-20');
+                        dirBox.classList.add('z-40');
+                    }
+                    if (dirFilterCard) {
+                        dirFilterCard.classList.remove('z-30');
+                        dirFilterCard.classList.add('z-40');
+                    }
                     if (dirSearch) {
                         setTimeout(() => dirSearch.focus(), 100);
                     }

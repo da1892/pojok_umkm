@@ -240,7 +240,11 @@ class AdminController extends Controller
 
     public function consultations()
     {
-        $consultations = \App\Models\Consultation::latest()->paginate(10);
+        $consultations = \App\Models\Consultation::with('messages')
+            ->orderByRaw("CASE WHEN status = 'menunggu' THEN 0 ELSE 1 END ASC")
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
         return view('admin.consultations.index', compact('consultations'));
     }
     
@@ -248,34 +252,81 @@ class AdminController extends Controller
     {
         $consultation = \App\Models\Consultation::findOrFail($id);
         
+        // Otomatisasi status berdasarkan tombol tindakan yang diklik
+        $action = $request->input('action');
+        $targetStatus = match($action) {
+            'selesai' => 'selesai',
+            'tolak' => 'ditolak',
+            'balas' => 'diproses',
+            default => $request->input('status', 'selesai')
+        };
+
+        if (!in_array($targetStatus, ['menunggu', 'diterima', 'diproses', 'selesai', 'ditolak'])) {
+            $targetStatus = 'selesai';
+        }
+
+        // Pesan standar otomatis jika tombol selesai atau tolak diklik dengan textarea kosong
+        $response = trim((string) $request->input('response'));
+        if (empty($response)) {
+            if ($targetStatus === 'selesai') {
+                $response = 'Konsultasi telah diselesaikan oleh Admin Dinas Perdagangan & KUKM Wonogiri. Terima kasih atas kerja samanya.';
+            } elseif ($targetStatus === 'tolak' || $targetStatus === 'ditolak') {
+                $response = 'Mohon maaf, pengajuan konsultasi Anda belum dapat kami proses karena berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.';
+            }
+        }
+
+        $request->merge([
+            'status' => $targetStatus,
+            'response' => $response,
+        ]);
+
         $request->validate([
             'status' => 'required|in:menunggu,diterima,diproses,selesai,ditolak',
-            'response' => $request->status === 'menunggu' ? 'nullable|string|max:3000' : 'required|string|max:3000',
+            'response' => 'required|string|max:3000',
         ], [
-            'status.required' => 'Status konsultasi wajib dipilih.',
-            'status.in' => 'Status konsultasi yang dipilih tidak valid.',
-            'response.required' => $request->status === 'ditolak' 
-                ? 'Wajib mengetikkan alasan / komentar penolakan konsultasi.' 
-                : 'Wajib mengetikkan tanggapan / komentar untuk pemohon konsultasi.',
-            'response.max' => 'Tanggapan / komentar maksimal 3000 karakter.'
+            'response.required' => 'Wajib menyertakan balasan atau tanggapan untuk pemohon.',
+            'response.max' => 'Tanggapan / balasan maksimal 3000 karakter.'
         ]);
         
+        // Simpan balasan admin ke dalam pesan percakapan (consultation_messages)
+        \App\Models\ConsultationMessage::create([
+            'consultation_id' => $consultation->id,
+            'sender_type' => 'admin',
+            'sender_name' => auth()->user()->name ?? 'Admin Dinas Perdagangan & KUKM',
+            'user_id' => auth()->id(),
+            'message' => $response,
+            'attachment' => null,
+        ]);
+
         $consultation->update([
-            'status' => $request->status,
-            'response' => $request->response,
+            'status' => $targetStatus,
+            'response' => $response,
             'admin_id' => auth()->id()
         ]);
         
+        // Kirim email notifikasi balasan resmi ke pengkonsultasi jika ada email
+        $emailSent = false;
+        if (!empty($consultation->email)) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($consultation->email)
+                    ->send(new \App\Mail\ConsultationReplyMail($consultation, $response));
+                $emailSent = true;
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Gagal mengirim email balasan konsultasi #' . $consultation->ticket_id . ': ' . $e->getMessage());
+            }
+        }
+
         $statusLabels = [
+            'diproses' => 'dibalas (status: Sedang Diproses)',
+            'selesai' => 'diselesaikan (status: Selesai Dijawab)',
+            'ditolak' => 'ditolak (status: Ditolak)',
             'diterima' => 'diterima',
-            'diproses' => 'diproses',
-            'selesai' => 'diselesaikan',
-            'ditolak' => 'ditolak',
             'menunggu' => 'diperbarui',
         ];
-        $label = $statusLabels[$request->status] ?? 'diperbarui';
+        $label = $statusLabels[$targetStatus] ?? 'diperbarui';
 
-        return back()->with('success', "Tiket konsultasi #{$consultation->ticket_id} berhasil {$label} dengan catatan/tanggapan admin.");
+        $emailMsg = $emailSent ? " Notifikasi email beserta rincian jawaban telah berhasil dikirim ke {$consultation->email}." : "";
+        return back()->with('success', "Tiket konsultasi #{$consultation->ticket_id} berhasil {$label}.{$emailMsg}");
     }
 
     public function verifications()
@@ -437,7 +488,16 @@ class AdminController extends Controller
             'status' => 'verified',
             'rejection_note' => null
         ]);
-        return back()->with('success', "UMKM '{$umkm->business_name}' berhasil diverifikasi dan disetujui.");
+        return back()
+            ->with('success', "Profil UMKM '{$umkm->business_name}' berhasil diverifikasi dan disetujui.")
+            ->with('verified_item', [
+                'type' => 'umkm',
+                'title' => 'PROFIL TOKO UMKM',
+                'name' => $umkm->business_name,
+                'owner' => $umkm->owner_name,
+                'action' => 'approved',
+                'message' => 'Pendaftaran profil UMKM telah resmi disetujui & aktif di direktori sistem.'
+            ]);
     }
 
     public function rejectUmkm(Request $request, $id)
@@ -456,21 +516,53 @@ class AdminController extends Controller
             'rejection_note' => $request->rejection_note
         ]);
 
-        return back()->with('success', "Pengajuan buka toko UMKM '{$umkm->business_name}' telah ditolak dengan catatan alasan penolakan.");
+        return back()
+            ->with('success', "Profil UMKM '{$umkm->business_name}' telah ditolak dengan catatan alasan penolakan.")
+            ->with('verified_item', [
+                'type' => 'umkm',
+                'title' => 'PROFIL TOKO UMKM',
+                'name' => $umkm->business_name,
+                'owner' => $umkm->owner_name,
+                'action' => 'rejected',
+                'note' => $request->rejection_note,
+                'message' => 'Pengajuan profil UMKM telah ditolak dengan catatan perbaikan untuk pemilik usaha.'
+            ]);
     }
 
     public function verifyProduct($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('umkmProfile')->findOrFail($id);
         $product->update(['status' => 'verified']);
-        return back()->with('success', 'Produk berhasil diverifikasi.');
+        $umkmName = $product->umkmProfile ? $product->umkmProfile->business_name : 'UMKM';
+        return back()
+            ->with('success', "Produk '{$product->name}' (UMKM: {$umkmName}) berhasil diverifikasi dan disetujui.")
+            ->with('verified_item', [
+                'type' => 'product',
+                'title' => 'PRODUK UMKM',
+                'name' => $product->name,
+                'umkm_name' => $umkmName,
+                'category' => $product->category,
+                'action' => 'approved',
+                'message' => 'Produk berhasil diverifikasi dan langsung tayang pada katalog produk publik.'
+            ]);
     }
 
     public function rejectProduct($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('umkmProfile')->findOrFail($id);
         $product->update(['status' => 'rejected']);
-        return back()->with('success', 'Produk ditolak.');
+        $umkmName = $product->umkmProfile ? $product->umkmProfile->business_name : 'UMKM';
+        return back()
+            ->with('success', "Produk '{$product->name}' (UMKM: {$umkmName}) telah ditolak.")
+            ->with('verified_item', [
+                'type' => 'product',
+                'title' => 'PRODUK UMKM',
+                'name' => $product->name,
+                'umkm_name' => $umkmName,
+                'category' => $product->category,
+                'action' => 'rejected',
+                'message' => 'Produk telah ditolak dan tidak akan ditampilkan pada katalog produk UMKM.'
+            ]);
     }
 
     public function editProduct($id)
@@ -590,6 +682,7 @@ class AdminController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('business_name', 'ilike', "%{$search}%")
                   ->orWhere('owner_name', 'ilike', "%{$search}%")
+                  ->orWhere('gender', 'ilike', "%{$search}%")
                   ->orWhere('district', 'ilike', "%{$search}%")
                   ->orWhere('village', 'ilike', "%{$search}%")
                   ->orWhere('address', 'ilike', "%{$search}%")

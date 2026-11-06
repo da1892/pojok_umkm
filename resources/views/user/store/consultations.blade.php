@@ -26,7 +26,11 @@
                     <tbody class="divide-y divide-slate-100">
                         @forelse($consultations as $consultation)
                         <tr class="hover:bg-slate-50 transition-colors align-top">
-                            <td class="px-6 py-4 font-medium text-slate-900">{{ $consultation->ticket_id }}</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">
+                                <a href="{{ route('konsultasi.cek', ['ticket_id' => $consultation->ticket_id]) }}" class="text-[#800000] hover:underline font-mono text-xs font-bold block" title="Buka & Balas Percakapan">
+                                    {{ $consultation->ticket_id }}
+                                </a>
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="font-bold text-slate-800 mb-1">{{ $consultation->subject }}</div>
                                 <p class="text-slate-600 line-clamp-2 text-xs leading-relaxed max-w-sm">{{ $consultation->message }}</p>
@@ -35,25 +39,33 @@
                             <td class="px-6 py-4">
                                 @php
                                     $statusColor = match(strtolower($consultation->status)) {
-                                        'menunggu' => 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                                        'diterima' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                        'menunggu' => 'bg-yellow-50 text-yellow-800 border-yellow-200',
                                         'diproses' => 'bg-blue-50 text-blue-700 border-blue-200',
-                                        'selesai' => 'bg-green-50 text-green-700 border-green-200',
+                                        'selesai', 'diterima' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
                                         'ditolak' => 'bg-red-50 text-red-700 border-red-200',
                                         default => 'bg-slate-50 text-slate-700 border-slate-200'
                                     };
+
+                                    $statusText = match(strtolower($consultation->status)) {
+                                        'menunggu' => 'Menunggu Balasan',
+                                        'diproses' => 'Sedang Diproses',
+                                        'selesai' => 'Selesai Dijawab',
+                                        'diterima' => 'Diterima',
+                                        'ditolak' => 'Ditolak',
+                                        default => ucfirst($consultation->status ?? 'menunggu')
+                                    };
                                 @endphp
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border {{ $statusColor }}">
-                                    @if($consultation->status == 'diterima' || $consultation->status == 'selesai')
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                    @elseif($consultation->status == 'ditolak')
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                    @if($consultation->status == 'menunggu')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                     @elseif($consultation->status == 'diproses')
                                         <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                    @elseif($consultation->status == 'ditolak')
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                                     @else
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                     @endif
-                                    {{ ucfirst($consultation->status) }}
+                                    {{ $statusText }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
