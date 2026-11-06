@@ -539,10 +539,10 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
                 <div>
                     <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                        Peta Persebaran Titik Lokasi UMKM Wonogiri
+                        Peta Persebaran Lokasi UMKM Kabupaten Wonogiri
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                        Visualisasi titik sebaran UMKM yang terdeteksi otomatis dari alamat usaha di seluruh 25 kecamatan Kabupaten Wonogiri, dipadukan dengan pembagian zona tematik wilayah.
+                        Visualisasi pemetaan persebaran pelaku UMKM di 25 kecamatan Kabupaten Wonogiri berdasarkan data alamat usaha dan pembagian zonasi wilayah.
                     </p>
                 </div>
 
@@ -577,7 +577,7 @@
                         </div>
                         <input type="text" 
                                id="map-search-input" 
-                               placeholder="Cari nama UMKM, produk, desa..." 
+                               placeholder="Cari nama UMKM, produk, atau desa..." 
                                class="w-full pl-11 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs"
                                style="padding-left: 2.75rem !important;">
                     </div>
@@ -713,7 +713,7 @@
                         <!-- Loading placeholder -->
                         <div id="map-loader" class="absolute inset-0 bg-slate-100/90 z-20 flex flex-col items-center justify-center gap-3">
                             <div class="w-9 h-9 border-3 border-red-200 border-t-[#800000] rounded-full animate-spin"></div>
-                            <span class="text-xs font-bold text-slate-700">Menyiapkan Peta & Deteksi Titik UMKM...</span>
+                            <span class="text-xs font-bold text-slate-700">Memuat peta persebaran UMKM...</span>
                         </div>
                     </div>
 

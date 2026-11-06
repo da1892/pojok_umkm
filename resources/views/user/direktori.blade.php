@@ -418,7 +418,7 @@
                     <div>
                         <h3 class="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
-                            Peta Sebaran Titik Mitra UMKM Wonogiri
+                            Peta Persebaran Mitra UMKM Kabupaten Wonogiri
                         </h3>
                         <p class="text-[11px] text-slate-500">Klik titik pin merah untuk melihat informasi toko, produk, dan rute navigasi.</p>
                     </div>
@@ -431,7 +431,7 @@
                 </div>
                 <div id="directory-leaflet-map" class="w-full h-[520px] rounded-xl overflow-hidden relative z-10 bg-slate-100 border border-slate-200/80"></div>
                 <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-                    <span class="text-[11px] text-slate-500">Menampilkan titik lokasi UMKM terdaftar yang terdeteksi otomatis dari alamat usaha.</span>
+                    <span class="text-[11px] text-slate-500">Menampilkan persebaran pelaku UMKM terdaftar berdasarkan data alamat usaha.</span>
                     <span class="text-[11px] font-bold text-slate-800 flex items-center gap-1">
                         <span class="w-2.5 h-2.5 rounded-full bg-[#800000]"></span>
                         {{ count($umkmMapList ?? []) }} Titik Terdaftar
