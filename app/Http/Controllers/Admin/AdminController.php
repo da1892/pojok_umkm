@@ -205,6 +205,10 @@ class AdminController extends Controller
             $query->where('category', $request->category);
         }
 
+        if ($request->filled('featured')) {
+            $query->where('is_featured', $request->featured == '1' || $request->featured == 'true');
+        }
+
         $products = $query->paginate(10)->withQueryString();
 
         // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat
@@ -227,6 +231,7 @@ class AdminController extends Controller
         sort($allKecamatanList);
 
         $totalAllProducts = Product::count();
+        $totalFeaturedProducts = Product::where('is_featured', true)->count();
 
         return view('admin.products.index', compact(
             'products', 
@@ -234,6 +239,7 @@ class AdminController extends Controller
             'allCategories', 
             'allKecamatanList',
             'totalAllProducts',
+            'totalFeaturedProducts',
             'wilayahWonogiri'
         ));
     }
@@ -532,7 +538,10 @@ class AdminController extends Controller
     public function verifyProduct($id)
     {
         $product = Product::with('umkmProfile')->findOrFail($id);
-        $product->update(['status' => 'verified']);
+        $product->update([
+            'status' => 'verified',
+            'rejection_note' => null
+        ]);
         $umkmName = $product->umkmProfile ? $product->umkmProfile->business_name : 'UMKM';
         return back()
             ->with('success', "Produk '{$product->name}' (UMKM: {$umkmName}) berhasil diverifikasi dan disetujui.")
@@ -547,13 +556,25 @@ class AdminController extends Controller
             ]);
     }
 
-    public function rejectProduct($id)
+    public function rejectProduct(Request $request, $id)
     {
         $product = Product::with('umkmProfile')->findOrFail($id);
-        $product->update(['status' => 'rejected']);
+
+        $request->validate([
+            'rejection_note' => 'required|string|max:1000'
+        ], [
+            'rejection_note.required' => 'Wajib mengetikkan komentar atau alasan penolakan saat menolak produk.',
+            'rejection_note.max' => 'Alasan penolakan maksimal 1000 karakter.'
+        ]);
+
+        $product->update([
+            'status' => 'rejected',
+            'rejection_note' => $request->rejection_note
+        ]);
+
         $umkmName = $product->umkmProfile ? $product->umkmProfile->business_name : 'UMKM';
         return back()
-            ->with('success', "Produk '{$product->name}' (UMKM: {$umkmName}) telah ditolak.")
+            ->with('success', "Pengajuan produk '{$product->name}' (UMKM: {$umkmName}) telah ditolak dengan catatan alasan penolakan.")
             ->with('verified_item', [
                 'type' => 'product',
                 'title' => 'PRODUK UMKM',
@@ -561,6 +582,7 @@ class AdminController extends Controller
                 'umkm_name' => $umkmName,
                 'category' => $product->category,
                 'action' => 'rejected',
+                'note' => $request->rejection_note,
                 'message' => 'Produk telah ditolak dan tidak akan ditampilkan pada katalog produk UMKM.'
             ]);
     }
@@ -593,6 +615,7 @@ class AdminController extends Controller
             'name' => $request->name,
             'category' => $request->category,
             'description' => $request->description,
+            'is_featured' => $request->boolean('is_featured'),
         ];
 
         $newImagePaths = [];
@@ -611,6 +634,11 @@ class AdminController extends Controller
             $data['image_path'] = $newImagePaths[0];
         }
 
+        if ($request->boolean('is_featured') && $product->status !== 'verified') {
+            $data['status'] = 'verified';
+            $data['rejection_note'] = null;
+        }
+
         $product->update($data);
 
         return redirect()->route('admin.products')->with('success', 'Data produk berhasil diperbarui.');
@@ -621,6 +649,41 @@ class AdminController extends Controller
         $product = Product::findOrFail($id);
         $product->delete();
         return back()->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function toggleFeaturedProduct(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $product->is_featured = !$product->is_featured;
+
+        // Jika dijadikan Produk Unggulan tetapi statusnya belum verified, otomatis setujui produk agar langsung tayang di Beranda
+        $wasPending = false;
+        if ($product->is_featured && $product->status !== 'verified') {
+            $product->status = 'verified';
+            $product->rejection_note = null;
+            $wasPending = true;
+        }
+
+        $product->save();
+
+        if ($product->is_featured) {
+            $statusText = $wasPending 
+                ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda' 
+                : 'dijadikan Produk Unggulan dan tampil di Beranda';
+        } else {
+            $statusText = 'dihapus dari daftar Produk Unggulan';
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_featured' => (bool)$product->is_featured,
+                'status' => $product->status,
+                'message' => "Produk \"{$product->name}\" berhasil {$statusText}."
+            ]);
+        }
+
+        return back()->with('success', "Produk \"{$product->name}\" berhasil {$statusText}.");
     }
 
     public function editUmkm($id)

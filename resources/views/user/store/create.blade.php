@@ -132,52 +132,55 @@
 
                 <!-- Bagian Wilayah & Alamat Lengkap Dari Provinsi sampai Desa -->
                 <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-5">
-                    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
                         <div class="flex items-center gap-2.5">
-                            <span class="w-8 h-8 rounded-lg bg-red-100 text-[#801414] flex items-center justify-center">
+                            <span class="w-8 h-8 rounded-lg bg-red-100 text-[#801414] flex items-center justify-center flex-shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             </span>
                             <div>
-                                <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Alamat & Lokasi Usaha Lengkap</h3>
-                                <p class="text-[11px] text-slate-500">Struktur alamat berjenjang dari Provinsi, Kabupaten, Kecamatan hingga Desa/Kelurahan</p>
+                                <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Alamat & Lokasi Usaha</h3>
+                                <p class="text-[11px] text-slate-500">Pilih Kecamatan & Desa di Wonogiri, serta isi jalan/dusun Anda</p>
                             </div>
+                        </div>
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600 font-semibold self-start sm:self-auto">
+                            <svg class="w-3.5 h-3.5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                            <span>Kabupaten Wonogiri, Jawa Tengah</span>
                         </div>
                     </div>
 
-                    <!-- Autocomplete / Kata Kunci Cepat Pencarian Wilayah -->
+                    <!-- Hidden input provinsi & regency agar otomatis terisi dan terkirim ke server -->
+                    <input type="hidden" name="province" id="province-input" value="{{ old('province', 'Jawa Tengah') }}">
+                    <input type="hidden" name="regency" id="regency-input" value="{{ old('regency', 'Kabupaten Wonogiri') }}">
+
+                    <!-- Pencarian Cepat Wilayah (Opsional) -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                            Pencarian Cepat Wilayah <span class="font-normal text-slate-500">(Ketik nama Desa atau Kecamatan):</span>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <span>Pencarian Cepat Wilayah <span class="font-normal text-slate-400">(Opsional):</span></span>
+                            </span>
+                            <span class="text-[11px] text-slate-400 font-normal hidden sm:inline">Ketik nama desa untuk isi otomatis</span>
                         </label>
                         <div class="relative z-30">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa / kecamatan (contoh: Girimarto, Wonokarto, Baturetno, Selogiri...)" class="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" style="padding-left: 2.75rem !important;">
+                            <input type="text" id="keyword-search" autocomplete="off" placeholder="Ketik kata kunci desa atau kecamatan (contoh: Girimarto, Wonokarto, Selogiri...)" class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" style="padding-left: 2.75rem !important;">
                             <div id="search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-200 z-50 divide-y divide-slate-100"></div>
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-1.5">Pilih dari hasil pencarian otomatis untuk mengisi Kecamatan dan Desa seketika.</p>
                     </div>
 
-                    <!-- Wilayah Administratif Bertingkat (Provinsi, Kabupaten, Kecamatan, Desa) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Provinsi <span class="text-red-500">*</span></label>
-                            <input type="text" name="province" id="province-input" value="{{ old('province', 'Jawa Tengah') }}" readonly class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-100/90 text-slate-700 text-sm font-semibold cursor-not-allowed">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Kabupaten / Kota <span class="text-red-500">*</span></label>
-                            <input type="text" name="regency" id="regency-input" value="{{ old('regency', 'Kabupaten Wonogiri') }}" readonly class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-100/90 text-slate-700 text-sm font-semibold cursor-not-allowed">
-                        </div>
+                    <!-- Dropdown Kecamatan & Desa (2 Kolom Rapi) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Kecamatan <span class="text-red-500">*</span></label>
-                            <select id="district-select" name="district" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
+                            <select id="district-select" name="district" required class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                                 <option value="">-- Pilih Kecamatan --</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Desa / Kelurahan <span class="text-red-500">*</span></label>
-                            <select id="village-select" name="village" required class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
+                            <select id="village-select" name="village" required class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                                 <option value="">-- Pilih Desa / Kelurahan --</option>
                             </select>
                         </div>
@@ -187,14 +190,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-3">
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Spesifik (Jalan, RT/RW, Dusun, Patokan Lokasi) <span class="text-red-500">*</span></label>
-                            <input type="text" id="address-input" name="address" required value="{{ old('address') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Jl. Diponegoro No. 12, RT 02 / RW 04, Dusun Jatirejo">
+                            <input type="text" id="address-input" name="address" required value="{{ old('address') }}" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs" placeholder="Contoh: Jl. Diponegoro No. 12, RT 02 / RW 04, Dusun Jatirejo">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">
                                 Kode Pos
-                                <span class="text-[10px] text-slate-400 font-normal ml-1">(5 Digit)</span>
+                                <span class="text-[10px] text-slate-400 font-normal ml-1">(5 Digit, Opsional)</span>
                             </label>
-                            <input type="text" id="postal-input" name="postal_code" value="{{ old('postal_code') }}" minlength="5" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs @error('postal_code') border-red-500 @enderror" placeholder="Contoh: 57615">
+                            <input type="text" id="postal-input" name="postal_code" value="{{ old('postal_code') }}" minlength="5" maxlength="5" pattern="[0-9]{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs @error('postal_code') border-red-500 @enderror" placeholder="Contoh: 57615">
                             <div id="create-postal-feedback" class="mt-1 text-xs"></div>
                             @error('postal_code')
                                 <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
@@ -203,11 +206,16 @@
                     </div>
 
                     <!-- Pratinjau Alamat Lengkap Realtime -->
-                    <div class="p-4 rounded-xl bg-white border-2 border-red-100 shadow-xs">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#801414] block mb-1">Format Teks Alamat Lengkap:</span>
-                        <p id="full-address-preview" class="text-xs text-slate-700 font-medium italic">
-                            (Isi data wilayah dan alamat spesifik di atas untuk melihat format alamat lengkap)
-                        </p>
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-xs flex items-start gap-2.5">
+                        <span class="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </span>
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-0.5">Alamat yang Akan Tampil ke Calon Pembeli:</span>
+                            <p id="full-address-preview" class="text-xs text-slate-700 font-medium italic">
+                                (Pilih kecamatan, desa, dan isi alamat spesifik di atas untuk melihat alamat lengkap)
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Link Titik Lokasi Google Maps -->
@@ -221,7 +229,7 @@
                                 Buka Google Maps &rarr;
                             </a>
                         </label>
-                        <input type="url" name="map_link" value="{{ old('map_link') }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-3 rounded-xl border-2 border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
+                        <input type="url" name="map_link" value="{{ old('map_link') }}" placeholder="Contoh: https://maps.app.goo.gl/... atau https://maps.google.com/?q=..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 bg-white placeholder:text-slate-400 focus:border-[#801414] focus:ring-4 focus:ring-red-500/15 focus:outline-none transition-all shadow-xs">
                         <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
                             💡 <em>Opsional: Peta lokasi UMKM akan otomatis membaca alamat, desa, dan kecamatan Anda di atas. Anda juga dapat menempelkan link Google Maps jika memiliki pin lokasi yang lebih spesifik.</em>
                         </p>

@@ -133,7 +133,7 @@
         </div>
 
         <!-- Section Title & Search Counter -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2">
+        <div id="panduan-koleksi" class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2 scroll-mt-24">
             <div>
                 <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Koleksi Panduan Lengkap</h2>
                 <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Pilih modul panduan di bawah untuk membaca syarat, tahapan, dan link resmi perizinan.</p>
@@ -671,7 +671,7 @@
         window.scrollToGuide = function (elementId) {
             const target = document.getElementById(elementId);
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 target.classList.add('ring-4', 'ring-[#991b1b]', 'ring-offset-4');
                 setTimeout(() => {
                     target.classList.remove('ring-4', 'ring-[#991b1b]', 'ring-offset-4');

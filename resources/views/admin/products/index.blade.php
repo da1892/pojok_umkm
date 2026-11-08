@@ -11,7 +11,8 @@
     $currentDistrict = trim(preg_replace('/^(Kec\.|Kecamatan)\s+/i', '', (string)request('district')));
     $currentCategory = request('category');
     $currentSearch = request('search');
-    $hasActiveFilter = !empty($currentDistrict) || !empty($currentCategory) || !empty($currentSearch);
+    $currentFeatured = request('featured');
+    $hasActiveFilter = !empty($currentDistrict) || !empty($currentCategory) || !empty($currentSearch) || !empty($currentFeatured);
 @endphp
 
 <div class="space-y-6">
@@ -41,6 +42,16 @@
                 </div>
             </div>
 
+            <a href="{{ route('admin.products', ['featured' => request('featured') == '1' ? '' : '1']) }}" 
+               class="flex items-center gap-2 {{ request('featured') == '1' ? 'bg-amber-100 border-amber-300 ring-2 ring-amber-400' : 'bg-amber-50/70 hover:bg-amber-100/80 border-amber-200/80' }} px-3.5 py-2 rounded-xl border transition-all shadow-2xs group" 
+               title="{{ request('featured') == '1' ? 'Klik untuk tampilkan semua' : 'Klik untuk filter hanya Produk Unggulan' }}">
+                <svg class="w-4 h-4 text-amber-500 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <div class="text-xs">
+                    <span class="text-amber-800 font-medium">Produk Unggulan:</span>
+                    <span class="font-extrabold text-amber-900 ml-1">{{ $totalFeaturedProducts }}</span>
+                </div>
+            </a>
+
             <div class="flex items-center gap-2 bg-red-50/60 px-3.5 py-2 rounded-xl border border-red-100">
                 <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                 <div class="text-xs">
@@ -65,7 +76,7 @@
                            name="search" 
                            value="{{ request('search') }}" 
                            placeholder="Cari nama produk, nama UMKM, desa..." 
-                           class="w-full pl-11 pr-4 py-2.5 text-xs md:text-sm rounded-xl border-2 border-slate-300 focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 transition-all bg-white text-slate-900 placeholder:text-slate-400 shadow-xs"
+                           class="w-full search-input-padding pl-11 pr-4 py-2.5 text-xs md:text-sm rounded-xl border-2 border-slate-300 focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 transition-all bg-white text-slate-900 placeholder:text-slate-400 shadow-xs"
                            style="padding-left: 2.75rem !important;">
                 </div>
 
@@ -76,7 +87,7 @@
                     </div>
                     <select name="district" 
                             class="w-full pl-9 pr-8 py-2.5 text-xs md:text-sm rounded-xl border-2 border-slate-300 focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 transition-all bg-white text-slate-900 appearance-none cursor-pointer shadow-xs"
-                            style="padding-left: 2.5rem !important;">
+                            style="padding-left: 2.75rem !important;">
                         <option value="">Semua Kecamatan (25 Wilayah)</option>
                         @foreach($allKecamatanList as $kec)
                             @php
@@ -153,7 +164,14 @@
                 @if(!empty($currentSearch))
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-red-200 font-bold text-[#800000] shadow-2xs">
                     🔍 "{{ $currentSearch }}"
-                    <a href="{{ route('admin.products', array_filter(['district' => $currentDistrict, 'category' => $currentCategory])) }}" class="ml-1 text-red-400 hover:text-red-700">×</a>
+                    <a href="{{ route('admin.products', array_filter(['district' => $currentDistrict, 'category' => $currentCategory, 'featured' => $currentFeatured])) }}" class="ml-1 text-red-400 hover:text-red-700">×</a>
+                </span>
+                @endif
+
+                @if($currentFeatured == '1')
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 font-bold text-amber-900 shadow-2xs">
+                    ⭐ Hanya Produk Unggulan
+                    <a href="{{ route('admin.products', array_filter(['district' => $currentDistrict, 'category' => $currentCategory, 'search' => $currentSearch])) }}" class="ml-1 text-amber-500 hover:text-amber-800">×</a>
                 </span>
                 @endif
 
@@ -175,78 +193,89 @@
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                        <th class="px-6 py-4">Produk</th>
-                        <th class="px-6 py-4">UMKM & Wilayah (Kecamatan)</th>
-                        <th class="px-6 py-4">Kategori</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
+                        <th class="px-4 py-3.5">Produk</th>
+                        <th class="px-4 py-3.5">UMKM & Wilayah</th>
+                        <th class="px-3 py-3.5">Kategori</th>
+                        <th class="px-3 py-3.5 text-center whitespace-nowrap">Status</th>
+                        <th class="px-3 py-3.5 text-center whitespace-nowrap">Produk Unggulan</th>
+                        <th class="px-4 py-3.5 text-right whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($products as $product)
                     <tr class="hover:bg-slate-50/70 transition-colors group">
                         <!-- Product Info & Image -->
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3.5">
-                                <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shrink-0 group-hover:shadow-xs transition-shadow">
-                                    <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-3">
+                                <div class="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shrink-0 group-hover:shadow-xs transition-shadow">
+                                    <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/400x400/f1f5f9/94a3b8?text=Foto';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                     @if(count($product->all_images) > 1)
-                                    <span class="absolute bottom-1 right-1 px-1 py-0.2 rounded text-[8px] font-bold bg-black/70 text-white backdrop-blur-2xs">
+                                    <span class="absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded text-[8px] font-bold bg-black/70 text-white backdrop-blur-2xs">
                                         +{{ count($product->all_images) - 1 }}
                                     </span>
                                     @endif
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="font-bold text-slate-800 text-sm leading-snug group-hover:text-[#800000] transition-colors truncate max-w-xs md:max-w-md">
-                                        {{ $product->name }}
-                                    </p>
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <p class="font-bold text-slate-800 text-xs sm:text-sm leading-snug group-hover:text-[#800000] transition-colors truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px]" title="{{ $product->name }}">
+                                            {{ $product->name }}
+                                        </p>
+                                        @if($product->is_featured)
+                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-2xs shrink-0" title="Produk Unggulan Beranda">
+                                            <svg class="w-2.5 h-2.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            Unggulan
+                                        </span>
+                                        @endif
+                                    </div>
                                     <div class="flex items-center gap-2 mt-0.5">
                                         <span class="text-xs font-extrabold text-[#800000]">
                                             Rp {{ number_format($product->price ?? 0, 0, ',', '.') }}
                                         </span>
                                     </div>
-                                    <p class="text-xs text-slate-400 truncate max-w-xs mt-0.5">
-                                        {{ Str::limit($product->description, 50) }}
+                                    @if($product->description)
+                                    <p class="text-[11px] text-slate-400 truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px] mt-0.5">
+                                        {{ Str::limit($product->description, 40) }}
                                     </p>
+                                    @endif
                                 </div>
                             </div>
                         </td>
 
                         <!-- UMKM and Clickable Region Badge -->
-                        <td class="px-6 py-4">
-                            <div class="font-bold text-slate-800 text-sm">
+                        <td class="px-4 py-3">
+                            <div class="font-bold text-slate-800 text-xs sm:text-sm truncate max-w-[160px]" title="{{ $product->umkmProfile->business_name ?? '-' }}">
                                 {{ $product->umkmProfile->business_name ?? '-' }}
                             </div>
                             @if(!empty($product->umkmProfile->district))
                             <div class="mt-1">
                                 <a href="{{ route('admin.products', ['district' => $product->umkmProfile->district]) }}" 
-                                   class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 text-[#800000] hover:bg-[#800000] hover:text-white transition-all border border-red-200/60 shadow-2xs group/badge"
-                                   title="Klik untuk melihat semua produk dari Kec. {{ $product->umkmProfile->district }}">
-                                    <svg class="w-3 h-3 text-[#800000] group-hover/badge:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                    <span>Kec. {{ $product->umkmProfile->district }}</span>
+                                   class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-red-50 text-[#800000] hover:bg-[#800000] hover:text-white transition-all border border-red-200/60 shadow-2xs group/badge truncate max-w-[160px]"
+                                   title="Kec. {{ $product->umkmProfile->district }} @if(!empty($product->umkmProfile->village)) • Ds. {{ $product->umkmProfile->village }} @endif">
+                                    <svg class="w-2.5 h-2.5 text-[#800000] group-hover/badge:text-white transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                    <span class="truncate">Kec. {{ $product->umkmProfile->district }}</span>
                                     @if(!empty($product->umkmProfile->village))
-                                    <span class="text-red-400 group-hover/badge:text-white/80">• Ds. {{ $product->umkmProfile->village }}</span>
+                                    <span class="text-red-400 group-hover/badge:text-white/80 shrink-0">• Ds. {{ $product->umkmProfile->village }}</span>
                                     @endif
                                 </a>
                             </div>
                             @else
-                            <div class="text-xs text-slate-400 mt-1 italic">
+                            <div class="text-[11px] text-slate-400 mt-0.5 italic">
                                 Wilayah belum disetel
                             </div>
                             @endif
                         </td>
 
                         <!-- Category -->
-                        <td class="px-6 py-4">
+                        <td class="px-3 py-3 whitespace-nowrap">
                             <a href="{{ route('admin.products', ['category' => $product->category]) }}" 
-                               class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-[#800000] border border-slate-200/60 transition-colors"
+                               class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-[#800000] border border-slate-200/60 transition-colors"
                                title="Filter kategori {{ $product->category }}">
                                 {{ $product->category }}
                             </a>
                         </td>
 
                         <!-- Status -->
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-3 py-3 text-center whitespace-nowrap">
                             @php
                                 $statusInfo = match(strtolower($product->status ?? 'active')) {
                                     'verified', 'active' => [
@@ -271,23 +300,58 @@
                                     ]
                                 };
                             @endphp
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border {{ $statusInfo['class'] }}">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border {{ $statusInfo['class'] }}">
                                 <span class="w-1.5 h-1.5 rounded-full {{ $statusInfo['dot'] }}"></span>
                                 {{ $statusInfo['label'] }}
                             </span>
+                            @if($product->status == 'pending')
+                                <div class="mt-1.5 flex items-center justify-center">
+                                    <form action="{{ route('admin.product.verify', $product->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer" title="Setujui Produk Ini agar tayang ke publik">
+                                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Setujui
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                            @if($product->status == 'rejected' && !empty($product->rejection_note))
+                                <div class="text-[10px] text-red-600 font-medium mt-1 max-w-[140px] truncate mx-auto" title="Alasan: {{ $product->rejection_note }}">
+                                    Catatan: {{ $product->rejection_note }}
+                                </div>
+                            @endif
+                        </td>
+
+                        <!-- Produk Unggulan Toggle -->
+                        <td class="px-3 py-3 text-center whitespace-nowrap">
+                            <form action="{{ route('admin.product.toggle-featured', $product->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('PATCH')
+                                @if($product->is_featured)
+                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xs border border-amber-300 transition-all active:scale-95 cursor-pointer" title="Klik untuk membatalkan status Produk Unggulan">
+                                        <svg class="w-3 h-3 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                        <span>⭐ Unggulan</span>
+                                    </button>
+                                @else
+                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 hover:bg-amber-50 text-slate-600 hover:text-amber-800 border border-slate-200 hover:border-amber-300 transition-all active:scale-95 cursor-pointer" title="Klik untuk jadikan Produk Unggulan (Tampil di Beranda Utama)">
+                                        <svg class="w-3 h-3 text-slate-400 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>+ Unggulan</span>
+                                    </button>
+                                @endif
+                            </form>
                         </td>
 
                         <!-- Actions -->
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <a href="{{ route('admin.product.edit', $product->id) }}" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-slate-700 hover:text-[#800000] bg-slate-100 hover:bg-red-50 rounded-lg transition-colors border border-slate-200/60" title="Edit Produk">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                    Edit
+                        <td class="px-4 py-3 text-right whitespace-nowrap">
+                            <div class="inline-flex items-center justify-end gap-1.5">
+                                <a href="{{ route('admin.product.edit', $product->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-slate-700 hover:text-[#800000] bg-slate-100 hover:bg-red-50 rounded-lg transition-colors border border-slate-200/60" title="Edit Produk">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    <span>Edit</span>
                                 </a>
                                 <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-colors border border-red-200" title="Hapus Produk">
+                                    <button type="submit" class="inline-flex items-center justify-center p-1.5 text-xs font-bold text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-colors border border-red-200" title="Hapus Produk">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     </button>
                                 </form>
@@ -296,7 +360,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                             <div class="flex flex-col items-center">
                                 <div class="w-14 h-14 rounded-2xl bg-red-50 text-[#800000] flex items-center justify-center mb-3">
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>

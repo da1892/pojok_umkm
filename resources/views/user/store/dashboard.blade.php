@@ -115,17 +115,6 @@
                     </div>
                 </div>
                 <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-2.5">
-                    <a href="{{ route('direktori.show', $umkm->id) }}" target="_blank" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#801414] font-semibold py-2.5 px-4 rounded-full transition-all shadow-sm text-sm" title="Lihat tampilan halaman UMKM Anda di direktori publik">
-                        <svg class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        Lihat Profil UMKM
-                    </a>
-                    <a href="{{ route('toko.profile') }}" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-[#801414] font-semibold py-2.5 px-4 rounded-full transition-all shadow-sm text-sm group">
-                        <svg class="w-4 h-4 mr-1.5 text-slate-400 group-hover:text-[#801414] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        Profil UMKM
-                    </a>
-                    <a href="{{ route('toko.consultations') }}" class="inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold py-2.5 px-4 rounded-full transition-colors shadow-sm text-sm">
-                        Riwayat Konsultasi
-                    </a>
                     @if($umkm->status == 'verified')
                         <a href="{{ route('toko.product.create') }}" class="inline-flex items-center justify-center bg-[#801414] hover:bg-red-900 text-white font-semibold py-2.5 px-5 rounded-full transition-colors shadow text-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -174,6 +163,15 @@
                                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             </div>
                         @endif
+
+                        @if($product->is_featured)
+                            <div class="absolute top-3 left-3">
+                                <span class="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-amber-300/40">
+                                    <svg class="w-3 h-3 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    Unggulan
+                                </span>
+                            </div>
+                        @endif
                         
                         <div class="absolute top-3 right-3">
                             @if($product->status == 'verified')
@@ -189,6 +187,19 @@
                         <div class="text-xs font-semibold text-[#eab308] uppercase tracking-wider mb-2">{{ $product->category }}</div>
                         <h4 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">{{ $product->name }}</h4>
                         <p class="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">{{ $product->description }}</p>
+                        
+                        @if($product->status == 'rejected' && !empty($product->rejection_note))
+                            <div class="mb-4 p-3 bg-red-50 border border-red-200/90 rounded-xl text-xs text-red-900 shadow-2xs">
+                                <div class="font-bold flex items-center gap-1.5 text-red-800 mb-1">
+                                    <svg class="w-3.5 h-3.5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    <span>Alasan Penolakan:</span>
+                                </div>
+                                <p class="text-[11px] text-red-700 leading-relaxed italic">{!! nl2br(e($product->rejection_note)) !!}</p>
+                                <a href="{{ route('toko.product.edit', $product->id) }}" class="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-red-800 hover:text-red-950 hover:underline">
+                                    <span>Perbaiki produk ini</span> &rarr;
+                                </a>
+                            </div>
+                        @endif
                         
                         <div class="mt-auto border-t border-slate-100 pt-4 flex items-center justify-between">
                             <a href="{{ route('toko.product.edit', $product->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold flex items-center gap-1">

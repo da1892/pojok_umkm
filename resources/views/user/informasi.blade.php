@@ -37,7 +37,7 @@
                                    value="{{ request('q') }}" 
                                    autocomplete="off"
                                    placeholder="Cari berita atau agenda kegiatan... (contoh: pelatihan, kurasi, pameran)" 
-                                   class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 pl-11 pr-16 sm:pr-20 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/25 focus:ring-4 focus:ring-white/20 text-xs sm:text-sm transition-all shadow-xs"
+                                   class="w-full bg-white/20 backdrop-blur-xs border-2 border-white/40 search-input-padding pl-11 pr-16 sm:pr-20 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/25 focus:ring-4 focus:ring-white/20 text-xs sm:text-sm transition-all shadow-xs"
                                    style="padding-left: 2.75rem !important;">
                             
                             <!-- Spinner Loading saat Auto-Filter Memuat -->

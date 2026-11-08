@@ -40,6 +40,18 @@
         </a>
     </div>
 
+    @if($product->status == 'rejected' && !empty($product->rejection_note))
+        <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 flex items-start gap-3.5 shadow-2xs">
+            <div class="w-8 h-8 rounded-xl bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <div>
+                <h4 class="font-bold text-sm text-red-950 mb-0.5">Catatan Alasan Penolakan:</h4>
+                <p class="text-xs text-red-800 leading-relaxed whitespace-pre-line">{!! nl2br(e($product->rejection_note)) !!}</p>
+            </div>
+        </div>
+    @endif
+
     <form action="{{ route('admin.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -187,6 +199,22 @@
                                 <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-100/80 px-2 py-0.5 rounded-md">Live</span>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Pengaturan Produk Unggulan (Tampil di Beranda Utama) -->
+                    <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-50/90 via-amber-50/40 to-white border-2 {{ old('is_featured', $product->is_featured) ? 'border-amber-400 ring-2 ring-amber-300/40' : 'border-slate-200' }} transition-all">
+                        <label class="flex items-start gap-3.5 cursor-pointer">
+                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }} class="mt-1 w-5 h-5 rounded-md border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-extrabold text-slate-900">⭐ Jadikan Produk Unggulan</span>
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300">Beranda Publik</span>
+                                </div>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Produk yang ditandai sebagai <strong>Unggulan</strong> akan otomatis diprioritaskan tampil langsung di halaman <strong>Beranda Publik UMKM Wonogiri</strong> dan diberi lencana bintang emas agar lebih mudah dilihat calon pembeli.
+                                </p>
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Deskripsi Produk -->

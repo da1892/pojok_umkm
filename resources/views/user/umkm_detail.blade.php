@@ -1,18 +1,8 @@
 @extends('user.layouts.app')
 
 @section('content')
-<div class="bg-[#FAF9F6] min-h-screen py-6 sm:py-12">
+<div class="bg-[#FAF9F6] min-h-screen py-6 sm:py-10">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        
-        <!-- Breadcrumb -->
-        <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-5 sm:mb-8 font-medium">
-            <a href="/" class="hover:text-[#800000] transition-colors">Beranda</a>
-            <span>/</span>
-            <a href="/direktori" class="hover:text-[#800000] transition-colors">Direktori UMKM</a>
-            <span>/</span>
-            <span class="text-slate-800 truncate max-w-[200px] sm:max-w-none">{{ $umkm->business_name }}</span>
-        </nav>
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8">
             
             <!-- UMKM Profile Sidebar -->

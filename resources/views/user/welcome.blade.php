@@ -145,7 +145,15 @@
 
 <!-- Produk Unggulan Terbaru -->
 @php
-    $featuredProducts = \App\Models\User\Product::with('umkmProfile')->where('status', 'verified')->latest()->take(6)->get();
+    if (!isset($featuredProducts)) {
+        // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin
+        $featuredProducts = \App\Models\User\Product::with('umkmProfile')
+            ->where('status', 'verified')
+            ->where('is_featured', true)
+            ->latest()
+            ->take(12)
+            ->get();
+    }
 @endphp
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-14 reveal delay-400">
@@ -171,7 +179,7 @@
             <div>
                 <div class="h-36 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
                     @if($product->image_path)
-                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
                             <svg class="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -180,6 +188,12 @@
                     @if($product->category)
                     <span class="absolute top-2 left-2 bg-white/95 backdrop-blur-xs text-[#991b1b] text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md shadow-2xs">
                         {{ $product->category }}
+                    </span>
+                    @endif
+                    @if($product->is_featured)
+                    <span class="absolute top-2 right-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[9px] sm:text-[11px] font-extrabold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-amber-300/40">
+                        <svg class="w-3 h-3 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <span>Unggulan</span>
                     </span>
                     @endif
                 </div>
@@ -213,8 +227,11 @@
     </div>
     @else
     <div class="text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada produk</h3>
-        <p class="text-gray-500">Jadilah UMKM pertama yang mempublikasikan produk unggulan Anda di sini!</p>
+        <div class="w-12 h-12 mx-auto mb-3 text-amber-500 bg-amber-50 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-900 mb-1">Belum Ada Produk Unggulan</h3>
+        <p class="text-slate-500 text-sm">Produk unggulan terkurasi akan ditampilkan di sini setelah dipilih oleh Admin.</p>
     </div>
     @endif
 </div>
@@ -578,7 +595,7 @@
                         <input type="text" 
                                id="map-search-input" 
                                placeholder="Cari nama UMKM, produk, atau desa..." 
-                               class="w-full pl-11 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs"
+                               class="w-full search-input-padding pl-11 pr-4 py-2 sm:py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#800000] focus:ring-2 focus:ring-red-500/20 text-slate-900 placeholder:text-slate-400 transition-all shadow-2xs"
                                style="padding-left: 2.75rem !important;">
                     </div>
 

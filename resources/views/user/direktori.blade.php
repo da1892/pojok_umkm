@@ -47,8 +47,8 @@
                                name="q" 
                                value="{{ request('q') }}" 
                                placeholder="Cari nama UMKM, pemilik, produk, atau alamat..." 
-                               class="w-full pl-10 pr-3 py-2 text-xs font-medium bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all"
-                               style="padding-left: 2.5rem !important;">
+                               class="w-full search-input-padding pl-11 pr-3 py-2 text-xs font-medium bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-[#800000] focus:ring-4 focus:ring-red-500/15 text-slate-900 placeholder:text-slate-400 shadow-xs transition-all"
+                               style="padding-left: 2.75rem !important;">
                     </div>
 
                     <!-- Dropdown Kecamatan & Tombol Cari (4 cols) -->

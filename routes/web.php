@@ -47,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/produk', [AdminController::class, 'products'])->name('admin.products');
         Route::get('/admin/produk/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.product.edit');
         Route::put('/admin/produk/{id}', [AdminController::class, 'updateProduct'])->name('admin.product.update');
+        Route::patch('/admin/produk/{id}/toggle-featured', [AdminController::class, 'toggleFeaturedProduct'])->name('admin.product.toggle-featured');
         Route::delete('/admin/produk/{id}', [AdminController::class, 'destroyProduct'])->name('admin.product.destroy');
         
         // Kelola Konsultasi
