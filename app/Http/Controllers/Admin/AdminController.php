@@ -968,21 +968,44 @@ class AdminController extends Controller
     // MODUL KHUSUS: UMKM BINAAN DINAS (NON-DEVICE)
     // ==========================================
 
+    private function ensureBinaanSchema()
+    {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasColumn('umkm_profiles', 'is_managed_by_admin')) {
+                \Illuminate\Support\Facades\DB::statement('ALTER TABLE umkm_profiles ADD COLUMN IF NOT EXISTS is_managed_by_admin BOOLEAN DEFAULT FALSE');
+            }
+            \Illuminate\Support\Facades\DB::statement('ALTER TABLE umkm_profiles ALTER COLUMN user_id DROP NOT NULL');
+        } catch (\Throwable $e) {
+            // Abaikan jika tidak punya akses DDL
+        }
+    }
+
     public function binaanIndex(Request $request)
     {
+        $this->ensureBinaanSchema();
+
+        $hasCol = \Illuminate\Support\Facades\Schema::hasColumn('umkm_profiles', 'is_managed_by_admin');
+
         $query = UmkmProfile::with(['user', 'products'])
-            ->where(function($q) {
-                $q->where('is_managed_by_admin', true)
-                  ->orWhereNull('user_id')
-                  ->orWhereHas('user', function($u) {
-                      $u->where('role', 'admin');
-                  });
+            ->where(function($q) use ($hasCol) {
+                if ($hasCol) {
+                    $q->where('is_managed_by_admin', true)
+                      ->orWhereNull('user_id')
+                      ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+                } else {
+                    $q->whereNull('user_id')
+                      ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+                }
             });
 
         $tab = $request->input('tab', 'all');
         if ($tab === 'offline') {
-            $query->where(function($q) {
-                $q->whereNull('user_id')->orWhere('is_managed_by_admin', true);
+            $query->where(function($q) use ($hasCol) {
+                if ($hasCol) {
+                    $q->whereNull('user_id')->orWhere('is_managed_by_admin', true);
+                } else {
+                    $q->whereNull('user_id');
+                }
             })->whereDoesntHave('user', function($u) {
                 $u->where('role', 'umkm');
             });
@@ -1008,21 +1031,36 @@ class AdminController extends Controller
 
         $binaanUmkms = $query->latest()->paginate(10)->withQueryString();
 
-        $totalBinaan = UmkmProfile::where('is_managed_by_admin', true)
-            ->orWhereNull('user_id')
-            ->orWhereHas('user', fn($u) => $u->where('role', 'admin'))
-            ->count();
+        $totalBinaan = UmkmProfile::where(function($q) use ($hasCol) {
+            if ($hasCol) {
+                $q->where('is_managed_by_admin', true)
+                  ->orWhereNull('user_id')
+                  ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+            } else {
+                $q->whereNull('user_id')
+                  ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+            }
+        })->count();
 
-        $totalProdukBinaan = Product::whereHas('umkmProfile', function($q) {
-            $q->where('is_managed_by_admin', true)
-              ->orWhereNull('user_id')
-              ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+        $totalProdukBinaan = Product::whereHas('umkmProfile', function($q) use ($hasCol) {
+            if ($hasCol) {
+                $q->where('is_managed_by_admin', true)
+                  ->orWhereNull('user_id')
+                  ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+            } else {
+                $q->whereNull('user_id')
+                  ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+            }
         })->count();
 
         $totalSudahKlaim = UmkmProfile::whereHas('user', fn($u) => $u->where('role', 'umkm'))
-            ->where(function($q) {
-                $q->where('is_managed_by_admin', true)
-                  ->orWhereNull('user_id');
+            ->where(function($q) use ($hasCol) {
+                if ($hasCol) {
+                    $q->where('is_managed_by_admin', true)
+                      ->orWhereNull('user_id');
+                } else {
+                    $q->whereNull('user_id');
+                }
             })
             ->count();
 
@@ -1048,6 +1086,8 @@ class AdminController extends Controller
 
     public function binaanStoreUmkm(Request $request)
     {
+        $this->ensureBinaanSchema();
+
         $request->validate([
             'business_name' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
@@ -1068,50 +1108,36 @@ class AdminController extends Controller
             $imagePath = $request->file('image')->storeAs('umkm_profiles', $cleanName, 'public');
         }
 
+        $data = [
+            'user_id' => null,
+            'business_name' => $request->business_name,
+            'owner_name' => $request->owner_name,
+            'gender' => $request->gender ?? 'Laki-laki',
+            'phone' => $request->phone ?: 'Dikelola Dinas KUKM',
+            'province' => 'Jawa Tengah',
+            'regency' => 'Kabupaten Wonogiri',
+            'district' => $request->district,
+            'village' => $request->village,
+            'address' => $request->address,
+            'postal_code' => $request->postal_code,
+            'description' => $request->description,
+            'nib' => $request->nib,
+            'pirt' => $request->pirt,
+            'halal_cert' => $request->halal_cert,
+            'map_link' => $request->map_link,
+            'image_path' => $imagePath,
+            'status' => 'verified',
+        ];
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('umkm_profiles', 'is_managed_by_admin')) {
+            $data['is_managed_by_admin'] = true;
+        }
+
         try {
-            $umkm = UmkmProfile::create([
-                'user_id' => null,
-                'is_managed_by_admin' => true,
-                'business_name' => $request->business_name,
-                'owner_name' => $request->owner_name,
-                'gender' => $request->gender ?? 'Laki-laki',
-                'phone' => $request->phone ?: 'Dikelola Dinas KUKM',
-                'province' => 'Jawa Tengah',
-                'regency' => 'Kabupaten Wonogiri',
-                'district' => $request->district,
-                'village' => $request->village,
-                'address' => $request->address,
-                'postal_code' => $request->postal_code,
-                'description' => $request->description,
-                'nib' => $request->nib,
-                'pirt' => $request->pirt,
-                'halal_cert' => $request->halal_cert,
-                'map_link' => $request->map_link,
-                'image_path' => $imagePath,
-                'status' => 'verified',
-            ]);
+            $umkm = UmkmProfile::create($data);
         } catch (\Throwable $e) {
-            $umkm = UmkmProfile::create([
-                'user_id' => auth()->id(),
-                'is_managed_by_admin' => true,
-                'business_name' => $request->business_name,
-                'owner_name' => $request->owner_name,
-                'gender' => $request->gender ?? 'Laki-laki',
-                'phone' => $request->phone ?: 'Dikelola Dinas KUKM',
-                'province' => 'Jawa Tengah',
-                'regency' => 'Kabupaten Wonogiri',
-                'district' => $request->district,
-                'village' => $request->village,
-                'address' => $request->address,
-                'postal_code' => $request->postal_code,
-                'description' => $request->description,
-                'nib' => $request->nib,
-                'pirt' => $request->pirt,
-                'halal_cert' => $request->halal_cert,
-                'map_link' => $request->map_link,
-                'image_path' => $imagePath,
-                'status' => 'verified',
-            ]);
+            $data['user_id'] = auth()->id();
+            $umkm = UmkmProfile::create($data);
         }
 
         return redirect()->route('admin.binaan.index')->with('success', "UMKM Binaan '{$umkm->business_name}' berhasil didaftarkan dan langsung berstatus Terverifikasi.");
@@ -1119,10 +1145,18 @@ class AdminController extends Controller
 
     public function binaanCreateProduct(Request $request)
     {
-        $binaanUmkms = UmkmProfile::where(function($q) {
-            $q->where('is_managed_by_admin', true)
-              ->orWhereNull('user_id')
-              ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+        $this->ensureBinaanSchema();
+
+        $hasCol = \Illuminate\Support\Facades\Schema::hasColumn('umkm_profiles', 'is_managed_by_admin');
+        $binaanUmkms = UmkmProfile::where(function($q) use ($hasCol) {
+            if ($hasCol) {
+                $q->where('is_managed_by_admin', true)
+                  ->orWhereNull('user_id')
+                  ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+            } else {
+                $q->whereNull('user_id')
+                  ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+            }
         })->orderBy('business_name', 'asc')->get();
 
         $selectedUmkmId = $request->query('umkm_id');
@@ -1194,6 +1228,8 @@ class AdminController extends Controller
 
     public function binaanClaimUmkm(Request $request, $id)
     {
+        $this->ensureBinaanSchema();
+
         $umkm = UmkmProfile::findOrFail($id);
 
         $request->validate([
@@ -1215,7 +1251,9 @@ class AdminController extends Controller
         }
 
         $umkm->user_id = $targetUser->id;
-        $umkm->is_managed_by_admin = false;
+        if (\Illuminate\Support\Facades\Schema::hasColumn('umkm_profiles', 'is_managed_by_admin')) {
+            $umkm->is_managed_by_admin = false;
+        }
         $umkm->save();
 
         $targetUser->update(['role' => 'umkm']);

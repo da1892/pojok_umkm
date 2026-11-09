@@ -273,6 +273,7 @@ class UmkmProfile extends Model
      */
     public function getIsBinaanDinasAttribute(): bool
     {
-        return (bool)$this->is_managed_by_admin || is_null($this->user_id) || ($this->user && $this->user->role === 'admin');
+        $hasColVal = isset($this->attributes['is_managed_by_admin']) ? (bool)$this->attributes['is_managed_by_admin'] : false;
+        return $hasColVal || is_null($this->user_id) || ($this->user && $this->user->role === 'admin');
     }
 }
