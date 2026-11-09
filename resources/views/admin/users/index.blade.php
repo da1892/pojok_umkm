@@ -63,30 +63,6 @@
             </div>
         </div>
     </div>
-    @else
-    <!-- Kartu Khusus Halaman Administrator -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-red-50 text-[#800000] flex items-center justify-center shrink-0 border border-red-200/60">
-                <svg class="w-6 h-6 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-red-800 uppercase tracking-wider">Total Administrator</p>
-                <h3 class="text-2xl font-black text-slate-900 tracking-tight">{{ number_format($totalAdminUsers) }} Akun</h3>
-                <p class="text-[11px] text-slate-500">Pengelola sistem Dinas Perdagangan</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
-                <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <div class="min-w-0">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sedang Login</p>
-                <h3 class="text-base font-extrabold text-slate-900 truncate">{{ auth()->user()->name }}</h3>
-                <p class="text-[11px] text-slate-500 truncate">{{ auth()->user()->email }}</p>
-            </div>
-        </div>
-    </div>
     @endif
 
     <!-- Main Container Table -->
