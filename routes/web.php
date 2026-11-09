@@ -85,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/admin/users/{user_id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
         Route::get('/admin/users/unduh-template', [AdminController::class, 'downloadExcelTemplate'])->name('admin.users.template');
         Route::post('/admin/users/import-excel', [AdminController::class, 'importExcel'])->name('admin.users.import');
+        Route::post('/admin/users/tambah-admin', [AdminController::class, 'storeAdminUser'])->name('admin.users.admin.store');
 
         // Redirect kompatibilitas lama
         Route::get('/admin/binaan', function() {

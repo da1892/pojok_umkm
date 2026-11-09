@@ -1278,49 +1278,79 @@ class AdminController extends Controller
 
     public function usersIndex(Request $request)
     {
-        // Default tab adalah 'umkm' agar akun administrator tidak tercampur di tabel utama
-        $currentRole = $request->input('role', 'umkm');
+        // Hanya ada dua pilihan: 'umkm' (default) atau 'admin'
+        $currentRole = $request->input('role') === 'admin' ? 'admin' : 'umkm';
 
-        $query = User::with(['umkmProfile.products'])->latest();
+        $query = User::latest();
+
+        if ($currentRole === 'admin') {
+            $query->where('role', 'admin');
+        } else {
+            // Hanya tampilkan pelaku UMKM yang terdaftar
+            $query->where('role', 'umkm')->with(['umkmProfile.products']);
+        }
 
         // Pencarian Nama, Email, atau Toko UMKM
         if ($request->filled('search')) {
             $search = trim($request->search);
-            $query->where(function($q) use ($search) {
+            $query->where(function($q) use ($search, $currentRole) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhereHas('umkmProfile', function($u) use ($search) {
-                      $u->where('business_name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('district', 'like', "%{$search}%")
-                        ->orWhere('village', 'like', "%{$search}%");
-                  });
+                  ->orWhere('email', 'like', "%{$search}%");
+                if ($currentRole === 'umkm') {
+                    $q->orWhereHas('umkmProfile', function($u) use ($search) {
+                        $u->where('business_name', 'like', "%{$search}%")
+                          ->orWhere('phone', 'like', "%{$search}%")
+                          ->orWhere('district', 'like', "%{$search}%")
+                          ->orWhere('village', 'like', "%{$search}%");
+                    });
+                }
             });
-        }
-
-        // Filter Role (jika bukan 'all')
-        if ($currentRole !== 'all') {
-            $query->where('role', $currentRole);
         }
 
         $users = $query->paginate(15)->withQueryString();
 
-        $totalUsers = User::count();
         $totalUmkmUsers = User::where('role', 'umkm')->count();
         $totalAdminUsers = User::where('role', 'admin')->count();
-        $totalPublicUsers = User::where('role', 'user')->count();
+        $totalProductsCount = Product::count();
+        $totalVerifiedUmkms = UmkmProfile::where('status', 'verified')->count();
 
         $districts = $this->getWilayahWonogiri();
 
         return view('admin.users.index', compact(
             'users',
-            'totalUsers',
             'totalUmkmUsers',
             'totalAdminUsers',
-            'totalPublicUsers',
+            'totalProductsCount',
+            'totalVerifiedUmkms',
             'currentRole',
             'districts'
         ));
+    }
+
+    public function storeAdminUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+        ], [
+            'name.required' => 'Nama administrator wajib diisi.',
+            'email.required' => 'Email administrator wajib diisi.',
+            'email.unique' => 'Email ini sudah terdaftar.',
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.min' => 'Kata sandi minimal 6 karakter.',
+        ]);
+
+        $admin = User::create([
+            'name' => trim($request->name),
+            'email' => strtolower(trim($request->email)),
+            'password' => Hash::make($request->password),
+            'role' => 'admin',
+            'email_verified_at' => now(),
+        ]);
+
+        return redirect()->route('admin.users.index', ['role' => 'admin'])
+            ->with('success', "Akun Administrator '{$admin->name}' ({$admin->email}) berhasil dibuat dengan sandi: {$request->password}");
     }
 
     public function createUmkmUser()

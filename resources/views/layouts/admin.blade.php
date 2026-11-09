@@ -62,10 +62,29 @@
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.stores*') || request()->routeIs('admin.umkm.*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                     Data UMKM
                 </a>
-                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.users*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.users*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <span>Manajemen User</span>
-                </a>
+                @php
+                    $isUserMenuActive = request()->routeIs('admin.users*');
+                    $isAdminRole = request('role') === 'admin';
+                @endphp
+                <div class="space-y-1">
+                    <button type="button" onclick="toggleUserSubMenu()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg {{ $isUserMenuActive ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors group cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ $isUserMenuActive ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <span>Manajemen User</span>
+                        </div>
+                        <svg id="userSubMenuArrow" class="w-4 h-4 transition-transform duration-200 {{ $isUserMenuActive ? 'rotate-180 text-yellow-400' : 'text-white/40 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="userSubMenuDropdown" class="pl-8 pr-2 space-y-1 {{ $isUserMenuActive ? '' : 'hidden' }}">
+                        <a href="{{ route('admin.users.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs {{ $isUserMenuActive && !$isAdminRole ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5' }} transition-colors">
+                            <span class="w-1.5 h-1.5 rounded-full {{ $isUserMenuActive && !$isAdminRole ? 'bg-yellow-400' : 'bg-white/40' }}"></span>
+                            <span>Pelaku UMKM</span>
+                        </a>
+                        <a href="{{ route('admin.users.index', ['role' => 'admin']) }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs {{ $isUserMenuActive && $isAdminRole ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5' }} transition-colors">
+                            <span class="w-1.5 h-1.5 rounded-full {{ $isUserMenuActive && $isAdminRole ? 'bg-yellow-400' : 'bg-white/40' }}"></span>
+                            <span>Admin</span>
+                        </a>
+                    </div>
+                </div>
                 <a href="{{ route('admin.consultations') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg {{ request()->routeIs('admin.consultations*') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors group">
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5 {{ request()->routeIs('admin.consultations*') ? 'text-yellow-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
@@ -203,6 +222,15 @@
             if(sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
             if(sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
         });
+
+        function toggleUserSubMenu() {
+            const el = document.getElementById('userSubMenuDropdown');
+            const arrow = document.getElementById('userSubMenuArrow');
+            if (el) {
+                el.classList.toggle('hidden');
+                if (arrow) arrow.classList.toggle('rotate-180');
+            }
+        }
 
         // Global SweetAlert Confirmation Functions
         function confirmVerifyUmkm(formId, umkmName) {
