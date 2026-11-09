@@ -209,7 +209,23 @@ class AdminController extends Controller
             $query->where('is_featured', $request->featured == '1' || $request->featured == 'true');
         }
 
+        if ($request->filled('umkm_id')) {
+            $query->where('umkm_profile_id', $request->umkm_id);
+        }
+
+        if ($request->filled('umkm_filter') && $request->umkm_filter === 'no_featured') {
+            // Filter produk dari UMKM yang belum memiliki produk unggulan sama sekali
+            $umkmWithFeaturedIds = Product::where('is_featured', true)->whereNotNull('umkm_profile_id')->pluck('umkm_profile_id');
+            $query->whereNotIn('umkm_profile_id', $umkmWithFeaturedIds);
+        }
+
         $products = $query->paginate(10)->withQueryString();
+
+        // Peta ID UMKM ke Nama Produk Unggulan aktifnya (untuk indikator 1 UMKM 1 Unggulan)
+        $featuredByUmkm = Product::where('is_featured', true)
+            ->whereNotNull('umkm_profile_id')
+            ->pluck('name', 'umkm_profile_id')
+            ->toArray();
 
         // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat
         $districtsWithCounts = UmkmProfile::select('district')
@@ -240,6 +256,7 @@ class AdminController extends Controller
             'allKecamatanList',
             'totalAllProducts',
             'totalFeaturedProducts',
+            'featuredByUmkm',
             'wilayahWonogiri'
         ));
     }
@@ -653,15 +670,33 @@ class AdminController extends Controller
 
     public function toggleFeaturedProduct(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('umkmProfile')->findOrFail($id);
         $product->is_featured = !$product->is_featured;
 
         // Jika dijadikan Produk Unggulan tetapi statusnya belum verified, otomatis setujui produk agar langsung tayang di Beranda
         $wasPending = false;
-        if ($product->is_featured && $product->status !== 'verified') {
-            $product->status = 'verified';
-            $product->rejection_note = null;
-            $wasPending = true;
+        $replacedProduct = null;
+
+        if ($product->is_featured) {
+            if ($product->status !== 'verified') {
+                $product->status = 'verified';
+                $product->rejection_note = null;
+                $wasPending = true;
+            }
+
+            // ATURAN 1 UMKM = 1 PRODUK UNGGULAN:
+            // Jika UMKM ini sudah memiliki produk unggulan lain yang aktif, otomatis gantikan produk unggulan lama
+            if ($product->umkm_profile_id) {
+                $existingFeatured = Product::where('umkm_profile_id', $product->umkm_profile_id)
+                    ->where('id', '!=', $product->id)
+                    ->where('is_featured', true)
+                    ->get();
+
+                foreach ($existingFeatured as $other) {
+                    $other->update(['is_featured' => false]);
+                    $replacedProduct = $other->name;
+                }
+            }
         }
 
         $product->save();
@@ -670,6 +705,11 @@ class AdminController extends Controller
             $statusText = $wasPending 
                 ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda' 
                 : 'dijadikan Produk Unggulan dan tampil di Beranda';
+
+            if ($replacedProduct) {
+                $umkmTitle = $product->umkmProfile ? $product->umkmProfile->business_name : 'UMKM';
+                $statusText .= " (menggantikan '{$replacedProduct}' dari {$umkmTitle} sesuai aturan 1 UMKM 1 Unggulan)";
+            }
         } else {
             $statusText = 'dihapus dari daftar Produk Unggulan';
         }
@@ -679,6 +719,7 @@ class AdminController extends Controller
                 'success' => true,
                 'is_featured' => (bool)$product->is_featured,
                 'status' => $product->status,
+                'replaced' => $replacedProduct,
                 'message' => "Produk \"{$product->name}\" berhasil {$statusText}."
             ]);
         }
