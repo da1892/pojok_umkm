@@ -276,32 +276,24 @@ class AdminController extends Controller
         $consultation = \App\Models\Consultation::findOrFail($id);
         
         // Otomatisasi status berdasarkan tombol tindakan yang diklik
-        $action = $request->input('action');
+        $action = $request->input('action', 'balas');
         $targetStatus = match($action) {
             'selesai' => 'selesai',
-            'tolak' => 'ditolak',
-            'balas' => 'diproses',
             'buka_kembali' => 'diproses',
-            default => $request->input('status', 'selesai')
+            default => 'diproses' // default menanggapi: konsultasi tetap berjalan & berlanjut
         };
-
-        if (!in_array($targetStatus, ['menunggu', 'diterima', 'diproses', 'selesai', 'ditolak'])) {
-            $targetStatus = 'selesai';
-        }
 
         $response = trim((string) $request->input('response'));
 
-        // Jika memilih tombol 'Balas & Lanjutkan Diskusi' tetapi kolom balasan kosong
+        // Jika memilih menanggapi/membalas tetapi kolom pesan balasan kosong
         if ($action === 'balas' && empty($response)) {
-            return back()->withErrors(['response' => 'Wajib menuliskan pesan balasan jika ingin melanjutkan diskusi dengan pemohon.'])->withInput();
+            return back()->withErrors(['response' => 'Wajib menuliskan pesan tanggapan sebelum mengirimkan balasan.'])->withInput();
         }
 
-        // Pesan standar otomatis jika tombol selesai atau tolak diklik dengan textarea kosong
+        // Jika selesai tapi pesan kosong, gunakan pesan penutupan resmi otomatis
         if (empty($response)) {
             if ($targetStatus === 'selesai') {
                 $response = 'Konsultasi telah dinyatakan selesai oleh Admin Dinas Perdagangan & KUKM Kabupaten Wonogiri. Terima kasih telah memanfaatkan layanan konsultasi Pojok UMKM.';
-            } elseif ($targetStatus === 'tolak' || $targetStatus === 'ditolak') {
-                $response = 'Mohon maaf, pengajuan konsultasi Anda belum dapat kami proses karena berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.';
             } elseif ($action === 'buka_kembali') {
                 $response = 'Konsultasi dibuka kembali oleh Admin Dinas untuk tindak lanjut tambahan.';
             }
@@ -348,17 +340,19 @@ class AdminController extends Controller
             }
         }
 
-        $statusLabels = [
-            'diproses' => $action === 'buka_kembali' ? 'dibuka kembali (status: Sedang Diproses)' : 'dibalas (status: Sedang Diproses)',
-            'selesai' => 'diselesaikan (sesi ditutup, pengkonsultasi harus membuat pengajuan baru jika ingin bertanya lagi)',
-            'ditolak' => 'ditolak (status: Ditolak)',
-            'diterima' => 'diterima',
-            'menunggu' => 'diperbarui',
-        ];
-        $label = $statusLabels[$targetStatus] ?? 'diperbarui';
+        if ($targetStatus === 'selesai') {
+            $msg = "Tiket konsultasi #{$consultation->ticket_id} berhasil diselesaikan. Sesi percakapan ditutup.";
+        } elseif ($action === 'buka_kembali') {
+            $msg = "Tiket konsultasi #{$consultation->ticket_id} berhasil dibuka kembali.";
+        } else {
+            $msg = "Tanggapan berhasil dikirim ke pemohon. Konsultasi tetap aktif berjalan.";
+        }
 
-        $emailMsg = $emailSent ? " Notifikasi email beserta rincian jawaban telah berhasil dikirim ke {$consultation->email}." : "";
-        return back()->with('success', "Tiket konsultasi #{$consultation->ticket_id} berhasil {$label}.{$emailMsg}");
+        if ($emailSent) {
+            $msg .= " Notifikasi email telah terkirim ke {$consultation->email}.";
+        }
+
+        return back()->with('success', $msg);
     }
 
     public function verifications()
