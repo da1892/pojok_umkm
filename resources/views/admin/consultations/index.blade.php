@@ -311,15 +311,7 @@
 </div>
 
 <script>
-function confirmFinishConsultation(formId, ticketId, userName, subject = '', consultationId = null) {
-    let existingText = '';
-    if (consultationId) {
-        const textarea = document.getElementById('response-text-' + consultationId);
-        if (textarea && textarea.value) {
-            existingText = textarea.value.trim();
-        }
-    }
-
+function confirmFinishConsultation(formId, ticketId, userName, subject = '') {
     if (typeof Swal !== 'undefined') {
         const subjectHtml = subject ? `
             <div style="margin-top:6px; font-size:12px; color:#475569; display:flex; align-items:center; justify-content:center; gap:6px;">
@@ -339,17 +331,8 @@ function confirmFinishConsultation(formId, ticketId, userName, subject = '', con
                         <div style="font-size:15px; font-weight:900; color:#0f172a; word-break:break-word;">${userName}</div>
                         ${subjectHtml}
                     </div>
-                    <div style="margin-top:14px; text-align:left;">
-                        <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">
-                            Pesan / Catatan Penutup (Opsional):
-                        </label>
-                        <textarea id="swal_finish_response" rows="3" style="width:100%; box-sizing:border-box; padding:10px 12px; font-size:12px; border:1.5px solid #cbd5e1; border-radius:12px; outline:none; color:#1e293b; resize:none; font-family:inherit; line-height:1.5;" placeholder="Tuliskan saran penutup atau solusi akhir untuk pengkonsultasi...">${existingText}</textarea>
-                        <p style="font-size:10.5px; color:#94a3b8; margin-top:4px; margin-bottom:0;">
-                            *Jika dikosongkan, sistem otomatis mengirimkan pesan penutup resmi standar dinas.
-                        </p>
-                    </div>
-                    <p style="font-size:11.5px; color:#64748b; margin-top:14px; margin-bottom:0; line-height:1.5;">
-                        Apakah Anda yakin ingin menyelesaikan sesi ini? Setelah ditandai selesai, tiket akan ditutup dan pemohon tidak dapat membalas lagi pada tiket ini.
+                    <p style="font-size:12px; color:#64748b; margin-top:16px; margin-bottom:0; line-height:1.6;">
+                        Apakah Anda yakin ingin menyelesaikan sesi ini?<br>Setelah ditandai selesai, tiket akan ditutup dan pemohon tidak dapat membalas lagi pada tiket ini.
                     </p>
                 </div>
             `,
@@ -366,27 +349,11 @@ function confirmFinishConsultation(formId, ticketId, userName, subject = '', con
                 title: 'text-slate-800 font-black text-lg mb-0',
                 confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-xs shadow-md bg-emerald-600 hover:bg-emerald-700 text-white',
                 cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700'
-            },
-            preConfirm: () => {
-                const closingNote = document.getElementById('swal_finish_response')?.value || '';
-                return closingNote;
             }
         }).then((result) => {
             if (result.isConfirmed) {
                 const form = document.getElementById(formId);
-                if (form) {
-                    let responseInput = form.querySelector('input[name="response"]');
-                    if (!responseInput) {
-                        responseInput = document.createElement('input');
-                        responseInput.type = 'hidden';
-                        responseInput.name = 'response';
-                        form.appendChild(responseInput);
-                    }
-                    if (result.value && result.value.trim() !== '') {
-                        responseInput.value = result.value.trim();
-                    }
-                    form.submit();
-                }
+                if (form) form.submit();
             }
         });
     } else {
