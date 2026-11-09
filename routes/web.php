@@ -75,9 +75,24 @@ Route::middleware(['auth'])->group(function () {
         // Data UMKM
         Route::get('/admin/toko', [AdminController::class, 'stores'])->name('admin.stores');
         
-        // UMKM Binaan Dinas (Khusus Pelaku Usaha Tanpa Gadget / Dikelola Admin)
-        Route::get('/admin/binaan', [AdminController::class, 'binaanIndex'])->name('admin.binaan.index');
-        Route::get('/admin/binaan/tambah-umkm', [AdminController::class, 'binaanCreateUmkm'])->name('admin.binaan.umkm.create');
+        // Manajemen Pengguna & UMKM (Fitur Management User Dinas Perdagangan)
+        Route::get('/admin/users', [AdminController::class, 'usersIndex'])->name('admin.users.index');
+        Route::get('/admin/users/tambah', [AdminController::class, 'createUmkmUser'])->name('admin.users.create');
+        Route::post('/admin/users', [AdminController::class, 'storeUmkmUser'])->name('admin.users.store');
+        Route::get('/admin/users/{umkm_id}/produk/tambah', [AdminController::class, 'createProductForUmkm'])->name('admin.users.product.create');
+        Route::post('/admin/users/{umkm_id}/produk', [AdminController::class, 'storeProductForUmkm'])->name('admin.users.product.store');
+        Route::post('/admin/users/{user_id}/reset-password', [AdminController::class, 'resetPasswordUser'])->name('admin.users.reset_password');
+        Route::delete('/admin/users/{user_id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
+        Route::get('/admin/users/unduh-template', [AdminController::class, 'downloadExcelTemplate'])->name('admin.users.template');
+        Route::post('/admin/users/import-excel', [AdminController::class, 'importExcel'])->name('admin.users.import');
+
+        // Redirect kompatibilitas lama
+        Route::get('/admin/binaan', function() {
+            return redirect()->route('admin.users.index');
+        })->name('admin.binaan.index');
+        Route::get('/admin/binaan/tambah-umkm', function() {
+            return redirect()->route('admin.users.create');
+        })->name('admin.binaan.umkm.create');
         Route::post('/admin/binaan/tambah-umkm', [AdminController::class, 'binaanStoreUmkm'])->name('admin.binaan.umkm.store');
         Route::get('/admin/binaan/tambah-produk', [AdminController::class, 'binaanCreateProduct'])->name('admin.binaan.product.create');
         Route::post('/admin/binaan/tambah-produk', [AdminController::class, 'binaanStoreProduct'])->name('admin.binaan.product.store');

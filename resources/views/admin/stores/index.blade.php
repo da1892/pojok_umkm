@@ -9,7 +9,16 @@
             <h3 class="font-bold text-slate-800 text-lg">Kelola Data UMKM</h3>
             <p class="text-slate-500 text-sm mt-1">Daftar semua UMKM yang telah terdaftar di sistem. Anda dapat melihat, mengedit, dan menghapus UMKM.</p>
         </div>
-        <form id="filter-form" action="{{ route('admin.stores') }}" method="GET" class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
+            <a href="{{ route('admin.users.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-[#800000] hover:bg-[#600000] rounded-xl shadow-xs transition-colors cursor-pointer" style="height: 42px;">
+                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>Tambah Akun UMKM</span>
+            </a>
+            <a href="{{ route('admin.users.index') }}#modal-import" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-colors cursor-pointer" style="height: 42px;">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                <span>Import Excel</span>
+            </a>
+            <form id="filter-form" action="{{ route('admin.stores') }}" method="GET" class="flex items-center gap-2.5">
             <div class="relative flex items-center">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -28,6 +37,7 @@
                 <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
             </select>
         </form>
+    </div>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">

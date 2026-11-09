@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User\User;
 use App\Models\User\UmkmProfile;
 use App\Models\User\Product;
 use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -1259,5 +1264,675 @@ class AdminController extends Controller
         $targetUser->update(['role' => 'umkm']);
 
         return back()->with('success', "Sukses! Kepemilikan UMKM '{$umkm->business_name}' berhasil diserahterimakan ke akun {$targetUser->name} ({$targetUser->email}). Pemilik kini dapat login dan mengelola tokonya secara mandiri!");
+    }
+
+    // ========================================================
+    // MODUL MANAJEMEN USER & UMKM (ADMIN DINAS PERDAGANGAN)
+    // ========================================================
+
+    private function getWilayahWonogiri(): array
+    {
+        $path = public_path('wonogiri_wilayah.json');
+        return file_exists($path) ? json_decode(file_get_contents($path), true) : [];
+    }
+
+    public function usersIndex(Request $request)
+    {
+        $query = User::with(['umkmProfile.products'])->latest();
+
+        // Pencarian Nama, Email, atau Toko UMKM
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhereHas('umkmProfile', function($u) use ($search) {
+                      $u->where('business_name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('district', 'like', "%{$search}%")
+                        ->orWhere('village', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter Role
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->paginate(15)->withQueryString();
+
+        $totalUsers = User::count();
+        $totalUmkmUsers = User::where('role', 'umkm')->count();
+        $totalAdminUsers = User::where('role', 'admin')->count();
+        $totalPublicUsers = User::where('role', 'user')->count();
+
+        $districts = $this->getWilayahWonogiri();
+
+        return view('admin.users.index', compact(
+            'users',
+            'totalUsers',
+            'totalUmkmUsers',
+            'totalAdminUsers',
+            'totalPublicUsers',
+            'districts'
+        ));
+    }
+
+    public function createUmkmUser()
+    {
+        $districts = $this->getWilayahWonogiri();
+        return view('admin.users.create', compact('districts'));
+    }
+
+    public function storeUmkmUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'business_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:25',
+            'district' => 'required|string',
+            'village' => 'required|string',
+            'address' => 'required|string',
+            'gender' => 'nullable|string',
+            'nib' => 'nullable|string|max:100',
+            'pirt' => 'nullable|string|max:100',
+            'halal_cert' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+        ], [
+            'name.required' => 'Nama pemilik usaha wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah terdaftar. Silakan gunakan email lain.',
+            'password.required' => 'Kata sandi akun wajib diisi.',
+            'password.min' => 'Kata sandi minimal 6 karakter.',
+            'business_name.required' => 'Nama usaha / merek UMKM wajib diisi.',
+            'phone.required' => 'Nomor WhatsApp / telepon wajib diisi.',
+            'district.required' => 'Kecamatan di Wonogiri wajib dipilih.',
+            'village.required' => 'Desa / kelurahan wajib diisi.',
+            'address.required' => 'Alamat lengkap wajib diisi.',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('umkm_profiles', 'public');
+        }
+
+        DB::beginTransaction();
+        try {
+            // 1. Buat Akun User Pelaku UMKM
+            $user = User::create([
+                'name' => trim($request->name),
+                'email' => strtolower(trim($request->email)),
+                'password' => Hash::make($request->password),
+                'role' => 'umkm',
+                'email_verified_at' => now(),
+            ]);
+
+            // 2. Buat Profil Toko UMKM
+            $umkmData = [
+                'user_id' => $user->id,
+                'business_name' => trim($request->business_name),
+                'owner_name' => trim($request->name),
+                'gender' => $request->gender ?: null,
+                'phone' => trim($request->phone),
+                'province' => 'Jawa Tengah',
+                'regency' => 'Kabupaten Wonogiri',
+                'district' => trim($request->district),
+                'village' => trim($request->village),
+                'address' => trim($request->address),
+                'nib' => $request->nib ? trim($request->nib) : null,
+                'pirt' => $request->pirt ? trim($request->pirt) : null,
+                'halal_cert' => $request->halal_cert ? trim($request->halal_cert) : null,
+                'description' => $request->description ? trim($request->description) : null,
+                'image_path' => $imagePath,
+                'status' => 'verified',
+            ];
+
+            if (Schema::hasColumn('umkm_profiles', 'is_managed_by_admin')) {
+                $umkmData['is_managed_by_admin'] = true;
+            }
+
+            $umkm = UmkmProfile::create($umkmData);
+
+            DB::commit();
+
+            // Jika memilih "Simpan & Lanjut Tambah Produk"
+            if ($request->input('action') === 'save_and_add_product') {
+                return redirect()->route('admin.users.product.create', $umkm->id)
+                    ->with('success', "Akun '{$user->email}' dan UMKM '{$umkm->business_name}' berhasil dibuat! Silakan tambahkan produk pertama di bawah ini.");
+            }
+
+            return redirect()->route('admin.users.index')
+                ->with('success', "Akun UMKM '{$umkm->business_name}' berhasil dibuat untuk {$user->name} ({$user->email}) dengan kata sandi: {$request->password}");
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+            return back()->withInput()->with('error', 'Gagal membuat akun UMKM: ' . $e->getMessage());
+        }
+    }
+
+    public function createProductForUmkm($umkm_id)
+    {
+        $umkm = UmkmProfile::with('user')->findOrFail($umkm_id);
+        $standardCategories = [
+            'Makanan & Minuman',
+            'Batik/Fashion',
+            'Kerajinan',
+            'Olahan Hasil Pertanian',
+            'Produk Kreatif',
+            'Lainnya',
+        ];
+
+        return view('admin.users.create_product', compact('umkm', 'standardCategories'));
+    }
+
+    public function storeProductForUmkm(Request $request, $umkm_id)
+    {
+        $umkm = UmkmProfile::findOrFail($umkm_id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'price' => 'nullable|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+        ], [
+            'name.required' => 'Nama produk wajib diisi.',
+            'category.required' => 'Kategori produk wajib dipilih.',
+            'image.image' => 'File foto harus berupa gambar.',
+            'image.max' => 'Ukuran gambar maksimal 3MB.',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        $allImagesPaths = [];
+        if ($imagePath) {
+            $allImagesPaths[] = $imagePath;
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('products', 'public');
+                $allImagesPaths[] = $path;
+            }
+        }
+
+        $isFeatured = $request->has('is_featured');
+        if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
+            $featuredCount = Product::where('umkm_profile_id', $umkm->id)
+                ->where('is_featured', true)
+                ->count();
+            if ($featuredCount >= 2) {
+                $isFeatured = false;
+            }
+        }
+
+        $productData = [
+            'umkm_profile_id' => $umkm->id,
+            'name' => trim($request->name),
+            'category' => trim($request->category),
+            'price' => $request->filled('price') ? (float)$request->price : 0,
+            'description' => $request->description ? trim($request->description) : trim($request->name),
+            'image_path' => $imagePath,
+            'status' => 'verified',
+        ];
+
+        if (Schema::hasColumn('products', 'images')) {
+            $productData['images'] = !empty($allImagesPaths) ? $allImagesPaths : null;
+        }
+        if (Schema::hasColumn('products', 'is_featured')) {
+            $productData['is_featured'] = $isFeatured;
+        }
+
+        $product = Product::create($productData);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}' dan langsung tayang di katalog publik!");
+    }
+
+    public function resetPasswordUser(Request $request, $user_id)
+    {
+        $request->validate([
+            'password' => 'required|string|min:6',
+        ], [
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi baru minimal 6 karakter.',
+        ]);
+
+        $user = User::findOrFail($user_id);
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', "Kata sandi untuk pengguna '{$user->name}' ({$user->email}) berhasil diperbarui menjadi: {$request->password}");
+    }
+
+    public function destroyUser($user_id)
+    {
+        if (auth()->id() == $user_id) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $user = User::with(['umkmProfile.products'])->findOrFail($user_id);
+        $userName = $user->name;
+        $userEmail = $user->email;
+
+        // Bersihkan foto file profil & produk jika ada
+        if ($user->umkmProfile) {
+            if ($user->umkmProfile->image_path && Storage::disk('public')->exists($user->umkmProfile->image_path)) {
+                Storage::disk('public')->delete($user->umkmProfile->image_path);
+            }
+            if ($user->umkmProfile->products) {
+                foreach ($user->umkmProfile->products as $prod) {
+                    if ($prod->image_path && Storage::disk('public')->exists($prod->image_path)) {
+                        Storage::disk('public')->delete($prod->image_path);
+                    }
+                    if (!empty($prod->images)) {
+                        foreach ((array)$prod->images as $img) {
+                            if ($img && Storage::disk('public')->exists($img)) {
+                                Storage::disk('public')->delete($img);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $user->delete();
+
+        return back()->with('success', "Akun '{$userName}' ({$userEmail}) beserta data tokonya berhasil dihapus.");
+    }
+
+    public function downloadExcelTemplate()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="template_import_umkm_wonogiri.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function() {
+            $handle = fopen('php://output', 'w');
+            // Tulis UTF-8 BOM agar Excel Windows langsung membaca kolom dengan sempurna
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            // Header kolom
+            fputcsv($handle, [
+                'nama_pemilik',
+                'email',
+                'password',
+                'gender',
+                'nama_usaha',
+                'no_whatsapp',
+                'kecamatan',
+                'desa',
+                'alamat',
+                'kategori_produk',
+                'nama_produk',
+                'harga_produk',
+                'deskripsi_produk',
+                'nib',
+                'pirt',
+                'halal',
+            ], ',', '"', "\\");
+
+            // Contoh Data 1
+            fputcsv($handle, [
+                'Budi Santoso',
+                'budi.santoso@gmail.com',
+                'PojokUmkm2026!',
+                'L',
+                'Keripik Singkong Barokah',
+                '081234567890',
+                'Wonogiri',
+                'Giriwono',
+                'Jl. Ahmad Yani No. 12',
+                'Makanan & Minuman',
+                'Keripik Singkong Balado 250g',
+                '15000',
+                'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
+                '1234567890123',
+                'P-IRT 2063312010123-26',
+                'ID3311000123456',
+            ], ',', '"', "\\");
+
+            // Contoh Data 2
+            fputcsv($handle, [
+                'Siti Rahayu',
+                'siti.batik@gmail.com',
+                'PojokUmkm2026!',
+                'P',
+                'Batik Tulis Wonogiren',
+                '089876543210',
+                'Tirtomoyo',
+                'Dlepih',
+                'Dusun Dlepih RT 02/03',
+                'Batik/Fashion',
+                'Kain Batik Tulis Motif Wonogiren',
+                '250000',
+                'Kain batik tulis halus dengan pewarna alam khas Wonogiri.',
+                '',
+                '',
+                '',
+            ], ',', '"', "\\");
+
+            // Contoh Data 3 (Email & password kosong, sistem otomatis membuatkannya)
+            fputcsv($handle, [
+                'Slamet Widodo',
+                '',
+                '',
+                'L',
+                'Madu Hutan Asli Baturetno',
+                '085612345678',
+                'Baturetno',
+                'Belikurip',
+                'Jl. Raya Baturetno KM 3',
+                'Makanan & Minuman',
+                'Madu Hutan Murni 500ml',
+                '85000',
+                'Madu murni alami tanpa bahan pengawet.',
+                '',
+                '',
+                '',
+            ], ',', '"', "\\");
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|max:10240',
+        ], [
+            'file.required' => 'Pilih file Excel (.xlsx) atau CSV yang akan diimpor.',
+            'file.max' => 'Ukuran file maksimal 10MB.',
+        ]);
+
+        $file = $request->file('file');
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (!in_array($extension, ['xlsx', 'csv', 'txt'])) {
+            return back()->with('error', 'Format file tidak didukung. Mohon gunakan format file .xlsx atau .csv');
+        }
+
+        $rows = $this->parseUploadedSpreadsheet($file->getRealPath(), $extension);
+
+        if (empty($rows) || count($rows) < 2) {
+            return back()->with('error', 'File tidak berisi baris data atau kosong. Pastikan file memiliki baris header dan minimal 1 baris data.');
+        }
+
+        // Ambil baris pertama sebagai Header
+        $rawHeaders = array_shift($rows);
+        $headerMap = [];
+        foreach ($rawHeaders as $idx => $headerText) {
+            $clean = strtolower(trim($headerText));
+            $clean = str_replace([' ', '-', '.'], '_', $clean);
+            $clean = preg_replace('/[^a-z0-9_]/', '', $clean);
+            $headerMap[$clean] = $idx;
+        }
+
+        $getCol = function($row, array $possibleNames) use ($headerMap) {
+            foreach ($possibleNames as $name) {
+                if (isset($headerMap[$name]) && isset($row[$headerMap[$name]])) {
+                    $val = trim($row[$headerMap[$name]]);
+                    if ($val !== '') return $val;
+                }
+            }
+            return null;
+        };
+
+        $importedCount = 0;
+        $skippedCount = 0;
+        $messages = [];
+
+        DB::beginTransaction();
+        try {
+            foreach ($rows as $rowIndex => $row) {
+                // Lewati baris kosong
+                if (empty(array_filter($row, fn($c) => trim($c) !== ''))) {
+                    continue;
+                }
+
+                $namaUsaha = $getCol($row, ['nama_usaha', 'nama_toko', 'business_name', 'usaha', 'toko']);
+                if (empty($namaUsaha)) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                $namaPemilik = $getCol($row, ['nama_pemilik', 'owner_name', 'nama', 'pemilik']) ?: $namaUsaha;
+                $email = $getCol($row, ['email', 'surel', 'e_mail']);
+                $password = $getCol($row, ['password', 'sandi', 'kata_sandi']) ?: 'PojokUmkm2026!';
+                $gender = $getCol($row, ['gender', 'jenis_kelamin', 'jk']);
+                $phone = $getCol($row, ['no_whatsapp', 'whatsapp', 'phone', 'no_hp', 'telepon', 'nohp']) ?: '081234567890';
+                $district = $getCol($row, ['kecamatan', 'district', 'kec']) ?: 'Wonogiri';
+                $village = $getCol($row, ['desa', 'village', 'kelurahan']) ?: '';
+                $address = $getCol($row, ['alamat', 'address', 'lokasi']) ?: 'Wonogiri, Jawa Tengah';
+                $nib = $getCol($row, ['nib', 'nomor_induk_berusaha']);
+                $pirt = $getCol($row, ['pirt', 'p_irt']);
+                $halal = $getCol($row, ['halal', 'sertifikat_halal', 'halal_cert']);
+
+                // Data Produk Opsional
+                $kategoriProduk = $getCol($row, ['kategori_produk', 'kategori', 'category']) ?: 'Makanan & Minuman';
+                $namaProduk = $getCol($row, ['nama_produk', 'product_name', 'produk']);
+                $hargaProduk = $getCol($row, ['harga_produk', 'harga', 'price']);
+                $deskripsiProduk = $getCol($row, ['deskripsi_produk', 'deskripsi', 'description']);
+
+                // Normalisasi Gender
+                if ($gender) {
+                    $genderLower = strtolower($gender);
+                    if (str_starts_with($genderLower, 'l') || str_contains($genderLower, 'laki')) {
+                        $gender = 'L';
+                    } elseif (str_starts_with($genderLower, 'p') || str_contains($genderLower, 'perempuan') || str_contains($genderLower, 'wanita')) {
+                        $gender = 'P';
+                    } else {
+                        $gender = null;
+                    }
+                }
+
+                // Normalisasi Email
+                if (empty($email)) {
+                    $baseSlug = Str::slug($namaUsaha, '');
+                    if (empty($baseSlug)) $baseSlug = 'umkm' . ($rowIndex + 1);
+                    $email = $baseSlug . '@pojokumkm.id';
+                    $suffix = 1;
+                    while (User::where('email', $email)->exists()) {
+                        $email = $baseSlug . $suffix . '@pojokumkm.id';
+                        $suffix++;
+                    }
+                } else {
+                    $email = strtolower(trim($email));
+                    if (User::where('email', $email)->exists()) {
+                        $skippedCount++;
+                        $messages[] = "Baris " . ($rowIndex + 2) . ": Email '{$email}' sudah terdaftar, dilewati.";
+                        continue;
+                    }
+                }
+
+                // 1. Buat User
+                $user = User::create([
+                    'name' => $namaPemilik,
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'role' => 'umkm',
+                    'email_verified_at' => now(),
+                ]);
+
+                // 2. Buat Profil UMKM
+                $umkmData = [
+                    'user_id' => $user->id,
+                    'business_name' => $namaUsaha,
+                    'owner_name' => $namaPemilik,
+                    'gender' => $gender,
+                    'phone' => $phone,
+                    'province' => 'Jawa Tengah',
+                    'regency' => 'Kabupaten Wonogiri',
+                    'district' => $district,
+                    'village' => $village,
+                    'address' => $address,
+                    'nib' => $nib,
+                    'pirt' => $pirt,
+                    'halal_cert' => $halal,
+                    'status' => 'verified',
+                ];
+
+                if (Schema::hasColumn('umkm_profiles', 'is_managed_by_admin')) {
+                    $umkmData['is_managed_by_admin'] = true;
+                }
+
+                $umkm = UmkmProfile::create($umkmData);
+
+                // 3. Buat Produk jika ada
+                if (!empty($namaProduk)) {
+                    $cleanPrice = 0;
+                    if (!empty($hargaProduk)) {
+                        $cleanPrice = (float)preg_replace('/[^0-9.]/', '', str_replace(',', '.', $hargaProduk));
+                    }
+
+                    $productData = [
+                        'umkm_profile_id' => $umkm->id,
+                        'name' => $namaProduk,
+                        'category' => $kategoriProduk,
+                        'price' => $cleanPrice,
+                        'description' => $deskripsiProduk ?: $namaProduk,
+                        'status' => 'verified',
+                    ];
+                    if (Schema::hasColumn('products', 'is_featured')) {
+                        $productData['is_featured'] = false;
+                    }
+                    Product::create($productData);
+                }
+
+                $importedCount++;
+            }
+
+            DB::commit();
+
+            $successMsg = "Berhasil mengimpor {$importedCount} akun UMKM baru!";
+            if ($skippedCount > 0) {
+                $successMsg .= " ({$skippedCount} baris dilewati karena email sudah ada / kosong).";
+            }
+
+            return redirect()->route('admin.users.index')->with('success', $successMsg);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan saat memproses data import: ' . $e->getMessage());
+        }
+    }
+
+    private function parseUploadedSpreadsheet(string $filePath, string $extension): array
+    {
+        $extension = strtolower($extension);
+        $rows = [];
+
+        if ($extension === 'csv' || $extension === 'txt') {
+            $handle = fopen($filePath, 'r');
+            if ($handle !== false) {
+                $firstLine = fgets($handle);
+                $delimiter = (substr_count($firstLine, ';') > substr_count($firstLine, ',')) ? ';' : ',';
+                rewind($handle);
+
+                $bom = fread($handle, 3);
+                if ($bom !== "\xEF\xBB\xBF") {
+                    rewind($handle);
+                }
+
+                while (($data = fgetcsv($handle, 0, $delimiter, '"', "\\")) !== false) {
+                    if (!empty(array_filter($data, fn($v) => trim($v) !== ''))) {
+                        $rows[] = array_map('trim', $data);
+                    }
+                }
+                fclose($handle);
+            }
+        } elseif ($extension === 'xlsx') {
+            $zip = new \ZipArchive();
+            if ($zip->open($filePath) === true) {
+                $sharedStrings = [];
+                $sharedStringsXml = $zip->getFromName('xl/sharedStrings.xml');
+                if ($sharedStringsXml !== false) {
+                    $xml = simplexml_load_string($sharedStringsXml);
+                    if ($xml && isset($xml->si)) {
+                        foreach ($xml->si as $si) {
+                            if (isset($si->t)) {
+                                $sharedStrings[] = (string)$si->t;
+                            } elseif (isset($si->r)) {
+                                $text = '';
+                                foreach ($si->r as $r) {
+                                    $text .= (string)$r->t;
+                                }
+                                $sharedStrings[] = $text;
+                            } else {
+                                $sharedStrings[] = '';
+                            }
+                        }
+                    }
+                }
+
+                $sheetXml = $zip->getFromName('xl/worksheets/sheet1.xml');
+                if ($sheetXml !== false) {
+                    $xml = simplexml_load_string($sheetXml);
+                    if ($xml && isset($xml->sheetData->row)) {
+                        foreach ($xml->sheetData->row as $row) {
+                            $rowData = [];
+                            foreach ($row->c as $cell) {
+                                $attr = $cell->attributes();
+                                $cellRef = (string)$attr['r'];
+                                preg_match('/^([A-Z]+)(\d+)$/i', $cellRef, $matches);
+                                $colLetters = $matches[1] ?? 'A';
+
+                                $colIdx = 0;
+                                for ($i = 0; $i < strlen($colLetters); $i++) {
+                                    $colIdx = $colIdx * 26 + (ord(strtoupper($colLetters[$i])) - 64);
+                                }
+                                $colIdx -= 1;
+
+                                $type = (string)($attr['t'] ?? '');
+                                $val = '';
+                                if ($type === 's') {
+                                    $ssIdx = (int)$cell->v;
+                                    $val = $sharedStrings[$ssIdx] ?? '';
+                                } elseif ($type === 'inlineStr' && isset($cell->is->t)) {
+                                    $val = (string)$cell->is->t;
+                                } else {
+                                    $val = (string)($cell->v ?? '');
+                                }
+
+                                $rowData[$colIdx] = trim($val);
+                            }
+
+                            if (!empty($rowData)) {
+                                $maxCol = max(array_keys($rowData));
+                                $fullRow = [];
+                                for ($c = 0; $c <= $maxCol; $c++) {
+                                    $fullRow[$c] = $rowData[$c] ?? '';
+                                }
+                                if (!empty(array_filter($fullRow, fn($v) => trim($v) !== ''))) {
+                                    $rows[] = $fullRow;
+                                }
+                            }
+                        }
+                    }
+                }
+                $zip->close();
+            }
+        }
+
+        return $rows;
     }
 }
