@@ -148,7 +148,7 @@
                         <th class="px-5 py-3.5 whitespace-nowrap">Peran</th>
                         @endif
                         <th class="px-4 py-3.5 whitespace-nowrap">Terdaftar</th>
-                        <th class="px-5 py-3.5 text-right whitespace-nowrap">Aksi</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -276,30 +276,29 @@
                             {{ $user->created_at ? $user->created_at->format('d M Y') : '-' }}
                         </td>
 
-                        <!-- Kolom Aksi -->
-                        <td class="px-5 py-3.5 text-right whitespace-nowrap">
-                            <div class="inline-flex items-center justify-end gap-1.5">
-                                @if($currentRole === 'umkm' && $user->umkmProfile)
-                                <!-- Tombol Tambah Produk di Samping Kanan -->
-                                <a href="{{ route('admin.users.product.create', $user->umkmProfile->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-2xs transition-colors" title="Tambah produk baru untuk toko ini">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                    <span>+ Produk</span>
-                                </a>
-                                @endif
-
-                                <!-- Reset Password Button -->
-                                <button type="button" onclick="openResetPasswordModal('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200 cursor-pointer" title="Ubah / Reset Kata Sandi Akun">
-                                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-                                    <span class="hidden sm:inline">Sandi</span>
+                        <!-- Kolom Aksi (Visual Icon Only, sama persis seperti di Data UMKM) -->
+                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-2">
+                                <!-- Reset Password Button (Visual Icon Only) -->
+                                <button type="button" 
+                                        onclick="openResetPasswordModal('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')" 
+                                        data-tooltip="Ubah / Reset Kata Sandi" 
+                                        title="Ubah / Reset Kata Sandi"
+                                        class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-600 hover:text-white border border-amber-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs cursor-pointer">
+                                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                                 </button>
 
                                 @if($user->id !== auth()->id())
-                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun {{ addslashes($user->name) }}?');" class="inline">
+                                <button type="button" 
+                                        onclick="confirmDeleteUser('{{ $user->id }}', '{{ addslashes($user->name) }}')"
+                                        data-tooltip="Hapus Akun Pengguna" 
+                                        title="Hapus Akun Pengguna"
+                                        class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs cursor-pointer">
+                                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                                <form id="delete-user-form-{{ $user->id }}" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-red-200 cursor-pointer" title="Hapus Akun Pengguna">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
                                 </form>
                                 @endif
                             </div>
@@ -633,6 +632,38 @@ function generateRandomPass() {
     }
     pass += '!2026';
     document.getElementById('new_password_input').value = pass;
+}
+
+function confirmDeleteUser(userId, userName) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Hapus Akun Pengguna?',
+            html: `Apakah Anda yakin ingin menghapus akun <strong>"${userName}"</strong>?<br><span class="text-xs text-red-500 mt-2 block font-medium">Peringatan: Akun ini beserta aksesnya akan dihapus secara permanen.</span>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                popup: 'rounded-2xl shadow-2xl border border-slate-100',
+                confirmButton: 'rounded-xl font-bold px-5 py-2.5 text-sm shadow-sm',
+                cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-sm shadow-sm'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById('delete-user-form-' + userId);
+                if (form) form.submit();
+            }
+        });
+    } else {
+        if (confirm(`Apakah Anda yakin ingin menghapus akun "${userName}"?`)) {
+            const form = document.getElementById('delete-user-form-' + userId);
+            if (form) form.submit();
+        }
+    }
 }
 
 if (window.location.hash === '#modal-import') {
