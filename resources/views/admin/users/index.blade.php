@@ -156,19 +156,11 @@
                     <tr class="hover:bg-slate-50/80 transition-colors">
                         <!-- 1. Kolom Nama -->
                         <td class="px-5 py-3.5 whitespace-nowrap">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-slate-700 shrink-0 uppercase overflow-hidden">
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background={{ $user->role === 'admin' ? '800000' : 'd97706' }}&color=fff&size=80" alt="{{ $user->name }}" class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                                        <span>{{ $user->name }}</span>
-                                        @if($user->id === auth()->id())
-                                        <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-100 text-blue-700">(Anda)</span>
-                                        @endif
-                                    </div>
-                                    <span class="text-[10px] text-slate-400">ID: #{{ $user->id }}</span>
-                                </div>
+                            <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>{{ $user->name }}</span>
+                                @if($user->id === auth()->id())
+                                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-100 text-blue-700">(Anda)</span>
+                                @endif
                             </div>
                         </td>
 
