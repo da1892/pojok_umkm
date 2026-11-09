@@ -11,6 +11,7 @@ class UmkmProfile extends Model
 
     protected $fillable = [
         'user_id',
+        'is_managed_by_admin',
         'business_name',
         'image_path',
         'owner_name',
@@ -265,5 +266,13 @@ class UmkmProfile extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Mengecek apakah UMKM ini merupakan Binaan Dinas (didaftarkan oleh admin/belum punya device)
+     */
+    public function getIsBinaanDinasAttribute(): bool
+    {
+        return (bool)$this->is_managed_by_admin || is_null($this->user_id) || ($this->user && $this->user->role === 'admin');
     }
 }

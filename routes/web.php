@@ -75,6 +75,14 @@ Route::middleware(['auth'])->group(function () {
         // Data UMKM
         Route::get('/admin/toko', [AdminController::class, 'stores'])->name('admin.stores');
         
+        // UMKM Binaan Dinas (Khusus Pelaku Usaha Tanpa Gadget / Dikelola Admin)
+        Route::get('/admin/binaan', [AdminController::class, 'binaanIndex'])->name('admin.binaan.index');
+        Route::get('/admin/binaan/tambah-umkm', [AdminController::class, 'binaanCreateUmkm'])->name('admin.binaan.umkm.create');
+        Route::post('/admin/binaan/tambah-umkm', [AdminController::class, 'binaanStoreUmkm'])->name('admin.binaan.umkm.store');
+        Route::get('/admin/binaan/tambah-produk', [AdminController::class, 'binaanCreateProduct'])->name('admin.binaan.product.create');
+        Route::post('/admin/binaan/tambah-produk', [AdminController::class, 'binaanStoreProduct'])->name('admin.binaan.product.store');
+        Route::post('/admin/binaan/{id}/klaim', [AdminController::class, 'binaanClaimUmkm'])->name('admin.binaan.claim');
+        
         Route::get('/admin/umkm/{id}', [AdminController::class, 'showUmkm'])->name('admin.umkm.show');
         Route::get('/admin/umkm/{id}/edit', [AdminController::class, 'editUmkm'])->name('admin.umkm.edit');
         Route::put('/admin/umkm/{id}', [AdminController::class, 'updateUmkm'])->name('admin.umkm.update');

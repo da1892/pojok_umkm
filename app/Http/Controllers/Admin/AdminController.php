@@ -963,4 +963,263 @@ class AdminController extends Controller
 
         return back()->with('success', 'Berita & Kegiatan berhasil dihapus.');
     }
+
+    // ==========================================
+    // MODUL KHUSUS: UMKM BINAAN DINAS (NON-DEVICE)
+    // ==========================================
+
+    public function binaanIndex(Request $request)
+    {
+        $query = UmkmProfile::with(['user', 'products'])
+            ->where(function($q) {
+                $q->where('is_managed_by_admin', true)
+                  ->orWhereNull('user_id')
+                  ->orWhereHas('user', function($u) {
+                      $u->where('role', 'admin');
+                  });
+            });
+
+        $tab = $request->input('tab', 'all');
+        if ($tab === 'offline') {
+            $query->where(function($q) {
+                $q->whereNull('user_id')->orWhere('is_managed_by_admin', true);
+            })->whereDoesntHave('user', function($u) {
+                $u->where('role', 'umkm');
+            });
+        } elseif ($tab === 'online') {
+            $query->whereHas('user', function($u) {
+                $u->where('role', 'umkm');
+            });
+        }
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('business_name', 'ilike', "%{$search}%")
+                  ->orWhere('owner_name', 'ilike', "%{$search}%")
+                  ->orWhere('district', 'ilike', "%{$search}%")
+                  ->orWhere('village', 'ilike', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('district')) {
+            $query->where('district', $request->district);
+        }
+
+        $binaanUmkms = $query->latest()->paginate(10)->withQueryString();
+
+        $totalBinaan = UmkmProfile::where('is_managed_by_admin', true)
+            ->orWhereNull('user_id')
+            ->orWhereHas('user', fn($u) => $u->where('role', 'admin'))
+            ->count();
+
+        $totalProdukBinaan = Product::whereHas('umkmProfile', function($q) {
+            $q->where('is_managed_by_admin', true)
+              ->orWhereNull('user_id')
+              ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+        })->count();
+
+        $totalSudahKlaim = UmkmProfile::whereHas('user', fn($u) => $u->where('role', 'umkm'))
+            ->where(function($q) {
+                $q->where('is_managed_by_admin', true)
+                  ->orWhereNull('user_id');
+            })
+            ->count();
+
+        $totalBelumKlaim = max(0, $totalBinaan - $totalSudahKlaim);
+        $districts = $this->wilayahWonogiri;
+
+        return view('admin.binaan.index', compact(
+            'binaanUmkms',
+            'totalBinaan',
+            'totalProdukBinaan',
+            'totalBelumKlaim',
+            'totalSudahKlaim',
+            'tab',
+            'districts'
+        ));
+    }
+
+    public function binaanCreateUmkm()
+    {
+        $districts = $this->wilayahWonogiri;
+        return view('admin.binaan.create_umkm', compact('districts'));
+    }
+
+    public function binaanStoreUmkm(Request $request)
+    {
+        $request->validate([
+            'business_name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:25',
+            'district' => 'required|string',
+            'village' => 'required|string',
+            'address' => 'required|string',
+            'description' => 'nullable|string',
+            'nib' => 'nullable|string|max:50',
+            'pirt' => 'nullable|string|max:50',
+            'halal_cert' => 'nullable|string|max:50',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $cleanName = time() . '_' . Str::slug($request->business_name) . '.' . $request->file('image')->getClientOriginalExtension();
+            $imagePath = $request->file('image')->storeAs('umkm_profiles', $cleanName, 'public');
+        }
+
+        try {
+            $umkm = UmkmProfile::create([
+                'user_id' => null,
+                'is_managed_by_admin' => true,
+                'business_name' => $request->business_name,
+                'owner_name' => $request->owner_name,
+                'gender' => $request->gender ?? 'Laki-laki',
+                'phone' => $request->phone ?: 'Dikelola Dinas KUKM',
+                'province' => 'Jawa Tengah',
+                'regency' => 'Kabupaten Wonogiri',
+                'district' => $request->district,
+                'village' => $request->village,
+                'address' => $request->address,
+                'postal_code' => $request->postal_code,
+                'description' => $request->description,
+                'nib' => $request->nib,
+                'pirt' => $request->pirt,
+                'halal_cert' => $request->halal_cert,
+                'map_link' => $request->map_link,
+                'image_path' => $imagePath,
+                'status' => 'verified',
+            ]);
+        } catch (\Throwable $e) {
+            $umkm = UmkmProfile::create([
+                'user_id' => auth()->id(),
+                'is_managed_by_admin' => true,
+                'business_name' => $request->business_name,
+                'owner_name' => $request->owner_name,
+                'gender' => $request->gender ?? 'Laki-laki',
+                'phone' => $request->phone ?: 'Dikelola Dinas KUKM',
+                'province' => 'Jawa Tengah',
+                'regency' => 'Kabupaten Wonogiri',
+                'district' => $request->district,
+                'village' => $request->village,
+                'address' => $request->address,
+                'postal_code' => $request->postal_code,
+                'description' => $request->description,
+                'nib' => $request->nib,
+                'pirt' => $request->pirt,
+                'halal_cert' => $request->halal_cert,
+                'map_link' => $request->map_link,
+                'image_path' => $imagePath,
+                'status' => 'verified',
+            ]);
+        }
+
+        return redirect()->route('admin.binaan.index')->with('success', "UMKM Binaan '{$umkm->business_name}' berhasil didaftarkan dan langsung berstatus Terverifikasi.");
+    }
+
+    public function binaanCreateProduct(Request $request)
+    {
+        $binaanUmkms = UmkmProfile::where(function($q) {
+            $q->where('is_managed_by_admin', true)
+              ->orWhereNull('user_id')
+              ->orWhereHas('user', fn($u) => $u->where('role', 'admin'));
+        })->orderBy('business_name', 'asc')->get();
+
+        $selectedUmkmId = $request->query('umkm_id');
+
+        return view('admin.binaan.create_product', compact('binaanUmkms', 'selectedUmkmId'));
+    }
+
+    public function binaanStoreProduct(Request $request)
+    {
+        $request->validate([
+            'umkm_profile_id' => 'required|exists:umkm_profiles,id',
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'price' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'all_images' => 'nullable|array|max:4',
+            'all_images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+        ], [
+            'umkm_profile_id.required' => 'Pilih UMKM Binaan pemilik produk ini.',
+            'name.required' => 'Nama produk wajib diisi.',
+            'price.required' => 'Harga produk wajib diisi.',
+            'image.required' => 'Foto utama produk wajib diunggah.',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $cleanName = time() . '_' . Str::slug($request->name) . '.' . $request->file('image')->getClientOriginalExtension();
+            $imagePath = $request->file('image')->storeAs('products', $cleanName, 'public');
+        }
+
+        $allImagesPaths = [];
+        if ($imagePath) {
+            $allImagesPaths[] = $imagePath;
+        }
+
+        if ($request->hasFile('all_images')) {
+            foreach ($request->file('all_images') as $idx => $extraFile) {
+                if ($extraFile->isValid()) {
+                    $extraName = time() . '_' . $idx . '_' . Str::slug($request->name) . '.' . $extraFile->getClientOriginalExtension();
+                    $extraPath = $extraFile->storeAs('products', $extraName, 'public');
+                    $allImagesPaths[] = $extraPath;
+                }
+            }
+        }
+
+        $isFeatured = $request->boolean('is_featured');
+
+        if ($isFeatured) {
+            Product::where('umkm_profile_id', $request->umkm_profile_id)
+                ->where('is_featured', true)
+                ->update(['is_featured' => false]);
+        }
+
+        $product = Product::create([
+            'umkm_profile_id' => $request->umkm_profile_id,
+            'name' => $request->name,
+            'category' => $request->category,
+            'price' => $request->price,
+            'description' => $request->description,
+            'image_path' => $imagePath,
+            'all_images' => !empty($allImagesPaths) ? $allImagesPaths : null,
+            'status' => 'verified',
+            'is_featured' => $isFeatured,
+        ]);
+
+        return redirect()->route('admin.binaan.index')->with('success', "Produk '{$product->name}' berhasil ditambahkan ke UMKM Binaan dan langsung tayang di katalog publik.");
+    }
+
+    public function binaanClaimUmkm(Request $request, $id)
+    {
+        $umkm = UmkmProfile::findOrFail($id);
+
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ], [
+            'email.required' => 'Wajib memasukkan alamat email pengguna terdaftar.',
+            'email.email' => 'Format email tidak valid.',
+            'email.exists' => 'Email ini belum terdaftar di sistem. Mohon pemilik mendaftar akun di web terlebih dahulu.',
+        ]);
+
+        $targetUser = \App\Models\User\User::where('email', $request->email)->firstOrFail();
+
+        $existingUmkm = UmkmProfile::where('user_id', $targetUser->id)
+            ->where('id', '!=', $umkm->id)
+            ->first();
+
+        if ($existingUmkm) {
+            return back()->with('error', "Pengguna '{$targetUser->name}' ({$targetUser->email}) sudah memiliki toko '{$existingUmkm->business_name}'. Satu akun pengguna hanya dapat mengelola 1 UMKM.");
+        }
+
+        $umkm->user_id = $targetUser->id;
+        $umkm->is_managed_by_admin = false;
+        $umkm->save();
+
+        $targetUser->update(['role' => 'umkm']);
+
+        return back()->with('success', "Sukses! Kepemilikan UMKM '{$umkm->business_name}' berhasil diserahterimakan ke akun {$targetUser->name} ({$targetUser->email}). Pemilik kini dapat login dan mengelola tokonya secara mandiri!");
+    }
 }
