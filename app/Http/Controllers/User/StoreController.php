@@ -138,6 +138,8 @@ class StoreController extends Controller
             'status' => 'pending'
         ]);
 
+        auth()->user()->update(['role' => 'umkm']);
+
         return redirect()->route('toko.index')->with('success', 'Pendaftaran UMKM berhasil dikirim! Menunggu verifikasi dari Admin.');
     }
 

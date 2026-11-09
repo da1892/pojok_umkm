@@ -518,6 +518,9 @@ class AdminController extends Controller
             'status' => 'verified',
             'rejection_note' => null
         ]);
+        if ($umkm->user && $umkm->user->role !== 'admin') {
+            $umkm->user->update(['role' => 'umkm']);
+        }
         return back()
             ->with('success', "Profil UMKM '{$umkm->business_name}' berhasil diverifikasi dan disetujui.")
             ->with('verified_item', [
@@ -1286,8 +1289,10 @@ class AdminController extends Controller
         if ($currentRole === 'admin') {
             $query->where('role', 'admin');
         } else {
-            // Hanya tampilkan pelaku UMKM yang terdaftar
-            $query->where('role', 'umkm')->with(['umkmProfile.products']);
+            // Tampilkan seluruh akun pelaku UMKM terdaftar (akun ber-role umkm atau yang memiliki toko UMKM)
+            $query->where(function($q) {
+                $q->where('role', 'umkm')->orWhereHas('umkmProfile');
+            })->where('role', '!=', 'admin')->with(['umkmProfile.products']);
         }
 
         // Pencarian Nama, Email, atau Toko UMKM
@@ -1309,7 +1314,9 @@ class AdminController extends Controller
 
         $users = $query->paginate(15)->withQueryString();
 
-        $totalUmkmUsers = User::where('role', 'umkm')->count();
+        $totalUmkmUsers = User::where(function($q) {
+            $q->where('role', 'umkm')->orWhereHas('umkmProfile');
+        })->where('role', '!=', 'admin')->count();
         $totalAdminUsers = User::where('role', 'admin')->count();
         $totalProductsCount = Product::count();
         $totalVerifiedUmkms = UmkmProfile::where('status', 'verified')->count();
