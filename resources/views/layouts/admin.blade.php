@@ -388,6 +388,38 @@
                 }
             });
         }
+
+        function confirmDeleteProduct(productId, productName) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Hapus Produk?',
+                    html: `Apakah Anda yakin ingin menghapus produk <strong>"${productName}"</strong>?<br><span class="text-xs text-red-500 mt-2 block font-medium">Peringatan: Produk ini akan dihapus secara permanen dari sistem dan katalog.</span>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    focusCancel: true,
+                    customClass: {
+                        popup: 'rounded-2xl shadow-2xl border border-slate-100',
+                        confirmButton: 'rounded-xl font-bold px-5 py-2.5 text-sm shadow-sm',
+                        cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-sm shadow-sm'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById('delete-product-form-' + productId);
+                        if (form) form.submit();
+                    }
+                });
+            } else {
+                if (confirm(`Apakah Anda yakin ingin menghapus produk "${productName}"?`)) {
+                    const form = document.getElementById('delete-product-form-' + productId);
+                    if (form) form.submit();
+                }
+            }
+        }
         // Global Floating Tooltip System
         (function() {
             let tip = null;
