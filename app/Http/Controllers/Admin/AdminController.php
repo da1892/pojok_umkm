@@ -1278,6 +1278,9 @@ class AdminController extends Controller
 
     public function usersIndex(Request $request)
     {
+        // Default tab adalah 'umkm' agar akun administrator tidak tercampur di tabel utama
+        $currentRole = $request->input('role', 'umkm');
+
         $query = User::with(['umkmProfile.products'])->latest();
 
         // Pencarian Nama, Email, atau Toko UMKM
@@ -1295,9 +1298,9 @@ class AdminController extends Controller
             });
         }
 
-        // Filter Role
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
+        // Filter Role (jika bukan 'all')
+        if ($currentRole !== 'all') {
+            $query->where('role', $currentRole);
         }
 
         $users = $query->paginate(15)->withQueryString();
@@ -1315,6 +1318,7 @@ class AdminController extends Controller
             'totalUmkmUsers',
             'totalAdminUsers',
             'totalPublicUsers',
+            'currentRole',
             'districts'
         ));
     }

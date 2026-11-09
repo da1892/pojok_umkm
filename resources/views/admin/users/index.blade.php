@@ -23,55 +23,75 @@
     </div>
     @endif
 
-    <!-- 4 Summary Cards -->
+    <!-- 4 Filter Cards (Clickable Tabs to Separate UMKM, Admin, and Public Users) -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Card 1: Total Users -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Pengguna</p>
-                <h3 class="text-2xl font-black text-slate-800 tracking-tight">{{ number_format($totalUsers) }}</h3>
-                <p class="text-[11px] text-slate-500">Semua akun sistem</p>
-            </div>
-        </div>
-
-        <!-- Card 2: Pelaku UMKM -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+        <!-- Tab 1: Pelaku UMKM (Default & Rekomendasi Utama) -->
+        <a href="{{ route('admin.users.index', ['role' => 'umkm', 'search' => request('search')]) }}" class="rounded-2xl border p-4 sm:p-5 shadow-xs flex items-center gap-4 transition-all cursor-pointer {{ $currentRole === 'umkm' ? 'bg-amber-50/80 border-amber-400 ring-2 ring-amber-400/30' : 'bg-white border-slate-200/80 hover:bg-slate-50' }}">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
             </div>
             <div>
-                <p class="text-xs font-bold text-amber-700 uppercase tracking-wider">Pelaku UMKM</p>
-                <h3 class="text-2xl font-black text-amber-600 tracking-tight">{{ number_format($totalUmkmUsers) }}</h3>
-                <p class="text-[11px] text-slate-500">Memiliki profil toko</p>
+                <div class="flex items-center gap-1.5">
+                    <p class="text-xs font-bold uppercase tracking-wider {{ $currentRole === 'umkm' ? 'text-amber-800' : 'text-slate-400' }}">Pelaku UMKM</p>
+                    @if($currentRole === 'umkm')
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    @endif
+                </div>
+                <h3 class="text-2xl font-black text-slate-800 tracking-tight">{{ number_format($totalUmkmUsers) }}</h3>
+                <p class="text-[11px] text-slate-500">Toko aktif dinas</p>
             </div>
-        </div>
+        </a>
 
-        <!-- Card 3: Administrator -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-red-50 text-[#800000] flex items-center justify-center shrink-0">
+        <!-- Tab 2: Administrator Dinas -->
+        <a href="{{ route('admin.users.index', ['role' => 'admin', 'search' => request('search')]) }}" class="rounded-2xl border p-4 sm:p-5 shadow-xs flex items-center gap-4 transition-all cursor-pointer {{ $currentRole === 'admin' ? 'bg-red-50/80 border-red-400 ring-2 ring-red-400/30' : 'bg-white border-slate-200/80 hover:bg-slate-50' }}">
+            <div class="w-12 h-12 rounded-2xl bg-red-100 text-[#800000] flex items-center justify-center shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
             <div>
-                <p class="text-xs font-bold text-red-800 uppercase tracking-wider">Administrator</p>
+                <div class="flex items-center gap-1.5">
+                    <p class="text-xs font-bold uppercase tracking-wider {{ $currentRole === 'admin' ? 'text-red-800' : 'text-slate-400' }}">Administrator</p>
+                    @if($currentRole === 'admin')
+                    <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                    @endif
+                </div>
                 <h3 class="text-2xl font-black text-slate-800 tracking-tight">{{ number_format($totalAdminUsers) }}</h3>
                 <p class="text-[11px] text-slate-500">Pengelola dinas</p>
             </div>
-        </div>
+        </a>
 
-        <!-- Card 4: User Publik -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs flex items-center gap-4">
+        <!-- Tab 3: User Publik (Masyarakat) -->
+        <a href="{{ route('admin.users.index', ['role' => 'user', 'search' => request('search')]) }}" class="rounded-2xl border p-4 sm:p-5 shadow-xs flex items-center gap-4 transition-all cursor-pointer {{ $currentRole === 'user' ? 'bg-slate-100 border-slate-400 ring-2 ring-slate-400/30' : 'bg-white border-slate-200/80 hover:bg-slate-50' }}">
             <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">User Publik</p>
+                <div class="flex items-center gap-1.5">
+                    <p class="text-xs font-bold uppercase tracking-wider {{ $currentRole === 'user' ? 'text-slate-700' : 'text-slate-400' }}">User Publik</p>
+                    @if($currentRole === 'user')
+                    <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                    @endif
+                </div>
                 <h3 class="text-2xl font-black text-slate-800 tracking-tight">{{ number_format($totalPublicUsers) }}</h3>
                 <p class="text-[11px] text-slate-500">Masyarakat umum</p>
             </div>
-        </div>
+        </a>
+
+        <!-- Tab 4: Semua Pengguna -->
+        <a href="{{ route('admin.users.index', ['role' => 'all', 'search' => request('search')]) }}" class="rounded-2xl border p-4 sm:p-5 shadow-xs flex items-center gap-4 transition-all cursor-pointer {{ $currentRole === 'all' ? 'bg-blue-50/80 border-blue-400 ring-2 ring-blue-400/30' : 'bg-white border-slate-200/80 hover:bg-slate-50' }}">
+            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-1.5">
+                    <p class="text-xs font-bold uppercase tracking-wider {{ $currentRole === 'all' ? 'text-blue-800' : 'text-slate-400' }}">Semua Pengguna</p>
+                    @if($currentRole === 'all')
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    @endif
+                </div>
+                <h3 class="text-2xl font-black text-slate-800 tracking-tight">{{ number_format($totalUsers) }}</h3>
+                <p class="text-[11px] text-slate-500">Seluruh akun terdaftar</p>
+            </div>
+        </a>
     </div>
 
     <!-- Main Container Table -->
@@ -79,28 +99,37 @@
         <!-- Filter & Actions Bar -->
         <div class="p-5 sm:p-6 border-b border-slate-200/80 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
             <div>
-                <h3 class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight">Daftar Pengguna Sistem</h3>
-                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Kelola akun pelaku UMKM, administrator dinas, dan import data massal dari file Excel.</p>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight">
+                        @if($currentRole === 'umkm')
+                            Daftar Akun Pelaku UMKM
+                        @elseif($currentRole === 'admin')
+                            Daftar Administrator Dinas
+                        @elseif($currentRole === 'user')
+                            Daftar Pengguna Publik
+                        @else
+                            Daftar Semua Pengguna
+                        @endif
+                    </h3>
+                    <span class="px-2 py-0.5 rounded-full text-xs font-bold {{ $currentRole === 'umkm' ? 'bg-amber-100 text-amber-800' : ($currentRole === 'admin' ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-700') }}">
+                        {{ $users->total() }} Data
+                    </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Kelola akun login, profil toko UMKM, produk, dan import data massal dari Excel.</p>
             </div>
 
             <!-- Action Buttons & Search -->
             <div class="flex flex-wrap items-center gap-2.5">
-                <!-- Search & Role Form -->
-                <form action="{{ route('admin.users.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                <!-- Search Form -->
+                <form action="{{ route('admin.users.index') }}" method="GET" class="flex items-center gap-2">
+                    <input type="hidden" name="role" value="{{ $currentRole }}">
                     <div class="relative">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, toko..." class="pl-9 pr-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none w-48 sm:w-56" style="height: 40px;">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, toko..." class="pl-9 pr-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none w-52 sm:w-60" style="height: 40px;">
                         <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
 
-                    <select name="role" onchange="this.form.submit()" class="px-3 py-2 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none cursor-pointer" style="height: 40px;">
-                        <option value="">Semua Peran</option>
-                        <option value="umkm" {{ request('role') == 'umkm' ? 'selected' : '' }}>Pelaku UMKM</option>
-                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
-                        <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User Publik</option>
-                    </select>
-
-                    @if(request('search') || request('role'))
-                    <a href="{{ route('admin.users.index') }}" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors" title="Reset Filter">
+                    @if(request('search'))
+                    <a href="{{ route('admin.users.index', ['role' => $currentRole]) }}" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors" title="Hapus Pencarian">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </a>
                     @endif
@@ -120,10 +149,10 @@
                     <span>Import Excel / CSV</span>
                 </button>
 
-                <!-- Create UMKM User Button (Main Action) -->
+                <!-- Create UMKM User Button -->
                 <a href="{{ route('admin.users.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#800000] hover:bg-[#600000] rounded-xl shadow-xs transition-colors cursor-pointer" style="height: 40px;">
                     <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                    <span>+ Buat Akun Pelaku UMKM</span>
+                    <span>+ Tambah Akun UMKM</span>
                 </a>
             </div>
         </div>
@@ -133,10 +162,11 @@
             <table class="w-full text-left text-xs sm:text-sm">
                 <thead class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                     <tr>
-                        <th class="px-5 py-3.5">Pengguna & Email</th>
+                        <th class="px-5 py-3.5 whitespace-nowrap">Nama</th>
+                        <th class="px-5 py-3.5 whitespace-nowrap">Email</th>
                         <th class="px-4 py-3.5 whitespace-nowrap">Peran</th>
-                        <th class="px-5 py-3.5">Toko / UMKM Terkait</th>
-                        <th class="px-3 py-3.5 text-center whitespace-nowrap">Produk</th>
+                        <th class="px-5 py-3.5">Nama UMKM</th>
+                        <th class="px-4 py-3.5 text-center whitespace-nowrap">Produk</th>
                         <th class="px-4 py-3.5 whitespace-nowrap">Terdaftar</th>
                         <th class="px-5 py-3.5 text-right whitespace-nowrap">Aksi</th>
                     </tr>
@@ -144,47 +174,49 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($users as $user)
                     <tr class="hover:bg-slate-50/80 transition-colors">
-                        <!-- User Name & Email -->
-                        <td class="px-5 py-3.5">
+                        <!-- 1. Kolom Nama -->
+                        <td class="px-5 py-3.5 whitespace-nowrap">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-slate-700 shrink-0 uppercase overflow-hidden">
+                                <div class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-slate-700 shrink-0 uppercase overflow-hidden">
                                     <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=800000&color=fff&size=80" alt="{{ $user->name }}" class="w-full h-full object-cover">
                                 </div>
-                                <div class="min-w-0">
-                                    <div class="font-bold text-slate-900 truncate flex items-center gap-1.5">
+                                <div>
+                                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
                                         <span>{{ $user->name }}</span>
                                         @if($user->id === auth()->id())
                                         <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-100 text-blue-700">(Anda)</span>
                                         @endif
                                     </div>
-                                    <div class="text-xs text-slate-500 truncate flex items-center gap-1">
-                                        <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                        <span>{{ $user->email }}</span>
-                                    </div>
+                                    <span class="text-[10px] text-slate-400">ID: #{{ $user->id }}</span>
                                 </div>
                             </div>
                         </td>
 
-                        <!-- Role Badge -->
+                        <!-- 2. Kolom Email -->
+                        <td class="px-5 py-3.5 whitespace-nowrap">
+                            <span class="font-semibold text-slate-700">{{ $user->email }}</span>
+                        </td>
+
+                        <!-- 3. Kolom Peran -->
                         <td class="px-4 py-3.5 whitespace-nowrap">
                             @if($user->role === 'admin')
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-200">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                 Administrator
                             </span>
                             @elseif($user->role === 'umkm')
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
                                 <svg class="w-3 h-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                 Pelaku UMKM
                             </span>
                             @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
                                 User Publik
                             </span>
                             @endif
                         </td>
 
-                        <!-- Store / UMKM Profile -->
+                        <!-- 4. Kolom Nama UMKM -->
                         <td class="px-5 py-3.5">
                             @if($user->umkmProfile)
                             <div>
@@ -207,35 +239,47 @@
                             @endif
                         </td>
 
-                        <!-- Product Count -->
-                        <td class="px-3 py-3.5 text-center whitespace-nowrap">
+                        <!-- 5. Kolom Produk (Hanya badge jumlah produk yang bisa diklik untuk melihat daftar produknya) -->
+                        <td class="px-4 py-3.5 text-center whitespace-nowrap">
                             @if($user->umkmProfile)
-                            <div class="inline-flex flex-col items-center">
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-black {{ $user->umkmProfile->products->count() > 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500' }}">
-                                    {{ $user->umkmProfile->products->count() }} Produk
-                                </span>
-                                <a href="{{ route('admin.users.product.create', $user->umkmProfile->id) }}" class="text-[10px] text-blue-600 hover:text-blue-800 font-bold mt-1 inline-flex items-center gap-0.5" title="Tambah produk untuk UMKM ini">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                    <span>+ Produk</span>
-                                </a>
-                            </div>
+                            @php
+                                $productsList = $user->umkmProfile->products->map(function($p) {
+                                    return [
+                                        'id' => $p->id,
+                                        'name' => $p->name,
+                                        'category' => $p->category,
+                                        'price' => number_format($p->price, 0, ',', '.'),
+                                        'status' => $p->status,
+                                        'image' => $p->image_path ? asset('storage/' . $p->image_path) : 'https://placehold.co/100x100/f1f5f9/94a3b8?text=Produk',
+                                        'edit_url' => route('admin.product.edit', $p->id)
+                                    ];
+                                });
+                            @endphp
+                            <button type="button" 
+                                onclick='openProductsListModal("{{ addslashes($user->umkmProfile->business_name) }}", "{{ route('admin.users.product.create', $user->umkmProfile->id) }}", {{ json_encode($productsList) }})'
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black transition-colors cursor-pointer group {{ $user->umkmProfile->products->count() > 0 ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200' }}"
+                                title="Klik untuk melihat produk toko ini">
+                                <span>{{ $user->umkmProfile->products->count() }} Produk</span>
+                                <svg class="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
                             @else
                             <span class="text-slate-300">-</span>
                             @endif
                         </td>
 
-                        <!-- Joined Date -->
+                        <!-- 6. Kolom Terdaftar -->
                         <td class="px-4 py-3.5 whitespace-nowrap text-xs text-slate-500">
                             {{ $user->created_at ? $user->created_at->format('d M Y') : '-' }}
                         </td>
 
-                        <!-- Actions -->
+                        <!-- 7. Kolom Aksi (Tambah Produk di samping kanan) -->
                         <td class="px-5 py-3.5 text-right whitespace-nowrap">
                             <div class="inline-flex items-center justify-end gap-1.5">
                                 @if($user->umkmProfile)
-                                <a href="{{ route('admin.users.product.create', $user->umkmProfile->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-200" title="Tambah produk baru untuk toko ini">
-                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                    <span class="hidden sm:inline">Produk</span>
+                                <!-- Tombol Tambah Produk di Samping -->
+                                <a href="{{ route('admin.users.product.create', $user->umkmProfile->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-2xs transition-colors" title="Tambah produk baru untuk toko ini">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>+ Produk</span>
                                 </a>
                                 @endif
 
@@ -259,11 +303,11 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                             <div class="flex flex-col items-center justify-center">
                                 <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                <p class="text-sm font-bold text-slate-700">Tidak ada data pengguna yang sesuai.</p>
-                                <p class="text-xs text-slate-400 mt-1">Coba gunakan kata kunci lain atau buat akun baru.</p>
+                                <p class="text-sm font-bold text-slate-700">Tidak ada pengguna pada kategori ini.</p>
+                                <p class="text-xs text-slate-400 mt-1">Gunakan kata kunci pencarian lain atau buat akun baru.</p>
                             </div>
                         </td>
                     </tr>
@@ -281,6 +325,44 @@
 </div>
 
 <!-- ==================================================== -->
+<!-- MODAL DAFTAR PRODUK TOKO (LIHAT PRODUK DI TOKO TERSEBUT) -->
+<!-- ==================================================== -->
+<div id="productsListModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all flex flex-col max-h-[85vh]">
+        <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                    <svg class="w-5 h-5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-900" id="productsModalStoreTitle">Daftar Produk Toko</h3>
+                    <p class="text-xs text-slate-500">Semua produk yang terdaftar di toko UMKM ini</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeProductsListModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- Scrollable Product List -->
+        <div class="p-6 overflow-y-auto flex-1 space-y-3" id="productsListContainer">
+            <!-- Dynamic Content via Javascript -->
+        </div>
+
+        <!-- Footer -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 bg-slate-50/70 flex items-center justify-between shrink-0">
+            <button type="button" onclick="closeProductsListModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer">
+                Tutup
+            </button>
+            <a id="productsModalAddBtn" href="#" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-colors cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>+ Tambah Produk untuk Toko Ini</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ==================================================== -->
 <!-- MODAL IMPORT EXCEL / CSV -->
 <!-- ==================================================== -->
 <div id="importModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 hidden">
@@ -292,7 +374,7 @@
                 </div>
                 <div>
                     <h3 class="text-base font-extrabold text-slate-900">Import Akun UMKM dari Excel</h3>
-                    <p class="text-xs text-slate-500">Mendukung format file <strong>.xlsx</strong> dan <strong>.csv</strong></p>
+                    <p class="text-xs text-slate-500">Mendukung file <strong>.xlsx</strong> dan <strong>.csv</strong></p>
                 </div>
             </div>
             <button type="button" onclick="closeImportModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100">
@@ -311,7 +393,7 @@
                 </p>
                 <ol class="list-decimal list-inside space-y-1 text-emerald-800 leading-relaxed text-[11px]">
                     <li>Unduh template resmi terlebih dahulu agar format kolom sesuai.</li>
-                    <li>Kolom <strong>nama_usaha</strong> wajib diisi. Kolom <strong>email</strong> dan <strong>password</strong> boleh dikosongkan (sistem akan otomatis membuatkannya).</li>
+                    <li>Kolom <strong>nama_usaha</strong> wajib diisi. Kolom <strong>email</strong> dan <strong>password</strong> boleh dikosongkan (sistem otomatis membuatkannya).</li>
                     <li>Bila kolom produk diisi pada baris yang sama, produk pertamanya otomatis langsung dibuat dan tayang di katalog publik.</li>
                 </ol>
                 <div class="pt-1">
@@ -388,6 +470,58 @@
 </div>
 
 <script>
+// Modal Daftar Produk
+function openProductsListModal(storeName, addProductUrl, products) {
+    document.getElementById('productsModalStoreTitle').textContent = 'Produk Toko: ' + storeName;
+    document.getElementById('productsModalAddBtn').href = addProductUrl;
+
+    const container = document.getElementById('productsListContainer');
+    container.innerHTML = '';
+
+    if (!products || products.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10 text-slate-400">
+                <svg class="w-12 h-12 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                <p class="font-bold text-slate-700 text-sm">Belum ada produk di toko ini.</p>
+                <p class="text-xs text-slate-400 mt-0.5">Klik tombol di bawah untuk menambahkan produk pertama.</p>
+            </div>
+        `;
+    } else {
+        products.forEach(function(p) {
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between gap-3 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl hover:bg-slate-100/70 transition-colors';
+            item.innerHTML = `
+                <div class="flex items-center gap-3 min-w-0">
+                    <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-xl object-cover bg-white border border-slate-200 shrink-0">
+                    <div class="min-w-0">
+                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate">${p.name}</h4>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2 py-0.2 rounded-md">${p.category || 'Umum'}</span>
+                            <span class="text-xs font-black text-[#800000]">Rp ${p.price}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.status === 'verified' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                        ${p.status === 'verified' ? 'Disetujui' : 'Pending'}
+                    </span>
+                    <a href="${p.edit_url}" class="p-1.5 text-slate-500 hover:text-[#800000] bg-white border border-slate-200 rounded-lg hover:bg-red-50 transition-colors" title="Edit Produk">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    </a>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    document.getElementById('productsListModal').classList.remove('hidden');
+}
+
+function closeProductsListModal() {
+    document.getElementById('productsListModal').classList.add('hidden');
+}
+
+// Modal Import Excel
 function openImportModal() {
     document.getElementById('importModal').classList.remove('hidden');
 }
@@ -395,6 +529,7 @@ function closeImportModal() {
     document.getElementById('importModal').classList.add('hidden');
 }
 
+// Modal Reset Sandi
 function openResetPasswordModal(userId, name, email) {
     const form = document.getElementById('resetPasswordForm');
     form.action = "{{ url('/admin/users') }}/" + userId + "/reset-password";
@@ -416,7 +551,6 @@ function generateRandomPass() {
     document.getElementById('new_password_input').value = pass;
 }
 
-// Auto open modal jika ada hash #modal-import
 if (window.location.hash === '#modal-import') {
     openImportModal();
 }
