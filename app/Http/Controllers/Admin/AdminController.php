@@ -281,6 +281,7 @@ class AdminController extends Controller
             'selesai' => 'selesai',
             'tolak' => 'ditolak',
             'balas' => 'diproses',
+            'buka_kembali' => 'diproses',
             default => $request->input('status', 'selesai')
         };
 
@@ -288,13 +289,21 @@ class AdminController extends Controller
             $targetStatus = 'selesai';
         }
 
-        // Pesan standar otomatis jika tombol selesai atau tolak diklik dengan textarea kosong
         $response = trim((string) $request->input('response'));
+
+        // Jika memilih tombol 'Balas & Lanjutkan Diskusi' tetapi kolom balasan kosong
+        if ($action === 'balas' && empty($response)) {
+            return back()->withErrors(['response' => 'Wajib menuliskan pesan balasan jika ingin melanjutkan diskusi dengan pemohon.'])->withInput();
+        }
+
+        // Pesan standar otomatis jika tombol selesai atau tolak diklik dengan textarea kosong
         if (empty($response)) {
             if ($targetStatus === 'selesai') {
-                $response = 'Konsultasi telah diselesaikan oleh Admin Dinas Perdagangan & KUKM Wonogiri. Terima kasih atas kerja samanya.';
+                $response = 'Konsultasi telah dinyatakan selesai oleh Admin Dinas Perdagangan & KUKM Kabupaten Wonogiri. Terima kasih telah memanfaatkan layanan konsultasi Pojok UMKM.';
             } elseif ($targetStatus === 'tolak' || $targetStatus === 'ditolak') {
                 $response = 'Mohon maaf, pengajuan konsultasi Anda belum dapat kami proses karena berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.';
+            } elseif ($action === 'buka_kembali') {
+                $response = 'Konsultasi dibuka kembali oleh Admin Dinas untuk tindak lanjut tambahan.';
             }
         }
 
@@ -340,8 +349,8 @@ class AdminController extends Controller
         }
 
         $statusLabels = [
-            'diproses' => 'dibalas (status: Sedang Diproses)',
-            'selesai' => 'diselesaikan (status: Selesai Dijawab)',
+            'diproses' => $action === 'buka_kembali' ? 'dibuka kembali (status: Sedang Diproses)' : 'dibalas (status: Sedang Diproses)',
+            'selesai' => 'diselesaikan (sesi ditutup, pengkonsultasi harus membuat pengajuan baru jika ingin bertanya lagi)',
             'ditolak' => 'ditolak (status: Ditolak)',
             'diterima' => 'diterima',
             'menunggu' => 'diperbarui',

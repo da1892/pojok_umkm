@@ -230,8 +230,43 @@
                     </div>
 
                     <!-- Area Balasan Saling Jawab (Turn Constraint) -->
-                    @if($consultation->canUserReply())
-                        <!-- Form Balas Aktif: Hanya muncul jika pertanyaan sudah dijawab admin -->
+                    @if(strtolower((string)$consultation->status) === 'selesai')
+                        <!-- Konsultasi Telah Selesai: Pengkonsultasi tidak bisa mengirim pesan lagi -->
+                        <div class="mt-8 pt-6 border-t border-slate-200 reveal">
+                            <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-slate-50 border-2 border-emerald-300 rounded-2xl p-6 sm:p-8 shadow-xs text-center">
+                                <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mx-auto mb-3.5 shadow-md shadow-emerald-600/20">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                                <h4 class="text-lg sm:text-xl font-black text-slate-900 mb-1.5">Konsultasi Ini Telah Selesai</h4>
+                                <p class="text-sm text-slate-600 max-w-xl mx-auto leading-relaxed mb-6">
+                                    Sesi percakapan pada tiket ini telah dinyatakan <strong>selesai</strong> oleh Admin Dinas Perdagangan & KUKM Kabupaten Wonogiri. Tiket telah ditutup sehingga Anda tidak dapat mengirim pesan balasan lagi pada sesi ini. Jika Anda memerlukan konsultasi atau memiliki pertanyaan baru, silakan ajukan konsultasi baru.
+                                </p>
+                                <div class="inline-flex flex-col sm:flex-row items-center justify-center gap-3">
+                                    <a href="{{ route('konsultasi') }}" class="inline-flex items-center gap-2 px-6 py-3.5 bg-[#800000] hover:bg-[#600000] text-white font-bold text-sm rounded-xl shadow-md transition-all active:scale-95">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Buat Pengajuan Konsultasi Baru</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif(strtolower((string)$consultation->status) === 'ditolak')
+                        <!-- Konsultasi Ditolak -->
+                        <div class="mt-8 pt-6 border-t border-slate-200 reveal">
+                            <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-6 shadow-xs text-center">
+                                <div class="w-12 h-12 rounded-2xl bg-red-600 text-white flex items-center justify-center mx-auto mb-3 shadow-md">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </div>
+                                <h4 class="text-base font-bold text-slate-900 mb-1">Pengajuan Konsultasi Ditolak</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed mb-4">
+                                    Pengajuan tiket konsultasi ini telah ditolak oleh Admin. Sesi percakapan ditutup. Jika Anda memiliki pertanyaan lain atau ingin melengkapi dokumen, silakan buat pengajuan konsultasi baru.
+                                </p>
+                                <a href="{{ route('konsultasi') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#800000] hover:bg-[#600000] text-white font-bold text-xs rounded-xl shadow-sm transition-all">
+                                    <span>Buat Pengajuan Konsultasi Baru &rarr;</span>
+                                </a>
+                            </div>
+                        </div>
+                    @elseif($consultation->canUserReply())
+                        <!-- Form Balas Aktif: Hanya muncul jika pertanyaan sudah dijawab admin dan tiket masih terbuka -->
                         <div class="mt-8 pt-8 border-t border-slate-200 reveal">
                             <div class="bg-gradient-to-r from-red-50/70 via-rose-50/50 to-white border-2 border-red-200 rounded-2xl p-6 sm:p-7 shadow-xs">
                                 <div class="flex items-center gap-3 mb-4">

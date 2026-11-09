@@ -642,6 +642,17 @@ class PublicController extends Controller
     {
         $consultation = \App\Models\Consultation::where('ticket_id', $ticket_id)->firstOrFail();
 
+        // Validasi aturan: Jika status konsultasi sudah selesai, tolak balasan dan arahkan buat konsultasi baru
+        if (strtolower((string)$consultation->status) === 'selesai') {
+            return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+                ->with('warning', 'Konsultasi ini telah dinyatakan selesai oleh Admin Dinas. Anda tidak dapat mengirim pesan balasan lagi pada tiket ini. Silakan buat pengajuan konsultasi baru jika memerlukan bantuan lanjutan.');
+        }
+
+        if (strtolower((string)$consultation->status) === 'ditolak') {
+            return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+                ->with('warning', 'Pengajuan konsultasi ini telah ditolak oleh Admin. Silakan buat pengajuan konsultasi baru.');
+        }
+
         // Validasi aturan: Pengkonsultasi HANYA bisa menjawab jika pertanyaan pengkonsultasi sudah dijawab oleh admin
         if (!$consultation->canUserReply()) {
             return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])

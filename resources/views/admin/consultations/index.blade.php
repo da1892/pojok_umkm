@@ -69,10 +69,28 @@
                             {{ $statusText }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.toggle('hidden')" class="px-3 py-1.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-md text-xs font-semibold hover:bg-slate-200 transition-colors shadow-2xs">
-                            Tindak Lanjut
-                        </button>
+                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                        <div class="inline-flex items-center justify-end gap-1.5">
+                            @if($consultation->status !== 'selesai')
+                                <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai konsultasi #{{ $consultation->ticket_id }} sebagai SELESAI?\n\nPengkonsultasi tidak akan dapat mengirim pesan balasan lagi dan harus membuat pengajuan baru jika ingin berkonsultasi lagi.');">
+                                    @csrf
+                                    <input type="hidden" name="action" value="selesai">
+                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" title="Tandai Konsultasi Ini Selesai">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span>Selesai</span>
+                                    </button>
+                                </form>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md text-[11px] font-bold">
+                                    <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                    <span>Tuntas</span>
+                                </span>
+                            @endif
+
+                            <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.toggle('hidden')" class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-md text-xs font-semibold hover:bg-slate-200 transition-colors shadow-2xs cursor-pointer">
+                                <span>Detail & Balas</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <tr id="reply-form-{{ $consultation->id }}" class="hidden bg-slate-50/70 border-t border-slate-200">
@@ -182,61 +200,97 @@
                             </div>
                         </div>
 
-                        <!-- Form Balasan Admin dengan Aksi Status Otomatis -->
-                        <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" id="form-reply-{{ $consultation->id }}">
-                            @csrf
-
-                            <div class="mt-4 pt-4 border-t border-slate-200">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                                    <label class="block text-xs font-bold text-slate-800">
-                                        Tulis Tanggapan <span class="text-red-500">*</span>
-                                    </label>
-                                    <span class="text-[11px] text-slate-400">Pilih template cepat di bawah jika diperlukan</span>
-                                </div>
-
-                                <!-- Rekomendasi Template Cepat -->
-                                <div class="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
-                                    <span class="text-[11px] text-slate-500 font-semibold mr-1">Template Cepat:</span>
-                                    <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Konsultasi telah diselesaikan. Seluruh informasi dan solusi telah kami berikan. Terima kasih telah memanfaatkan layanan konsultasi bisnis Pojok UMKM Wonogiri.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
-                                        + Selesai Dijawab
-                                    </button>
-                                    <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena topik yang diajukan berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
-                                        + Tolak: Di luar kewenangan
-                                    </button>
-                                    <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena data atau berkas yang dilampirkan belum lengkap. Silakan ajukan konsultasi baru dengan rincian yang lebih jelas.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors">
-                                        + Tolak: Berkas belum lengkap
-                                    </button>
-                                </div>
-
-                                <textarea name="response" id="response-text-{{ $consultation->id }}" rows="3" required class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan komentar balasan, arahan solusi, atau alasan penolakan di sini..."></textarea>
-
-                                <!-- Tombol Aksi Status Otomatis & Notifikasi Email -->
-                                <div class="mt-3.5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 pt-3 border-t border-slate-200">
-                                    <div class="text-[11.5px] text-slate-500 flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                        <span>Status otomatis disesuaikan & notifikasi email otomatis terkirim ke <strong class="text-slate-700 font-semibold">{{ $consultation->email ?? 'email pemohon' }}</strong></span>
+                        @if($consultation->status == 'selesai')
+                            <!-- Status Selesai Banner -->
+                            <div class="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                     </div>
-
-                                    <div class="flex flex-wrap items-center gap-2 shrink-0">
-                                        <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.add('hidden')" class="px-3.5 py-2.5 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
-                                            Batal
-                                        </button>
-
-                                        <!-- Tombol Merah: Otomatis Status Ditolak -->
-                                        <button type="submit" name="action" value="tolak" class="px-4 py-2.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl transition-all shadow-2xs flex items-center gap-1.5 active:scale-95" title="Tolak pengajuan dan kirim alasan ke pemohon">
-                                            <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                            Tolak Konsultasi
-                                        </button>
-
-                                        <!-- Tombol Hijau: Otomatis Status Selesai -->
-                                        <button type="submit" name="action" value="selesai" class="px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-all flex items-center gap-1.5 active:scale-95" title="Kirim solusi akhir dan tandai selesai">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                            Selesai Dijawab
-                                        </button>
+                                    <div>
+                                        <h5 class="text-xs font-bold text-emerald-950">Sesi Konsultasi Ini Telah Ditandai Selesai</h5>
+                                        <p class="text-[11px] text-emerald-800">Tiket berstatus selesai. Pengkonsultasi tidak dapat mengirim pesan balasan lagi dan diarahkan untuk membuat konsultasi baru jika memerlukan bantuan tambahan.</p>
                                     </div>
                                 </div>
+                                <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline" onsubmit="return confirm('Buka kembali sesi percakapan tiket konsultasi ini agar pemohon dapat mengirim pesan balasan lagi?');">
+                                    @csrf
+                                    <input type="hidden" name="action" value="buka_kembali">
+                                    <button type="submit" class="px-3.5 py-2 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer whitespace-nowrap active:scale-95">
+                                        Buka Kembali Tiket
+                                    </button>
+                                </form>
                             </div>
-                        </form>
+                        @else
+                            <!-- Form Balasan Admin dengan Aksi Status Otomatis -->
+                            <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" id="form-reply-{{ $consultation->id }}">
+                                @csrf
+
+                                <div class="mt-4 pt-4 border-t border-slate-200">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                        <label class="block text-xs font-bold text-slate-800">
+                                            Tulis Tanggapan / Balasan
+                                        </label>
+                                        <span class="text-[11px] text-slate-400">Pilih template cepat di bawah jika diperlukan</span>
+                                    </div>
+
+                                    <!-- Rekomendasi Template Cepat -->
+                                    <div class="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
+                                        <span class="text-[11px] text-slate-500 font-semibold mr-1">Template Cepat:</span>
+                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Konsultasi telah dinyatakan selesai. Seluruh informasi dan solusi telah kami berikan. Terima kasih telah memanfaatkan layanan konsultasi bisnis Pojok UMKM Wonogiri.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors cursor-pointer">
+                                            + Selesai Dijawab
+                                        </button>
+                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena topik yang diajukan berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors cursor-pointer">
+                                            + Tolak: Di luar kewenangan
+                                        </button>
+                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Pengajuan konsultasi ditolak karena data atau berkas yang dilampirkan belum lengkap. Silakan ajukan konsultasi baru dengan rincian yang lebih jelas.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors cursor-pointer">
+                                            + Tolak: Berkas belum lengkap
+                                        </button>
+                                    </div>
+
+                                    <textarea name="response" id="response-text-{{ $consultation->id }}" rows="3" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan komentar balasan, arahan solusi, atau catatan penutupan di sini..."></textarea>
+
+                                    <!-- Peringatan Aturan Selesai -->
+                                    <div class="mt-2 text-[11px] text-slate-500 bg-slate-100/80 p-2.5 rounded-lg border border-slate-200/70 flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>
+                                            <strong>Petunjuk Admin:</strong> Jika Anda memilih tombol <strong>"Selesai (Tutup Sesi)"</strong>, pengkonsultasi tidak akan dapat mengirim pesan balasan lagi pada tiket ini dan harus membuat pengajuan baru jika ingin berkonsultasi lagi. Jika masih ingin berdiskusi, gunakan tombol <strong>"Balas (Lanjutkan Diskusi)"</strong>.
+                                        </span>
+                                    </div>
+
+                                    <!-- Tombol Aksi Status Otomatis & Notifikasi Email -->
+                                    <div class="mt-3.5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 pt-3 border-t border-slate-200">
+                                        <div class="text-[11.5px] text-slate-500 flex items-center gap-1.5">
+                                            <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                            <span>Notifikasi email balasan otomatis dikirimkan ke <strong class="text-slate-700 font-semibold">{{ $consultation->email ?? 'email pemohon' }}</strong></span>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                            <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.add('hidden')" class="px-3.5 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
+                                                Batal
+                                            </button>
+
+                                            <!-- Tombol Merah: Otomatis Status Ditolak -->
+                                            <button type="submit" name="action" value="tolak" class="px-3.5 py-2 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-300 rounded-xl transition-all shadow-2xs flex items-center gap-1.5 active:scale-95 cursor-pointer" title="Tolak pengajuan dan kirim alasan ke pemohon">
+                                                <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                <span>Tolak</span>
+                                            </button>
+
+                                            <!-- Tombol Biru/Netral: Balas & Lanjutkan Diskusi -->
+                                            <button type="submit" name="action" value="balas" class="px-4 py-2 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-300 hover:border-blue-300 rounded-xl transition-all shadow-2xs flex items-center gap-1.5 active:scale-95 cursor-pointer" title="Kirim balasan dan biarkan pemohon membalas kembali">
+                                                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                                <span>Balas (Lanjutkan Diskusi)</span>
+                                            </button>
+
+                                            <!-- Tombol Hijau: Selesai & Tutup Sesi -->
+                                            <button type="submit" name="action" value="selesai" class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer" title="Tandai Selesai: Pengkonsultasi tidak bisa membalas lagi dan harus membuat pengajuan baru">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                <span>Selesai (Tutup Sesi)</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        @endif
                     </td>
                 </tr>
                 @empty

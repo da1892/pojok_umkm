@@ -38,10 +38,15 @@ class Consultation extends Model
 
     /**
      * Memeriksa apakah pengguna (pengkonsultasi) diizinkan membalas:
-     * Pengguna HANYA bisa menjawab jika pesan terakhir di thread berasal dari 'admin'.
+     * - Pengguna TIDAK diizinkan membalas jika status konsultasi adalah 'selesai' atau 'ditolak'.
+     * - Pengguna HANYA bisa menjawab jika tiket masih aktif dan pesan terakhir di thread berasal dari 'admin'.
      */
     public function canUserReply(): bool
     {
+        if (in_array(strtolower((string)$this->status), ['selesai', 'ditolak'])) {
+            return false;
+        }
+
         $lastMessage = $this->hasMany(ConsultationMessage::class, 'consultation_id')
             ->reorder()
             ->orderByDesc('id')
