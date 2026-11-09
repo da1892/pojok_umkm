@@ -64,11 +64,68 @@ class PublicController extends Controller
             ->take(6)
             ->get();
 
-        // 6. Data Koordinat & Marker Persebaran UMKM untuk Peta Interaktif Wonogiri
-        $umkmMapList = \App\Models\User\UmkmProfile::with('products')
+        // 6. Data Koordinat & Marker Persebaran HANYA Produk Unggulan Terpilih untuk Peta Interaktif
+        $featuredProductsForMap = \App\Models\User\Product::with('umkmProfile')
             ->where('status', 'verified')
-            ->get()
-            ->map->toMapPayload();
+            ->where('is_featured', true)
+            ->whereHas('umkmProfile', function($q) {
+                $q->where('status', 'verified');
+            })
+            ->latest()
+            ->get();
+
+        $seenUmkmCount = [];
+        $umkmMapList = $featuredProductsForMap->map(function($product) use (&$seenUmkmCount) {
+            $umkm = $product->umkmProfile;
+            $coords = $umkm ? $umkm->coordinates : ['lat' => -7.8136, 'lng' => 110.9254, 'is_exact' => false, 'district' => 'Wonogiri'];
+
+            $lat = $coords['lat'];
+            $lng = $coords['lng'];
+
+            $umkmId = $umkm ? $umkm->id : 0;
+            if (!isset($seenUmkmCount[$umkmId])) {
+                $seenUmkmCount[$umkmId] = 0;
+            } else {
+                $seenUmkmCount[$umkmId]++;
+                // Berikan offset radial halus jika ada beberapa produk unggulan dari UMKM yang sama agar titik tidak bertumpuk
+                $offsetAngle = $seenUmkmCount[$umkmId] * (2 * M_PI / 4);
+                $lat = round($lat + (0.0007 * sin($offsetAngle)), 6);
+                $lng = round($lng + (0.0007 * cos($offsetAngle) * 1.05), 6);
+            }
+
+            $productImg = $product->image_path 
+                ? asset('storage/' . $product->image_path) 
+                : ($umkm && $umkm->image_path ? asset('storage/' . $umkm->image_path) : asset('img/hero_wonogiri_3.jpg'));
+
+            $cleanPhone = $umkm && !empty($umkm->phone) ? preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $umkm->phone)) : null;
+
+            return [
+                'id' => $product->id,
+                'umkm_id' => $umkm ? $umkm->id : null,
+                'name' => $product->name,
+                'product_name' => $product->name,
+                'umkm_name' => $umkm ? $umkm->business_name : 'UMKM Wonogiri',
+                'owner' => $umkm ? ($umkm->owner_name ?? 'Pelaku UMKM') : 'Pelaku UMKM',
+                'district' => $umkm ? ($umkm->district ?: ($coords['district'] ?? 'Wonogiri')) : 'Wonogiri',
+                'village' => $umkm ? ($umkm->village ?? '') : '',
+                'address' => $umkm ? $umkm->full_address : 'Kabupaten Wonogiri, Jawa Tengah',
+                'phone' => $umkm ? ($umkm->phone ?? '') : '',
+                'category' => $product->category ?? 'Produk Unggulan',
+                'price' => 'Rp ' . number_format($product->price ?? 0, 0, ',', '.'),
+                'raw_price' => $product->price ?? 0,
+                'image' => $productImg,
+                'status' => $product->status,
+                'is_featured' => true,
+                'product_samples' => [$product->name],
+                'detail_url' => route('katalog.show', $product->id),
+                'store_url' => $umkm ? route('direktori.show', $umkm->id) : '#',
+                'directions_url' => $umkm ? $umkm->google_maps_directions_url : 'https://www.google.com/maps/search/?api=1&query=' . urlencode('Kabupaten Wonogiri'),
+                'whatsapp_url' => $cleanPhone ? 'https://wa.me/' . $cleanPhone . '?text=' . urlencode('Halo ' . ($umkm->business_name ?? 'UMKM') . ', saya tertarik dengan produk unggulan Anda: ' . $product->name) : null,
+                'lat' => $lat,
+                'lng' => $lng,
+                'is_exact' => $coords['is_exact'] ?? false,
+            ];
+        });
 
         return view('user.welcome', compact(
             'latestNews', 
