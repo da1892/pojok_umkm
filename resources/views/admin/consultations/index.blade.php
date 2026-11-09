@@ -72,10 +72,13 @@
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                         <div class="inline-flex items-center justify-end gap-1.5">
                             @if($consultation->status !== 'selesai')
-                                <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai konsultasi #{{ $consultation->ticket_id }} sebagai SELESAI?\n\nPengkonsultasi tidak akan dapat mengirim pesan balasan lagi dan harus membuat pengajuan baru jika ingin berkonsultasi lagi.');">
+                                <form id="finish-consultation-row-{{ $consultation->id }}" action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline">
                                     @csrf
                                     <input type="hidden" name="action" value="selesai">
-                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" title="Tandai Konsultasi Ini Selesai">
+                                    <button type="button" 
+                                            onclick="confirmFinishConsultation('finish-consultation-row-{{ $consultation->id }}', '{{ $consultation->ticket_id ?? $consultation->id }}', '{{ addslashes($consultation->name) }}', '{{ addslashes($consultation->subject) }}', {{ $consultation->id }})" 
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" 
+                                            title="Tandai Konsultasi Ini Selesai">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                         <span>Selesai</span>
                                     </button>
@@ -109,10 +112,13 @@
                                 <!-- Tombol Selesai di Header Atas -->
                                 <div class="flex items-center gap-2">
                                     @if($consultation->status !== 'selesai')
-                                        <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai konsultasi #{{ $consultation->ticket_id }} sebagai SELESAI?\n\nPengkonsultasi tidak akan dapat mengirim pesan balasan lagi dan harus membuat pengajuan baru jika ingin berkonsultasi lagi.');">
+                                        <form id="finish-consultation-detail-{{ $consultation->id }}" action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline">
                                             @csrf
                                             <input type="hidden" name="action" value="selesai">
-                                            <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95" title="Tandai Konsultasi Ini Selesai (Tutup Sesi)">
+                                            <button type="button" 
+                                                    onclick="confirmFinishConsultation('finish-consultation-detail-{{ $consultation->id }}', '{{ $consultation->ticket_id ?? $consultation->id }}', '{{ addslashes($consultation->name) }}', '{{ addslashes($consultation->subject) }}', {{ $consultation->id }})" 
+                                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95" 
+                                                    title="Tandai Konsultasi Ini Selesai (Tutup Sesi)">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                                 <span>Tandai Selesai</span>
                                             </button>
@@ -233,10 +239,12 @@
                                         <p class="text-[11px] text-emerald-800">Tiket berstatus selesai. Pengkonsultasi tidak dapat mengirim pesan balasan lagi dan diarahkan untuk membuat konsultasi baru jika memerlukan bantuan tambahan.</p>
                                     </div>
                                 </div>
-                                <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline" onsubmit="return confirm('Buka kembali sesi percakapan tiket konsultasi ini agar pemohon dapat mengirim pesan balasan lagi?');">
+                                <form id="reopen-consultation-{{ $consultation->id }}" action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline">
                                     @csrf
                                     <input type="hidden" name="action" value="buka_kembali">
-                                    <button type="submit" class="px-3.5 py-2 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer whitespace-nowrap active:scale-95">
+                                    <button type="button" 
+                                            onclick="confirmReopenConsultation('reopen-consultation-{{ $consultation->id }}', '{{ $consultation->ticket_id ?? $consultation->id }}')" 
+                                            class="px-3.5 py-2 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer whitespace-nowrap active:scale-95">
                                         Buka Kembali Tiket
                                     </button>
                                 </form>
@@ -301,4 +309,124 @@
     </div>
     @endif
 </div>
+
+<script>
+function confirmFinishConsultation(formId, ticketId, userName, subject = '', consultationId = null) {
+    let existingText = '';
+    if (consultationId) {
+        const textarea = document.getElementById('response-text-' + consultationId);
+        if (textarea && textarea.value) {
+            existingText = textarea.value.trim();
+        }
+    }
+
+    if (typeof Swal !== 'undefined') {
+        const subjectHtml = subject ? `
+            <div style="margin-top:6px; font-size:12px; color:#475569; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <span>Perihal:</span>
+                <strong style="color:#0f172a;">${subject}</strong>
+            </div>` : '';
+
+        Swal.fire({
+            title: 'Selesaikan Sesi Konsultasi?',
+            html: `
+                <div style="text-align:center; padding: 4px 0;">
+                    <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 14px; border-radius:9999px; background:#dcfce7; color:#166534; font-size:11px; font-weight:800; letter-spacing:0.5px; margin-bottom:12px;">
+                        TIKET #${ticketId}
+                    </div>
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px; text-align:left;">
+                        <div style="font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Pengkonsultasi / UMKM</div>
+                        <div style="font-size:15px; font-weight:900; color:#0f172a; word-break:break-word;">${userName}</div>
+                        ${subjectHtml}
+                    </div>
+                    <div style="margin-top:14px; text-align:left;">
+                        <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">
+                            Pesan / Catatan Penutup (Opsional):
+                        </label>
+                        <textarea id="swal_finish_response" rows="3" style="width:100%; box-sizing:border-box; padding:10px 12px; font-size:12px; border:1.5px solid #cbd5e1; border-radius:12px; outline:none; color:#1e293b; resize:none; font-family:inherit; line-height:1.5;" placeholder="Tuliskan saran penutup atau solusi akhir untuk pengkonsultasi...">${existingText}</textarea>
+                        <p style="font-size:10.5px; color:#94a3b8; margin-top:4px; margin-bottom:0;">
+                            *Jika dikosongkan, sistem otomatis mengirimkan pesan penutup resmi standar dinas.
+                        </p>
+                    </div>
+                    <p style="font-size:11.5px; color:#64748b; margin-top:14px; margin-bottom:0; line-height:1.5;">
+                        Apakah Anda yakin ingin menyelesaikan sesi ini? Setelah ditandai selesai, tiket akan ditutup dan pemohon tidak dapat membalas lagi pada tiket ini.
+                    </p>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Selesaikan Konsultasi',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                popup: 'rounded-3xl shadow-2xl border border-slate-100 p-6',
+                title: 'text-slate-800 font-black text-lg mb-0',
+                confirmButton: 'rounded-xl font-bold px-6 py-2.5 text-xs shadow-md bg-emerald-600 hover:bg-emerald-700 text-white',
+                cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700'
+            },
+            preConfirm: () => {
+                const closingNote = document.getElementById('swal_finish_response')?.value || '';
+                return closingNote;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById(formId);
+                if (form) {
+                    let responseInput = form.querySelector('input[name="response"]');
+                    if (!responseInput) {
+                        responseInput = document.createElement('input');
+                        responseInput.type = 'hidden';
+                        responseInput.name = 'response';
+                        form.appendChild(responseInput);
+                    }
+                    if (result.value && result.value.trim() !== '') {
+                        responseInput.value = result.value.trim();
+                    }
+                    form.submit();
+                }
+            }
+        });
+    } else {
+        if (confirm(`Tandai konsultasi #${ticketId} sebagai SELESAI?\n\nPengkonsultasi tidak akan dapat mengirim pesan balasan lagi.`)) {
+            const form = document.getElementById(formId);
+            if (form) form.submit();
+        }
+    }
+}
+
+function confirmReopenConsultation(formId, ticketId) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Buka Kembali Tiket?',
+            html: `Apakah Anda yakin ingin membuka kembali tiket konsultasi <strong>#${ticketId}</strong>?<br><span class="text-xs text-slate-500 mt-2 block">Pemohon UMKM akan dapat mengirim pesan balasan lagi pada sesi ini.</span>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Buka Kembali',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                popup: 'rounded-2xl shadow-2xl border border-slate-100',
+                confirmButton: 'rounded-xl font-bold px-5 py-2.5 text-sm shadow-sm',
+                cancelButton: 'rounded-xl font-semibold px-5 py-2.5 text-sm shadow-sm'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById(formId);
+                if (form) form.submit();
+            }
+        });
+    } else {
+        if (confirm(`Buka kembali sesi percakapan tiket konsultasi #${ticketId}?`)) {
+            const form = document.getElementById(formId);
+            if (form) form.submit();
+        }
+    }
+}
+</script>
 @endsection
