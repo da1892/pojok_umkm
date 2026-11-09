@@ -141,6 +141,8 @@
                         <th class="px-5 py-3.5 whitespace-nowrap">Email</th>
                         @if($currentRole === 'umkm')
                         <th class="px-5 py-3.5">Nama UMKM</th>
+                        <th class="px-4 py-3.5 whitespace-nowrap">No. HP / WhatsApp</th>
+                        <th class="px-5 py-3.5">Alamat / Wilayah</th>
                         <th class="px-4 py-3.5 text-center whitespace-nowrap">Produk</th>
                         @else
                         <th class="px-5 py-3.5 whitespace-nowrap">Peran</th>
@@ -184,14 +186,8 @@
                                     <span>{{ $user->umkmProfile->business_name }}</span>
                                     <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                 </a>
-                                <p class="text-[11px] text-slate-500 mt-0.5">
-                                    Kec. {{ $user->umkmProfile->district }} @if($user->umkmProfile->village) • Ds. {{ $user->umkmProfile->village }} @endif
-                                </p>
-                                @if($user->umkmProfile->phone)
-                                <p class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                                    <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                    <span>{{ $user->umkmProfile->phone }}</span>
-                                </p>
+                                @if($user->umkmProfile->nib)
+                                <p class="text-[10px] text-slate-400 font-mono mt-0.5">NIB: {{ $user->umkmProfile->nib }}</p>
                                 @endif
                             </div>
                             @else
@@ -199,7 +195,46 @@
                             @endif
                         </td>
 
-                        <!-- 4. Kolom Produk (Hanya badge jumlah produk yang bisa diklik untuk melihat daftar produknya) -->
+                        <!-- 4. Kolom No. HP / WhatsApp -->
+                        <td class="px-4 py-3.5 whitespace-nowrap">
+                            @if($user->umkmProfile && $user->umkmProfile->phone)
+                            @php
+                                $cleanPhone = preg_replace('/[^0-9]/', '', $user->umkmProfile->phone);
+                                if (str_starts_with($cleanPhone, '0')) {
+                                    $cleanPhone = '62' . substr($cleanPhone, 1);
+                                }
+                            @endphp
+                            <a href="https://wa.me/{{ $cleanPhone }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors" title="Hubungi via WhatsApp">
+                                <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2z"/></svg>
+                                <span>{{ $user->umkmProfile->phone }}</span>
+                            </a>
+                            @else
+                            <span class="text-slate-300 text-xs">-</span>
+                            @endif
+                        </td>
+
+                        <!-- 5. Kolom Alamat / Wilayah -->
+                        <td class="px-5 py-3.5">
+                            @if($user->umkmProfile)
+                            <div>
+                                <p class="text-xs font-semibold text-slate-800">
+                                    Kec. {{ $user->umkmProfile->district ?: '-' }}
+                                    @if($user->umkmProfile->village)
+                                    <span class="text-slate-400 font-normal">, Ds. {{ $user->umkmProfile->village }}</span>
+                                    @endif
+                                </p>
+                                @if($user->umkmProfile->address)
+                                <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-1" title="{{ $user->umkmProfile->address }}">
+                                    {{ $user->umkmProfile->address }}
+                                </p>
+                                @endif
+                            </div>
+                            @else
+                            <span class="text-slate-300 text-xs">-</span>
+                            @endif
+                        </td>
+
+                        <!-- 6. Kolom Produk (Hanya badge jumlah produk yang bisa diklik untuk melihat daftar produknya) -->
                         <td class="px-4 py-3.5 text-center whitespace-nowrap">
                             @if($user->umkmProfile)
                             @php
@@ -272,7 +307,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ $currentRole === 'umkm' ? '6' : '5' }}" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="{{ $currentRole === 'umkm' ? '8' : '5' }}" class="px-6 py-12 text-center text-slate-400">
                             <div class="flex flex-col items-center justify-center">
                                 <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 <p class="text-sm font-bold text-slate-700">Tidak ada data {{ $currentRole === 'admin' ? 'administrator' : 'pelaku UMKM' }} yang sesuai.</p>
