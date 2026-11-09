@@ -97,28 +97,29 @@
                     <td colspan="6" class="p-6">
                         <!-- Riwayat Percakapan (Saling Jawab) -->
                         <div class="mb-5 space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200">
+                            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-lg bg-red-100 text-[#800000] flex items-center justify-center font-bold">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                                    </div>
+                                    <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                                     <h4 class="font-bold text-slate-800 text-sm">
-                                        Riwayat Percakapan ({{ count($consultation->thread_messages) }} Pesan)
+                                        Riwayat Tanya-Jawab Konsultasi ({{ count($consultation->thread_messages) }} Pesan)
                                     </h4>
+                                    <span class="text-xs text-slate-400 font-mono ml-1">Tiket: #{{ $consultation->ticket_id }}</span>
                                 </div>
-                                <div class="flex items-center gap-2.5">
-                                    <span class="text-xs text-slate-500 font-mono">Tiket: #{{ $consultation->ticket_id }}</span>
+
+                                <!-- Tombol Selesai di Header Atas -->
+                                <div class="flex items-center gap-2">
                                     @if($consultation->status !== 'selesai')
-                                        <button type="button" 
-                                                onclick="submitFinishConsultation('{{ $consultation->id }}', '{{ $consultation->ticket_id }}')" 
-                                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" 
-                                                title="Selesaikan konsultasi dan tutup sesi (Pengkonsultasi tidak bisa membalas lagi)">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                            <span>Selesai</span>
-                                        </button>
+                                        <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai konsultasi #{{ $consultation->ticket_id }} sebagai SELESAI?\n\nPengkonsultasi tidak akan dapat mengirim pesan balasan lagi dan harus membuat pengajuan baru jika ingin berkonsultasi lagi.');">
+                                            @csrf
+                                            <input type="hidden" name="action" value="selesai">
+                                            <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95" title="Tandai Konsultasi Ini Selesai (Tutup Sesi)">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                <span>Tandai Selesai</span>
+                                            </button>
+                                        </form>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-[11px] font-bold">
-                                            <svg class="w-3 h-3 text-emerald-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                                             <span>Konsultasi Selesai</span>
                                         </span>
                                     @endif
@@ -241,56 +242,35 @@
                                 </form>
                             </div>
                         @else
-                            <!-- Form Balasan Admin dengan Aksi Status Otomatis -->
+                            <!-- Form Balasan Admin (Konsultasi Berjalan & Berlanjut) -->
                             <form action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" id="form-reply-{{ $consultation->id }}">
                                 @csrf
+                                <input type="hidden" name="action" value="balas">
 
                                 <div class="mt-4 pt-4 border-t border-slate-200">
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                                         <label class="block text-xs font-bold text-slate-800">
                                             Tulis Tanggapan / Balasan
                                         </label>
-                                        <span class="text-[11px] text-slate-400">Pilih template cepat di bawah jika diperlukan</span>
+                                        <span class="text-[11px] text-slate-500">Tanggapan ini akan dikirim ke pengkonsultasi dan sesi diskusi tetap berjalan</span>
                                     </div>
 
-                                    <!-- Rekomendasi Template Cepat -->
-                                    <div class="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
-                                        <span class="text-[11px] text-slate-500 font-semibold mr-1">Template Balasan Cepat:</span>
-                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Terima kasih atas pertanyaannya. Terkait kendala yang Anda hadapi, berikut arahan dan solusinya:\n1. ...\n2. ...\nSilakan dicoba terlebih dahulu dan kabari kami jika masih ada kendala.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors cursor-pointer">
-                                            + Solusi & Arahan
-                                        </button>
-                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Mohon maaf, permohonan konsultasi ini berada di luar bidang kewenangan Dinas Perdagangan dan KUKM Kabupaten Wonogiri. Untuk perihal tersebut, silakan berkoordinasi langsung dengan dinas/instansi terkait.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors cursor-pointer">
-                                            + Di Luar Kewenangan Dinas
-                                        </button>
-                                        <button type="button" onclick="insertTemplate('{{ $consultation->id }}', 'Mohon maaf, rincian data atau berkas lampiran pendukung Anda belum lengkap. Silakan kirimkan dokumen/data tambahan agar dapat kami proses lebih lanjut.')" class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-medium shadow-2xs transition-colors cursor-pointer">
-                                            + Berkas Belum Lengkap
-                                        </button>
-                                    </div>
+                                    <textarea name="response" id="response-text-{{ $consultation->id }}" rows="3" required class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan jawaban, arahan, atau solusi untuk pengkonsultasi di sini..."></textarea>
 
-                                    <textarea name="response" id="response-text-{{ $consultation->id }}" rows="3" class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-red-500/15 focus:border-[#800000] outline-none shadow-xs transition-all" placeholder="Tuliskan tanggapan, balasan, atau solusi untuk pemohon di sini..."></textarea>
-
-                                    <!-- Keterangan Alur Konsultasi -->
-                                    <div class="mt-2 text-[11px] text-slate-500 bg-slate-100/80 p-2.5 rounded-lg border border-slate-200/70 flex items-start gap-2">
-                                        <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>
-                                            Klik <strong>"Kirim Tanggapan"</strong> untuk membalas dan melanjutkan konsultasi dengan pemohon. Jika permasalahan telah tuntas dan ingin menutup percakapan, gunakan tombol <strong>"Selesai"</strong> di bagian atas.
-                                        </span>
-                                    </div>
-
-                                    <!-- Tombol Aksi Status Otomatis & Notifikasi Email -->
+                                    <!-- Tombol Aksi Bawah: Tutup & Kirim Tanggapan -->
                                     <div class="mt-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-slate-200">
                                         <div class="text-[11.5px] text-slate-500 flex items-center gap-1.5">
                                             <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                            <span>Notifikasi balasan otomatis dikirimkan ke <strong class="text-slate-700 font-semibold">{{ $consultation->email ?? 'email pemohon' }}</strong></span>
+                                            <span>Notifikasi email balasan otomatis dikirimkan ke <strong class="text-slate-700 font-semibold">{{ $consultation->email ?? 'email pemohon' }}</strong></span>
                                         </div>
 
                                         <div class="flex items-center gap-2 shrink-0">
                                             <button type="button" onclick="document.getElementById('reply-form-{{ $consultation->id }}').classList.add('hidden')" class="px-3.5 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-                                                Tutup Panel
+                                                Tutup
                                             </button>
 
                                             <!-- Tombol Kirim Tanggapan: Konsultasi Tetap Berjalan -->
-                                            <button type="submit" name="action" value="balas" class="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-[#800000] hover:bg-[#600000] rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer" title="Kirim tanggapan ini ke pemohon (konsultasi tetap aktif)">
+                                            <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-[#800000] hover:bg-[#600000] rounded-xl shadow-xs transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer" title="Kirim tanggapan ini ke pengkonsultasi (percakapan tetap berjalan & berlanjut)">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                                                 <span>Kirim Tanggapan</span>
                                             </button>
@@ -321,40 +301,4 @@
     </div>
     @endif
 </div>
-
-<script>
-    function insertTemplate(id, text) {
-        var textarea = document.getElementById('response-text-' + id);
-        if (textarea) {
-            textarea.value = text;
-            textarea.focus();
-        }
-    }
-
-    function submitFinishConsultation(id, ticketId) {
-        if (!confirm('Tandai tiket konsultasi #' + ticketId + ' sebagai SELESAI?\n\nPengkonsultasi tidak akan dapat mengirim pesan balasan lagi dan harus membuat pengajuan baru jika ingin berkonsultasi lagi.')) {
-            return;
-        }
-
-        const form = document.getElementById('form-reply-' + id);
-        if (form) {
-            let actionInput = form.querySelector('input[name="action"]');
-            if (!actionInput) {
-                actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                form.appendChild(actionInput);
-            }
-            actionInput.value = 'selesai';
-            form.submit();
-        } else {
-            const fallbackForm = document.createElement('form');
-            fallbackForm.method = 'POST';
-            fallbackForm.action = '{{ url("/admin/konsultasi") }}/' + id + '/reply';
-            fallbackForm.innerHTML = `@csrf<input type="hidden" name="action" value="selesai">`;
-            document.body.appendChild(fallbackForm);
-            fallbackForm.submit();
-        }
-    }
-</script>
 @endsection

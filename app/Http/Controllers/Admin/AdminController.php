@@ -275,27 +275,28 @@ class AdminController extends Controller
     {
         $consultation = \App\Models\Consultation::findOrFail($id);
         
-        // Otomatisasi status berdasarkan tombol tindakan yang diklik
+        // Otomatisasi status berdasarkan tindakan yang dipilih
         $action = $request->input('action', 'balas');
         $targetStatus = match($action) {
             'selesai' => 'selesai',
             'buka_kembali' => 'diproses',
-            default => 'diproses' // default menanggapi: konsultasi tetap berjalan & berlanjut
+            default => 'diproses' // Menanggapi konsultasi: percakapan tetap berjalan dan berlanjut
         };
+
+        if (!in_array($targetStatus, ['menunggu', 'diterima', 'diproses', 'selesai', 'ditolak'])) {
+            $targetStatus = 'diproses';
+        }
 
         $response = trim((string) $request->input('response'));
 
-        // Jika memilih menanggapi/membalas tetapi kolom pesan balasan kosong
-        if ($action === 'balas' && empty($response)) {
-            return back()->withErrors(['response' => 'Wajib menuliskan pesan tanggapan sebelum mengirimkan balasan.'])->withInput();
-        }
-
-        // Jika selesai tapi pesan kosong, gunakan pesan penutupan resmi otomatis
+        // Jika tombol selesai atau buka kembali diklik dari tombol atas tanpa mengisi teks di textarea
         if (empty($response)) {
             if ($targetStatus === 'selesai') {
                 $response = 'Konsultasi telah dinyatakan selesai oleh Admin Dinas Perdagangan & KUKM Kabupaten Wonogiri. Terima kasih telah memanfaatkan layanan konsultasi Pojok UMKM.';
             } elseif ($action === 'buka_kembali') {
                 $response = 'Konsultasi dibuka kembali oleh Admin Dinas untuk tindak lanjut tambahan.';
+            } else {
+                return back()->withErrors(['response' => 'Wajib menuliskan tanggapan atau balasan untuk pengkonsultasi.'])->withInput();
             }
         }
 
@@ -340,19 +341,17 @@ class AdminController extends Controller
             }
         }
 
-        if ($targetStatus === 'selesai') {
-            $msg = "Tiket konsultasi #{$consultation->ticket_id} berhasil diselesaikan. Sesi percakapan ditutup.";
-        } elseif ($action === 'buka_kembali') {
-            $msg = "Tiket konsultasi #{$consultation->ticket_id} berhasil dibuka kembali.";
-        } else {
-            $msg = "Tanggapan berhasil dikirim ke pemohon. Konsultasi tetap aktif berjalan.";
-        }
+        $statusLabels = [
+            'diproses' => $action === 'buka_kembali' ? 'dibuka kembali (status: Sedang Diproses)' : 'diberikan tanggapan (konsultasi tetap berjalan & berlanjut)',
+            'selesai' => 'diselesaikan (sesi ditutup, pengkonsultasi harus membuat pengajuan baru jika ingin berkonsultasi lagi)',
+            'ditolak' => 'ditolak (status: Ditolak)',
+            'diterima' => 'diterima',
+            'menunggu' => 'diperbarui',
+        ];
+        $label = $statusLabels[$targetStatus] ?? 'diperbarui';
 
-        if ($emailSent) {
-            $msg .= " Notifikasi email telah terkirim ke {$consultation->email}.";
-        }
-
-        return back()->with('success', $msg);
+        $emailMsg = $emailSent ? " Notifikasi email jawaban telah dikirim ke {$consultation->email}." : "";
+        return back()->with('success', "Tiket konsultasi #{$consultation->ticket_id} berhasil {$label}.{$emailMsg}");
     }
 
     public function verifications()
