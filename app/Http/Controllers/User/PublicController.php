@@ -4,85 +4,104 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use App\Services\CacheService;
 
 class PublicController extends Controller
 {
     public function welcome()
     {
-        // Hanya ambil berita yang aktif (is_published = true / 1)
-        $latestNews = \App\Models\User\NewsInformation::where('is_published', true)
-            ->latest()
-            ->take(12)
-            ->get();
+        $data = Cache::remember('public_homepage_all_data', 300, function() {
+            // Hanya ambil berita yang aktif (is_published = true / 1)
+            $latestNews = \App\Models\User\NewsInformation::where('is_published', true)
+                ->latest()
+                ->take(12)
+                ->get();
 
-        // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin
-        $featuredProducts = \App\Models\User\Product::with('umkmProfile')
-            ->where('status', 'verified')
-            ->where('is_featured', true)
-            ->latest()
-            ->take(15)
-            ->get();
+            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin
+            $featuredProducts = \App\Models\User\Product::with('umkmProfile')
+                ->where('status', 'verified')
+                ->where('is_featured', true)
+                ->latest()
+                ->take(15)
+                ->get();
 
-        // 1. Data Agregat Pokok
-        $totalUmkm = \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count();
-        $totalVerifiedUmkm = \App\Models\User\UmkmProfile::where('status', 'verified')->count();
-        $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
-        $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
-        $totalDistricts = \App\Models\User\UmkmProfile::whereNotNull('district')
-            ->where('district', '!=', '')
-            ->distinct('district')
-            ->count('district');
+            // 1. Data Agregat Pokok (dikonsolidasikan dalam 1 query SQL ke umkm_profiles)
+            $umkmAgg = DB::selectOne("
+                SELECT
+                    COUNT(*) FILTER (WHERE status != 'rejected') as total_umkm,
+                    COUNT(*) FILTER (WHERE status = 'verified') as total_verified_umkm,
+                    COUNT(DISTINCT district) FILTER (WHERE district IS NOT NULL AND district != '') as total_districts,
+                    COUNT(*) FILTER (WHERE nib IS NOT NULL AND nib != '') as total_nib,
+                    COUNT(*) FILTER (WHERE halal_cert IS NOT NULL AND halal_cert != '') as total_halal,
+                    COUNT(*) FILTER (WHERE pirt IS NOT NULL AND pirt != '') as total_pirt,
+                    COUNT(*) FILTER (WHERE gender = 'Laki-laki') as gender_male,
+                    COUNT(*) FILTER (WHERE gender = 'Perempuan') as gender_female
+                FROM umkm_profiles
+            ");
 
-        // 2. Data Agregat Kategori Produk
-        $categoryStats = \App\Models\User\Product::where('status', 'verified')
-            ->select('category', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
-            ->groupBy('category')
-            ->orderByDesc('count')
-            ->get();
+            $totalUmkm = (int)($umkmAgg->total_umkm ?? 0);
+            $totalVerifiedUmkm = (int)($umkmAgg->total_verified_umkm ?? 0);
+            $totalDistricts = (int)($umkmAgg->total_districts ?? 0);
+            $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
+            $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
 
-        // 3. Data Agregat Legalitas & Sertifikasi
-        $legalitasStats = [
-            'nib' => \App\Models\User\UmkmProfile::whereNotNull('nib')->where('nib', '!=', '')->count(),
-            'halal' => \App\Models\User\UmkmProfile::whereNotNull('halal_cert')->where('halal_cert', '!=', '')->count(),
-            'pirt' => \App\Models\User\UmkmProfile::whereNotNull('pirt')->where('pirt', '!=', '')->count(),
-        ];
+            // 2. Data Agregat Kategori Produk
+            $categoryStats = \App\Models\User\Product::where('status', 'verified')
+                ->select('category', DB::raw('count(*) as count'))
+                ->groupBy('category')
+                ->orderByDesc('count')
+                ->get();
 
-        // 4. Data Agregat Demografi Gender Pemilik UMKM
-        $genderStats = [
-            'male' => \App\Models\User\UmkmProfile::where('gender', 'Laki-laki')->count(),
-            'female' => \App\Models\User\UmkmProfile::where('gender', 'Perempuan')->count(),
-            'total_specified' => \App\Models\User\UmkmProfile::whereIn('gender', ['Laki-laki', 'Perempuan'])->count(),
-        ];
+            // 3. Data Agregat Legalitas & Sertifikasi
+            $legalitasStats = [
+                'nib' => (int)($umkmAgg->total_nib ?? 0),
+                'halal' => (int)($umkmAgg->total_halal ?? 0),
+                'pirt' => (int)($umkmAgg->total_pirt ?? 0),
+            ];
 
-        // 5. Data Agregat Sebaran Wilayah per Kecamatan (Top 6)
-        $districtStats = \App\Models\User\UmkmProfile::whereNotNull('district')
-            ->where('district', '!=', '')
-            ->select('district', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
-            ->groupBy('district')
-            ->orderByDesc('count')
-            ->take(6)
-            ->get();
+            // 4. Data Agregat Demografi Gender Pemilik UMKM
+            $male = (int)($umkmAgg->gender_male ?? 0);
+            $female = (int)($umkmAgg->gender_female ?? 0);
+            $genderStats = [
+                'male' => $male,
+                'female' => $female,
+                'total_specified' => $male + $female,
+            ];
 
-        // 6. Data Koordinat & Marker Persebaran UMKM untuk Peta Interaktif Wonogiri
-        $umkmMapList = \App\Models\User\UmkmProfile::with('products')
-            ->where('status', 'verified')
-            ->get()
-            ->map->toMapPayload();
+            // 5. Data Agregat Sebaran Wilayah per Kecamatan (Top 6)
+            $districtStats = \App\Models\User\UmkmProfile::whereNotNull('district')
+                ->where('district', '!=', '')
+                ->select('district', DB::raw('count(*) as count'))
+                ->groupBy('district')
+                ->orderByDesc('count')
+                ->take(6)
+                ->get();
 
-        return view('user.welcome', compact(
-            'latestNews', 
-            'featuredProducts', 
-            'totalUmkm', 
-            'totalVerifiedUmkm',
-            'totalProducts', 
-            'totalConsultations',
-            'totalDistricts',
-            'categoryStats',
-            'legalitasStats',
-            'genderStats',
-            'districtStats',
-            'umkmMapList'
-        ));
+            // 6. Data Koordinat & Marker Persebaran UMKM untuk Peta Interaktif Wonogiri
+            $umkmMapList = \App\Models\User\UmkmProfile::with('products')
+                ->where('status', 'verified')
+                ->get()
+                ->map->toMapPayload();
+
+            return compact(
+                'latestNews', 
+                'featuredProducts', 
+                'totalUmkm', 
+                'totalVerifiedUmkm', 
+                'totalProducts', 
+                'totalConsultations',
+                'totalDistricts',
+                'categoryStats',
+                'legalitasStats',
+                'genderStats',
+                'districtStats',
+                'umkmMapList'
+            );
+        });
+
+        return view('user.welcome', $data);
     }
 
     public function panduan(Request $request)
@@ -442,16 +461,28 @@ class PublicController extends Controller
         
         $umkms = $query->latest()->paginate(12)->withQueryString();
 
-        $umkmMapList = \App\Models\User\UmkmProfile::with('products')
-            ->where('status', 'verified')
-            ->get()
-            ->map->toMapPayload();
+        $umkmMapList = Cache::remember('umkm_map_list_verified', 600, function() {
+            return \App\Models\User\UmkmProfile::with('products')
+                ->where('status', 'verified')
+                ->get()
+                ->map->toMapPayload();
+        });
         
         return view('user.direktori', compact('umkms', 'umkmMapList'));
     }
 
     public function getMapUmkmData(Request $request)
     {
+        if (!$request->filled('kecamatan') && !$request->filled('q')) {
+            $list = Cache::remember('umkm_map_list_verified', 600, function() {
+                return \App\Models\User\UmkmProfile::with('products')
+                    ->where('status', 'verified')
+                    ->get()
+                    ->map->toMapPayload();
+            });
+            return response()->json($list);
+        }
+
         $query = \App\Models\User\UmkmProfile::with('products')->where('status', 'verified');
         
         if ($request->filled('kecamatan')) {

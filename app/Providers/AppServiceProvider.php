@@ -30,5 +30,13 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin', function ($user) {
             return $user->role === 'admin';
         });
+
+        // Otomatis hapus cache publik & admin ketika ada perubahan data
+        \App\Models\User\Product::saved(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\Product::deleted(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\UmkmProfile::saved(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\UmkmProfile::deleted(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\NewsInformation::saved(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\NewsInformation::deleted(fn() => \App\Services\CacheService::clearPublicCache());
     }
 }

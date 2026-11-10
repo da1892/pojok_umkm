@@ -9,6 +9,8 @@ use App\Models\User\Product;
 use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
 
 class AdminController extends Controller
 {
@@ -17,50 +19,151 @@ class AdminController extends Controller
         $pendingUmkms = UmkmProfile::with('products')->where('status', 'pending')->latest()->get();
         $pendingProducts = Product::with('umkmProfile')->where('status', 'pending')->latest()->get();
         
-        $totalUmkm = UmkmProfile::where('status', 'verified')->count();
-        $totalProducts = Product::where('status', 'verified')->count();
-        
-        // Data Distribusi per Wilayah (Kecamatan)
-        $districtStats = UmkmProfile::select('district')
-            ->selectRaw("count(CASE WHEN products.status = 'verified' THEN products.id END) as total_products")
-            ->selectRaw("count(DISTINCT umkm_profiles.id) as total_umkms")
-            ->leftJoin('products', 'products.umkm_profile_id', '=', 'umkm_profiles.id')
-            ->whereNotNull('district')
-            ->where('district', '!=', '')
-            ->groupBy('district')
-            ->orderByDesc('total_products')
-            ->orderBy('district')
-            ->get();
+        $counts = DB::selectOne("
+            SELECT
+                (SELECT count(*) FROM umkm_profiles WHERE status = 'verified') as total_umkm,
+                (SELECT count(*) FROM products WHERE status = 'verified') as total_products
+        ");
+        $totalUmkm = (int)($counts->total_umkm ?? 0);
+        $totalProducts = (int)($counts->total_products ?? 0);
 
-        // Kategori Produk Real
-        $categoryStats = Product::where('status', 'verified')
-            ->select('category')
-            ->selectRaw('count(*) as count')
-            ->groupBy('category')
-            ->orderByDesc('count')
-            ->get();
+        $stats = Cache::remember('admin_dashboard_stats', 180, function() {
+            // Data Distribusi per Wilayah (Kecamatan)
+            $districtStats = UmkmProfile::select('district')
+                ->selectRaw("count(CASE WHEN products.status = 'verified' THEN products.id END) as total_products")
+                ->selectRaw("count(DISTINCT umkm_profiles.id) as total_umkms")
+                ->leftJoin('products', 'products.umkm_profile_id', '=', 'umkm_profiles.id')
+                ->whereNotNull('district')
+                ->where('district', '!=', '')
+                ->groupBy('district')
+                ->orderByDesc('total_products')
+                ->orderBy('district')
+                ->get();
 
-        // Seluruh produk terverifikasi beserta info daerah UMKM untuk filter interaktif per daerah
-        $allVerifiedProducts = Product::with('umkmProfile')
-            ->where('status', 'verified')
-            ->latest()
-            ->get()
-            ->map(function($p) {
-                return [
-                    'id' => $p->id,
-                    'name' => $p->name,
-                    'category' => $p->category,
-                    'price' => $p->price > 0 ? 'Rp ' . number_format($p->price, 0, ',', '.') : 'Hubungi UMKM',
-                    'image' => $p->image_path ? asset('storage/' . $p->image_path) : asset('images/no-image.png'),
-                    'district' => $p->umkmProfile->district ?? '',
-                    'village' => $p->umkmProfile->village ?? '',
-                    'business_name' => $p->umkmProfile->business_name ?? '-',
-                    'edit_url' => route('admin.product.edit', $p->id),
-                ];
-            });
+            // Kategori Produk Real
+            $categoryStats = Product::where('status', 'verified')
+                ->select('category')
+                ->selectRaw('count(*) as count')
+                ->groupBy('category')
+                ->orderByDesc('count')
+                ->get();
 
-        // Semua UMKM terdaftar beserta daerahnya
-        $allUmkms = UmkmProfile::select('id', 'business_name', 'district', 'village', 'status')->get();
+            // Seluruh produk terverifikasi beserta info daerah UMKM untuk filter interaktif per daerah
+            $allVerifiedProducts = Product::with('umkmProfile')
+                ->where('status', 'verified')
+                ->latest()
+                ->get()
+                ->map(function($p) {
+                    return [
+                        'id' => $p->id,
+                        'name' => $p->name,
+                        'category' => $p->category,
+                        'price' => $p->price > 0 ? 'Rp ' . number_format($p->price, 0, ',', '.') : 'Hubungi UMKM',
+                        'image' => $p->image_path ? asset('storage/' . $p->image_path) : asset('images/no-image.png'),
+                        'district' => $p->umkmProfile->district ?? '',
+                        'village' => $p->umkmProfile->village ?? '',
+                        'business_name' => $p->umkmProfile->business_name ?? '-',
+                        'edit_url' => route('admin.product.edit', $p->id),
+                    ];
+                });
+
+            // Semua UMKM terdaftar beserta daerahnya
+            $allUmkms = UmkmProfile::select('id', 'business_name', 'district', 'village', 'status')->get();
+
+            // Daftar kategori standar untuk grafik & filter produk UMKM
+            $standardCategories = [
+                'Makanan & Minuman',
+                'Batik/Fashion',
+                'Kerajinan',
+                'Olahan Hasil Pertanian',
+                'Produk Kreatif',
+            ];
+            $extraCategories = Product::whereNotNull('category')
+                ->where('category', '!=', '')
+                ->distinct()
+                ->pluck('category')
+                ->toArray();
+            $allCategoriesList = array_values(array_unique(array_merge($standardCategories, $extraCategories)));
+
+            // -------------------------------------------------------------
+            // Data Statistik & Analitik Pengunjung Website (Real-time & History)
+            // -------------------------------------------------------------
+            $vAgg = DB::selectOne("
+                SELECT
+                    COUNT(*) as total_views,
+                    COUNT(DISTINCT session_id) as total_visitors,
+                    COUNT(*) FILTER (WHERE visited_at::date = CURRENT_DATE) as today_views,
+                    COUNT(DISTINCT session_id) FILTER (WHERE visited_at::date = CURRENT_DATE) as today_visitors,
+                    COUNT(*) FILTER (WHERE visited_at >= DATE_TRUNC('month', CURRENT_DATE)) as month_views,
+                    COUNT(DISTINCT session_id) FILTER (WHERE visited_at >= DATE_TRUNC('month', CURRENT_DATE)) as month_visitors
+                FROM visitor_logs
+            ");
+
+            $visitorSummary = [
+                'today_visitors' => (int)($vAgg->today_visitors ?? 0),
+                'today_views' => (int)($vAgg->today_views ?? 0),
+                'month_visitors' => (int)($vAgg->month_visitors ?? 0),
+                'month_views' => (int)($vAgg->month_views ?? 0),
+                'total_visitors' => (int)($vAgg->total_visitors ?? 0),
+                'total_views' => (int)($vAgg->total_views ?? 0),
+            ];
+
+            // 14 Hari Terakhir untuk Grafik Tren Kunjungan Harian
+            $chartStartDate = Carbon::now()->subDays(13)->startOfDay();
+            $dailyData = VisitorLog::where('visited_at', '>=', $chartStartDate)
+                ->selectRaw("DATE(visited_at) as visit_date, count(*) as views, count(DISTINCT session_id) as visitors")
+                ->groupByRaw("DATE(visited_at)")
+                ->orderByRaw("DATE(visited_at)")
+                ->get()
+                ->keyBy(function($item) {
+                    return Carbon::parse($item->visit_date)->toDateString();
+                });
+
+            $visitorDailyChart = [
+                'labels' => [],
+                'views' => [],
+                'visitors' => [],
+            ];
+            for ($i = 13; $i >= 0; $i--) {
+                $dt = Carbon::now()->subDays($i);
+                $key = $dt->toDateString();
+                $visitorDailyChart['labels'][] = $dt->translatedFormat('d M');
+                $visitorDailyChart['views'][] = isset($dailyData[$key]) ? (int) $dailyData[$key]->views : 0;
+                $visitorDailyChart['visitors'][] = isset($dailyData[$key]) ? (int) $dailyData[$key]->visitors : 0;
+            }
+
+            // Distribusi Perangkat (Mobile vs Desktop vs Tablet)
+            $visitorDeviceStats = VisitorLog::select('device', DB::raw('count(*) as count'))
+                ->groupBy('device')
+                ->orderByDesc('count')
+                ->get();
+
+            // Distribusi Browser
+            $visitorBrowserStats = VisitorLog::select('browser', DB::raw('count(*) as count'))
+                ->groupBy('browser')
+                ->orderByDesc('count')
+                ->get();
+
+            // 6 Halaman Terpopuler
+            $visitorTopPages = VisitorLog::select('page_name', 'url', DB::raw('count(*) as count'))
+                ->groupBy('page_name', 'url')
+                ->orderByDesc('count')
+                ->take(6)
+                ->get();
+
+            return compact(
+                'districtStats',
+                'categoryStats',
+                'allVerifiedProducts',
+                'allUmkms',
+                'allCategoriesList',
+                'visitorSummary',
+                'visitorDailyChart',
+                'visitorDeviceStats',
+                'visitorBrowserStats',
+                'visitorTopPages'
+            );
+        });
 
         // Data 25 Kecamatan dan 294 Desa asli Wonogiri dari master Excel
         if (!file_exists(public_path('wonogiri_wilayah.json'))) {
@@ -74,100 +177,17 @@ class AdminController extends Controller
             ? json_decode(file_get_contents(public_path('wonogiri_wilayah.json')), true)
             : [];
 
-        // Daftar kategori standar untuk grafik & filter produk UMKM
-        $standardCategories = [
-            'Makanan & Minuman',
-            'Batik/Fashion',
-            'Kerajinan',
-            'Olahan Hasil Pertanian',
-            'Produk Kreatif',
-        ];
-        $extraCategories = Product::whereNotNull('category')
-            ->where('category', '!=', '')
-            ->distinct()
-            ->pluck('category')
-            ->toArray();
-        $allCategoriesList = array_values(array_unique(array_merge($standardCategories, $extraCategories)));
-
-        // -------------------------------------------------------------
-        // Data Statistik & Analitik Pengunjung Website (Real-time & History)
-        // -------------------------------------------------------------
-        $today = Carbon::today();
-        $thisMonthStart = Carbon::now()->startOfMonth();
-
-        $visitorSummary = [
-            'today_visitors' => VisitorLog::whereDate('visited_at', $today)->distinct('session_id')->count('session_id'),
-            'today_views' => VisitorLog::whereDate('visited_at', $today)->count(),
-            'month_visitors' => VisitorLog::where('visited_at', '>=', $thisMonthStart)->distinct('session_id')->count('session_id'),
-            'month_views' => VisitorLog::where('visited_at', '>=', $thisMonthStart)->count(),
-            'total_visitors' => VisitorLog::distinct('session_id')->count('session_id'),
-            'total_views' => VisitorLog::count(),
-        ];
-
-        // 14 Hari Terakhir untuk Grafik Tren Kunjungan Harian
-        $chartStartDate = Carbon::now()->subDays(13)->startOfDay();
-        $dailyData = VisitorLog::where('visited_at', '>=', $chartStartDate)
-            ->selectRaw("DATE(visited_at) as visit_date, count(*) as views, count(DISTINCT session_id) as visitors")
-            ->groupByRaw("DATE(visited_at)")
-            ->orderByRaw("DATE(visited_at)")
-            ->get()
-            ->keyBy(function($item) {
-                return Carbon::parse($item->visit_date)->toDateString();
-            });
-
-        $visitorDailyChart = [
-            'labels' => [],
-            'views' => [],
-            'visitors' => [],
-        ];
-        for ($i = 13; $i >= 0; $i--) {
-            $dt = Carbon::now()->subDays($i);
-            $key = $dt->toDateString();
-            $visitorDailyChart['labels'][] = $dt->translatedFormat('d M');
-            $visitorDailyChart['views'][] = isset($dailyData[$key]) ? (int) $dailyData[$key]->views : 0;
-            $visitorDailyChart['visitors'][] = isset($dailyData[$key]) ? (int) $dailyData[$key]->visitors : 0;
-        }
-
-        // Distribusi Perangkat (Mobile vs Desktop vs Tablet)
-        $visitorDeviceStats = VisitorLog::select('device', DB::raw('count(*) as count'))
-            ->groupBy('device')
-            ->orderByDesc('count')
-            ->get();
-
-        // Distribusi Browser
-        $visitorBrowserStats = VisitorLog::select('browser', DB::raw('count(*) as count'))
-            ->groupBy('browser')
-            ->orderByDesc('count')
-            ->get();
-
-        // 6 Halaman Terpopuler
-        $visitorTopPages = VisitorLog::select('page_name', 'url', DB::raw('count(*) as count'))
-            ->groupBy('page_name', 'url')
-            ->orderByDesc('count')
-            ->take(6)
-            ->get();
-
         // 8 Log Kunjungan Terkini
         $recentVisitors = VisitorLog::latest('visited_at')->take(8)->get();
 
-        return view('admin.dashboard', compact(
-            'pendingUmkms', 
-            'pendingProducts', 
-            'totalUmkm', 
-            'totalProducts',
-            'districtStats',
-            'categoryStats',
-            'allVerifiedProducts',
-            'allUmkms',
-            'wilayahWonogiri',
-            'allCategoriesList',
-            'visitorSummary',
-            'visitorDailyChart',
-            'visitorDeviceStats',
-            'visitorBrowserStats',
-            'visitorTopPages',
-            'recentVisitors'
-        ));
+        return view('admin.dashboard', array_merge([
+            'pendingUmkms' => $pendingUmkms, 
+            'pendingProducts' => $pendingProducts, 
+            'totalUmkm' => $totalUmkm, 
+            'totalProducts' => $totalProducts,
+            'wilayahWonogiri' => $wilayahWonogiri,
+            'recentVisitors' => $recentVisitors,
+        ], $stats));
     }
 
     public function products(Request $request)
@@ -227,18 +247,22 @@ class AdminController extends Controller
             ->pluck('name', 'umkm_profile_id')
             ->toArray();
 
-        // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat
-        $districtsWithCounts = UmkmProfile::select('district')
-            ->selectRaw("count(products.id) as total_products")
-            ->leftJoin('products', 'products.umkm_profile_id', '=', 'umkm_profiles.id')
-            ->whereNotNull('district')
-            ->where('district', '!=', '')
-            ->groupBy('district')
-            ->orderByDesc('total_products')
-            ->orderBy('district')
-            ->get();
+        // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat (cached)
+        $districtsWithCounts = Cache::remember('admin_products_districts', 300, function() {
+            return UmkmProfile::select('district')
+                ->selectRaw("count(products.id) as total_products")
+                ->leftJoin('products', 'products.umkm_profile_id', '=', 'umkm_profiles.id')
+                ->whereNotNull('district')
+                ->where('district', '!=', '')
+                ->groupBy('district')
+                ->orderByDesc('total_products')
+                ->orderBy('district')
+                ->get();
+        });
 
-        $allCategories = Product::select('category')->distinct()->whereNotNull('category')->pluck('category');
+        $allCategories = Cache::remember('admin_products_categories', 300, function() {
+            return Product::select('category')->distinct()->whereNotNull('category')->pluck('category');
+        });
 
         $wilayahWonogiri = file_exists(public_path('wonogiri_wilayah.json'))
             ? json_decode(file_get_contents(public_path('wonogiri_wilayah.json')), true)
@@ -246,8 +270,14 @@ class AdminController extends Controller
         $allKecamatanList = !empty($wilayahWonogiri) ? array_keys($wilayahWonogiri) : [];
         sort($allKecamatanList);
 
-        $totalAllProducts = Product::count();
-        $totalFeaturedProducts = Product::where('is_featured', true)->count();
+        $prodCounts = DB::selectOne("
+            SELECT
+                COUNT(*) as total,
+                COUNT(*) FILTER (WHERE is_featured = true) as featured
+            FROM products
+        ");
+        $totalAllProducts = (int)($prodCounts->total ?? 0);
+        $totalFeaturedProducts = (int)($prodCounts->featured ?? 0);
 
         return view('admin.products.index', compact(
             'products', 
