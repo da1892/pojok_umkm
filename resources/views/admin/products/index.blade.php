@@ -252,17 +252,9 @@
                                         </span>
                                         @endif
                                     </div>
-                                    <div class="flex items-center gap-1.5 mt-0.5">
-                                        <span class="text-xs font-extrabold text-[#800000]">
-                                            Rp {{ number_format($product->price ?? 0, 0, ',', '.') }}
-                                        </span>
-                                        @if(($product->price ?? 0) <= 0)
-                                        <span class="text-[9px] px-1 rounded font-bold bg-amber-50 text-amber-700 border border-amber-200" title="Harga produk belum diisi atau Rp 0">⚠️ Rp 0</span>
-                                        @endif
-                                    </div>
                                     @if($product->description)
-                                    <p class="text-[11px] text-slate-400 truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px] mt-0.5">
-                                        {{ Str::limit($product->description, 40) }}
+                                    <p class="text-[11px] text-slate-500 truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px] mt-0.5">
+                                        {{ Str::limit($product->description, 45) }}
                                     </p>
                                     @endif
                                 </div>
@@ -464,7 +456,7 @@
                 </div>
                 <div>
                     <h3 class="text-base font-extrabold text-slate-800">Pratinjau Kemenarikan Produk</h3>
-                    <p class="text-xs text-slate-500">Evaluasi visual, kelayakan harga, dan kurasi produk unggulan (1 UMKM = 1 Unggulan)</p>
+                    <p class="text-xs text-slate-500">Evaluasi visual, kelengkapan deskripsi, dan kurasi produk unggulan khas Wonogiri</p>
                 </div>
             </div>
             <button type="button" onclick="closeProductQuickView()" class="w-8 h-8 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors flex items-center justify-center cursor-pointer">
@@ -497,7 +489,7 @@
                         </div>
                         <ul class="list-disc pl-4 space-y-0.5 text-slate-700">
                             <li>Foto cerah, tajam, dan tidak buram/pecah.</li>
-                            <li>Harga realistis (bukan Rp 0).</li>
+                            <li>Visual produk menarik dan foto produk asli.</li>
                             <li>Deskripsi menjelaskan keunggulan dan rasa/bahan.</li>
                             <li>Legalitas UMKM lengkap (NIB/P-IRT/Halal).</li>
                         </ul>
@@ -512,17 +504,9 @@
                         <span id="qv-status-badge"></span>
                     </div>
 
-                    <!-- Title & Price -->
+                    <!-- Title -->
                     <div>
                         <h2 id="qv-product-name" class="text-lg sm:text-xl font-black text-slate-900 leading-snug"></h2>
-                        <div class="mt-1 flex items-baseline gap-2">
-                            <span id="qv-price" class="text-xl sm:text-2xl font-black text-[#800000]"></span>
-                        </div>
-                        <!-- Rp 0 warning banner -->
-                        <div id="qv-zero-price-warning" class="hidden mt-2 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
-                            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                            <span><strong>Perhatian:</strong> Harga produk masih Rp 0. Disarankan untuk diedit atau konfirmasi ke UMKM terkait sebelum diunggulkan.</span>
-                        </div>
                     </div>
 
                     <!-- Description -->
@@ -618,8 +602,6 @@
             'id' => $p->id,
             'name' => $p->name,
             'category' => $p->category ?? 'Produk UMKM',
-            'price' => (float)$p->price,
-            'formatted_price' => 'Rp ' . number_format((float)$p->price, 0, ',', '.'),
             'description' => $p->description ?: 'Belum ada deskripsi untuk produk ini.',
             'status' => $p->status,
             'is_featured' => (bool)$p->is_featured,
@@ -654,16 +636,7 @@
         // Populate fields
         document.getElementById('qv-product-name').textContent = prod.name;
         document.getElementById('qv-category-badge').textContent = prod.category;
-        document.getElementById('qv-price').textContent = prod.formatted_price;
         document.getElementById('qv-description').textContent = prod.description;
-
-        // Zero price warning
-        const zeroPriceNotice = document.getElementById('qv-zero-price-warning');
-        if (prod.price <= 0) {
-            zeroPriceNotice.classList.remove('hidden');
-        } else {
-            zeroPriceNotice.classList.add('hidden');
-        }
 
         // Status badge
         const statusBadge = document.getElementById('qv-status-badge');

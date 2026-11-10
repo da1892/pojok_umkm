@@ -58,7 +58,7 @@ class AdminController extends Controller
                         'id' => $p->id,
                         'name' => $p->name,
                         'category' => $p->category,
-                        'price' => $p->price > 0 ? 'Rp ' . number_format($p->price, 0, ',', '.') : 'Hubungi UMKM',
+                        'price' => 'Hubungi UMKM',
                         'image' => $p->image_path ? asset('storage/' . $p->image_path) : asset('images/no-image.png'),
                         'district' => $p->umkmProfile->district ?? '',
                         'village' => $p->umkmProfile->village ?? '',
