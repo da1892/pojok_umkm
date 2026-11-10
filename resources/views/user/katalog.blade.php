@@ -263,76 +263,64 @@
         <!-- Katalog Content Container -->
         <div id="katalog-grid-container" class="relative z-10 reveal delay-200">
             @if ($products->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
                 @foreach ($products as $product)
-                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden border-2 border-slate-200/90 hover:border-[#800000] shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between cursor-pointer relative">
+                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
                     <div>
-                        <div class="h-36 sm:h-44 w-full overflow-hidden bg-slate-100 relative">
+                        <!-- Thumbnail Image Container (Persis Berita & Kegiatan: h-28 sm:h-32) -->
+                        <div class="h-28 sm:h-32 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                                    <svg class="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                             @endif
-                            <!-- Gradient Vignette Shadow -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                            <!-- Golden Featured Badge (Hanya badge Unggulan di pojok atas foto) -->
+                            <!-- Category Badge (Top-Left, persis Berita) -->
+                            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-bold bg-white/95 backdrop-blur-xs text-[#800000] shadow-xs">
+                                {{ $product->category ?? 'Produk UMKM' }}
+                            </span>
+
+                            <!-- Golden Featured Badge (Top-Right, kompak) -->
                             @if($product->is_featured)
-                            <span class="absolute top-2.5 right-2.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-yellow-200 ring-2 ring-amber-400/20 z-10">
-                                <svg class="w-3 h-3 text-slate-950 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                <span>UNGGULAN</span>
+                            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs flex items-center gap-1 border border-amber-300/40">
+                                <svg class="w-2.5 h-2.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                <span>Unggulan</span>
                             </span>
                             @endif
                         </div>
-                        <div class="p-3 sm:p-4 pb-0">
-                            <!-- Category Badge (Rapi di atas judul produk, terpisah dari badge foto) -->
-                            @if($product->category)
-                            <div class="mb-1.5">
-                                <span class="inline-block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#800000] bg-red-50 border border-red-200/80 px-2.5 py-0.5 rounded-md">
-                                    {{ $product->category }}
-                                </span>
-                            </div>
-                            @endif
 
-                            <h3 class="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
+                        <!-- Card Body (Persis Berita: padding p-3 sm:p-3.5) -->
+                        <div class="p-3 sm:p-3.5">
+                            <!-- Tanggal Ditambahkan / Info Agenda (Persis Berita) -->
+                            <div class="text-[10px] font-bold text-[#b91c1c] mb-1 inline-flex items-center gap-1">
+                                <svg class="w-3 h-3 text-[#b91c1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>{{ $product->created_at ? $product->created_at->translatedFormat('d F Y') : 'Khas Wonogiri' }}</span>
+                            </div>
+
+                            <!-- Product Name (Persis Berita) -->
+                            <h3 class="text-xs sm:text-[13px] font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug mb-1.5 line-clamp-2 min-h-[2.1rem]">
                                 {{ $product->name }}
                             </h3>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                @if(!empty($product->umkmProfile->image_path))
-                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-3.5 h-3.5 rounded-full object-cover shrink-0 ring-1 ring-slate-200">
-                                @else
-                                    <span class="w-3.5 h-3.5 rounded-full bg-red-100 text-[#800000] flex items-center justify-center text-[8px] font-bold shrink-0">U</span>
-                                @endif
-                                <span class="truncate font-medium text-slate-600">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
-                                <svg class="w-3 h-3 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 20 20" title="UMKM Terverifikasi"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                            </p>
 
-                            <!-- Status Badge Bersih (Tanpa Teks Harga) -->
-                            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
-                                <span class="inline-flex items-center gap-1 text-[8px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200/60 shrink-0">
-                                    <span class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span> Siap Dipesan
-                                </span>
-                                <span class="text-[9px] sm:text-[10px] font-semibold text-slate-400 truncate">
-                                    Khas Wonogiri
-                                </span>
-                            </div>
+                            <!-- Product Excerpt / Description (Persis Berita: line-clamp-2) -->
+                            <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2 min-h-[1.8rem]">
+                                {{ $product->description ? Str::limit(strip_tags($product->description), 85) : 'Koleksi produk unggulan berkualitas binaan UMKM Kabupaten Wonogiri.' }}
+                            </p>
                         </div>
                     </div>
-                    <div class="p-2.5 sm:p-3.5 pt-2 sm:pt-2">
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] sm:text-xs">
-                            <div class="flex items-center gap-1 text-slate-400 font-medium">
-                                <svg class="w-3 h-3 text-[#800000] shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                                </svg>
-                                <span class="line-clamp-1 max-w-[70px] sm:max-w-[110px] font-semibold text-slate-700 text-[9px] sm:text-[11px]">{{ $product->umkmProfile->district ?? $product->umkmProfile->address ?? 'Wonogiri' }}</span>
-                            </div>
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-[#800000] group-hover:bg-[#800000] group-hover:text-white text-[10px] sm:text-xs font-bold transition-all duration-300 shadow-2xs group-hover:shadow-md shrink-0">
-                                <span>Detail</span>
-                                <svg class="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-                            </span>
-                        </div>
+
+                    <!-- Card Footer: Author & Baca Lengkap (Persis Berita) -->
+                    <div class="px-3 sm:px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                        <span class="text-slate-400 font-medium truncate max-w-[110px]">
+                            {{ $product->umkmProfile->business_name ?? 'Admin UMKM' }}
+                        </span>
+
+                        <span class="font-bold text-[#800000] group-hover:text-red-900 inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">
+                            <span>Baca Lengkap</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </span>
                     </div>
                 </a>
                 @endforeach
