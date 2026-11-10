@@ -13,6 +13,8 @@
     </style>
 </head>
 <body class="bg-[#FAF9F6] text-slate-900 antialiased overflow-hidden selection:bg-[#800000] selection:text-white">
+    <!-- Top Progress Bar on Page Navigation -->
+    <div id="admin-progress-bar" style="position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#fbbf24,#f59e0b,#ef4444);z-index:999999;transition:width 0.2s ease,opacity 0.2s ease;pointer-events:none;opacity:0;"></div>
     <div class="flex h-screen w-full relative">
         <!-- Mobile Sidebar Backdrop -->
         <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-30 lg:hidden hidden transition-opacity opacity-0"></div>
@@ -38,9 +40,22 @@
             <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
                 @php
-                    $unansweredConsultationsCount = \App\Models\Consultation::where('status', 'menunggu')->count();
-                    $pendingUmkmCount = \App\Models\User\UmkmProfile::where('status', 'pending')->count();
-                    $pendingProductsCount = \App\Models\User\Product::where('status', 'pending')->count();
+                    $badgeCounts = \Illuminate\Support\Facades\Cache::remember('admin_sidebar_badges', 60, function() {
+                        $row = \Illuminate\Support\Facades\DB::selectOne("
+                            SELECT
+                                (SELECT count(*) FROM consultations WHERE status = 'menunggu') as unanswered,
+                                (SELECT count(*) FROM umkm_profiles WHERE status = 'pending') as pending_umkm,
+                                (SELECT count(*) FROM products WHERE status = 'pending') as pending_products
+                        ");
+                        return [
+                            'unanswered' => (int)($row->unanswered ?? 0),
+                            'pending_umkm' => (int)($row->pending_umkm ?? 0),
+                            'pending_products' => (int)($row->pending_products ?? 0),
+                        ];
+                    });
+                    $unansweredConsultationsCount = $badgeCounts['unanswered'];
+                    $pendingUmkmCount = $badgeCounts['pending_umkm'];
+                    $pendingProductsCount = $badgeCounts['pending_products'];
                     $pendingVerificationsCount = $pendingUmkmCount + $pendingProductsCount;
                 @endphp
                 <a href="{{ route('dashboard') }}" class="flex items-center justify-between px-3 py-2.5 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-[#600000] text-white font-medium border border-white/10' : 'text-white/70 hover:bg-white/5 hover:text-white' }} text-sm transition-colors group">
@@ -638,6 +653,56 @@
         });
     </script>
     @endif
+    <script>
+        // Instant Admin Link Pre-fetcher & Visual Progress Bar
+        (function() {
+            const prefetchedUrls = new Set();
+            function prefetch(url) {
+                if (!url || prefetchedUrls.has(url)) return;
+                try {
+                    const u = new URL(url, window.location.origin);
+                    if (u.origin !== window.location.origin) return;
+                    if (u.pathname === window.location.pathname) return;
+                    if (u.pathname.includes('logout') || u.pathname.includes('delete') || u.pathname.includes('destroy')) return;
+                    prefetchedUrls.add(u.href);
+                    const l = document.createElement('link');
+                    l.rel = 'prefetch';
+                    l.href = u.href;
+                    document.head.appendChild(l);
+                } catch(e) {}
+            }
+
+            document.addEventListener('mouseover', function(e) {
+                const a = e.target.closest('a');
+                if (a && a.href && !a.target && !a.download && !a.href.includes('#')) {
+                    prefetch(a.href);
+                }
+            }, { passive: true });
+
+            const bar = document.getElementById('admin-progress-bar');
+            document.addEventListener('click', function(e) {
+                const a = e.target.closest('a');
+                if (!a || !a.href || a.target || a.download || a.href.startsWith('javascript:') || a.href.includes('#')) return;
+                try {
+                    const u = new URL(a.href, window.location.origin);
+                    if (u.origin === window.location.origin && u.pathname !== window.location.pathname) {
+                        if (bar) {
+                            bar.style.opacity = '1';
+                            bar.style.width = '45%';
+                            setTimeout(() => { if (bar) bar.style.width = '80%'; }, 70);
+                        }
+                    }
+                } catch(e) {}
+            });
+
+            window.addEventListener('beforeunload', function() {
+                if (bar) {
+                    bar.style.opacity = '1';
+                    bar.style.width = '100%';
+                }
+            });
+        })();
+    </script>
     @stack('scripts')
 </body>
 </html>
