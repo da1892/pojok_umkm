@@ -186,13 +186,14 @@
         <!-- Produk Unggulan Terbaru -->
         @php
             if (!isset($featuredProducts)) {
-                // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin
+                // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin (1 UMKM 1 produk unggulan)
                 $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                     ->where('status', 'verified')
                     ->where('is_featured', true)
                     ->latest()
-                    ->take(12)
-                    ->get();
+                    ->get()
+                    ->unique('umkm_profile_id')
+                    ->take(15);
             }
         @endphp
 
@@ -223,11 +224,11 @@
                 </a>
             </div>
 
-            <!-- Product Cards Grid: 2 Kolom Mobile, 3 Kolom Desktop -->
+            <!-- Product Cards Grid: Responsif 2 Kolom Mobile, 3 Kolom Tablet, 4 Kolom Laptop, 5 Kolom Desktop Luas -->
             @if($featuredProducts->count() > 0)
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-7">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 @foreach ($featuredProducts as $product)
-                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-2xl hover:-translate-y-2 hover:border-red-300 transition-all duration-500 group flex flex-col justify-between cursor-pointer relative">
+                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 hover:border-red-300 transition-all duration-300 group flex flex-col justify-between cursor-pointer relative">
                     <div>
                         <!-- Thumbnail Image Container -->
                         <div class="h-40 sm:h-56 w-full overflow-hidden bg-slate-100 relative">

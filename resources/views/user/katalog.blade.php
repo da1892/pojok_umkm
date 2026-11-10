@@ -253,7 +253,7 @@
                     });
                 }
 
-                $products = $query->latest()->paginate(9)->withQueryString();
+                $products = $query->latest()->paginate(15)->withQueryString();
             }
         @endphp
 
@@ -263,11 +263,11 @@
         <!-- Katalog Content Container -->
         <div id="katalog-grid-container" class="relative z-10 reveal delay-200">
             @if ($products->count() > 0)
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 @foreach ($products as $product)
-                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-red-200 transition-all duration-300 group flex flex-col justify-between block cursor-pointer">
+                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 hover:border-red-300 transition-all duration-300 group flex flex-col justify-between cursor-pointer relative">
                     <div>
-                        <div class="h-36 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
+                        <div class="h-32 sm:h-36 md:h-40 lg:h-44 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
@@ -287,28 +287,45 @@
                             </span>
                             @endif
                         </div>
-                        <div class="p-3 sm:p-5 pb-0">
-                            <h3 class="text-xs sm:text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[3rem]">
+                        <div class="p-2.5 sm:p-3.5 pb-0">
+                            <h3 class="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
                                 {{ $product->name }}
                             </h3>
                             <p class="text-[10px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1">
                                 @if(!empty($product->umkmProfile->image_path))
-                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full object-cover shrink-0 border border-slate-200">
+                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-3.5 h-3.5 rounded-full object-cover shrink-0 ring-1 ring-slate-200">
+                                @else
+                                    <span class="w-3.5 h-3.5 rounded-full bg-red-100 text-[#991b1b] flex items-center justify-center text-[8px] font-bold shrink-0">U</span>
                                 @endif
-                                <span class="truncate">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
+                                <span class="truncate font-medium text-slate-600">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
+                                <svg class="w-3 h-3 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 20 20" title="UMKM Terverifikasi"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                             </p>
+
+                            <!-- Prominent Price Tag -->
+                            <div class="mt-2 pt-2 border-t border-slate-100 flex items-baseline justify-between gap-1">
+                                <div>
+                                    <span class="text-[8px] sm:text-[9px] text-slate-400 block font-bold uppercase tracking-wider">Harga Resmi</span>
+                                    <span class="text-xs sm:text-sm md:text-base font-black text-[#991b1b] tracking-tight">
+                                        Rp {{ number_format($product->price ?? 0, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                                <span class="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 shrink-0">
+                                    <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Siap Dipesan
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-3 pt-2 sm:p-5 sm:pt-4">
-                        <div class="flex items-center justify-between pt-2 sm:pt-3 border-t border-slate-100 text-[10px] sm:text-xs">
+                    <div class="p-2.5 sm:p-3.5 pt-2 sm:pt-2">
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] sm:text-xs">
                             <div class="flex items-center gap-1 text-slate-400 font-medium">
-                                <svg class="w-3 h-3 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                                <svg class="w-3 h-3 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                                 </svg>
-                                <span class="line-clamp-1 max-w-[65px] sm:max-w-[120px]">{{ $product->umkmProfile->address ?? 'Wonogiri' }}</span>
+                                <span class="line-clamp-1 max-w-[60px] sm:max-w-[100px] font-medium text-slate-600 text-[9px] sm:text-[11px]">{{ $product->umkmProfile->district ?? $product->umkmProfile->address ?? 'Wonogiri' }}</span>
                             </div>
-                            <span class="text-[#991b1b] font-bold group-hover:underline">
-                                Lihat <span class="hidden sm:inline">Detail</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-[#991b1b] group-hover:bg-[#991b1b] group-hover:text-white text-[10px] sm:text-xs font-bold transition-all duration-300 shadow-2xs group-hover:shadow-md">
+                                <span>Detail</span>
+                                <svg class="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                             </span>
                         </div>
                     </div>

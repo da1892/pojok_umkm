@@ -675,27 +675,12 @@ class AdminController extends Controller
 
         // Jika dijadikan Produk Unggulan tetapi statusnya belum verified, otomatis setujui produk agar langsung tayang di Beranda
         $wasPending = false;
-        $replacedProduct = null;
 
         if ($product->is_featured) {
             if ($product->status !== 'verified') {
                 $product->status = 'verified';
                 $product->rejection_note = null;
                 $wasPending = true;
-            }
-
-            // ATURAN 1 UMKM = 1 PRODUK UNGGULAN:
-            // Jika UMKM ini sudah memiliki produk unggulan lain yang aktif, otomatis gantikan produk unggulan lama
-            if ($product->umkm_profile_id) {
-                $existingFeatured = Product::where('umkm_profile_id', $product->umkm_profile_id)
-                    ->where('id', '!=', $product->id)
-                    ->where('is_featured', true)
-                    ->get();
-
-                foreach ($existingFeatured as $other) {
-                    $other->update(['is_featured' => false]);
-                    $replacedProduct = $other->name;
-                }
             }
         }
 
@@ -705,11 +690,6 @@ class AdminController extends Controller
             $statusText = $wasPending 
                 ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda' 
                 : 'dijadikan Produk Unggulan dan tampil di Beranda';
-
-            if ($replacedProduct) {
-                $umkmTitle = $product->umkmProfile ? $product->umkmProfile->business_name : 'UMKM';
-                $statusText .= " (menggantikan '{$replacedProduct}' dari {$umkmTitle} sesuai aturan 1 UMKM 1 Unggulan)";
-            }
         } else {
             $statusText = 'dihapus dari daftar Produk Unggulan';
         }
@@ -719,7 +699,6 @@ class AdminController extends Controller
                 'success' => true,
                 'is_featured' => (bool)$product->is_featured,
                 'status' => $product->status,
-                'replaced' => $replacedProduct,
                 'message' => "Produk \"{$product->name}\" berhasil {$statusText}."
             ]);
         }

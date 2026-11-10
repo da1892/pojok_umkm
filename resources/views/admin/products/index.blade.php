@@ -277,23 +277,11 @@
                                 {{ $product->umkmProfile->business_name ?? '-' }}
                             </a>
                             
-                            <!-- Indikator 1 UMKM 1 Unggulan -->
+                            <!-- Indikator Status Unggulan -->
                             @if($product->is_featured)
                                 <div class="mt-1">
                                     <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                        ⭐ Unggulan UMKM Ini
-                                    </span>
-                                </div>
-                            @elseif(!empty($featuredByUmkm[$product->umkm_profile_id]))
-                                <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-200/70" title="UMKM ini sudah punya produk unggulan: {{ $featuredByUmkm[$product->umkm_profile_id] }}">
-                                        ⭐ Ada: {{ Str::limit($featuredByUmkm[$product->umkm_profile_id], 14) }}
-                                    </span>
-                                </div>
-                            @else
-                                <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
-                                        ⚪ Belum ada unggulan
+                                        ⭐ Unggulan Beranda
                                     </span>
                                 </div>
                             @endif
@@ -380,20 +368,15 @@
                                 @csrf
                                 @method('PATCH')
                                 @if($product->is_featured)
-                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xs border border-amber-300 transition-all active:scale-95 cursor-pointer" title="Klik untuk membatalkan status Produk Unggulan">
-                                        <svg class="w-3 h-3 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xs border border-amber-300 transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Klik untuk membatalkan status Produk Unggulan">
+                                        <svg class="w-3.5 h-3.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                         <span>⭐ Unggulan</span>
                                     </button>
                                 @else
-                                    <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 hover:bg-amber-50 text-slate-600 hover:text-amber-800 border border-slate-200 hover:border-amber-300 transition-all active:scale-95 cursor-pointer" title="{{ !empty($featuredByUmkm[$product->umkm_profile_id]) ? 'Akan menggantikan produk unggulan UMKM ini: ' . $featuredByUmkm[$product->umkm_profile_id] : 'Klik untuk jadikan Produk Unggulan (Tampil di Beranda)' }}">
-                                        <svg class="w-3 h-3 text-slate-400 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-800 border-2 border-slate-200 hover:border-amber-400 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs" title="Klik untuk jadikan Produk Unggulan (Tampil di Beranda)">
+                                        <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                         <span>+ Unggulan</span>
                                     </button>
-                                    @if(!empty($featuredByUmkm[$product->umkm_profile_id]))
-                                    <span class="text-[9px] text-amber-700 block mt-0.5" title="Akan menggantikan '{{ $featuredByUmkm[$product->umkm_profile_id] }}'">
-                                        Ganti '{{ Str::limit($featuredByUmkm[$product->umkm_profile_id], 10) }}'
-                                    </span>
-                                    @endif
                                 @endif
                             </form>
                         </td>
@@ -751,13 +734,10 @@
 
         if (prod.is_featured) {
             featuredNoticeBox.className = 'p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2';
-            featuredNoticeText.innerHTML = '<span class="font-bold">⭐ Produk Unggulan Aktif:</span> Produk ini merupakan 1 wakil produk unggulan terpilih dari UMKM ini di beranda publik.';
-        } else if (prod.umkm.featured_product_name) {
-            featuredNoticeBox.className = 'p-3 rounded-xl bg-amber-50/80 border border-amber-300 text-amber-950 text-xs flex items-start gap-2';
-            featuredNoticeText.innerHTML = `<span class="font-bold">⚠️ Perhatian 1 UMKM 1 Unggulan:</span> UMKM ini sudah memiliki produk unggulan lain yaitu <strong>"${prod.umkm.featured_product_name}"</strong>. Jika Anda menjadikan produk ini unggulan, produk lama tersebut akan digantikan secara otomatis.`;
+            featuredNoticeText.innerHTML = '<span class="font-bold">⭐ Produk Unggulan:</span> Produk ini sedang aktif ditampilkan di etalase Produk Unggulan Beranda publik.';
         } else {
             featuredNoticeBox.className = 'p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs flex items-start gap-2';
-            featuredNoticeText.innerHTML = '<span class="font-bold">⚪ Belum Ada Unggulan:</span> UMKM ini belum memiliki produk unggulan aktif. Menjadikan produk ini unggulan akan menjadikannya wakil UMKM ini di beranda.';
+            featuredNoticeText.innerHTML = '<span class="font-bold">⚪ Bukan Unggulan:</span> Klik tombol di bawah untuk menjadikannya Produk Unggulan di Beranda publik.';
         }
 
         // Action URLs
@@ -772,7 +752,7 @@
             toggleBtn.innerHTML = '<svg class="w-4 h-4 fill-amber-500 text-amber-500" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> Batalkan Unggulan';
         } else {
             toggleBtn.className = 'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-2xs transition-colors cursor-pointer';
-            toggleBtn.innerHTML = '<svg class="w-4 h-4 text-white fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> ' + (prod.umkm.featured_product_name ? 'Ganti & Jadikan Unggulan' : 'Jadikan Produk Unggulan');
+            toggleBtn.innerHTML = '<svg class="w-4 h-4 text-white fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> Jadikan Produk Unggulan';
         }
 
         // Show modal
