@@ -19,12 +19,12 @@ class PublicController extends Controller
                 ->take(12)
                 ->get();
 
-            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi 10 produk agar simetris 2 baris x 5 kolom)
+            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi 16 produk / kelipatan 4 agar pas hingga 4 baris)
             $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                 ->where('status', 'verified')
                 ->where('is_featured', true)
                 ->latest()
-                ->take(10)
+                ->take(16)
                 ->get();
 
             // 1. Data Agregat Pokok (dikonsolidasikan dalam 1 query SQL ke umkm_profiles)
@@ -390,7 +390,7 @@ class PublicController extends Controller
             });
         }
         
-        $products = $query->latest()->paginate(15)->withQueryString();
+        $products = $query->latest()->paginate(16)->withQueryString();
 
         $wilayahJsonPath = public_path('wonogiri_wilayah.json');
         $kecamatanList = file_exists($wilayahJsonPath)

@@ -193,7 +193,7 @@
                     ->latest()
                     ->get()
                     ->unique('umkm_profile_id')
-                    ->take(15);
+                    ->take(16);
             }
         @endphp
 
@@ -224,14 +224,14 @@
                 </a>
             </div>
 
-            <!-- Product Cards Grid: Responsif 2 Kolom Mobile, 3 Kolom Tablet, 4 Kolom Laptop, 5 Kolom Desktop Luas -->
+            <!-- Product Cards Grid: 4 Kolom Rapi per Baris -->
             @if($featuredProducts->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-5">
                 @foreach ($featuredProducts as $product)
                 <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden border-2 border-slate-200/90 hover:border-[#800000] shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 group flex flex-col justify-between cursor-pointer relative">
                     <div>
-                        <!-- Thumbnail Image Container -->
-                        <div class="h-40 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
+                        <!-- Thumbnail Image Container (Proporsional & Rapi) -->
+                        <div class="h-36 sm:h-44 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
                             @else
@@ -241,18 +241,11 @@
                             @endif
 
                             <!-- Gradient Vignette Shadow -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                            <!-- Category Badge (Top-Left) -->
-                            @if($product->category)
-                            <span class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md text-[#800000] text-[10px] sm:text-xs font-extrabold px-2.5 py-1 rounded-lg shadow-sm border border-slate-100/80">
-                                {{ $product->category }}
-                            </span>
-                            @endif
-
-                            <!-- Golden Featured Badge (Top-Right) -->
+                            <!-- Golden Featured Badge (Hanya badge Unggulan di pojok atas foto) -->
                             @if($product->is_featured)
-                            <span class="absolute top-2.5 right-2.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 text-[9px] sm:text-[11px] font-black px-2.5 sm:px-3 py-1 rounded-full shadow-lg flex items-center gap-1 border border-yellow-200 ring-2 ring-amber-400/20">
+                            <span class="absolute top-2.5 right-2.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-yellow-200 ring-2 ring-amber-400/20 z-10">
                                 <svg class="w-3 h-3 text-slate-950 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span>UNGGULAN</span>
                             </span>
@@ -260,7 +253,16 @@
                         </div>
 
                         <!-- Card Body -->
-                        <div class="p-3 sm:p-4 pb-0">
+                        <div class="p-3.5 sm:p-4 pb-0">
+                            <!-- Category Badge (Rapi di atas judul produk, tidak bertabrakan dengan badge Unggulan) -->
+                            @if($product->category)
+                            <div class="mb-1.5">
+                                <span class="inline-block text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#800000] bg-red-50 border border-red-200/80 px-2.5 py-0.5 rounded-md">
+                                    {{ $product->category }}
+                                </span>
+                            </div>
+                            @endif
+
                             <!-- Product Name -->
                             <h3 class="text-xs sm:text-sm lg:text-base font-extrabold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
                                 {{ $product->name }}
