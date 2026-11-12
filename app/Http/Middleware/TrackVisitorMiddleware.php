@@ -76,15 +76,12 @@ class TrackVisitorMiddleware
         $sessionId = $request->session()->getId();
         $fullUrl = $request->fullUrl();
 
-        // Debounce: Abaikan jika sesi yang sama mengakses URL yang sama persis dalam 15 detik terakhir
-        $recentVisit = VisitorLog::where('session_id', $sessionId)
-            ->where('url', $fullUrl)
-            ->where('visited_at', '>=', Carbon::now()->subSeconds(15))
-            ->exists();
-
-        if ($recentVisit) {
+        // Cek debounce di cache lokal: 30 detik untuk URL dan sesi yang sama (0 ms DB query)
+        $cacheKey = 'vlog_' . md5($sessionId . '_' . $fullUrl);
+        if (\Illuminate\Support\Facades\Cache::has($cacheKey)) {
             return;
         }
+        \Illuminate\Support\Facades\Cache::put($cacheKey, 1, 30);
 
         $userAgent = $request->header('User-Agent', '');
         $device = $this->detectDevice($userAgent);

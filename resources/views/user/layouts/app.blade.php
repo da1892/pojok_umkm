@@ -38,25 +38,27 @@
             box-shadow: 0 12px 24px -10px rgba(128, 0, 0, 0.15);
         }
 
-        /* Animasi Muncul Perlahan (Global) */
+        /* Animasi Muncul Halus & Cepat (Tanpa Lag Loading) */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(14px);
+            transition: opacity 0.22s ease-out, transform 0.22s ease-out;
         }
         .reveal.active {
             opacity: 1;
             transform: none;
         }
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-        .delay-400 { transition-delay: 400ms; }
-        .delay-500 { transition-delay: 500ms; }
+        .delay-100 { transition-delay: 25ms; }
+        .delay-200 { transition-delay: 50ms; }
+        .delay-300 { transition-delay: 75ms; }
+        .delay-400 { transition-delay: 100ms; }
+        .delay-500 { transition-delay: 125ms; }
     </style>
     @stack('styles')
 </head>
 <body class="font-sans antialiased bg-slate-50 text-slate-900 scroll-smooth">
+    <!-- Instant Navigation Top Progress Bar -->
+    <div id="instant-progress-bar" style="position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#800000,#dc2626,#f59e0b);z-index:999999;transition:width 0.2s ease,opacity 0.2s ease;pointer-events:none;opacity:0;"></div>
     
     <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-white text-slate-800 shadow-sm transition-all duration-300 border-b border-slate-100" id="navbar">
@@ -319,9 +321,16 @@
             });
         }
 
-        // Global Intersection Observer for animations
+        // Global Intersection Observer for animations (Instan saat render awal)
         document.addEventListener('DOMContentLoaded', function() {
             const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight + 80) {
+                    el.classList.add('active');
+                }
+            });
+
             const revealObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -329,10 +338,12 @@
                         observer.unobserve(entry.target); 
                     }
                 });
-            }, { threshold: 0.1 });
+            }, { threshold: 0.05 });
 
             reveals.forEach(reveal => {
-                revealObserver.observe(reveal);
+                if (!reveal.classList.contains('active')) {
+                    revealObserver.observe(reveal);
+                }
             });
 
             // Auto-scroll to #kontak if hash is present in URL
@@ -486,7 +497,64 @@
         });
     </script>
     @endif
+
+    <script>
+        // Instant Link Pre-fetcher & Visual Navigation Feedback
+        (function() {
+            const prefetchedUrls = new Set();
+            function prefetch(url) {
+                if (!url || prefetchedUrls.has(url)) return;
+                try {
+                    const u = new URL(url, window.location.origin);
+                    if (u.origin !== window.location.origin) return;
+                    if (u.pathname === window.location.pathname) return;
+                    if (u.pathname.includes('logout') || u.pathname.includes('/ajukan-ulang') || u.pathname.includes('/balas')) return;
+                    prefetchedUrls.add(u.href);
+                    const l = document.createElement('link');
+                    l.rel = 'prefetch';
+                    l.href = u.href;
+                    document.head.appendChild(l);
+                } catch(e) {}
+            }
+
+            document.addEventListener('mouseover', function(e) {
+                const a = e.target.closest('a');
+                if (a && a.href && !a.target && !a.download && !a.href.includes('#')) {
+                    prefetch(a.href);
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchstart', function(e) {
+                const a = e.target.closest('a');
+                if (a && a.href && !a.target && !a.download && !a.href.includes('#')) {
+                    prefetch(a.href);
+                }
+            }, { passive: true });
+
+            const bar = document.getElementById('instant-progress-bar');
+            document.addEventListener('click', function(e) {
+                const a = e.target.closest('a');
+                if (!a || !a.href || a.target || a.download || a.href.startsWith('javascript:') || a.href.includes('#')) return;
+                try {
+                    const u = new URL(a.href, window.location.origin);
+                    if (u.origin === window.location.origin && u.pathname !== window.location.pathname) {
+                        if (bar) {
+                            bar.style.opacity = '1';
+                            bar.style.width = '45%';
+                            setTimeout(() => { if (bar) bar.style.width = '80%'; }, 70);
+                        }
+                    }
+                } catch(e) {}
+            });
+
+            window.addEventListener('beforeunload', function() {
+                if (bar) {
+                    bar.style.opacity = '1';
+                    bar.style.width = '100%';
+                }
+            });
+        })();
     </script>
     @stack('scripts')
-<!--  --></body>
+</body>
 </html>

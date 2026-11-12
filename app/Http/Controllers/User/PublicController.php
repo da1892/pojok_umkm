@@ -4,143 +4,161 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use App\Services\CacheService;
 
 class PublicController extends Controller
 {
     public function welcome()
     {
-        // Hanya ambil berita yang aktif (is_published = true / 1)
-        $latestNews = \App\Models\User\NewsInformation::where('is_published', true)
-            ->latest()
-            ->take(12)
-            ->get();
+        $data = Cache::remember('public_homepage_all_data', 300, function() {
+            // Hanya ambil berita yang aktif (is_published = true / 1)
+            $latestNews = \App\Models\User\NewsInformation::where('is_published', true)
+                ->latest()
+                ->take(12)
+                ->get();
 
-        // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin (1 UMKM maksimal 1 produk unggulan di beranda)
-        $featuredProducts = \App\Models\User\Product::with('umkmProfile')
-            ->where('status', 'verified')
-            ->where('is_featured', true)
-            ->latest()
-            ->get()
-            ->unique('umkm_profile_id')
-            ->take(12);
+            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi 10 produk agar pas 2 baris x 5 kolom seperti Berita & Kegiatan)
+            $featuredProducts = \App\Models\User\Product::with('umkmProfile')
+                ->where('status', 'verified')
+                ->where('is_featured', true)
+                ->latest()
+                ->take(10)
+                ->get();
 
-        // 1. Data Agregat Pokok
-        $totalUmkm = \App\Models\User\UmkmProfile::where('status', '!=', 'rejected')->count();
-        $totalVerifiedUmkm = \App\Models\User\UmkmProfile::where('status', 'verified')->count();
-        $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
-        $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
-        $totalDistricts = \App\Models\User\UmkmProfile::whereNotNull('district')
-            ->where('district', '!=', '')
-            ->distinct('district')
-            ->count('district');
+            // 1. Data Agregat Pokok (dikonsolidasikan dalam 1 query SQL ke umkm_profiles)
+            $umkmAgg = DB::selectOne("
+                SELECT
+                    COUNT(*) FILTER (WHERE status != 'rejected') as total_umkm,
+                    COUNT(*) FILTER (WHERE status = 'verified') as total_verified_umkm,
+                    COUNT(DISTINCT district) FILTER (WHERE district IS NOT NULL AND district != '') as total_districts,
+                    COUNT(*) FILTER (WHERE nib IS NOT NULL AND nib != '') as total_nib,
+                    COUNT(*) FILTER (WHERE halal_cert IS NOT NULL AND halal_cert != '') as total_halal,
+                    COUNT(*) FILTER (WHERE pirt IS NOT NULL AND pirt != '') as total_pirt,
+                    COUNT(*) FILTER (WHERE gender = 'Laki-laki') as gender_male,
+                    COUNT(*) FILTER (WHERE gender = 'Perempuan') as gender_female
+                FROM umkm_profiles
+            ");
 
-        // 2. Data Agregat Kategori Produk
-        $categoryStats = \App\Models\User\Product::where('status', 'verified')
-            ->select('category', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
-            ->groupBy('category')
-            ->orderByDesc('count')
-            ->get();
+            $totalUmkm = (int)($umkmAgg->total_umkm ?? 0);
+            $totalVerifiedUmkm = (int)($umkmAgg->total_verified_umkm ?? 0);
+            $totalDistricts = (int)($umkmAgg->total_districts ?? 0);
+            $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
+            $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
 
-        // 3. Data Agregat Legalitas & Sertifikasi
-        $legalitasStats = [
-            'nib' => \App\Models\User\UmkmProfile::whereNotNull('nib')->where('nib', '!=', '')->count(),
-            'halal' => \App\Models\User\UmkmProfile::whereNotNull('halal_cert')->where('halal_cert', '!=', '')->count(),
-            'pirt' => \App\Models\User\UmkmProfile::whereNotNull('pirt')->where('pirt', '!=', '')->count(),
-        ];
+            // 2. Data Agregat Kategori Produk
+            $categoryStats = \App\Models\User\Product::where('status', 'verified')
+                ->select('category', DB::raw('count(*) as count'))
+                ->groupBy('category')
+                ->orderByDesc('count')
+                ->get();
 
-        // 4. Data Agregat Demografi Gender Pemilik UMKM
-        $genderStats = [
-            'male' => \App\Models\User\UmkmProfile::where('gender', 'Laki-laki')->count(),
-            'female' => \App\Models\User\UmkmProfile::where('gender', 'Perempuan')->count(),
-            'total_specified' => \App\Models\User\UmkmProfile::whereIn('gender', ['Laki-laki', 'Perempuan'])->count(),
-        ];
-
-        // 5. Data Agregat Sebaran Wilayah per Kecamatan (Top 6)
-        $districtStats = \App\Models\User\UmkmProfile::whereNotNull('district')
-            ->where('district', '!=', '')
-            ->select('district', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
-            ->groupBy('district')
-            ->orderByDesc('count')
-            ->take(6)
-            ->get();
-
-        // 6. Data Koordinat & Marker Persebaran HANYA Produk Unggulan Terpilih untuk Peta Interaktif
-        $featuredProductsForMap = \App\Models\User\Product::with('umkmProfile')
-            ->where('status', 'verified')
-            ->where('is_featured', true)
-            ->whereHas('umkmProfile', function($q) {
-                $q->where('status', 'verified');
-            })
-            ->latest()
-            ->get();
-
-        $seenUmkmCount = [];
-        $umkmMapList = $featuredProductsForMap->map(function($product) use (&$seenUmkmCount) {
-            $umkm = $product->umkmProfile;
-            $coords = $umkm ? $umkm->coordinates : ['lat' => -7.8136, 'lng' => 110.9254, 'is_exact' => false, 'district' => 'Wonogiri'];
-
-            $lat = $coords['lat'];
-            $lng = $coords['lng'];
-
-            $umkmId = $umkm ? $umkm->id : 0;
-            if (!isset($seenUmkmCount[$umkmId])) {
-                $seenUmkmCount[$umkmId] = 0;
-            } else {
-                $seenUmkmCount[$umkmId]++;
-                // Berikan offset radial halus jika ada beberapa produk unggulan dari UMKM yang sama agar titik tidak bertumpuk
-                $offsetAngle = $seenUmkmCount[$umkmId] * (2 * M_PI / 4);
-                $lat = round($lat + (0.0007 * sin($offsetAngle)), 6);
-                $lng = round($lng + (0.0007 * cos($offsetAngle) * 1.05), 6);
-            }
-
-            $productImg = $product->image_path 
-                ? asset('storage/' . $product->image_path) 
-                : ($umkm && $umkm->image_path ? asset('storage/' . $umkm->image_path) : asset('img/hero_wonogiri_3.jpg'));
-
-            $cleanPhone = $umkm && !empty($umkm->phone) ? preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $umkm->phone)) : null;
-
-            return [
-                'id' => $product->id,
-                'umkm_id' => $umkm ? $umkm->id : null,
-                'name' => $product->name,
-                'product_name' => $product->name,
-                'umkm_name' => $umkm ? $umkm->business_name : 'UMKM Wonogiri',
-                'owner' => $umkm ? ($umkm->owner_name ?? 'Pelaku UMKM') : 'Pelaku UMKM',
-                'district' => $umkm ? ($umkm->district ?: ($coords['district'] ?? 'Wonogiri')) : 'Wonogiri',
-                'village' => $umkm ? ($umkm->village ?? '') : '',
-                'address' => $umkm ? $umkm->full_address : 'Kabupaten Wonogiri, Jawa Tengah',
-                'phone' => $umkm ? ($umkm->phone ?? '') : '',
-                'category' => $product->category ?? 'Produk Unggulan',
-                'price' => 'Rp ' . number_format($product->price ?? 0, 0, ',', '.'),
-                'raw_price' => $product->price ?? 0,
-                'image' => $productImg,
-                'status' => $product->status,
-                'is_featured' => true,
-                'product_samples' => [$product->name],
-                'detail_url' => route('katalog.show', $product->id),
-                'store_url' => $umkm ? route('direktori.show', $umkm->id) : '#',
-                'directions_url' => $umkm ? $umkm->google_maps_directions_url : 'https://www.google.com/maps/search/?api=1&query=' . urlencode('Kabupaten Wonogiri'),
-                'whatsapp_url' => $cleanPhone ? 'https://wa.me/' . $cleanPhone . '?text=' . urlencode('Halo ' . ($umkm->business_name ?? 'UMKM') . ', saya tertarik dengan produk unggulan Anda: ' . $product->name) : null,
-                'lat' => $lat,
-                'lng' => $lng,
-                'is_exact' => $coords['is_exact'] ?? false,
+            // 3. Data Agregat Legalitas & Sertifikasi
+            $legalitasStats = [
+                'nib' => (int)($umkmAgg->total_nib ?? 0),
+                'halal' => (int)($umkmAgg->total_halal ?? 0),
+                'pirt' => (int)($umkmAgg->total_pirt ?? 0),
             ];
+
+            // 4. Data Agregat Demografi Gender Pemilik UMKM
+            $male = (int)($umkmAgg->gender_male ?? 0);
+            $female = (int)($umkmAgg->gender_female ?? 0);
+            $genderStats = [
+                'male' => $male,
+                'female' => $female,
+                'total_specified' => $male + $female,
+            ];
+
+            // 5. Data Agregat Sebaran Wilayah per Kecamatan (Top 6)
+            $districtStats = \App\Models\User\UmkmProfile::whereNotNull('district')
+                ->where('district', '!=', '')
+                ->select('district', DB::raw('count(*) as count'))
+                ->groupBy('district')
+                ->orderByDesc('count')
+                ->take(6)
+                ->get();
+
+            // 6. Data Koordinat & Marker Persebaran HANYA Produk Unggulan Terpilih untuk Peta Interaktif
+            $featuredProductsForMap = \App\Models\User\Product::with('umkmProfile')
+                ->where('status', 'verified')
+                ->where('is_featured', true)
+                ->whereHas('umkmProfile', function($q) {
+                    $q->where('status', 'verified');
+                })
+                ->latest()
+                ->get();
+
+            $seenUmkmCount = [];
+            $umkmMapList = $featuredProductsForMap->map(function($product) use (&$seenUmkmCount) {
+                $umkm = $product->umkmProfile;
+                $coords = $umkm ? $umkm->coordinates : ['lat' => -7.8136, 'lng' => 110.9254, 'is_exact' => false, 'district' => 'Wonogiri'];
+
+                $lat = $coords['lat'];
+                $lng = $coords['lng'];
+
+                $umkmId = $umkm ? $umkm->id : 0;
+                if (!isset($seenUmkmCount[$umkmId])) {
+                    $seenUmkmCount[$umkmId] = 0;
+                } else {
+                    $seenUmkmCount[$umkmId]++;
+                    // Berikan offset radial halus jika ada beberapa produk unggulan dari UMKM yang sama agar titik tidak bertumpuk
+                    $offsetAngle = $seenUmkmCount[$umkmId] * (2 * M_PI / 4);
+                    $lat = round($lat + (0.0007 * sin($offsetAngle)), 6);
+                    $lng = round($lng + (0.0007 * cos($offsetAngle) * 1.05), 6);
+                }
+
+                $productImg = $product->image_path 
+                    ? asset('storage/' . $product->image_path) 
+                    : ($umkm && $umkm->image_path ? asset('storage/' . $umkm->image_path) : asset('img/hero_wonogiri_3.jpg'));
+
+                $cleanPhone = $umkm && !empty($umkm->phone) ? preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $umkm->phone)) : null;
+
+                return [
+                    'id' => $product->id,
+                    'umkm_id' => $umkm ? $umkm->id : null,
+                    'name' => $product->name,
+                    'product_name' => $product->name,
+                    'umkm_name' => $umkm ? $umkm->business_name : 'UMKM Wonogiri',
+                    'owner' => $umkm ? ($umkm->owner_name ?? 'Pelaku UMKM') : 'Pelaku UMKM',
+                    'district' => $umkm ? ($umkm->district ?: ($coords['district'] ?? 'Wonogiri')) : 'Wonogiri',
+                    'village' => $umkm ? ($umkm->village ?? '') : '',
+                    'address' => $umkm ? $umkm->full_address : 'Kabupaten Wonogiri, Jawa Tengah',
+                    'phone' => $umkm ? ($umkm->phone ?? '') : '',
+                    'category' => $product->category ?? 'Produk Unggulan',
+                    'price' => 'Rp ' . number_format($product->price ?? 0, 0, ',', '.'),
+                    'raw_price' => $product->price ?? 0,
+                    'image' => $productImg,
+                    'status' => $product->status,
+                    'is_featured' => true,
+                    'product_samples' => [$product->name],
+                    'detail_url' => route('katalog.show', $product->id),
+                    'store_url' => $umkm ? route('direktori.show', $umkm->id) : '#',
+                    'directions_url' => $umkm ? $umkm->google_maps_directions_url : 'https://www.google.com/maps/search/?api=1&query=' . urlencode('Kabupaten Wonogiri'),
+                    'whatsapp_url' => $cleanPhone ? 'https://wa.me/' . $cleanPhone . '?text=' . urlencode('Halo ' . ($umkm->business_name ?? 'UMKM') . ', saya tertarik dengan produk unggulan Anda: ' . $product->name) : null,
+                    'lat' => $lat,
+                    'lng' => $lng,
+                    'is_exact' => $coords['is_exact'] ?? false,
+                ];
+            });
+
+            return compact(
+                'latestNews', 
+                'featuredProducts', 
+                'totalUmkm', 
+                'totalVerifiedUmkm', 
+                'totalProducts', 
+                'totalConsultations',
+                'totalDistricts',
+                'categoryStats',
+                'legalitasStats',
+                'genderStats',
+                'districtStats',
+                'umkmMapList'
+            );
         });
 
-        return view('user.welcome', compact(
-            'latestNews', 
-            'featuredProducts', 
-            'totalUmkm', 
-            'totalVerifiedUmkm',
-            'totalProducts', 
-            'totalConsultations',
-            'totalDistricts',
-            'categoryStats',
-            'legalitasStats',
-            'genderStats',
-            'districtStats',
-            'umkmMapList'
-        ));
+        return view('user.welcome', $data);
     }
 
     public function panduan(Request $request)
@@ -429,7 +447,7 @@ class PublicController extends Controller
             });
         }
         
-        $products = $query->latest()->paginate(9)->withQueryString();
+        $products = $query->latest()->paginate(15)->withQueryString();
 
         $wilayahJsonPath = public_path('wonogiri_wilayah.json');
         $kecamatanList = file_exists($wilayahJsonPath)
@@ -500,16 +518,28 @@ class PublicController extends Controller
         
         $umkms = $query->latest()->paginate(12)->withQueryString();
 
-        $umkmMapList = \App\Models\User\UmkmProfile::with('products')
-            ->where('status', 'verified')
-            ->get()
-            ->map->toMapPayload();
+        $umkmMapList = Cache::remember('umkm_map_list_verified', 600, function() {
+            return \App\Models\User\UmkmProfile::with('products')
+                ->where('status', 'verified')
+                ->get()
+                ->map->toMapPayload();
+        });
         
         return view('user.direktori', compact('umkms', 'umkmMapList'));
     }
 
     public function getMapUmkmData(Request $request)
     {
+        if (!$request->filled('kecamatan') && !$request->filled('q')) {
+            $list = Cache::remember('umkm_map_list_verified', 600, function() {
+                return \App\Models\User\UmkmProfile::with('products')
+                    ->where('status', 'verified')
+                    ->get()
+                    ->map->toMapPayload();
+            });
+            return response()->json($list);
+        }
+
         $query = \App\Models\User\UmkmProfile::with('products')->where('status', 'verified');
         
         if ($request->filled('kecamatan')) {

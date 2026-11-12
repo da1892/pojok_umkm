@@ -253,7 +253,7 @@
                     });
                 }
 
-                $products = $query->latest()->paginate(9)->withQueryString();
+                $products = $query->latest()->paginate(16)->withQueryString();
             }
         @endphp
 
@@ -263,54 +263,64 @@
         <!-- Katalog Content Container -->
         <div id="katalog-grid-container" class="relative z-10 reveal delay-200">
             @if ($products->count() > 0)
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
                 @foreach ($products as $product)
-                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-red-200 transition-all duration-300 group flex flex-col justify-between block cursor-pointer">
+                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
                     <div>
-                        <div class="h-36 sm:h-52 w-full overflow-hidden bg-slate-100 relative">
+                        <!-- Thumbnail Image Container (Persis Berita & Kegiatan: h-28 sm:h-32) -->
+                        <div class="h-28 sm:h-32 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
                                 <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                                    <svg class="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                             @endif
-                            @if($product->category)
-                            <span class="absolute top-2 left-2 bg-white/95 backdrop-blur-xs text-[#991b1b] text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md shadow-2xs">
-                                {{ $product->category }}
+
+                            <!-- Category Badge (Top-Left, persis Berita) -->
+                            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-bold bg-white/95 backdrop-blur-xs text-[#800000] shadow-xs">
+                                {{ $product->category ?? 'Produk UMKM' }}
                             </span>
-                            @endif
+
+                            <!-- Golden Featured Badge (Top-Right, kompak) -->
                             @if($product->is_featured)
-                            <span class="absolute top-2 right-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[9px] sm:text-[11px] font-extrabold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-amber-300/40">
-                                <svg class="w-3 h-3 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs flex items-center gap-1 border border-amber-300/40">
+                                <svg class="w-2.5 h-2.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                 <span>Unggulan</span>
                             </span>
                             @endif
                         </div>
-                        <div class="p-3 sm:p-5 pb-0">
-                            <h3 class="text-xs sm:text-base font-bold text-slate-900 group-hover:text-[#991b1b] transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[3rem]">
+
+                        <!-- Card Body (Persis Berita: padding p-3 sm:p-3.5) -->
+                        <div class="p-3 sm:p-3.5">
+                            <!-- Tanggal Ditambahkan / Info Agenda (Persis Berita) -->
+                            <div class="text-[10px] font-bold text-[#b91c1c] mb-1 inline-flex items-center gap-1">
+                                <svg class="w-3 h-3 text-[#b91c1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>{{ $product->created_at ? $product->created_at->translatedFormat('d F Y') : 'Khas Wonogiri' }}</span>
+                            </div>
+
+                            <!-- Product Name (Persis Berita) -->
+                            <h3 class="text-xs sm:text-[13px] font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug mb-1.5 line-clamp-2 min-h-[2.1rem]">
                                 {{ $product->name }}
                             </h3>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1">
-                                @if(!empty($product->umkmProfile->image_path))
-                                    <img src="{{ asset('storage/' . $product->umkmProfile->image_path) }}" alt="{{ $product->umkmProfile->business_name }}" class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full object-cover shrink-0 border border-slate-200">
-                                @endif
-                                <span class="truncate">oleh {{ $product->umkmProfile->business_name ?? 'UMKM Wonogiri' }}</span>
+
+                            <!-- Product Excerpt / Description (Persis Berita: line-clamp-2) -->
+                            <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2 min-h-[1.8rem]">
+                                {{ $product->description ? Str::limit(strip_tags($product->description), 85) : 'Koleksi produk unggulan berkualitas binaan UMKM Kabupaten Wonogiri.' }}
                             </p>
                         </div>
                     </div>
-                    <div class="p-3 pt-2 sm:p-5 sm:pt-4">
-                        <div class="flex items-center justify-between pt-2 sm:pt-3 border-t border-slate-100 text-[10px] sm:text-xs">
-                            <div class="flex items-center gap-1 text-slate-400 font-medium">
-                                <svg class="w-3 h-3 text-[#991b1b] shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-                                </svg>
-                                <span class="line-clamp-1 max-w-[65px] sm:max-w-[120px]">{{ $product->umkmProfile->address ?? 'Wonogiri' }}</span>
-                            </div>
-                            <span class="text-[#991b1b] font-bold group-hover:underline">
-                                Lihat <span class="hidden sm:inline">Detail</span>
-                            </span>
-                        </div>
+
+                    <!-- Card Footer: Author & Detail -->
+                    <div class="px-3 sm:px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                        <span class="text-slate-400 font-medium truncate max-w-[110px]">
+                            {{ $product->umkmProfile->business_name ?? 'Admin UMKM' }}
+                        </span>
+
+                        <span class="font-bold text-[#800000] group-hover:text-red-900 inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">
+                            <span>Detail</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </span>
                     </div>
                 </a>
                 @endforeach
