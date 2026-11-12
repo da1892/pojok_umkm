@@ -183,7 +183,7 @@
             </div>
         </div>
 
-        <!-- Produk Unggulan Terbaru -->
+        <!-- Produk Unggulan -->
         @php
             if (!isset($featuredProducts)) {
                 // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin (1 UMKM 1 produk unggulan)
@@ -206,7 +206,7 @@
                         <span>Kurasi Resmi Dinas Perdagangan Wonogiri</span>
                     </div>
                     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-                        Produk Unggulan Terbaru
+                        Produk Unggulan
                     </h2>
                     <p class="text-slate-500 text-xs sm:text-sm mt-1 max-w-xl">
                         Koleksi komoditas dan karya khas pilihan asli Wonogiri dengan jaminan mutu dan legalitas resmi.
