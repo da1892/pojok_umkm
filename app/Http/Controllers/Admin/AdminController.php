@@ -298,9 +298,14 @@ class AdminController extends Controller
 
     public function createProduct(Request $request)
     {
-        $allUmkms = UmkmProfile::select('id', 'business_name', 'owner_name', 'district', 'village')
+        $allUmkms = UmkmProfile::select('id', 'business_name', 'owner_name', 'district', 'village', 'phone')
             ->orderBy('business_name', 'asc')
-            ->get();
+            ->get()
+            ->map(function ($store) {
+                $store->business_name = Str::title(trim($store->business_name));
+                $store->owner_name = Str::title(trim($store->owner_name));
+                return $store;
+            });
 
         $selectedUmkmId = $request->query('umkm_id');
         
@@ -1517,7 +1522,7 @@ class AdminController extends Controller
         try {
             // 1. Buat Akun User Pelaku UMKM
             $user = User::create([
-                'name' => trim($request->name),
+                'name' => Str::title(trim($request->name)),
                 'email' => strtolower(trim($request->email)),
                 'password' => Hash::make($request->password),
                 'role' => 'umkm',
@@ -1527,8 +1532,8 @@ class AdminController extends Controller
             // 2. Buat Profil Toko UMKM
             $umkmData = [
                 'user_id' => $user->id,
-                'business_name' => trim($request->business_name),
-                'owner_name' => trim($request->name),
+                'business_name' => Str::title(trim($request->business_name)),
+                'owner_name' => Str::title(trim($request->name)),
                 'gender' => $request->gender ?: null,
                 'phone' => trim($request->phone),
                 'province' => 'Jawa Tengah',

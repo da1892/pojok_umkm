@@ -47,7 +47,7 @@
             <!-- ============================================== -->
             <!-- 1. PILIH TOKO UMKM PEMILIK PRODUK -->
             <!-- ============================================== -->
-            <div class="p-5 rounded-2xl bg-gradient-to-r from-red-50/70 via-amber-50/40 to-slate-50 border border-red-200/80 space-y-3">
+            <div class="p-5 rounded-2xl bg-gradient-to-r from-red-50/70 via-amber-50/40 to-slate-50 border border-red-200/80 space-y-3.5">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <label class="block text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                         <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
@@ -59,20 +59,92 @@
                     </a>
                 </div>
 
-                <div class="relative">
-                    <select name="umkm_profile_id" id="umkm_select" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all cursor-pointer shadow-2xs">
-                        <option value="">-- Pilih Toko UMKM Pemilik Produk --</option>
+                <!-- Input Hidden ID Toko yang dikirim saat submit form -->
+                <input type="hidden" name="umkm_profile_id" id="selected_umkm_id" value="{{ old('umkm_profile_id', $selectedUmkmId ?? '') }}" required>
+
+                <!-- Searchable Combobox Box -->
+                <div class="relative" id="combobox_wrapper">
+                    <!-- Search Input Box -->
+                    <div class="relative flex items-center">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <input type="text" 
+                               id="umkm_search_input" 
+                               autocomplete="off" 
+                               placeholder="Ketik nama toko untuk mencari atau klik untuk memilih dari daftar..." 
+                               class="w-full pl-10 pr-20 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all shadow-2xs">
+                        
+                        <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center gap-1">
+                            <button type="button" id="clear_selection_btn" class="hidden p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors" title="Hapus pilihan">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                            <button type="button" id="toggle_dropdown_btn" class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors" title="Buka daftar toko">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown List Options -->
+                    <div id="umkm_dropdown_menu" class="hidden absolute left-0 right-0 top-full mt-1.5 max-h-64 overflow-y-auto bg-white rounded-2xl border border-slate-200 shadow-xl z-50 divide-y divide-slate-100">
+                        <div id="no_store_found" class="hidden p-4 text-center text-xs text-slate-400">
+                            Tidak ditemukan toko dengan kata kunci tersebut.
+                        </div>
                         @foreach($allUmkms as $store)
-                        <option value="{{ $store->id }}" 
-                                data-owner="{{ $store->owner_name }}" 
-                                data-district="{{ $store->district }}" 
-                                data-village="{{ $store->village }}"
-                                {{ (old('umkm_profile_id') == $store->id || (string)$selectedUmkmId === (string)$store->id) ? 'selected' : '' }}>
-                            {{ $store->business_name }} (Pemilik: {{ $store->owner_name }} — Kec. {{ $store->district ?: 'Wonogiri' }}{{ $store->village ? ', Ds. ' . $store->village : '' }})
-                        </option>
+                        <div class="umkm-option p-3 hover:bg-red-50/60 cursor-pointer transition-colors flex items-center justify-between gap-3"
+                             data-id="{{ $store->id }}"
+                             data-name="{{ $store->business_name }}"
+                             data-owner="{{ $store->owner_name }}"
+                             data-district="{{ $store->district ?: 'Wonogiri' }}"
+                             data-village="{{ $store->village ?: '-' }}"
+                             data-phone="{{ $store->phone ?: '-' }}">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-8 h-8 rounded-xl bg-red-100/70 text-[#800000] font-black text-xs flex items-center justify-center shrink-0">
+                                    {{ strtoupper(substr($store->business_name, 0, 1)) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-xs sm:text-sm font-black text-slate-900 truncate">
+                                        {{ $store->business_name }}
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 truncate flex items-center gap-1.5 mt-0.5">
+                                        <span>Pemilik: <strong class="text-slate-700 font-semibold">{{ $store->owner_name }}</strong></span>
+                                        <span>&bull;</span>
+                                        <span>Kec. {{ $store->district ?: 'Wonogiri' }}{{ $store->village ? ', Ds. ' . $store->village : '' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold text-[#800000] bg-red-50 border border-red-200/80 px-2 py-0.5 rounded-md shrink-0">
+                                Pilih
+                            </span>
+                        </div>
                         @endforeach
-                    </select>
+                    </div>
                 </div>
+
+                <!-- Kartu Informasi Toko Terpilih -->
+                <div id="selected_store_card" class="hidden p-3.5 bg-white border border-emerald-300 rounded-2xl shadow-2xs flex items-center justify-between gap-3 transition-all">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center font-black text-sm shrink-0">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-sm font-black text-slate-900 truncate" id="card_store_name">-</h4>
+                                <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    ✓ Toko Dipilih
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5 truncate">
+                                Pemilik: <strong class="text-slate-800" id="card_owner_name">-</strong> &bull; 
+                                Wilayah: <span class="text-slate-700" id="card_location">-</span>
+                            </p>
+                        </div>
+                    </div>
+                    <button type="button" id="change_store_btn" class="px-3 py-1.5 text-xs font-bold text-slate-600 hover:text-red-700 hover:bg-red-50 border border-slate-200 rounded-xl transition-colors shrink-0">
+                        Ganti Toko
+                    </button>
+                </div>
+
                 <p class="text-[11px] text-slate-500">Pilih salah satu toko UMKM terdaftar yang memproduksi atau menjual produk ini.</p>
                 @error('umkm_profile_id')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
             </div>
@@ -207,6 +279,132 @@
 </div>
 
 <script>
+// Searchable Combobox Pemilihan Toko UMKM
+(function() {
+    const input = document.getElementById('umkm_search_input');
+    const dropdown = document.getElementById('umkm_dropdown_menu');
+    const hiddenId = document.getElementById('selected_umkm_id');
+    const clearBtn = document.getElementById('clear_selection_btn');
+    const toggleBtn = document.getElementById('toggle_dropdown_btn');
+    const options = document.querySelectorAll('.umkm-option');
+    const noFound = document.getElementById('no_store_found');
+    const card = document.getElementById('selected_store_card');
+    const cardName = document.getElementById('card_store_name');
+    const cardOwner = document.getElementById('card_owner_name');
+    const cardLocation = document.getElementById('card_location');
+    const changeBtn = document.getElementById('change_store_btn');
+
+    function openDropdown() {
+        dropdown.classList.remove('hidden');
+    }
+
+    function closeDropdown() {
+        dropdown.classList.add('hidden');
+    }
+
+    function selectStore(el) {
+        const id = el.getAttribute('data-id');
+        const name = el.getAttribute('data-name');
+        const owner = el.getAttribute('data-owner');
+        const district = el.getAttribute('data-district');
+        const village = el.getAttribute('data-village');
+
+        hiddenId.value = id;
+        input.value = name; // HANYA NAMA TOKO YANG BERSIH!
+        clearBtn.classList.remove('hidden');
+
+        // Update Kartu Detail Toko Terpilih
+        cardName.textContent = name;
+        cardOwner.textContent = owner;
+        cardLocation.textContent = 'Kec. ' + district + (village && village !== '-' ? ', Ds. ' + village : '');
+        card.classList.remove('hidden');
+
+        closeDropdown();
+    }
+
+    function clearSelection() {
+        hiddenId.value = '';
+        input.value = '';
+        clearBtn.classList.add('hidden');
+        card.classList.add('hidden');
+        options.forEach(opt => opt.style.display = 'flex');
+        if (noFound) noFound.classList.add('hidden');
+    }
+
+    // Filter pencarian live
+    input.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        let matchCount = 0;
+        options.forEach(opt => {
+            const name = (opt.getAttribute('data-name') || '').toLowerCase();
+            const owner = (opt.getAttribute('data-owner') || '').toLowerCase();
+            const district = (opt.getAttribute('data-district') || '').toLowerCase();
+            const village = (opt.getAttribute('data-village') || '').toLowerCase();
+
+            if (name.includes(query) || owner.includes(query) || district.includes(query) || village.includes(query)) {
+                opt.style.display = 'flex';
+                matchCount++;
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+
+        if (noFound) {
+            noFound.classList.toggle('hidden', matchCount > 0);
+        }
+        openDropdown();
+    });
+
+    input.addEventListener('focus', openDropdown);
+
+    toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (dropdown.classList.contains('hidden')) {
+            openDropdown();
+            input.focus();
+        } else {
+            closeDropdown();
+        }
+    });
+
+    clearBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        clearSelection();
+        input.focus();
+    });
+
+    if (changeBtn) {
+        changeBtn.addEventListener('click', function() {
+            clearSelection();
+            input.focus();
+            openDropdown();
+        });
+    }
+
+    options.forEach(opt => {
+        opt.addEventListener('click', function() {
+            selectStore(this);
+        });
+    });
+
+    // Tutup jika klik di luar dropdown
+    document.addEventListener('click', function(e) {
+        const wrapper = document.getElementById('combobox_wrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            closeDropdown();
+        }
+    });
+
+    // Inisialisasi awal jika ada nilai terpilih (misal dari query atau old)
+    const initialId = hiddenId.value;
+    if (initialId) {
+        const matched = Array.from(options).find(opt => opt.getAttribute('data-id') === initialId);
+        if (matched) {
+            selectStore(matched);
+        }
+    }
+})();
+
 // Preview Foto Utama
 document.getElementById('main_image_input').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -224,3 +422,4 @@ document.getElementById('main_image_input').addEventListener('change', function(
 });
 </script>
 @endsection
+

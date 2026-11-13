@@ -51,7 +51,7 @@
                     <!-- Nama Pemilik -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap Pemilik <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="owner_name_input" value="{{ old('name') }}" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all">
+                        <input type="text" name="name" id="owner_name_input" value="{{ old('name') }}" required placeholder="Contoh: Budi Santoso" onblur="this.value = this.value.trim().replace(/\b\w/g, l => l.toUpperCase())" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all">
                         @error('name')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
                     </div>
 
@@ -111,7 +111,7 @@
                     <!-- Nama Usaha -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Usaha / Merek Dagang <span class="text-red-500">*</span></label>
-                        <input type="text" name="business_name" id="business_name_input" value="{{ old('business_name') }}" required placeholder="Contoh: Keripik Singkong Barokah" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all">
+                        <input type="text" name="business_name" id="business_name_input" value="{{ old('business_name') }}" required placeholder="Contoh: Keripik Singkong Barokah" onblur="this.value = this.value.trim().replace(/\b\w/g, l => l.toUpperCase())" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all">
                         @error('business_name')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
                     </div>
 
