@@ -296,6 +296,108 @@ class AdminController extends Controller
         ));
     }
 
+    public function createProduct(Request $request)
+    {
+        $allUmkms = UmkmProfile::select('id', 'business_name', 'owner_name', 'district', 'village')
+            ->orderBy('business_name', 'asc')
+            ->get();
+
+        $selectedUmkmId = $request->query('umkm_id');
+        
+        $standardCategories = [
+            'Makanan & Minuman',
+            'Batik/Fashion',
+            'Kerajinan',
+            'Olahan Hasil Pertanian',
+            'Produk Kreatif',
+            'Lainnya',
+        ];
+
+        return view('admin.products.create', compact('allUmkms', 'selectedUmkmId', 'standardCategories'));
+    }
+
+    public function storeProduct(Request $request)
+    {
+        $request->validate([
+            'umkm_profile_id' => 'required|exists:umkm_profiles,id',
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'price' => 'nullable|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+        ], [
+            'umkm_profile_id.required' => 'Pilih Toko UMKM pemilik produk ini.',
+            'umkm_profile_id.exists' => 'Toko UMKM yang dipilih tidak valid.',
+            'name.required' => 'Nama produk wajib diisi.',
+            'category.required' => 'Kategori produk wajib dipilih.',
+            'image.image' => 'File foto harus berupa gambar.',
+            'image.max' => 'Ukuran gambar maksimal 3MB.',
+        ]);
+
+        $umkm = UmkmProfile::findOrFail($request->umkm_profile_id);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        $allImagesPaths = [];
+        if ($imagePath) {
+            $allImagesPaths[] = $imagePath;
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('products', 'public');
+                $allImagesPaths[] = $path;
+            }
+        }
+
+        $isFeatured = $request->has('is_featured');
+        if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
+            $featuredCount = Product::where('umkm_profile_id', $umkm->id)
+                ->where('is_featured', true)
+                ->count();
+            if ($featuredCount >= 2) {
+                $isFeatured = false;
+            }
+        }
+
+        $productData = [
+            'umkm_profile_id' => $umkm->id,
+            'name' => trim($request->name),
+            'category' => trim($request->category),
+            'price' => $request->filled('price') ? (float)$request->price : 0,
+            'description' => $request->description ? trim($request->description) : trim($request->name),
+            'image_path' => $imagePath,
+            'status' => 'verified',
+        ];
+
+        if (Schema::hasColumn('products', 'images')) {
+            $productData['images'] = !empty($allImagesPaths) ? $allImagesPaths : null;
+        }
+        if (Schema::hasColumn('products', 'is_featured')) {
+            $productData['is_featured'] = $isFeatured;
+        }
+
+        $product = Product::create($productData);
+
+        // Bersihkan cache produk
+        Cache::forget('admin_products_districts');
+        Cache::forget('admin_products_categories');
+        Cache::forget('admin_dashboard_stats');
+        Cache::forget('home_featured_products');
+
+        if ($request->input('action') === 'save_and_add_another') {
+            return redirect()->route('admin.products.create', ['umkm_id' => $umkm->id])
+                ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}'! Silakan masukkan produk berikutnya di bawah ini.");
+        }
+
+        return redirect()->route('admin.products')
+            ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}' dan langsung tayang di katalog publik!");
+    }
+
     public function consultations()
     {
         $consultations = \App\Models\Consultation::with('messages')

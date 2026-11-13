@@ -14,8 +14,12 @@
                 <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Tambah Akun UMKM</span>
             </a>
-            <a href="{{ route('admin.users.index') }}#modal-import" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-colors cursor-pointer" style="height: 42px;">
-                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <a href="{{ route('admin.products.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-colors cursor-pointer" style="height: 42px;" title="Tambah produk baru untuk UMKM terdaftar">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>Tambah Produk</span>
+            </a>
+            <a href="{{ route('admin.users.index') }}#modal-import" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl transition-colors cursor-pointer" style="height: 42px;">
+                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                 <span>Import Excel</span>
             </a>
             <form id="filter-form" action="{{ route('admin.stores') }}" method="GET" class="flex items-center gap-2.5">
@@ -101,6 +105,14 @@
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                         <div class="flex items-center justify-center gap-2">
+                            <!-- Tambah Produk untuk UMKM Ini -->
+                            <a href="{{ route('admin.products.create', ['umkm_id' => $umkm->id]) }}" 
+                               data-tooltip="Tambah Produk untuk UMKM Ini" 
+                               title="Tambah Produk untuk UMKM Ini"
+                               class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs">
+                                <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            </a>
+
                             <!-- Lihat Detail -->
                             <a href="{{ route('admin.umkm.show', $umkm->id) }}" 
                                data-tooltip="Lihat Detail" 
