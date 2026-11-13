@@ -1505,7 +1505,11 @@
                         </div>
                         <div class="absolute bottom-2 left-2.5 right-2.5 text-white">
                             <h4 class="font-extrabold text-sm leading-tight text-white line-clamp-1 drop-shadow-sm">${item.name}</h4>
-                            <p class="text-xs text-amber-300 drop-shadow-xs font-black mt-0.5">${item.price}</p>
+                            <div class="mt-1 flex items-center gap-1.5">
+                                <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-300 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-md border border-emerald-400/40">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Siap Dipesan
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="p-3 bg-white space-y-2">
@@ -1574,9 +1578,11 @@
                             <div class="flex items-start justify-between gap-1">
                                 <h4 class="text-xs font-bold text-slate-900 truncate group-hover:text-[#800000] transition-colors">${item.name}</h4>
                             </div>
-                            <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="text-xs font-black text-[#800000]">${item.price}</span>
-                                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold bg-amber-50 text-amber-800 border border-amber-200">${item.category}</span>
+                            <div class="flex items-center gap-1.5 mt-1">
+                                <span class="inline-flex items-center gap-1 text-[8px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60">
+                                    <span class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span> Siap Dipesan
+                                </span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-amber-50 text-amber-800 border border-amber-200">${item.category}</span>
                             </div>
                             <p class="text-[10px] text-slate-500 truncate mt-1 flex items-center gap-1">
                                 <svg class="w-2.5 h-2.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
