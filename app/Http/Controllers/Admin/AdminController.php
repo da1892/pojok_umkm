@@ -900,6 +900,10 @@ class AdminController extends Controller
 
         $umkm->update($data);
 
+        if ($request->input('redirect_to') === 'users') {
+            return redirect()->route('admin.users.index')->with('success', "Data & detail profil UMKM '{$umkm->business_name}' berhasil diperbarui.");
+        }
+
         return redirect()->route('admin.stores')->with('success', 'Data UMKM berhasil diperbarui.');
     }
 

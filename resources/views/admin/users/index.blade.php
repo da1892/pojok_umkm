@@ -336,13 +336,20 @@
                                     ];
                                 });
                             @endphp
-                            <button type="button" 
-                                onclick='openProductsListModal("{{ addslashes($user->umkmProfile->business_name) }}", "{{ route('admin.users.product.create', $user->umkmProfile->id) }}", {{ json_encode($productsList) }})'
-                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer group shadow-2xs {{ $productsCount > 0 ? 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200' }}"
-                                title="Klik untuk melihat / mengelola produk toko ini">
-                                <svg class="w-3.5 h-3.5 {{ $productsCount > 0 ? 'text-emerald-600' : 'text-slate-400' }} group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                                <span>{{ $productsCount }} Produk</span>
-                            </button>
+                            <div class="inline-flex items-center gap-1">
+                                <button type="button" 
+                                    onclick='openProductsListModal("{{ addslashes($user->umkmProfile->business_name) }}", "{{ route('admin.users.product.create', $user->umkmProfile->id) }}", {{ json_encode($productsList) }})'
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer group shadow-2xs {{ $productsCount > 0 ? 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200' }}"
+                                    title="Klik untuk melihat / mengelola produk toko ini">
+                                    <svg class="w-3.5 h-3.5 {{ $productsCount > 0 ? 'text-emerald-600' : 'text-slate-400' }} group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                                    <span>{{ $productsCount }} Produk</span>
+                                </button>
+                                <a href="{{ route('admin.users.product.create', $user->umkmProfile->id) }}" 
+                                   title="Tambah Produk Baru untuk Toko Ini"
+                                   class="w-6 h-6 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-all shadow-2xs text-xs font-black cursor-pointer">
+                                    +
+                                </a>
+                            </div>
                             @else
                             <span class="text-slate-300">-</span>
                             @endif
@@ -356,6 +363,24 @@
                         <!-- [UMKM] 7. Aksi -->
                         <td class="px-4 py-3 align-top text-center whitespace-nowrap">
                             <div class="flex items-center justify-center gap-1.5">
+                                @if($user->umkmProfile)
+                                <!-- Tombol Pintas Tambah Produk untuk UMKM ini -->
+                                <a href="{{ route('admin.users.product.create', $user->umkmProfile->id) }}" 
+                                   data-tooltip="+ Tambah Produk" 
+                                   title="+ Tambah Produk untuk Toko Ini"
+                                   class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs cursor-pointer">
+                                    <svg class="w-3.5 h-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                </a>
+
+                                <!-- Tombol Edit Detail & Profil UMKM -->
+                                <a href="{{ route('admin.umkm.edit', ['id' => $user->umkmProfile->id, 'redirect_to' => 'users']) }}" 
+                                   data-tooltip="Edit Detail & Profil UMKM" 
+                                   title="Edit Detail & Profil UMKM"
+                                   class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200/80 flex items-center justify-center transition-all duration-200 shadow-2xs cursor-pointer">
+                                    <svg class="w-3.5 h-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                </a>
+                                @endif
+
                                 <button type="button" 
                                         onclick="openResetPasswordModal('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')" 
                                         data-tooltip="Ubah / Reset Kata Sandi" 

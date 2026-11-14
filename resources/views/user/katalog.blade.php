@@ -313,14 +313,26 @@
 
                     <!-- Card Footer: Author & Detail -->
                     <div class="px-3 sm:px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
-                        <span class="text-slate-400 font-medium truncate max-w-[110px]">
+                        <span class="text-slate-400 font-medium truncate max-w-[90px] sm:max-w-[105px]">
                             {{ $product->umkmProfile->business_name ?? 'Admin UMKM' }}
                         </span>
 
-                        <span class="font-bold text-[#800000] group-hover:text-red-900 inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">
-                            <span>Detail</span>
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </span>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            @if($product->is_featured)
+                            <a href="{{ route('home') }}#peta-sebaran-umkm" 
+                               onclick="sessionStorage.setItem('highlight_product_id', '{{ $product->id }}')" 
+                               class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/90 transition-colors shadow-2xs cursor-pointer" 
+                               title="Lihat Pointing Lokasi di Peta Wonogiri">
+                                <svg class="w-2.5 h-2.5 text-amber-600 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                                <span>Peta</span>
+                            </a>
+                            @endif
+
+                            <span class="font-bold text-[#800000] group-hover:text-red-900 inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">
+                                <span>Detail</span>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </span>
+                        </div>
                     </div>
                 </a>
                 @endforeach
