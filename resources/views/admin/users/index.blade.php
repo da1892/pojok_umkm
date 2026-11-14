@@ -330,7 +330,6 @@
                                         'id' => $p->id,
                                         'name' => $p->name,
                                         'category' => $p->category,
-                                        'price' => number_format($p->price, 0, ',', '.'),
                                         'status' => $p->status,
                                         'image' => $p->image_path ? asset('storage/' . $p->image_path) : 'https://placehold.co/100x100/f1f5f9/94a3b8?text=Produk',
                                         'edit_url' => route('admin.product.edit', $p->id)
@@ -635,8 +634,7 @@ function openProductsListModal(storeName, addProductUrl, products) {
                     <div class="min-w-0">
                         <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate">${p.name}</h4>
                         <div class="flex items-center gap-2 mt-0.5">
-                            <span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2 py-0.2 rounded-md">${p.category || 'Umum'}</span>
-                            ${p.price && p.price !== '0' && p.price !== 'Rp 0' ? `<span class="text-xs font-black text-[#800000]">Rp ${p.price}</span>` : ''}
+                            <span class="text-[10px] font-bold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md">${p.category || 'Umum'}</span>
                         </div>
                     </div>
                 </div>

@@ -126,8 +126,6 @@ class PublicController extends Controller
                     'address' => $umkm ? $umkm->full_address : 'Kabupaten Wonogiri, Jawa Tengah',
                     'phone' => $umkm ? ($umkm->phone ?? '') : '',
                     'category' => $product->category ?? 'Produk Unggulan',
-                    'price' => 'Rp ' . number_format($product->price ?? 0, 0, ',', '.'),
-                    'raw_price' => $product->price ?? 0,
                     'image' => $productImg,
                     'status' => $product->status,
                     'is_featured' => true,

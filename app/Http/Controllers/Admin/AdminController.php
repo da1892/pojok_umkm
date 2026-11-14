@@ -63,7 +63,6 @@ class AdminController extends Controller
                         'id' => $p->id,
                         'name' => $p->name,
                         'category' => $p->category,
-                        'price' => 'Hubungi UMKM',
                         'image' => $p->image_path ? asset('storage/' . $p->image_path) : asset('images/no-image.png'),
                         'district' => $p->umkmProfile->district ?? '',
                         'village' => $p->umkmProfile->village ?? '',
@@ -327,7 +326,6 @@ class AdminController extends Controller
             'umkm_profile_id' => 'required|exists:umkm_profiles,id',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
@@ -373,7 +371,7 @@ class AdminController extends Controller
             'umkm_profile_id' => $umkm->id,
             'name' => trim($request->name),
             'category' => trim($request->category),
-            'price' => $request->filled('price') ? (float)$request->price : 0,
+            'price' => null,
             'description' => $request->description ? trim($request->description) : trim($request->name),
             'image_path' => $imagePath,
             'status' => 'verified',
@@ -1294,7 +1292,6 @@ class AdminController extends Controller
             'umkm_profile_id' => 'required|exists:umkm_profiles,id',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'all_images' => 'nullable|array|max:4',
@@ -1302,7 +1299,6 @@ class AdminController extends Controller
         ], [
             'umkm_profile_id.required' => 'Pilih UMKM Binaan pemilik produk ini.',
             'name.required' => 'Nama produk wajib diisi.',
-            'price.required' => 'Harga produk wajib diisi.',
             'image.required' => 'Foto utama produk wajib diunggah.',
         ]);
 
@@ -1339,7 +1335,7 @@ class AdminController extends Controller
             'umkm_profile_id' => $request->umkm_profile_id,
             'name' => $request->name,
             'category' => $request->category,
-            'price' => $request->price,
+            'price' => null,
             'description' => $request->description,
             'image_path' => $imagePath,
             'all_images' => !empty($allImagesPaths) ? $allImagesPaths : null,
@@ -1597,7 +1593,6 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
@@ -1639,7 +1634,7 @@ class AdminController extends Controller
             'umkm_profile_id' => $umkm->id,
             'name' => trim($request->name),
             'category' => trim($request->category),
-            'price' => $request->filled('price') ? (float)$request->price : 0,
+            'price' => null,
             'description' => $request->description ? trim($request->description) : trim($request->name),
             'image_path' => $imagePath,
             'status' => 'verified',
@@ -1739,7 +1734,6 @@ class AdminController extends Controller
                 'alamat',
                 'kategori_produk',
                 'nama_produk',
-                'harga_produk',
                 'deskripsi_produk',
                 'nib',
                 'pirt',
@@ -1759,7 +1753,6 @@ class AdminController extends Controller
                 'Jl. Ahmad Yani No. 12',
                 'Makanan & Minuman',
                 'Keripik Singkong Balado 250g',
-                '15000',
                 'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
                 '1234567890123',
                 'P-IRT 2063312010123-26',
@@ -1779,7 +1772,6 @@ class AdminController extends Controller
                 'Dusun Dlepih RT 02/03',
                 'Batik/Fashion',
                 'Kain Batik Tulis Motif Wonogiren',
-                '250000',
                 'Kain batik tulis halus dengan pewarna alam khas Wonogiri.',
                 '',
                 '',
@@ -1799,7 +1791,6 @@ class AdminController extends Controller
                 'Jl. Raya Baturetno KM 3',
                 'Makanan & Minuman',
                 'Madu Hutan Murni 500ml',
-                '85000',
                 'Madu murni alami tanpa bahan pengawet.',
                 '',
                 '',
@@ -1887,7 +1878,6 @@ class AdminController extends Controller
                 // Data Produk Opsional
                 $kategoriProduk = $getCol($row, ['kategori_produk', 'kategori', 'category']) ?: 'Makanan & Minuman';
                 $namaProduk = $getCol($row, ['nama_produk', 'product_name', 'produk']);
-                $hargaProduk = $getCol($row, ['harga_produk', 'harga', 'price']);
                 $deskripsiProduk = $getCol($row, ['deskripsi_produk', 'deskripsi', 'description']);
 
                 // Normalisasi Gender
@@ -1956,16 +1946,11 @@ class AdminController extends Controller
 
                 // 3. Buat Produk jika ada
                 if (!empty($namaProduk)) {
-                    $cleanPrice = 0;
-                    if (!empty($hargaProduk)) {
-                        $cleanPrice = (float)preg_replace('/[^0-9.]/', '', str_replace(',', '.', $hargaProduk));
-                    }
-
                     $productData = [
                         'umkm_profile_id' => $umkm->id,
                         'name' => $namaProduk,
                         'category' => $kategoriProduk,
-                        'price' => $cleanPrice,
+                        'price' => null,
                         'description' => $deskripsiProduk ?: $namaProduk,
                         'status' => 'verified',
                     ];

@@ -157,7 +157,7 @@
                     <span class="w-7 h-7 rounded-xl bg-red-100 text-[#800000] font-black flex items-center justify-center text-xs">1</span>
                     <div>
                         <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Detail Produk</h3>
-                        <p class="text-[11px] text-slate-400">Informasi nama, kategori, harga, dan deskripsi produk.</p>
+                        <p class="text-[11px] text-slate-400">Informasi nama, kategori, dan deskripsi produk.</p>
                     </div>
                 </div>
 
@@ -168,28 +168,16 @@
                     @error('name')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
                 </div>
 
-                <!-- Kategori & Harga -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Kategori Produk <span class="text-red-500">*</span></label>
-                        <select name="category" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none cursor-pointer">
-                            <option value="">-- Pilih Kategori --</option>
-                            @foreach($standardCategories as $cat)
-                            <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                            @endforeach
-                        </select>
-                        @error('category')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Harga Produk (Rp) <span class="text-slate-400 font-normal">(Opsional)</span></label>
-                        <div class="relative">
-                            <span class="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">Rp</span>
-                            <input type="number" name="price" value="{{ old('price') }}" min="0" step="500" placeholder="Contoh: 35000 (Kosongkan bila sistem negosiasi)" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none transition-all">
-                        </div>
-                        <p class="text-[10px] text-slate-400 mt-1">Bila dikosongkan atau diisi 0, pada katalog publik akan tertulis tombol <em>"Detail"</em> atau <em>"Siap Dipesan"</em> tanpa angka 0.</p>
-                        @error('price')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
-                    </div>
+                <!-- Kategori Produk -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Kategori Produk <span class="text-red-500">*</span></label>
+                    <select name="category" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 focus:bg-white focus:ring-2 focus:ring-red-500/20 focus:border-[#800000] outline-none cursor-pointer">
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach($standardCategories as $cat)
+                        <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                    @error('category')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
                 </div>
 
                 <!-- Deskripsi Produk -->
