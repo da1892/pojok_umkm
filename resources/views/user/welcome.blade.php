@@ -64,54 +64,54 @@
 </div>
 
 <!-- 4 Cards Section (Mobile 2x2 grid, Desktop 4 columns) -->
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 mt-6 sm:mt-10 md:mt-14 mb-12 sm:mb-20 reveal delay-200">
-    <div class="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 md:p-10 lg:p-12 shadow-sm border border-slate-200/80">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-7 lg:gap-8">
+<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 mt-4 sm:mt-6 md:mt-8 mb-4 sm:mb-6 reveal delay-200">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 md:p-6 shadow-sm border border-slate-200/80">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             
             <!-- Card 1: Profil UMKM -->
-            <a href="{{ route('direktori') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="{{ route('direktori') }}" class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4.5 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-2.5 sm:mb-3.5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12l-2 8 5.5-2.5 5.5 2.5-2-8" />
                     </svg>
                 </div>
-                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Profil UMKM</h3>
-                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Kenali profil ribuan UMKM tangguh di seluruh pelosok Wonogiri.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-0.5 group-hover:text-[#991b1b] transition-colors leading-snug">Profil UMKM</h3>
+                <p class="text-[10px] sm:text-xs text-slate-500 leading-snug line-clamp-2">Kenali profil ribuan UMKM tangguh di seluruh pelosok Wonogiri.</p>
             </a>
 
             <!-- Card 2: Produk UMKM -->
-            <a href="{{ route('katalog') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="{{ route('katalog') }}" class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4.5 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-2.5 sm:mb-3.5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
                     </svg>
                 </div>
-                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Produk UMKM</h3>
-                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Katalog kurasi produk lokal mulai kuliner hingga kriya bersertifikat.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-0.5 group-hover:text-[#991b1b] transition-colors leading-snug">Produk UMKM</h3>
+                <p class="text-[10px] sm:text-xs text-slate-500 leading-snug line-clamp-2">Katalog kurasi produk lokal mulai kuliner hingga kriya bersertifikat.</p>
             </a>
 
             <!-- Card 3: Berita & Kegiatan -->
-            <a href="{{ route('informasi') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="{{ route('informasi') }}" class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4.5 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-2.5 sm:mb-3.5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
                     </svg>
                 </div>
-                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Berita & Kegiatan</h3>
-                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Informasi bazar, pameran, pelatihan, dan pemberdayaan terkini.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-0.5 group-hover:text-[#991b1b] transition-colors leading-snug">Berita & Kegiatan</h3>
+                <p class="text-[10px] sm:text-xs text-slate-500 leading-snug line-clamp-2">Informasi bazar, pameran, pelatihan, dan pemberdayaan terkini.</p>
             </a>
 
             <!-- Card 4: Info & Panduan -->
-            <a href="{{ route('panduan') }}" class="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <a href="{{ route('panduan') }}" class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4.5 border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-red-200 transition-all duration-300 transform hover:-translate-y-0.5 group flex flex-col justify-start">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-50 text-[#991b1b] flex items-center justify-center mb-2.5 sm:mb-3.5 group-hover:scale-105 group-hover:bg-[#991b1b] group-hover:text-white transition-all shadow-xs">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="9"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25h.01M12 11.25v4.5"/>
                     </svg>
                 </div>
-                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#991b1b] transition-colors leading-snug">Info & Panduan</h3>
-                <p class="text-[10px] sm:text-sm text-slate-500 leading-snug line-clamp-2">Panduan lengkap sertifikasi halal, PIRT, legalitas NIB gratis.</p>
+                <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-0.5 group-hover:text-[#991b1b] transition-colors leading-snug">Info & Panduan</h3>
+                <p class="text-[10px] sm:text-xs text-slate-500 leading-snug line-clamp-2">Panduan lengkap sertifikasi halal, PIRT, legalitas NIB gratis.</p>
             </a>
 
         </div>
@@ -119,7 +119,7 @@
 </div>
 
 <!-- Seksi Eksplor Kategori & Produk Unggulan dengan Nuansa Visual Modern -->
-<section class="py-8 sm:py-12 bg-gradient-to-b from-slate-50/70 via-white to-slate-50/70 relative overflow-hidden border-t border-slate-100">
+<section class="py-4 sm:py-6 bg-gradient-to-b from-slate-50/70 via-white to-slate-50/70 relative overflow-hidden border-t border-slate-100">
     <!-- Ambient Glow Accent -->
     <div class="absolute top-1/4 -right-20 w-80 h-80 bg-red-100/40 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-10 -left-20 w-80 h-80 bg-amber-100/40 rounded-full blur-3xl pointer-events-none"></div>
@@ -127,11 +127,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <!-- Eksplor Kategori Produk -->
-        <div id="kategori" class="mb-10 sm:mb-14 reveal delay-200">
-            <div class="flex items-center justify-between mb-4 sm:mb-5">
+        <div id="kategori" class="mb-5 sm:mb-6 reveal delay-200">
+            <div class="flex items-center justify-between mb-2 sm:mb-2.5">
                 <div>
-                    <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-[#991b1b]">Katalog Pilihan</span>
-                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Eksplor Kategori Produk</h2>
+                    <span class="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest text-[#991b1b]">Katalog Pilihan</span>
+                    <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Eksplor Kategori Produk</h2>
                 </div>
                 <span class="text-xs font-semibold text-slate-400 sm:hidden flex items-center gap-1">
                     Geser 
@@ -140,42 +140,42 @@
             </div>
 
             <!-- Category Chips with Icons & Color Tints -->
-            <div class="flex items-center gap-2.5 sm:gap-3.5 overflow-x-auto pt-1 pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scroll-smooth" style="scrollbar-width: none; -ms-overflow-style: none;">
+            <div class="flex items-center gap-2 sm:gap-2.5 overflow-x-auto pt-0.5 pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scroll-smooth" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <!-- Makanan & Minuman -->
-                <a href="/katalog?kategori=makanan" class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shrink-0">
-                    <span class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
+                <a href="/katalog?kategori=makanan" class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 shrink-0">
+                    <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center text-xs transition-colors">
                         🍲
                     </span>
                     <span>Makanan & Minuman</span>
                 </a>
 
                 <!-- Kerajinan -->
-                <a href="/katalog?kategori=kerajinan" class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-teal-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shrink-0">
-                    <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
+                <a href="/katalog?kategori=kerajinan" class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-teal-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 shrink-0">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center text-xs transition-colors">
                         🪵
                     </span>
                     <span>Kerajinan</span>
                 </a>
 
                 <!-- Batik & Fashion -->
-                <a href="/katalog?kategori=batik" class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shrink-0">
-                    <span class="w-7 h-7 rounded-xl bg-purple-100 text-purple-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
+                <a href="/katalog?kategori=batik" class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white hover:bg-gradient-to-r hover:from-purple-600 hover:to-indigo-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 shrink-0">
+                    <span class="w-6 h-6 rounded-lg bg-purple-100 text-purple-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center text-xs transition-colors">
                         👘
                     </span>
                     <span>Batik/Fashion</span>
                 </a>
 
                 <!-- Olahan Pertanian -->
-                <a href="/katalog?kategori=pertanian" class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-lime-600 hover:to-green-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shrink-0">
-                    <span class="w-7 h-7 rounded-xl bg-lime-100 text-lime-800 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
+                <a href="/katalog?kategori=pertanian" class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white hover:bg-gradient-to-r hover:from-lime-600 hover:to-green-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 shrink-0">
+                    <span class="w-6 h-6 rounded-lg bg-lime-100 text-lime-800 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center text-xs transition-colors">
                         🌾
                     </span>
                     <span>Olahan Hasil Pertanian</span>
                 </a>
 
                 <!-- Produk Kreatif -->
-                <a href="/katalog?kategori=kreatif" class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-rose-600 hover:to-red-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shrink-0">
-                    <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
+                <a href="/katalog?kategori=kreatif" class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white hover:bg-gradient-to-r hover:from-rose-600 hover:to-red-600 text-slate-700 hover:text-white border border-slate-200/90 hover:border-transparent text-xs sm:text-sm font-bold shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 shrink-0">
+                    <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-700 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center text-xs transition-colors">
                         🎨
                     </span>
                     <span>Produk Kreatif</span>
@@ -197,28 +197,28 @@
             }
         @endphp
 
-        <div class="mb-4 reveal delay-300">
+        <div class="mb-2 reveal delay-300">
             <!-- Header Section with Badge -->
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-3.5 sm:mb-4">
                 <div>
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs mb-2">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs mb-1">
                         <svg class="w-3.5 h-3.5 text-amber-500 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                         <span>Kurasi Resmi Dinas Perdagangan Wonogiri</span>
                     </div>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight">
                         Produk Unggulan
                     </h2>
-                    <p class="text-slate-500 text-xs sm:text-sm mt-1 max-w-xl">
+                    <p class="text-slate-500 text-xs sm:text-sm mt-0.5 max-w-xl">
                         Koleksi komoditas dan karya khas pilihan asli Wonogiri dengan jaminan mutu dan legalitas resmi.
                     </p>
                 </div>
 
-                <a href="/katalog" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-[#800000] to-[#a81c1c] text-white hover:from-[#660000] hover:to-[#8a1414] rounded-2xl text-xs sm:text-sm font-bold transition-all shadow-sm hover:shadow-xl hover:-translate-y-0.5 shrink-0 group">
-                    <svg class="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                <a href="/katalog" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-[#800000] to-[#a81c1c] text-white hover:from-[#660000] hover:to-[#8a1414] rounded-xl text-xs sm:text-sm font-bold transition-all shadow-2xs hover:shadow-md hover:-translate-y-0.5 shrink-0 group">
+                    <svg class="w-3.5 h-3.5 text-white/90" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M4 4h3.5v3.5H4V4zm6.25 0h3.5v3.5h-3.5V4zm6.25 0H20v3.5h-3.5V4zM4 10.25h3.5v3.5H4v-3.5zm6.25 0h3.5v3.5h-3.5v-3.5zm6.25 0H20v3.5h-3.5v-3.5zM4 16.5h3.5V20H4v-3.5zm6.25 0h3.5V20h-3.5v-3.5zm6.25 0H20V20h-3.5v-3.5z"/>
                     </svg>
                     <span>Katalog Selengkapnya</span>
-                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
                     </svg>
                 </a>
@@ -226,7 +226,7 @@
 
             <!-- Product Cards Grid: Tampilan & Ukuran Card Identik dengan Berita & Kegiatan (5 Kolom) -->
             @if($featuredProducts->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3">
                 @foreach ($featuredProducts as $product)
                 <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
                     <div>
@@ -305,14 +305,14 @@
 <!-- ==============================================================
      SEKSI DATA STATISTIK & AGREGAT UMKM WONOGIRI
      ============================================================== -->
-<div class="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-y border-slate-200/90 relative overflow-hidden reveal delay-200" id="statistik-agregat">
+<div class="py-8 sm:py-10 md:py-12 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-y border-slate-200/90 relative overflow-hidden reveal delay-200" id="statistik-agregat">
     <!-- Ambient ambient circles -->
     <div class="absolute -top-32 -right-32 w-96 h-96 bg-red-100/60 rounded-full filter blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-amber-100/60 rounded-full filter blur-3xl pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <!-- Section Header -->
-        <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+        <div class="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-red-50 text-[#800000] border border-red-200/90 mb-3 shadow-2xs">
                 <svg class="w-4 h-4 text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <span>Statistik & Data Agregat Resmi</span>
@@ -616,10 +616,10 @@
         <!-- ============================================================== -->
         <!-- SEKSI PETA GEOSPASIAL & SEBARAN TITIK UMKM KABUPATEN WONOGIRI -->
         <!-- ============================================================== -->
-        <div id="peta-sebaran-umkm" class="mt-12 sm:mt-16 pt-8 border-t border-slate-200/90 scroll-mt-24">
+        <div id="peta-sebaran-umkm" class="mt-8 sm:mt-10 pt-6 border-t border-slate-200/90 scroll-mt-24">
             
             <!-- Header Peta Persebaran -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
                 <div>
                     <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                         Peta Persebaran Produk Unggulan Kabupaten Wonogiri
@@ -919,7 +919,7 @@
         display: none;
     }
 </style>
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-12 sm:pb-16 reveal delay-300" id="seksi-berita">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-8 sm:pb-10 reveal delay-300" id="seksi-berita">
     
     <!-- Header with Controls -->
     <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-5 sm:mb-6 gap-3">
