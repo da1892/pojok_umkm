@@ -86,8 +86,16 @@
                                             {{ $consultation->response }}
                                         </div>
                                     @endif
+                                    <a href="{{ route('konsultasi.cek', ['ticket_id' => $consultation->ticket_id]) }}" class="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-[#800000] hover:underline">
+                                        <span>Lihat Percakapan Lengkap &rarr;</span>
+                                    </a>
                                 @else
-                                    <span class="text-slate-400 italic text-xs">Belum ada balasan</span>
+                                    <div>
+                                        <span class="text-slate-400 italic text-xs block mb-1.5">Belum ada balasan</span>
+                                        <a href="{{ route('konsultasi.cek', ['ticket_id' => $consultation->ticket_id]) }}" class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-[#800000] hover:underline">
+                                            <span>Pantau Tiket &rarr;</span>
+                                        </a>
+                                    </div>
                                 @endif
                             </td>
                         </tr>

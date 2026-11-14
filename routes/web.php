@@ -27,6 +27,7 @@ Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsul
 Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
 Route::get('/konsultasi/cek/{ticket_id?}', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
 Route::post('/konsultasi/cek/{ticket_id}/balas', [PublicController::class, 'replyKonsultasiUser'])->name('konsultasi.cek.balas');
+Route::post('/konsultasi/cek/{ticket_id}/selesai', [PublicController::class, 'finishKonsultasiUser'])->name('konsultasi.cek.selesai');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {

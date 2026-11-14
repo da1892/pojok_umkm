@@ -811,4 +811,42 @@ class PublicController extends Controller
         return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
             ->with('success', 'Balasan Anda berhasil terkirim ke Admin Dinas Perdagangan & KUKM Wonogiri. Mohon menunggu tanggapan selanjutnya.');
     }
+
+    /**
+     * Menyelesaikan sesi konsultasi dari sisi pemohon (UMKM / Masyarakat).
+     */
+    public function finishKonsultasiUser(Request $request, $ticket_id)
+    {
+        $consultation = \App\Models\Consultation::where('ticket_id', $ticket_id)->firstOrFail();
+
+        if (strtolower((string)$consultation->status) === 'selesai') {
+            return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+                ->with('info', 'Sesi konsultasi ini sudah berstatus selesai.');
+        }
+
+        $feedback = trim((string)$request->input('feedback'));
+        $msgText = 'Sesi konsultasi telah dinyatakan SELESAI oleh Pemohon.';
+        if (!empty($feedback)) {
+            $msgText .= ' Catatan/Ulasan Pemohon: "' . $feedback . '"';
+        } else {
+            $msgText .= ' Pertanyaan dan kendala telah terjawab dengan baik. Terima kasih kepada Admin Dinas Perdagangan & KUKM Kabupaten Wonogiri atas bantuan dan panduannya.';
+        }
+
+        \App\Models\ConsultationMessage::create([
+            'consultation_id' => $consultation->id,
+            'sender_type' => 'user',
+            'sender_name' => $consultation->name,
+            'user_id' => auth()->check() ? auth()->id() : $consultation->user_id,
+            'message' => $msgText,
+            'attachment' => null,
+        ]);
+
+        $consultation->update([
+            'status' => 'selesai',
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+            ->with('success', 'Alhamdulillah! Sesi konsultasi tiket #' . $ticket_id . ' telah berhasil diselesaikan. Terima kasih atas kerja sama Anda.');
+    }
 }

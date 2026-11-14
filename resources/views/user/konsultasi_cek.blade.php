@@ -72,7 +72,17 @@
                         </div>
                     </div>
                     
-                    <div class="shrink-0">
+                    <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
+                        @if($consultation->status !== 'selesai' && $consultation->status !== 'ditolak')
+                        <form action="{{ route('konsultasi.cek.selesai', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin konsultasi ini sudah selesai dan pertanyaan Anda telah terjawab dengan jelas?');" class="inline">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs hover:shadow-sm active:scale-95 cursor-pointer" title="Tandai Selesai jika kendala/pertanyaan Anda sudah terjawab">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Selesaikan Sesi</span>
+                            </button>
+                        </form>
+                        @endif
+
                         @if($consultation->status == 'menunggu')
                             <span class="inline-flex items-center gap-1.5 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -269,14 +279,24 @@
                         <!-- Form Balas Aktif: Hanya muncul jika pertanyaan sudah dijawab admin dan tiket masih terbuka -->
                         <div class="mt-8 pt-8 border-t border-slate-200 reveal">
                             <div class="bg-gradient-to-r from-red-50/70 via-rose-50/50 to-white border-2 border-red-200 rounded-2xl p-6 sm:p-7 shadow-xs">
-                                <div class="flex items-center gap-3 mb-4">
-                                    <div class="w-9 h-9 rounded-full bg-[#800000] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-[#800000] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-base">Balas Tanggapan Admin</h4>
+                                            <p class="text-xs text-slate-500">Pertanyaan Anda telah dijawab oleh Admin. Kirim balasan lanjutan atau selesaikan sesi jika sudah cukup.</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 class="font-bold text-slate-900 text-base">Balas Tanggapan Admin</h4>
-                                        <p class="text-xs text-slate-500">Pertanyaan Anda telah dijawab oleh Admin. Anda dapat mengirimkan pertanyaan atau balasan lanjutan di bawah ini.</p>
-                                    </div>
+
+                                    <form action="{{ route('konsultasi.cek.selesai', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin konsultasi ini sudah selesai dan pertanyaan Anda telah terjawab dengan memuaskan?');" class="shrink-0">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer" title="Tandai Selesai jika kendala Anda sudah terjawab">
+                                            <svg class="w-3.5 h-3.5 text-emerald-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                            <span>✓ Masalah Sudah Selesai</span>
+                                        </button>
+                                    </form>
                                 </div>
 
                                 <form action="{{ route('konsultasi.cek.balas', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
