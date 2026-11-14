@@ -327,35 +327,37 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ], [
             'umkm_profile_id.required' => 'Pilih Toko UMKM pemilik produk ini.',
             'umkm_profile_id.exists' => 'Toko UMKM yang dipilih tidak valid.',
             'name.required' => 'Nama produk wajib diisi.',
             'category.required' => 'Kategori produk wajib dipilih.',
+            'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
+            'images.*.image' => 'File foto harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.max' => 'Ukuran gambar maksimal 10MB.',
             'image.image' => 'File foto harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 3MB.',
+            'image.max' => 'Ukuran gambar maksimal 10MB.',
         ]);
 
         $umkm = UmkmProfile::findOrFail($request->umkm_profile_id);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        }
-
         $allImagesPaths = [];
-        if ($imagePath) {
-            $allImagesPaths[] = $imagePath;
-        }
-
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('products', 'public');
-                $allImagesPaths[] = $path;
+                if ($file->isValid() && count($allImagesPaths) < 5) {
+                    $path = $file->store('products', 'public');
+                    $allImagesPaths[] = $path;
+                }
             }
+        } elseif ($request->hasFile('image')) {
+            $allImagesPaths[] = $request->file('image')->store('products', 'public');
         }
+
+        $imagePath = !empty($allImagesPaths) ? $allImagesPaths[0] : null;
 
         $isFeatured = $request->has('is_featured');
         if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
@@ -1594,31 +1596,33 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'category.required' => 'Kategori produk wajib dipilih.',
+            'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
+            'images.*.image' => 'File foto harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.',
             'image.image' => 'File foto harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 3MB.',
+            'image.max' => 'Ukuran gambar maksimal 10MB.',
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        }
-
         $allImagesPaths = [];
-        if ($imagePath) {
-            $allImagesPaths[] = $imagePath;
-        }
-
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('products', 'public');
-                $allImagesPaths[] = $path;
+                if ($file->isValid() && count($allImagesPaths) < 5) {
+                    $path = $file->store('products', 'public');
+                    $allImagesPaths[] = $path;
+                }
             }
+        } elseif ($request->hasFile('image')) {
+            $allImagesPaths[] = $request->file('image')->store('products', 'public');
         }
+
+        $imagePath = !empty($allImagesPaths) ? $allImagesPaths[0] : null;
 
         $isFeatured = $request->has('is_featured');
         if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {

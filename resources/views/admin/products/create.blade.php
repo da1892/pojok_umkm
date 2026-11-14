@@ -189,39 +189,60 @@
             </div>
 
             <!-- ============================================== -->
-            <!-- 3. FOTO PRODUK -->
+            <!-- 2. FOTO & MEDIA PRODUK -->
             <!-- ============================================== -->
             <div class="space-y-4 pt-4 border-t border-slate-100">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-slate-100">
-                    <span class="w-7 h-7 rounded-xl bg-red-100 text-[#800000] font-black flex items-center justify-center text-xs">2</span>
-                    <div>
-                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Foto & Media Produk</h3>
-                        <p class="text-[11px] text-slate-400">Unggah foto produk yang jelas dan menarik untuk katalog.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-3 gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-7 h-7 rounded-xl bg-red-100 text-[#800000] font-black flex items-center justify-center text-xs">2</span>
+                        <div>
+                            <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Foto & Media Produk <span class="text-red-500">*</span></h3>
+                            <p class="text-[11px] text-slate-400">Unggah minimal 1 dan maksimal 5 foto produk untuk katalog.</p>
+                        </div>
+                    </div>
+                    <span id="photo-counter" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 self-start sm:self-auto">
+                        0 / 5 Foto dipilih
+                    </span>
+                </div>
+
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Unggah minimal 1 dan maksimal 5 foto produk. <strong>Foto pertama otomatis dijadikan foto sampul utama</strong> di katalog pembeli. Format: JPG, PNG, WEBP (maks. 10MB/foto).
+                </p>
+
+                <!-- Dropzone Area -->
+                <div id="dropzone-area" class="border-2 border-dashed border-slate-300 hover:border-[#800000] rounded-2xl p-6 text-center transition-all bg-slate-50/70 hover:bg-red-50/20 cursor-pointer relative group">
+                    <input id="images-input" name="images[]" type="file" multiple accept="image/jpeg,image/png,image/jpg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div class="flex flex-col items-center pointer-events-none">
+                        <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-2xs text-[#800000] group-hover:scale-110 flex items-center justify-center mb-2.5 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <span class="text-sm font-bold text-slate-800 group-hover:text-[#800000] transition-colors">Klik atau Seret Foto ke Sini</span>
+                        <span class="text-xs text-slate-400 mt-1">Dapat memilih sekaligus hingga 5 foto produk</span>
                     </div>
                 </div>
 
-                <!-- Foto Utama -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Foto Utama Produk</label>
-                    <div class="flex items-center gap-4">
-                        <div class="w-20 h-20 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0" id="main_preview_container">
-                            <img id="main_preview_img" class="w-full h-full object-cover hidden" alt="Preview Foto">
-                            <svg id="main_preview_placeholder" class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <!-- 5 Slot Preview Grid -->
+                <div id="preview-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-1">
+                    @for($i = 0; $i < 5; $i++)
+                    <div id="slot-{{ $i }}" class="relative aspect-square rounded-2xl border-2 {{ $i === 0 ? 'border-amber-300 bg-amber-50/30' : 'border-slate-200 bg-slate-50' }} flex flex-col items-center justify-center overflow-hidden transition-all group shadow-2xs">
+                        <div class="slot-placeholder text-center p-2 text-slate-400 pointer-events-none">
+                            <svg class="w-6 h-6 mx-auto mb-1 {{ $i === 0 ? 'text-amber-500/60' : 'text-slate-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
+                            <span class="text-[10px] font-bold block uppercase {{ $i === 0 ? 'text-amber-700' : 'text-slate-400' }}">
+                                {{ $i === 0 ? 'Sampul Utama' : 'Foto ' . ($i + 1) }}
+                            </span>
                         </div>
-                        <div class="flex-1">
-                            <input type="file" name="image" id="main_image_input" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-[#800000] hover:file:bg-red-100 cursor-pointer border border-slate-200 rounded-xl bg-slate-50 p-2">
-                            <p class="text-[10px] text-slate-400 mt-1">Disarankan foto rasio 1:1 (persegi) dengan pencahayaan terang. Maksimal 3MB (JPEG, PNG, WEBP).</p>
-                        </div>
+                        <img class="slot-image hidden w-full h-full object-cover" alt="Preview {{ $i + 1 }}">
+                        <button type="button" onclick="removeImage({{ $i }})" class="slot-remove hidden absolute top-1.5 right-1.5 w-6 h-6 bg-red-600 text-white rounded-full items-center justify-center text-xs shadow-md hover:bg-red-700 transition-colors z-20 cursor-pointer" title="Hapus foto ini">
+                            &times;
+                        </button>
+                        <span class="slot-badge hidden absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9px] font-extrabold z-20 uppercase tracking-wider {{ $i === 0 ? 'bg-amber-500 text-white shadow-xs' : 'bg-slate-900/80 text-white' }}">
+                            {{ $i === 0 ? 'Sampul' : 'Foto ' . ($i + 1) }}
+                        </span>
                     </div>
-                    @error('image')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
+                    @endfor
                 </div>
-
-                <!-- Foto Galeri Tambahan -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Foto Galeri Tambahan (Dapat memilih lebih dari 1 foto)</label>
-                    <input type="file" name="images[]" multiple accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-xl bg-slate-50 p-2">
-                    <p class="text-[10px] text-slate-400 mt-1">Opsional: Tambahkan foto sudut lain, kemasan, atau detail sertifikasi halal.</p>
-                </div>
+                @error('images')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
+                @error('images.*')<p class="text-[11px] text-red-600 mt-1 font-semibold">{{ $message }}</p>@enderror
             </div>
 
             <!-- ============================================== -->
@@ -393,21 +414,69 @@
     }
 })();
 
-// Preview Foto Utama
-document.getElementById('main_image_input').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            const img = document.getElementById('main_preview_img');
-            const placeholder = document.getElementById('main_preview_placeholder');
-            img.src = evt.target.result;
+// Multi-file Upload & 5-Slot Preview System
+let uploadedFiles = [];
+const imagesInput = document.getElementById('images-input');
+const photoCounter = document.getElementById('photo-counter');
+
+imagesInput.addEventListener('change', function(event) {
+    const newFiles = Array.from(event.target.files);
+    
+    // Append new files up to limit of 5
+    for (const file of newFiles) {
+        if (uploadedFiles.length < 5) {
+            uploadedFiles.push(file);
+        }
+    }
+    
+    updateFileInputAndPreview();
+});
+
+function updateFileInputAndPreview() {
+    const dataTransfer = new DataTransfer();
+    uploadedFiles.forEach(file => dataTransfer.items.add(file));
+    imagesInput.files = dataTransfer.files;
+
+    if (photoCounter) {
+        photoCounter.textContent = `${uploadedFiles.length} / 5 Foto dipilih`;
+    }
+
+    // Update slots
+    for (let i = 0; i < 5; i++) {
+        const slot = document.getElementById(`slot-${i}`);
+        if (!slot) continue;
+        const placeholder = slot.querySelector('.slot-placeholder');
+        const img = slot.querySelector('.slot-image');
+        const removeBtn = slot.querySelector('.slot-remove');
+        const badge = slot.querySelector('.slot-badge');
+
+        if (uploadedFiles[i]) {
+            img.src = URL.createObjectURL(uploadedFiles[i]);
             img.classList.remove('hidden');
             placeholder.classList.add('hidden');
+            removeBtn.classList.remove('hidden');
+            removeBtn.classList.add('flex');
+            badge.classList.remove('hidden');
+            slot.classList.remove('border-dashed');
+            slot.classList.add('border-solid', 'border-[#800000]/40');
+        } else {
+            img.src = '';
+            img.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            removeBtn.classList.add('hidden');
+            removeBtn.classList.remove('flex');
+            badge.classList.add('hidden');
+            slot.classList.remove('border-solid', 'border-[#800000]/40');
         }
-        reader.readAsDataURL(file);
     }
-});
+}
+
+function removeImage(index) {
+    if (index >= 0 && index < uploadedFiles.length) {
+        uploadedFiles.splice(index, 1);
+        updateFileInputAndPreview();
+    }
+}
 </script>
 @endsection
 
