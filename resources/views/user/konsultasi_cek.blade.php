@@ -74,13 +74,10 @@
                     
                     <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
                         @if($consultation->status !== 'selesai' && $consultation->status !== 'ditolak')
-                        <form action="{{ route('konsultasi.cek.selesai', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin konsultasi ini sudah selesai dan pertanyaan Anda telah terjawab dengan jelas?');" class="inline">
-                            @csrf
-                            <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs hover:shadow-sm active:scale-95 cursor-pointer" title="Tandai Selesai jika kendala/pertanyaan Anda sudah terjawab">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                <span>Selesaikan Sesi</span>
-                            </button>
-                        </form>
+                        <button type="button" onclick="openFinishModal('{{ $consultation->ticket_id }}', '{{ $consultation->id }}')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs hover:shadow-sm active:scale-95 cursor-pointer" title="Tandai Selesai jika kendala/pertanyaan Anda sudah terjawab">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                            <span>Selesaikan Sesi</span>
+                        </button>
                         @endif
 
                         @if($consultation->status == 'menunggu')
@@ -104,11 +101,111 @@
                                 Konsultasi Ditolak
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Selesai Dijawab
+                                Selesai Tuntas
                             </span>
                         @endif
+                    </div>
+                </div>
+
+                <!-- Visual Stepper / Tracker Alur Konsultasi -->
+                <div class="px-6 py-6 bg-gradient-to-r from-slate-50 via-white to-slate-50 border-b border-slate-100">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="relative flex items-center justify-between">
+                            <!-- Garis Background Penghubung -->
+                            <div class="absolute left-8 right-8 top-5 -translate-y-1/2 h-1 bg-slate-200 -z-0"></div>
+                            
+                            <!-- Garis Progress Aktif -->
+                            @php
+                                $stepWidth = match(strtolower((string)$consultation->status)) {
+                                    'menunggu' => 'w-[15%]',
+                                    'diproses' => 'w-[55%]',
+                                    'selesai', 'diterima' => 'w-[100%]',
+                                    'ditolak' => 'w-[100%]',
+                                    default => 'w-[15%]'
+                                };
+                                $stepColor = strtolower((string)$consultation->status) === 'ditolak' ? 'bg-red-500' : 'bg-emerald-500';
+                            @endphp
+                            <div class="absolute left-8 top-5 -translate-y-1/2 h-1 {{ $stepColor }} {{ $stepWidth }} transition-all duration-700 -z-0"></div>
+
+                            <!-- Tahap 1: Pengajuan Tiket -->
+                            <div class="relative z-10 flex flex-col items-center text-center">
+                                <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-white">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                                <div class="mt-2.5">
+                                    <p class="text-xs font-bold text-slate-800">1. Tiket Terbit</p>
+                                    <p class="text-[10px] text-slate-500 font-mono">{{ $consultation->created_at ? $consultation->created_at->format('d M Y') : '' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Tahap 2: Pembahasan Solusi & Telaah -->
+                            <div class="relative z-10 flex flex-col items-center text-center">
+                                @if(strtolower((string)$consultation->status) === 'menunggu')
+                                    <div class="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-white animate-pulse">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-amber-700">2. Menunggu Telaah</p>
+                                        <p class="text-[10px] text-amber-600 font-medium">Antrean Ditinjau Admin</p>
+                                    </div>
+                                @elseif(strtolower((string)$consultation->status) === 'ditolak')
+                                    <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-white">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-red-700">2. Ditolak</p>
+                                        <p class="text-[10px] text-red-500">Topik / Berkas Tidak Sesuai</p>
+                                    </div>
+                                @elseif(strtolower((string)$consultation->status) === 'diproses')
+                                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-white animate-pulse">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-blue-700">2. Diskusi & Telaah</p>
+                                        <p class="text-[10px] text-blue-600 font-medium">Saling Jawab Aktif</p>
+                                    </div>
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-white">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-emerald-800">2. Solusi Diberikan</p>
+                                        <p class="text-[10px] text-emerald-600 font-medium">Arahan Tuntas</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Tahap 3: Penyelesaian Tuntas -->
+                            <div class="relative z-10 flex flex-col items-center text-center">
+                                @if(strtolower((string)$consultation->status) === 'selesai' || strtolower((string)$consultation->status) === 'diterima')
+                                    <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-white">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-emerald-800">3. Selesai Tuntas</p>
+                                        <p class="text-[10px] text-emerald-600 font-medium">Tiket Selesai & Ditutup</p>
+                                    </div>
+                                @elseif(strtolower((string)$consultation->status) === 'ditolak')
+                                    <div class="w-10 h-10 rounded-full bg-slate-300 text-slate-500 flex items-center justify-center font-bold text-sm shadow-xs ring-4 ring-white">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-slate-500">3. Ditutup</p>
+                                        <p class="text-[10px] text-slate-400">Pengajuan Ditolak</p>
+                                    </div>
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 border border-slate-200 flex items-center justify-center font-bold text-sm shadow-2xs ring-4 ring-white">
+                                        <span class="text-xs">3</span>
+                                    </div>
+                                    <div class="mt-2.5">
+                                        <p class="text-xs font-bold text-slate-400">3. Penyelesaian</p>
+                                        <p class="text-[10px] text-slate-400 font-medium">Konfirmasi Selesai</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -121,28 +218,55 @@
 
                         @foreach($consultation->thread_messages as $msg)
                             @if($msg->sender_type == 'user')
-                                <!-- Pesan Pengguna (Pemohon) -->
-                                <div class="reveal">
-                                    <div class="flex items-center gap-3 mb-2.5">
-                                        <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-sm shadow-2xs shrink-0">
-                                            {{ substr($msg->sender_name ?: $consultation->name, 0, 1) }}
-                                        </div>
-                                        <div>
-                                            <div class="flex items-center gap-2">
-                                                <p class="font-bold text-slate-900 text-sm sm:text-base">{{ $msg->sender_name ?: $consultation->name }}</p>
-                                                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Pemohon</span>
+                                @if(str_contains($msg->message, 'KONSULTASI DISELESAIKAN OLEH PEMOHON') || str_contains($msg->message, 'SESI KONSULTASI DISELESAIKAN'))
+                                    <!-- Kartu Penyelesaian Sesi Oleh Pemohon -->
+                                    <div class="reveal">
+                                        <div class="bg-gradient-to-br from-emerald-50 via-teal-50/50 to-green-50 border-2 border-emerald-300 rounded-2xl p-6 shadow-sm">
+                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-emerald-200">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <div class="flex items-center gap-2">
+                                                            <h4 class="font-black text-slate-900 text-sm sm:text-base">Konsultasi Diselesaikan oleh Pemohon</h4>
+                                                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">Selesai Tuntas</span>
+                                                        </div>
+                                                        <p class="text-xs text-slate-500 font-mono">{{ $msg->created_at ? $msg->created_at->format('d M Y, H:i') : '' }} WIB &bull; Pemohon: <span class="font-semibold text-slate-700">{{ $msg->sender_name ?: $consultation->name }}</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white text-emerald-800 border border-emerald-200 rounded-full text-xs font-bold shadow-2xs self-start sm:self-center">
+                                                    <span>✓ Kasus Tuntas</span>
+                                                </div>
                                             </div>
-                                            <p class="text-xs text-slate-500 font-mono">
-                                                {{ $msg->created_at ? $msg->created_at->format('d M Y, H:i') : '' }} WIB
-                                                @if($loop->first)
-                                                    &bull; Topik: <span class="font-semibold text-slate-700">{{ $consultation->subject }}</span>
-                                                @endif
-                                            </p>
+                                            <div class="whitespace-pre-line text-sm text-slate-800 leading-relaxed font-medium pl-1">
+                                                {!! nl2br(e($msg->message)) !!}
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="bg-slate-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border border-slate-200 ml-0 sm:ml-13 shadow-2xs">
-                                        <div class="whitespace-pre-line">{{ $msg->message }}</div>
+                                @else
+                                    <!-- Pesan Pengguna (Pemohon) Biasa -->
+                                    <div class="reveal">
+                                        <div class="flex items-center gap-3 mb-2.5">
+                                            <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-sm shadow-2xs shrink-0">
+                                                {{ substr($msg->sender_name ?: $consultation->name, 0, 1) }}
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <p class="font-bold text-slate-900 text-sm sm:text-base">{{ $msg->sender_name ?: $consultation->name }}</p>
+                                                    <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Pemohon</span>
+                                                </div>
+                                                <p class="text-xs text-slate-500 font-mono">
+                                                    {{ $msg->created_at ? $msg->created_at->format('d M Y, H:i') : '' }} WIB
+                                                    @if($loop->first)
+                                                        &bull; Topik: <span class="font-semibold text-slate-700">{{ $consultation->subject }}</span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="bg-slate-50 p-5 rounded-2xl text-slate-800 text-sm leading-relaxed border border-slate-200 ml-0 sm:ml-13 shadow-2xs">
+                                            <div class="whitespace-pre-line">{{ $msg->message }}</div>
                                         
                                         @if(!empty($msg->attachments_list))
                                             <div class="mt-4 pt-4 border-t border-slate-200">
@@ -191,6 +315,7 @@
                                         @endif
                                     </div>
                                 </div>
+                                @endif
                             @else
                                 @php
                                     $hasAdminReply = true;
@@ -290,13 +415,10 @@
                                         </div>
                                     </div>
 
-                                    <form action="{{ route('konsultasi.cek.selesai', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin konsultasi ini sudah selesai dan pertanyaan Anda telah terjawab dengan memuaskan?');" class="shrink-0">
-                                        @csrf
-                                        <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer" title="Tandai Selesai jika kendala Anda sudah terjawab">
-                                            <svg class="w-3.5 h-3.5 text-emerald-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                            <span>✓ Masalah Sudah Selesai</span>
-                                        </button>
-                                    </form>
+                                    <button type="button" onclick="openFinishModal('{{ $consultation->ticket_id }}', '{{ $consultation->id }}')" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer shrink-0" title="Tandai Selesai jika kendala Anda sudah terjawab">
+                                        <svg class="w-3.5 h-3.5 text-emerald-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span>✓ Masalah Sudah Selesai</span>
+                                    </button>
                                 </div>
 
                                 <form action="{{ route('konsultasi.cek.balas', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
@@ -343,6 +465,72 @@
                             </div>
                         </div>
                     @endif
+                </div>
+            </div>
+
+            <!-- Modal Konfirmasi Selesai Konsultasi Interaktif -->
+            <div id="modalFinishConsultation_{{ $consultation->id }}" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+                <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative transform transition-all duration-300 scale-95 opacity-0 modal-container">
+                    
+                    <!-- Tombol Close Modal -->
+                    <button type="button" onclick="closeFinishModal('{{ $consultation->id }}')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-colors" title="Batal & Tutup">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+
+                    <form action="{{ route('konsultasi.cek.selesai', ['ticket_id' => $consultation->ticket_id]) }}" method="POST" class="space-y-5">
+                        @csrf
+                        
+                        <div class="text-center">
+                            <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto mb-4 shadow-sm">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-100 text-emerald-800 mb-2">
+                                TIKET #{{ $consultation->ticket_id }}
+                            </span>
+                            <h3 class="text-xl font-black text-slate-900">Selesaikan Sesi Konsultasi?</h3>
+                            <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-sm mx-auto leading-relaxed">
+                                Tandai sesi ini sebagai selesai jika seluruh kendala atau pertanyaan usaha Anda telah terjawab dengan jelas oleh Admin Dinas.
+                            </p>
+                        </div>
+
+                        <!-- Rating Bintang Kepuasan -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                                Tingkat Kepuasan Pelayanan Dinas:
+                            </label>
+                            <div class="flex items-center justify-center gap-2 mb-2" id="starGroup_{{ $consultation->id }}">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <button type="button" onclick="setRating('{{ $consultation->id }}', {{ $i }})" class="star-btn-{{ $consultation->id }} text-3xl transition-transform hover:scale-125 focus:outline-none cursor-pointer" data-value="{{ $i }}" title="{{ $i }} Bintang">
+                                        ⭐
+                                    </button>
+                                @endfor
+                            </div>
+                            <input type="hidden" name="rating" id="ratingInput_{{ $consultation->id }}" value="5">
+                            <p class="text-xs font-bold text-emerald-700" id="ratingLabel_{{ $consultation->id }}">
+                                Sangat Puas ⭐⭐⭐⭐⭐ (5/5)
+                            </p>
+                        </div>
+
+                        <!-- Catatan / Ulasan Pemohon (Opsional) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                                Catatan / Ulasan / Ucapan Terima Kasih (Opsional):
+                            </label>
+                            <textarea name="feedback" rows="3" placeholder="Contoh: Terima kasih banyak atas panduan sertifikasi halal & NIB-nya, penjelasan staf dinas sangat jelas dan mudah dipahami..." class="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/15 focus:border-emerald-600 outline-none transition-all resize-none shadow-xs"></textarea>
+                            <p class="text-[11px] text-slate-400 mt-1">Ulasan Anda akan tercatat resmi di riwayat sesi konsultasi.</p>
+                        </div>
+
+                        <!-- Tombol Batal & Konfirmasi Selesai -->
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button type="button" onclick="closeFinishModal('{{ $consultation->id }}')" class="w-full px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer">
+                                Batal
+                            </button>
+                            <button type="submit" class="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Ya, Selesaikan</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
             @endforeach
@@ -446,6 +634,64 @@
             showToast('Link halaman status berhasil disalin ke clipboard!');
         }).catch(function() {
             showToast('Gagal menyalin link.', '!');
+        });
+    }
+
+    // Modal Selesaikan Sesi Konsultasi Interaktif
+    function openFinishModal(ticketId, id) {
+        var modal = document.getElementById('modalFinishConsultation_' + id);
+        if (modal) {
+            modal.classList.remove('hidden');
+            setTimeout(function() {
+                var container = modal.querySelector('.modal-container');
+                if (container) {
+                    container.classList.remove('scale-95', 'opacity-0');
+                    container.classList.add('scale-100', 'opacity-100');
+                }
+            }, 20);
+        }
+    }
+
+    function closeFinishModal(id) {
+        var modal = document.getElementById('modalFinishConsultation_' + id);
+        if (modal) {
+            var container = modal.querySelector('.modal-container');
+            if (container) {
+                container.classList.remove('scale-100', 'opacity-100');
+                container.classList.add('scale-95', 'opacity-0');
+            }
+            setTimeout(function() {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+    }
+
+    function setRating(id, val) {
+        var input = document.getElementById('ratingInput_' + id);
+        if (input) input.value = val;
+
+        var label = document.getElementById('ratingLabel_' + id);
+        var labels = {
+            5: 'Sangat Puas ⭐⭐⭐⭐⭐ (5/5)',
+            4: 'Puas ⭐⭐⭐⭐ (4/5)',
+            3: 'Cukup ⭐⭐⭐ (3/5)',
+            2: 'Kurang Puas ⭐⭐ (2/5)',
+            1: 'Tidak Puas ⭐ (1/5)'
+        };
+        if (label && labels[val]) {
+            label.textContent = labels[val];
+        }
+
+        var buttons = document.querySelectorAll('.star-btn-' + id);
+        buttons.forEach(function(btn) {
+            var btnVal = parseInt(btn.getAttribute('data-value'));
+            if (btnVal <= val) {
+                btn.style.opacity = '1';
+                btn.style.filter = 'none';
+            } else {
+                btn.style.opacity = '0.35';
+                btn.style.filter = 'grayscale(100%)';
+            }
         });
     }
 

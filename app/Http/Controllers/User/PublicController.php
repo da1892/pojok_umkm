@@ -824,12 +824,28 @@ class PublicController extends Controller
                 ->with('info', 'Sesi konsultasi ini sudah berstatus selesai.');
         }
 
+        $rating = (int) $request->input('rating', 5);
+        if ($rating < 1 || $rating > 5) {
+            $rating = 5;
+        }
+
+        $ratingLabels = [
+            5 => 'Sangat Puas ⭐⭐⭐⭐⭐',
+            4 => 'Puas ⭐⭐⭐⭐',
+            3 => 'Cukup ⭐⭐⭐',
+            2 => 'Kurang Puas ⭐⭐',
+            1 => 'Tidak Puas ⭐',
+        ];
+        $labelBintang = $ratingLabels[$rating] ?? 'Sangat Puas ⭐⭐⭐⭐⭐';
+
         $feedback = trim((string)$request->input('feedback'));
-        $msgText = 'Sesi konsultasi telah dinyatakan SELESAI oleh Pemohon.';
+        
+        $msgText = "🎉 KONSULTASI DISELESAIKAN OLEH PEMOHON\n";
+        $msgText .= "Penilaian Pelayanan: " . $labelBintang . "\n";
         if (!empty($feedback)) {
-            $msgText .= ' Catatan/Ulasan Pemohon: "' . $feedback . '"';
+            $msgText .= "Ulasan Pemohon: \"" . $feedback . "\"";
         } else {
-            $msgText .= ' Pertanyaan dan kendala telah terjawab dengan baik. Terima kasih kepada Admin Dinas Perdagangan & KUKM Kabupaten Wonogiri atas bantuan dan panduannya.';
+            $msgText .= "Ulasan Pemohon: \"Pertanyaan dan kendala usaha telah terjawab dan tersolusikan dengan tuntas. Terima kasih kepada Tim Dinas Perdagangan & KUKM Kabupaten Wonogiri atas bantuan dan panduannya.\"";
         }
 
         \App\Models\ConsultationMessage::create([
@@ -847,6 +863,6 @@ class PublicController extends Controller
         ]);
 
         return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
-            ->with('success', 'Alhamdulillah! Sesi konsultasi tiket #' . $ticket_id . ' telah berhasil diselesaikan. Terima kasih atas kerja sama Anda.');
+            ->with('success', 'Alhamdulillah! Sesi konsultasi tiket #' . $ticket_id . ' telah berhasil diselesaikan dengan baik. Terima kasih atas apresiasi dan penilaian Anda!');
     }
 }
