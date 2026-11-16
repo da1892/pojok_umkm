@@ -25,12 +25,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
             </div>
             <div>
-                <div class="flex items-center gap-2">
-                    <h3 class="font-extrabold text-slate-800 text-lg md:text-xl">Daftar Produk UMKM Wonogiri</h3>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-[#800000]">
-                        Admin
-                    </span>
-                </div>
+                <h3 class="font-extrabold text-slate-800 text-lg md:text-xl">Daftar Produk UMKM Wonogiri</h3>
                 <p class="text-slate-500 text-xs md:text-sm mt-0.5">Kelola dan telusuri katalog produk terkurasi berdasarkan sebaran wilayah kecamatan.</p>
             </div>
         </div>
@@ -51,15 +46,6 @@
                 <div class="text-xs">
                     <span class="text-amber-800 font-medium">Produk Unggulan:</span>
                     <span class="font-extrabold text-amber-900 ml-1">{{ $totalFeaturedProducts }}</span>
-                </div>
-            </a>
-
-            <a href="{{ route('admin.products', ['umkm_filter' => request('umkm_filter') === 'no_featured' ? '' : 'no_featured']) }}" 
-               class="flex items-center gap-2 {{ request('umkm_filter') === 'no_featured' ? 'bg-indigo-100 border-indigo-300 ring-2 ring-indigo-400' : 'bg-indigo-50/70 hover:bg-indigo-100/80 border-indigo-200/80' }} px-3.5 py-2 rounded-xl border transition-all shadow-2xs group" 
-               title="{{ request('umkm_filter') === 'no_featured' ? 'Klik untuk tampilkan semua' : 'Tampilkan produk dari UMKM yang belum memiliki produk unggulan' }}">
-                <span class="text-xs">🎯</span>
-                <div class="text-xs">
-                    <span class="text-indigo-800 font-medium">UMKM Tanpa Unggulan</span>
                 </div>
             </a>
 
@@ -190,13 +176,6 @@
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 border border-red-200 font-bold text-[#800000] shadow-2xs">
                     🏢 Filter Khusus 1 UMKM
                     <a href="{{ route('admin.products', array_filter(['district' => $currentDistrict, 'category' => $currentCategory, 'search' => $currentSearch, 'featured' => $currentFeatured, 'umkm_filter' => $currentUmkmFilter])) }}" class="ml-1 text-red-500 hover:text-red-800">×</a>
-                </span>
-                @endif
-
-                @if($currentUmkmFilter === 'no_featured')
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 font-bold text-indigo-900 shadow-2xs">
-                    🎯 UMKM Belum Ada Unggulan
-                    <a href="{{ route('admin.products', array_filter(['district' => $currentDistrict, 'category' => $currentCategory, 'search' => $currentSearch, 'featured' => $currentFeatured, 'umkm_id' => $currentUmkmId])) }}" class="ml-1 text-indigo-500 hover:text-indigo-800">×</a>
                 </span>
                 @endif
 
