@@ -26,17 +26,6 @@
 
         <!-- Sidebar -->
         <aside id="sidebar" class="w-64 bg-[#800000] text-white flex flex-col transition-all duration-300 ease-in-out z-40 fixed inset-y-0 left-0 lg:relative lg:translate-x-0 h-full shrink-0 shadow-xl -translate-x-full">
-            <!-- Floating Edge Toggle Button on Desktop (Panah Geser Buka-Tutup Tunggal di Bagian Tengah Sidebar) -->
-            <button id="desktopSidebarToggleEdgeBtn" 
-                    type="button" 
-                    onclick="toggleDesktopSidebar()" 
-                    class="hidden lg:flex items-center justify-center absolute -right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-white text-[#800000] hover:bg-red-50 hover:scale-110 active:scale-95 rounded-full border border-slate-300 shadow-md cursor-pointer z-50 transition-all duration-300" 
-                    title="Tutup Sidebar (Perlebar Layar)">
-                <svg id="desktopEdgeArrowIcon" class="w-3.5 h-3.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-                </svg>
-            </button>
-
             <!-- Logo Area -->
             <div class="flex items-center justify-between px-6 py-6 border-b border-white/10">
                 <div class="flex items-center gap-3">
@@ -169,6 +158,17 @@
             </div>
         </aside>
 
+        <!-- Desktop Sidebar Toggle Handle (Tunggal di Tengah Layar) -->
+        <button id="desktopSidebarToggleHandle" 
+                type="button" 
+                onclick="toggleDesktopSidebar()" 
+                class="hidden lg:flex items-center justify-center cursor-pointer" 
+                title="Tutup Sidebar (Perlebar Layar)">
+            <svg id="desktopToggleIcon" class="w-3.5 h-3.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+
         <!-- Main Content -->
         <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] lg:w-full">
             <!-- Topbar -->
@@ -234,32 +234,61 @@
         /* Desktop Sidebar Collapse Styling */
         @media (min-width: 1024px) {
             #sidebar {
-                transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
             body.sidebar-collapsed #sidebar {
                 margin-left: -16rem;
             }
-            body.sidebar-collapsed #desktopEdgeArrowIcon {
-                transform: rotate(180deg);
-            }
-            body.sidebar-collapsed #desktopSidebarToggleEdgeBtn {
+
+            #desktopSidebarToggleHandle {
                 position: fixed;
-                left: 0;
                 top: 50%;
+                left: 16rem;
+                transform: translate(-50%, -50%);
+                width: 1.85rem;
+                height: 1.85rem;
+                border-radius: 9999px;
+                background-color: #ffffff;
+                color: #800000;
+                border: 1px solid #cbd5e1;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 60;
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            #desktopSidebarToggleHandle:hover {
+                background-color: #fef2f2;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            /* When Collapsed: Button sits at the extreme left edge of viewport */
+            body.sidebar-collapsed #desktopSidebarToggleHandle {
+                left: 0;
                 transform: translateY(-50%);
-                z-index: 50;
-                width: 1.5rem;
+                width: 1.75rem;
                 height: 2.75rem;
+                border-radius: 0 0.6rem 0.6rem 0;
                 background-color: #800000;
                 color: #ffffff;
-                border-color: #800000;
-                border-radius: 0 0.5rem 0.5rem 0;
-                box-shadow: 2px 0 10px rgba(128, 0, 0, 0.3);
+                border: 1px solid #600000;
+                border-left: none;
+                box-shadow: 3px 0 14px rgba(128, 0, 0, 0.35);
             }
-            body.sidebar-collapsed #desktopSidebarToggleEdgeBtn:hover {
+
+            body.sidebar-collapsed #desktopSidebarToggleHandle:hover {
                 background-color: #600000;
-                width: 1.75rem;
+                width: 2rem;
+                transform: translateY(-50%) scale(1.05);
             }
+
+            body.sidebar-collapsed #desktopSidebarToggleHandle svg {
+                transform: rotate(180deg);
+            }
+
             body.sidebar-collapsed #adminContentContainer {
                 max-width: 100% !important;
                 padding-left: 0.25rem;
@@ -281,9 +310,9 @@
         }
 
         function updateDesktopSidebarUI(isCollapsed) {
-            const edgeBtn = document.getElementById('desktopSidebarToggleEdgeBtn');
+            const handle = document.getElementById('desktopSidebarToggleHandle');
             const titleText = isCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar (Perlebar Layar)';
-            if (edgeBtn) edgeBtn.setAttribute('title', titleText);
+            if (handle) handle.setAttribute('title', titleText);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
