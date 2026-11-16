@@ -1240,7 +1240,15 @@ class AdminController extends Controller
             'is_featured' => $isFeatured,
         ]);
 
-        return redirect()->route('admin.binaan.index')->with('success', "Produk '{$product->name}' berhasil ditambahkan ke UMKM Binaan dan langsung tayang di katalog publik.");
+        return redirect()->route('admin.binaan.index')
+            ->with('success', "Produk '{$product->name}' berhasil ditambahkan ke UMKM Binaan dan langsung tayang di katalog publik.")
+            ->with('verified_item', [
+                'type' => 'product',
+                'name' => $product->name,
+                'umkm_name' => $umkm->business_name,
+                'action' => 'verified',
+                'message' => 'Produk binaan berhasil ditambahkan dan langsung aktif di katalog produk publik.'
+            ]);
     }
 
     public function binaanClaimUmkm(Request $request, $id)
@@ -1453,7 +1461,7 @@ class AdminController extends Controller
             // Jika memilih "Simpan & Lanjut Tambah Produk"
             if ($request->input('action') === 'save_and_add_product') {
                 return redirect()->route('admin.users.product.create', $umkm->id)
-                    ->with('success', "Akun '{$user->email}' dan UMKM '{$umkm->business_name}' berhasil dibuat! Silakan tambahkan produk pertama di bawah ini.");
+                    ->with('success', "Akun {$user->name} ({$user->email}) dan toko {$umkm->business_name} berhasil dibuat. Silakan tambahkan produk pertama di bawah ini.");
             }
 
             return redirect()->route('admin.users.index')
@@ -1548,7 +1556,14 @@ class AdminController extends Controller
         $product = Product::create($productData);
 
         return redirect()->route('admin.users.index')
-            ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}' dan langsung tayang di katalog publik!");
+            ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}' dan langsung tayang di katalog publik!")
+            ->with('verified_item', [
+                'type' => 'product',
+                'name' => $product->name,
+                'umkm_name' => $umkm->business_name,
+                'action' => 'verified',
+                'message' => 'Produk berhasil ditambahkan dan langsung aktif di katalog produk publik.'
+            ]);
     }
 
     public function resetPasswordUser(Request $request, $user_id)

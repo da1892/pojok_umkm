@@ -594,11 +594,12 @@
                 return;
             }
 
-            // B. Fallback Regex Parsing jika verified_item tidak ada tapi ada rawMsg verifikasi
-            const isProduct = lowerMsg.includes('produk');
-            const isUmkm = lowerMsg.includes('profil umkm') || lowerMsg.includes('umkm');
+            // B. Fallback Regex Parsing jika verified_item tidak ada tapi ada rawMsg verifikasi resmi
+            const isVerificationAction = lowerMsg.includes('diverifikasi') || lowerMsg.includes('ditolak');
+            const isProduct = isVerificationAction && (lowerMsg.includes('pengajuan produk') || lowerMsg.startsWith('produk ') || lowerMsg.includes('produk'));
+            const isUmkm = isVerificationAction && !isProduct && (lowerMsg.includes('profil umkm') || lowerMsg.includes('pendaftaran umkm') || lowerMsg.includes('umkm'));
 
-            if (isProduct || isUmkm) {
+            if (isVerificationAction && (isProduct || isUmkm)) {
                 const nameMatch = rawMsg.match(/'([^']+)'/) || rawMsg.match(/"([^"]+)"/);
                 const itemName = nameMatch ? nameMatch[1] : (isProduct ? 'Produk UMKM' : 'Profil UMKM');
                 const umkmMatch = rawMsg.match(/\(UMKM:\s*([^)]+)\)/i);
