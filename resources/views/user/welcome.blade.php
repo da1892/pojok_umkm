@@ -1485,7 +1485,6 @@
                         </div>
                         <div class="absolute bottom-2 left-2.5 right-2.5 text-white">
                             <h4 class="font-extrabold text-sm leading-tight text-white line-clamp-1 drop-shadow-sm">${item.name}</h4>
-                            <p class="text-xs text-amber-300 drop-shadow-xs font-black mt-0.5">${item.price}</p>
                         </div>
                     </div>
                     <div class="p-3 bg-white space-y-2">
@@ -1555,7 +1554,6 @@
                                 <h4 class="text-xs font-bold text-slate-900 truncate group-hover:text-[#800000] transition-colors">${item.name}</h4>
                             </div>
                             <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="text-xs font-black text-[#800000]">${item.price}</span>
                                 <span class="text-[9px] px-1.5 py-0.2 rounded font-bold bg-amber-50 text-amber-800 border border-amber-200">${item.category}</span>
                             </div>
                             <p class="text-[10px] text-slate-500 truncate mt-1 flex items-center gap-1">

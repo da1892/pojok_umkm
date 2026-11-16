@@ -1621,7 +1621,7 @@ class AdminController extends Controller
             'umkm_profile_id' => $umkm->id,
             'name' => trim($request->name),
             'category' => trim($request->category),
-            'price' => $request->filled('price') ? (float)$request->price : 0,
+            'price' => $request->filled('price') ? (float)$request->price : null,
             'description' => $request->description ? trim($request->description) : trim($request->name),
             'image_path' => $imagePath,
             'status' => 'verified',
