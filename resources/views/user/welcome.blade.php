@@ -792,33 +792,13 @@
                 <div class="lg:col-span-8 bg-white rounded-2xl p-2 sm:p-2.5 border border-slate-200/90 shadow-sm relative overflow-hidden">
                     
                     <!-- The Leaflet Map Canvas (Responsive Height for mobile) -->
-                    <div id="wonogiri-map" class="w-full h-[340px] sm:h-[480px] lg:h-[550px] rounded-xl overflow-hidden relative z-10 bg-slate-100">
+                    <div id="wonogiri-map" class="w-full h-[380px] sm:h-[540px] lg:h-[595px] rounded-xl overflow-hidden relative z-10 bg-slate-100">
                         <!-- Loading placeholder -->
                         <div id="map-loader" class="absolute inset-0 bg-slate-100/90 z-20 flex flex-col items-center justify-center gap-3">
                             <div class="w-9 h-9 border-3 border-red-200 border-t-[#800000] rounded-full animate-spin"></div>
                             <span class="text-xs font-bold text-slate-700">Memuat peta persebaran UMKM...</span>
                         </div>
                     </div>
-
-                    <!-- Legenda Tematik Map (Sesuai Peta Wonogiri Asli - Responsive for Mobile) -->
-                    <div class="mt-2.5 pt-2.5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 px-1 sm:px-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="font-bold text-slate-800 text-[10px] sm:text-[11px]">Zona Sebaran:</span>
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="flex items-center gap-1 text-[9px] sm:text-[10px]"><span class="w-2.5 h-2.5 rounded-xs bg-[#dc2626]"></span> Level 5-6 (Tinggi)</span>
-                                <span class="flex items-center gap-1 text-[9px] sm:text-[10px]"><span class="w-2.5 h-2.5 rounded-xs bg-[#ea580c]"></span> Level 4</span>
-                                <span class="flex items-center gap-1 text-[9px] sm:text-[10px]"><span class="w-2.5 h-2.5 rounded-xs bg-[#f97316]"></span> Level 3</span>
-                                <span class="flex items-center gap-1 text-[9px] sm:text-[10px]"><span class="w-2.5 h-2.5 rounded-xs bg-[#eab308]"></span> Level 2</span>
-                                <span class="flex items-center gap-1 text-[9px] sm:text-[10px]"><span class="w-2.5 h-2.5 rounded-xs bg-[#facc15]"></span> Level 1</span>
-                                <span class="flex items-center gap-1 text-[9px] sm:text-[10px]"><span class="w-2.5 h-2.5 rounded-xs bg-[#7dd3fc]"></span> Waduk Gajah Mungkur</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold text-slate-800 shrink-0">
-                            <span class="w-3 h-3 rounded-full bg-[#800000] border-2 border-white shadow-xs inline-flex items-center justify-center text-[8px] text-white">●</span>
-                            <span>Titik Pin UMKM</span>
-                        </div>
-                    </div>
-
                 </div>
 
                 <!-- Sidebar Drawer UMKM Terpilih (4 cols - Responsive Height on Mobile) -->
