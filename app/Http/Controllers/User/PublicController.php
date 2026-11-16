@@ -19,13 +19,17 @@ class PublicController extends Controller
                 ->take(12)
                 ->get();
 
-            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi 10 produk agar pas 2 baris x 5 kolom seperti Berita & Kegiatan)
+            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (maksimal 2 produk per UMKM, dibatasi 10 produk)
             $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                 ->where('status', 'verified')
                 ->where('is_featured', true)
                 ->latest()
-                ->take(10)
-                ->get();
+                ->get()
+                ->groupBy('umkm_profile_id')
+                ->flatMap(function($group) {
+                    return $group->take(2);
+                })
+                ->take(10);
 
             // 1. Data Agregat Pokok (dikonsolidasikan dalam 1 query SQL ke umkm_profiles)
             $umkmAgg = DB::selectOne("
@@ -79,7 +83,7 @@ class PublicController extends Controller
                 ->take(6)
                 ->get();
 
-            // 6. Data Koordinat & Marker Persebaran HANYA Produk Unggulan Terpilih untuk Peta Interaktif
+            // 6. Data Koordinat & Marker Persebaran HANYA Produk Unggulan Terpilih untuk Peta Interaktif (Maksimal 2 produk per UMKM)
             $featuredProductsForMap = \App\Models\User\Product::with('umkmProfile')
                 ->where('status', 'verified')
                 ->where('is_featured', true)
@@ -87,7 +91,11 @@ class PublicController extends Controller
                     $q->where('status', 'verified');
                 })
                 ->latest()
-                ->get();
+                ->get()
+                ->groupBy('umkm_profile_id')
+                ->flatMap(function($group) {
+                    return $group->take(2);
+                });
 
             $seenUmkmCount = [];
             $umkmMapList = $featuredProductsForMap->map(function($product) use (&$seenUmkmCount) {

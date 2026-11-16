@@ -246,10 +246,16 @@ class AdminController extends Controller
 
         $products = $query->paginate(10)->withQueryString();
 
-        // Peta ID UMKM ke Nama Produk Unggulan aktifnya (untuk indikator 1 UMKM 1 Unggulan)
+        // Peta ID UMKM ke daftar Nama Produk Unggulan aktifnya (Maksimal 2 Produk per UMKM)
         $featuredByUmkm = Product::where('is_featured', true)
             ->whereNotNull('umkm_profile_id')
-            ->pluck('name', 'umkm_profile_id')
+            ->select('id', 'name', 'umkm_profile_id')
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->groupBy('umkm_profile_id')
+            ->map(function($prods) {
+                return $prods->pluck('name')->toArray();
+            })
             ->toArray();
 
         // Data sentra kecamatan beserta jumlah produknya untuk tombol filter cepat (cached)
@@ -691,12 +697,34 @@ class AdminController extends Controller
             $data['image_path'] = $newImagePaths[0];
         }
 
-        if ($request->boolean('is_featured') && $product->status !== 'verified') {
-            $data['status'] = 'verified';
-            $data['rejection_note'] = null;
+        if ($request->boolean('is_featured')) {
+            if ($product->umkm_profile_id) {
+                $existingFeatured = Product::where('umkm_profile_id', $product->umkm_profile_id)
+                    ->where('id', '!=', $product->id)
+                    ->where('is_featured', true)
+                    ->orderBy('updated_at', 'asc')
+                    ->get();
+
+                if ($existingFeatured->count() >= 2) {
+                    $excessCount = $existingFeatured->count() - 1;
+                    foreach ($existingFeatured->take($excessCount) as $oldP) {
+                        $oldP->update(['is_featured' => false]);
+                    }
+                }
+            }
+
+            if ($product->status !== 'verified') {
+                $data['status'] = 'verified';
+                $data['rejection_note'] = null;
+            }
         }
 
         $product->update($data);
+        if ($request->boolean('is_featured')) {
+            $product->touch();
+        }
+
+        CacheService::clearPublicCache();
 
         return redirect()->route('admin.products')->with('success', 'Data produk berhasil diperbarui.');
     }
@@ -705,45 +733,84 @@ class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
+        CacheService::clearPublicCache();
         return back()->with('success', 'Produk berhasil dihapus.');
     }
 
     public function toggleFeaturedProduct(Request $request, $id)
     {
         $product = Product::with('umkmProfile')->findOrFail($id);
-        $product->is_featured = !$product->is_featured;
-
-        // Jika dijadikan Produk Unggulan tetapi statusnya belum verified, otomatis setujui produk agar langsung tayang di Beranda
         $wasPending = false;
+        $replacedProductNames = [];
 
-        if ($product->is_featured) {
+        if (!$product->is_featured) {
+            // Mau dijadikan Unggulan:
+            // Cek apakah UMKM ini sudah memiliki produk unggulan lain
+            if ($product->umkm_profile_id) {
+                $existingFeatured = Product::where('umkm_profile_id', $product->umkm_profile_id)
+                    ->where('id', '!=', $product->id)
+                    ->where('is_featured', true)
+                    ->orderBy('updated_at', 'asc') // yang paling lama aktif berada di urutan awal
+                    ->get();
+
+                // Jika sudah ada 2 atau lebih produk unggulan:
+                if ($existingFeatured->count() >= 2) {
+                    // Nonaktifkan produk yang paling lama agar tersisa 1, sehingga produk baru ini menjadi yang ke-2
+                    $excessCount = $existingFeatured->count() - 1;
+                    $toDemote = $existingFeatured->take($excessCount);
+                    foreach ($toDemote as $oldProd) {
+                        $oldProd->is_featured = false;
+                        $oldProd->save();
+                        $replacedProductNames[] = $oldProd->name;
+                    }
+                }
+            }
+
+            $product->is_featured = true;
+
+            // Jika status belum verified, otomatis setujui agar langsung tayang
             if ($product->status !== 'verified') {
                 $product->status = 'verified';
                 $product->rejection_note = null;
                 $wasPending = true;
             }
+        } else {
+            // Membatalkan status unggulan
+            $product->is_featured = false;
         }
 
         $product->save();
+        $product->touch(); // Perbarui updated_at agar tercatat sebagai unggulan paling baru
+
+        // Bersihkan cache publik agar peta dan beranda langsung terbarui seketika
+        CacheService::clearPublicCache();
 
         if ($product->is_featured) {
-            $statusText = $wasPending 
-                ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda' 
-                : 'dijadikan Produk Unggulan dan tampil di Beranda';
+            if (!empty($replacedProductNames)) {
+                $replacedStr = implode(', ', $replacedProductNames);
+                $statusText = "dijadikan Produk Unggulan di Beranda & Peta (menggantikan '{$replacedStr}' karena kuota maksimal 2 produk unggulan per UMKM)";
+            } else {
+                $statusText = $wasPending 
+                    ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda & Peta' 
+                    : 'dijadikan Produk Unggulan dan tampil di Beranda & Peta';
+            }
         } else {
             $statusText = 'dihapus dari daftar Produk Unggulan';
         }
+
+        $msg = "Produk \"{$product->name}\" berhasil {$statusText}.";
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'is_featured' => (bool)$product->is_featured,
                 'status' => $product->status,
-                'message' => "Produk \"{$product->name}\" berhasil {$statusText}."
+                'replaced_products' => $replacedProductNames,
+                'message' => $msg
             ]);
         }
 
-        return back()->with('success', "Produk \"{$product->name}\" berhasil {$statusText}.");
+        return back()->with('success', $msg);
     }
 
     public function editUmkm($id)
@@ -1223,9 +1290,17 @@ class AdminController extends Controller
         $isFeatured = $request->boolean('is_featured');
 
         if ($isFeatured) {
-            Product::where('umkm_profile_id', $request->umkm_profile_id)
+            $existingFeatured = Product::where('umkm_profile_id', $request->umkm_profile_id)
                 ->where('is_featured', true)
-                ->update(['is_featured' => false]);
+                ->orderBy('updated_at', 'asc')
+                ->get();
+
+            if ($existingFeatured->count() >= 2) {
+                $excessCount = $existingFeatured->count() - 1;
+                foreach ($existingFeatured->take($excessCount) as $oldP) {
+                    $oldP->update(['is_featured' => false]);
+                }
+            }
         }
 
         $product = Product::create([
@@ -1528,11 +1603,15 @@ class AdminController extends Controller
 
         $isFeatured = $request->has('is_featured');
         if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
-            $featuredCount = Product::where('umkm_profile_id', $umkm->id)
+            $existingFeatured = Product::where('umkm_profile_id', $umkm->id)
                 ->where('is_featured', true)
-                ->count();
-            if ($featuredCount >= 2) {
-                $isFeatured = false;
+                ->orderBy('updated_at', 'asc')
+                ->get();
+            if ($existingFeatured->count() >= 2) {
+                $excessCount = $existingFeatured->count() - 1;
+                foreach ($existingFeatured->take($excessCount) as $oldP) {
+                    $oldP->update(['is_featured' => false]);
+                }
             }
         }
 

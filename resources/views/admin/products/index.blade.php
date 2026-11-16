@@ -607,7 +607,7 @@
             $cleanPhone = '62' . substr($cleanPhone, 1);
         }
 
-        $umkmFeaturedName = $umkm ? ($featuredByUmkm[$umkm->id] ?? null) : null;
+        $umkmFeaturedNames = $umkm ? ($featuredByUmkm[$umkm->id] ?? []) : [];
 
         $qvProducts[$p->id] = [
             'id' => $p->id,
@@ -631,7 +631,7 @@
                 'has_nib' => $umkm && !empty($umkm->nib),
                 'has_pirt' => $umkm && !empty($umkm->pirt_number),
                 'has_halal' => $umkm && !empty($umkm->halal_certificate_path),
-                'featured_product_name' => $umkmFeaturedName,
+                'featured_products' => $umkmFeaturedNames,
             ]
         ];
     }
@@ -712,16 +712,27 @@
         document.getElementById('qv-legal-pirt').className = prod.umkm.has_pirt ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800' : 'px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-400';
         document.getElementById('qv-legal-halal').className = prod.umkm.has_halal ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800' : 'px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-400';
 
-        // 1 UMKM 1 Unggulan notice
+        // Batasan Maksimal 2 Produk Unggulan per UMKM notice
         const featuredNoticeBox = document.getElementById('qv-umkm-featured-box');
         const featuredNoticeText = document.getElementById('qv-umkm-featured-text');
 
-        if (prod.is_featured) {
+        const activeFeaturedList = (prod.umkm && prod.umkm.featured_products) ? prod.umkm.featured_products : [];
+        const isCurrentlyFeatured = prod.is_featured;
+
+        if (isCurrentlyFeatured) {
             featuredNoticeBox.className = 'p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2';
-            featuredNoticeText.innerHTML = '<span class="font-bold">⭐ Produk Unggulan:</span> Produk ini sedang aktif ditampilkan di etalase Produk Unggulan Beranda publik.';
+            featuredNoticeText.innerHTML = '<span class="font-bold">⭐ Produk Unggulan:</span> Produk ini sedang aktif ditampilkan di etalase Produk Unggulan Beranda dan titik Peta Wonogiri (Kuota aktif: ' + activeFeaturedList.length + '/2 produk untuk toko ini).';
         } else {
-            featuredNoticeBox.className = 'p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs flex items-start gap-2';
-            featuredNoticeText.innerHTML = '<span class="font-bold">⚪ Bukan Unggulan:</span> Klik tombol di bawah untuk menjadikannya Produk Unggulan di Beranda publik.';
+            if (activeFeaturedList.length >= 2) {
+                featuredNoticeBox.className = 'p-3 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-950 text-xs flex items-start gap-2';
+                featuredNoticeText.innerHTML = '<span class="font-bold">🔄 Kuota Penuh (2/2):</span> Toko ini sudah memiliki 2 produk unggulan aktif: <em>' + activeFeaturedList.join(', ') + '</em>. Jika Anda menjadikan produk ini unggulan, produk paling lama otomatis digantikan.';
+            } else if (activeFeaturedList.length === 1) {
+                featuredNoticeBox.className = 'p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs flex items-start gap-2';
+                featuredNoticeText.innerHTML = '<span class="font-bold">⚪ Bukan Unggulan:</span> Toko ini memiliki 1 produk unggulan (' + activeFeaturedList[0] + '). Masih tersedia 1 slot kuota untuk toko ini.';
+            } else {
+                featuredNoticeBox.className = 'p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs flex items-start gap-2';
+                featuredNoticeText.innerHTML = '<span class="font-bold">⚪ Bukan Unggulan:</span> Toko ini belum memiliki produk unggulan (Maksimal 2 produk per UMKM).';
+            }
         }
 
         // Action URLs
