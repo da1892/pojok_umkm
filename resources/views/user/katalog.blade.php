@@ -265,8 +265,8 @@
             @if ($products->count() > 0)
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
                 @foreach ($products as $product)
-                <a href="{{ route('katalog.show', $product->id) }}" class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-                    <div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                    <a href="{{ route('katalog.show', $product->id) }}" class="block flex-1">
                         <!-- Thumbnail Image Container (Persis Berita & Kegiatan: h-28 sm:h-32) -->
                         <div class="h-28 sm:h-32 w-full overflow-hidden bg-slate-100 relative">
                             @if($product->image_path)
@@ -309,7 +309,7 @@
                                 {{ $product->description ? Str::limit(strip_tags($product->description), 85) : 'Koleksi produk unggulan berkualitas binaan UMKM Kabupaten Wonogiri.' }}
                             </p>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Card Footer: Author & Detail -->
                     <div class="px-3 sm:px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
@@ -328,13 +328,13 @@
                             </a>
                             @endif
 
-                            <span class="font-bold text-[#800000] group-hover:text-red-900 inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">
+                            <a href="{{ route('katalog.show', $product->id) }}" class="font-bold text-[#800000] hover:text-red-900 inline-flex items-center gap-0.5 hover:translate-x-0.5 transition-transform shrink-0">
                                 <span>Detail</span>
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </span>
+                            </a>
                         </div>
                     </div>
-                </a>
+                </div>
                 @endforeach
             </div>
             @else
