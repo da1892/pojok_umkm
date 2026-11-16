@@ -134,8 +134,6 @@ class PublicController extends Controller
                     'address' => $umkm ? $umkm->full_address : 'Kabupaten Wonogiri, Jawa Tengah',
                     'phone' => $umkm ? ($umkm->phone ?? '') : '',
                     'category' => $product->category ?? 'Produk Unggulan',
-                    'price' => 'Rp ' . number_format($product->price ?? 0, 0, ',', '.'),
-                    'raw_price' => $product->price ?? 0,
                     'image' => $productImg,
                     'status' => $product->status,
                     'is_featured' => true,
@@ -820,5 +818,59 @@ class PublicController extends Controller
 
         return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
             ->with('success', 'Balasan Anda berhasil terkirim ke Admin Dinas Perdagangan & KUKM Wonogiri. Mohon menunggu tanggapan selanjutnya.');
+    }
+
+    /**
+     * Menyelesaikan sesi konsultasi dari sisi pemohon (UMKM / Masyarakat).
+     */
+    public function finishKonsultasiUser(Request $request, $ticket_id)
+    {
+        $consultation = \App\Models\Consultation::where('ticket_id', $ticket_id)->firstOrFail();
+
+        if (strtolower((string)$consultation->status) === 'selesai') {
+            return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+                ->with('info', 'Sesi konsultasi ini sudah berstatus selesai.');
+        }
+
+        $rating = (int) $request->input('rating', 5);
+        if ($rating < 1 || $rating > 5) {
+            $rating = 5;
+        }
+
+        $ratingLabels = [
+            5 => 'Sangat Puas ⭐⭐⭐⭐⭐',
+            4 => 'Puas ⭐⭐⭐⭐',
+            3 => 'Cukup ⭐⭐⭐',
+            2 => 'Kurang Puas ⭐⭐',
+            1 => 'Tidak Puas ⭐',
+        ];
+        $labelBintang = $ratingLabels[$rating] ?? 'Sangat Puas ⭐⭐⭐⭐⭐';
+
+        $feedback = trim((string)$request->input('feedback'));
+        
+        $msgText = "🎉 KONSULTASI DISELESAIKAN OLEH PEMOHON\n";
+        $msgText .= "Penilaian Pelayanan: " . $labelBintang . "\n";
+        if (!empty($feedback)) {
+            $msgText .= "Ulasan Pemohon: \"" . $feedback . "\"";
+        } else {
+            $msgText .= "Ulasan Pemohon: \"Pertanyaan dan kendala usaha telah terjawab dan tersolusikan dengan tuntas. Terima kasih kepada Tim Dinas Perdagangan & KUKM Kabupaten Wonogiri atas bantuan dan panduannya.\"";
+        }
+
+        \App\Models\ConsultationMessage::create([
+            'consultation_id' => $consultation->id,
+            'sender_type' => 'user',
+            'sender_name' => $consultation->name,
+            'user_id' => auth()->check() ? auth()->id() : $consultation->user_id,
+            'message' => $msgText,
+            'attachment' => null,
+        ]);
+
+        $consultation->update([
+            'status' => 'selesai',
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
+            ->with('success', 'Alhamdulillah! Sesi konsultasi tiket #' . $ticket_id . ' telah berhasil diselesaikan dengan baik. Terima kasih atas apresiasi dan penilaian Anda!');
     }
 }

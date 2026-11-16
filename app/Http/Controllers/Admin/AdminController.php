@@ -63,7 +63,6 @@ class AdminController extends Controller
                         'id' => $p->id,
                         'name' => $p->name,
                         'category' => $p->category,
-                        'price' => 'Hubungi UMKM',
                         'image' => $p->image_path ? asset('storage/' . $p->image_path) : asset('images/no-image.png'),
                         'district' => $p->umkmProfile->district ?? '',
                         'village' => $p->umkmProfile->village ?? '',
@@ -302,6 +301,114 @@ class AdminController extends Controller
             'featuredByUmkm',
             'wilayahWonogiri'
         ));
+    }
+
+    public function createProduct(Request $request)
+    {
+        $allUmkms = UmkmProfile::select('id', 'business_name', 'owner_name', 'district', 'village', 'phone')
+            ->orderBy('business_name', 'asc')
+            ->get()
+            ->map(function ($store) {
+                $store->business_name = Str::title(trim($store->business_name));
+                $store->owner_name = Str::title(trim($store->owner_name));
+                return $store;
+            });
+
+        $selectedUmkmId = $request->query('umkm_id');
+        
+        $standardCategories = [
+            'Makanan & Minuman',
+            'Batik/Fashion',
+            'Kerajinan',
+            'Olahan Hasil Pertanian',
+            'Produk Kreatif',
+            'Lainnya',
+        ];
+
+        return view('admin.products.create', compact('allUmkms', 'selectedUmkmId', 'standardCategories'));
+    }
+
+    public function storeProduct(Request $request)
+    {
+        $request->validate([
+            'umkm_profile_id' => 'required|exists:umkm_profiles,id',
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+        ], [
+            'umkm_profile_id.required' => 'Pilih Toko UMKM pemilik produk ini.',
+            'umkm_profile_id.exists' => 'Toko UMKM yang dipilih tidak valid.',
+            'name.required' => 'Nama produk wajib diisi.',
+            'category.required' => 'Kategori produk wajib dipilih.',
+            'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
+            'images.*.image' => 'File foto harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.max' => 'Ukuran gambar maksimal 10MB.',
+            'image.image' => 'File foto harus berupa gambar.',
+            'image.max' => 'Ukuran gambar maksimal 10MB.',
+        ]);
+
+        $umkm = UmkmProfile::findOrFail($request->umkm_profile_id);
+
+        $allImagesPaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if ($file->isValid() && count($allImagesPaths) < 5) {
+                    $path = $file->store('products', 'public');
+                    $allImagesPaths[] = $path;
+                }
+            }
+        } elseif ($request->hasFile('image')) {
+            $allImagesPaths[] = $request->file('image')->store('products', 'public');
+        }
+
+        $imagePath = !empty($allImagesPaths) ? $allImagesPaths[0] : null;
+
+        $isFeatured = $request->has('is_featured');
+        if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
+            $featuredCount = Product::where('umkm_profile_id', $umkm->id)
+                ->where('is_featured', true)
+                ->count();
+            if ($featuredCount >= 2) {
+                $isFeatured = false;
+            }
+        }
+
+        $productData = [
+            'umkm_profile_id' => $umkm->id,
+            'name' => trim($request->name),
+            'category' => trim($request->category),
+            'price' => null,
+            'description' => $request->description ? trim($request->description) : trim($request->name),
+            'image_path' => $imagePath,
+            'status' => 'verified',
+        ];
+
+        if (Schema::hasColumn('products', 'images')) {
+            $productData['images'] = !empty($allImagesPaths) ? $allImagesPaths : null;
+        }
+        if (Schema::hasColumn('products', 'is_featured')) {
+            $productData['is_featured'] = $isFeatured;
+        }
+
+        $product = Product::create($productData);
+
+        // Bersihkan cache produk
+        Cache::forget('admin_products_districts');
+        Cache::forget('admin_products_categories');
+        Cache::forget('admin_dashboard_stats');
+        Cache::forget('home_featured_products');
+
+        if ($request->input('action') === 'save_and_add_another') {
+            return redirect()->route('admin.products.create', ['umkm_id' => $umkm->id])
+                ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}'! Silakan masukkan produk berikutnya di bawah ini.");
+        }
+
+        return redirect()->route('admin.products')
+            ->with('success', "Produk '{$product->name}' berhasil ditambahkan untuk toko '{$umkm->business_name}' dan langsung tayang di katalog publik!");
     }
 
     public function consultations()
@@ -862,6 +969,10 @@ class AdminController extends Controller
 
         $umkm->update($data);
 
+        if ($request->input('redirect_to') === 'users') {
+            return redirect()->route('admin.users.index')->with('success', "Data & detail profil UMKM '{$umkm->business_name}' berhasil diperbarui.");
+        }
+
         return redirect()->route('admin.stores')->with('success', 'Data UMKM berhasil diperbarui.');
     }
 
@@ -1256,7 +1367,6 @@ class AdminController extends Controller
             'umkm_profile_id' => 'required|exists:umkm_profiles,id',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'all_images' => 'nullable|array|max:4',
@@ -1264,7 +1374,6 @@ class AdminController extends Controller
         ], [
             'umkm_profile_id.required' => 'Pilih UMKM Binaan pemilik produk ini.',
             'name.required' => 'Nama produk wajib diisi.',
-            'price.required' => 'Harga produk wajib diisi.',
             'image.required' => 'Foto utama produk wajib diunggah.',
         ]);
 
@@ -1309,7 +1418,7 @@ class AdminController extends Controller
             'umkm_profile_id' => $request->umkm_profile_id,
             'name' => $request->name,
             'category' => $request->category,
-            'price' => $request->price,
+            'price' => null,
             'description' => $request->description,
             'image_path' => $imagePath,
             'all_images' => !empty($allImagesPaths) ? $allImagesPaths : null,
@@ -1500,7 +1609,7 @@ class AdminController extends Controller
         try {
             // 1. Buat Akun User Pelaku UMKM
             $user = User::create([
-                'name' => trim($request->name),
+                'name' => Str::title(trim($request->name)),
                 'email' => strtolower(trim($request->email)),
                 'password' => Hash::make($request->password),
                 'role' => 'umkm',
@@ -1510,8 +1619,8 @@ class AdminController extends Controller
             // 2. Buat Profil Toko UMKM
             $umkmData = [
                 'user_id' => $user->id,
-                'business_name' => trim($request->business_name),
-                'owner_name' => trim($request->name),
+                'business_name' => Str::title(trim($request->business_name)),
+                'owner_name' => Str::title(trim($request->name)),
                 'gender' => $request->gender ?: null,
                 'phone' => trim($request->phone),
                 'province' => 'Jawa Tengah',
@@ -1575,33 +1684,34 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'category.required' => 'Kategori produk wajib dipilih.',
+            'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
+            'images.*.image' => 'File foto harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.',
             'image.image' => 'File foto harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 3MB.',
+            'image.max' => 'Ukuran gambar maksimal 10MB.',
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        }
-
         $allImagesPaths = [];
-        if ($imagePath) {
-            $allImagesPaths[] = $imagePath;
-        }
-
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('products', 'public');
-                $allImagesPaths[] = $path;
+                if ($file->isValid() && count($allImagesPaths) < 5) {
+                    $path = $file->store('products', 'public');
+                    $allImagesPaths[] = $path;
+                }
             }
+        } elseif ($request->hasFile('image')) {
+            $allImagesPaths[] = $request->file('image')->store('products', 'public');
         }
+
+        $imagePath = !empty($allImagesPaths) ? $allImagesPaths[0] : null;
 
         $isFeatured = $request->has('is_featured');
         if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
@@ -1621,7 +1731,7 @@ class AdminController extends Controller
             'umkm_profile_id' => $umkm->id,
             'name' => trim($request->name),
             'category' => trim($request->category),
-            'price' => $request->filled('price') ? (float)$request->price : null,
+            'price' => null,
             'description' => $request->description ? trim($request->description) : trim($request->name),
             'image_path' => $imagePath,
             'status' => 'verified',
@@ -1728,7 +1838,6 @@ class AdminController extends Controller
                 'alamat',
                 'kategori_produk',
                 'nama_produk',
-                'harga_produk',
                 'deskripsi_produk',
                 'nib',
                 'pirt',
@@ -1748,7 +1857,6 @@ class AdminController extends Controller
                 'Jl. Ahmad Yani No. 12',
                 'Makanan & Minuman',
                 'Keripik Singkong Balado 250g',
-                '15000',
                 'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
                 '1234567890123',
                 'P-IRT 2063312010123-26',
@@ -1768,7 +1876,6 @@ class AdminController extends Controller
                 'Dusun Dlepih RT 02/03',
                 'Batik/Fashion',
                 'Kain Batik Tulis Motif Wonogiren',
-                '250000',
                 'Kain batik tulis halus dengan pewarna alam khas Wonogiri.',
                 '',
                 '',
@@ -1788,7 +1895,6 @@ class AdminController extends Controller
                 'Jl. Raya Baturetno KM 3',
                 'Makanan & Minuman',
                 'Madu Hutan Murni 500ml',
-                '85000',
                 'Madu murni alami tanpa bahan pengawet.',
                 '',
                 '',
@@ -1876,7 +1982,6 @@ class AdminController extends Controller
                 // Data Produk Opsional
                 $kategoriProduk = $getCol($row, ['kategori_produk', 'kategori', 'category']) ?: 'Makanan & Minuman';
                 $namaProduk = $getCol($row, ['nama_produk', 'product_name', 'produk']);
-                $hargaProduk = $getCol($row, ['harga_produk', 'harga', 'price']);
                 $deskripsiProduk = $getCol($row, ['deskripsi_produk', 'deskripsi', 'description']);
 
                 // Normalisasi Gender
@@ -1945,16 +2050,11 @@ class AdminController extends Controller
 
                 // 3. Buat Produk jika ada
                 if (!empty($namaProduk)) {
-                    $cleanPrice = 0;
-                    if (!empty($hargaProduk)) {
-                        $cleanPrice = (float)preg_replace('/[^0-9.]/', '', str_replace(',', '.', $hargaProduk));
-                    }
-
                     $productData = [
                         'umkm_profile_id' => $umkm->id,
                         'name' => $namaProduk,
                         'category' => $kategoriProduk,
-                        'price' => $cleanPrice,
+                        'price' => null,
                         'description' => $deskripsiProduk ?: $namaProduk,
                         'status' => 'verified',
                     ];

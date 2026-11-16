@@ -9,7 +9,7 @@
             <h3 class="font-bold text-slate-800 text-lg">Edit Profil UMKM</h3>
             <p class="text-slate-500 text-sm mt-1">Lengkapi atau perbaiki data profil UMKM ini.</p>
         </div>
-        <a href="{{ route('admin.umkm.show', $umkm->id) }}" class="text-sm font-semibold text-slate-500 hover:text-slate-800">
+        <a href="{{ request('redirect_to') === 'users' ? route('admin.users.index') : route('admin.umkm.show', $umkm->id) }}" class="text-sm font-semibold text-slate-500 hover:text-slate-800">
             &larr; Kembali
         </a>
     </div>
@@ -18,6 +18,9 @@
         <form id="form-admin-umkm-edit" action="{{ route('admin.umkm.update', $umkm->id) }}" method="POST">
             @csrf
             @method('PUT')
+            @if(request('redirect_to'))
+            <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
+            @endif
             
             <!-- Notifikasi Peringatan Jika Digit Kurang -->
             <div id="admin-alert-box" class="hidden mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">

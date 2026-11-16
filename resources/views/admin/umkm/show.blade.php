@@ -156,7 +156,13 @@
 
         <!-- Bagian Daftar Produk -->
         <div class="px-6 py-5 border-t border-slate-200 bg-white">
-            <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Daftar Produk UMKM</h4>
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Daftar Produk UMKM</h4>
+                <a href="{{ route('admin.products.create', ['umkm_id' => $umkm->id]) }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-2xs transition-colors cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>+ Tambah Produk untuk UMKM Ini</span>
+                </a>
+            </div>
             @if(isset($umkm->products) && $umkm->products->count() > 0)
                 <div class="overflow-x-auto border border-slate-200 rounded-lg">
                     <table class="w-full text-left text-sm">

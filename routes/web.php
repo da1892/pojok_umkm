@@ -27,6 +27,7 @@ Route::get('/konsultasi', [PublicController::class, 'konsultasi'])->name('konsul
 Route::post('/konsultasi', [PublicController::class, 'storeKonsultasi'])->name('konsultasi.store');
 Route::get('/konsultasi/cek/{ticket_id?}', [PublicController::class, 'cekKonsultasi'])->name('konsultasi.cek');
 Route::post('/konsultasi/cek/{ticket_id}/balas', [PublicController::class, 'replyKonsultasiUser'])->name('konsultasi.cek.balas');
+Route::post('/konsultasi/cek/{ticket_id}/selesai', [PublicController::class, 'finishKonsultasiUser'])->name('konsultasi.cek.selesai');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -45,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
         
         // Kelola Produk
         Route::get('/admin/produk', [AdminController::class, 'products'])->name('admin.products');
+        Route::get('/admin/produk/tambah', [AdminController::class, 'createProduct'])->name('admin.products.create');
+        Route::post('/admin/produk/tambah', [AdminController::class, 'storeProduct'])->name('admin.products.store');
         Route::get('/admin/produk/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.product.edit');
         Route::put('/admin/produk/{id}', [AdminController::class, 'updateProduct'])->name('admin.product.update');
         Route::patch('/admin/produk/{id}/toggle-featured', [AdminController::class, 'toggleFeaturedProduct'])->name('admin.product.toggle-featured');

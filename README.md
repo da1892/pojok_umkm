@@ -7,9 +7,9 @@ Portal Sistem Informasi, Direktori Usaha, dan Pendampingan UMKM Kabupaten Wonogi
 ## 📌 Fitur Utama
 
 - **Katalog & Direktori UMKM:** Menampilkan profil dan produk unggulan UMKM terkurasi dari 25 kecamatan di Kabupaten Wonogiri.
-- **Peta Persebaran Interaktif:** Visualisasi titik lokasi sentra UMKM per kecamatan menggunakan OpenStreetMap / Leaflet.
-- **Produk Unggulan:** Fitur kurasi produk unggulan dinas yang tampil langsung di beranda utama publik.
-- **Layanan Konsultasi & Pendampingan:** Pengajuan konsultasi bisnis, legalitas NIB, PIRT, dan sertifikasi Halal bagi pelaku usaha.
+- **Manajemen User Pelaku UMKM:** Fasilitas bagi admin dinas perdagangan untuk mendaftarkan akun pelaku usaha, melengkapi profil toko & legalitas (NIB, P-IRT, Sertifikasi Halal), serta langsung menambahkan produk.
+- **Peta Persebaran & Pointing Produk Unggulan:** Visualisasi pemetaan titik koordinat lokasi produk unggulan pilihan di 25 kecamatan dengan marker interaktif bintang emas, filter pencarian, dan tautan rute Google Maps.
+- **Layanan Konsultasi & Alur Selesai Tuntas:** Fasilitas pendampingan bisnis dengan visual stepper 3 tahap, penutupan sesi tuntas dari sisi pemohon UMKM disertai survei rating kepuasan bintang (1-5), serta tanggapan berkala dinas.
 - **Dashboard Manajemen Admin:** Verifikasi data pendaftaran UMKM, kurasi produk baru, kelola berita & agenda kegiatan dinas, serta analisis statistik pengunjung.
 
 ---
