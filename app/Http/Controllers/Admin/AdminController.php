@@ -197,7 +197,9 @@ class AdminController extends Controller
 
     public function products(Request $request)
     {
-        $query = Product::with('umkmProfile')->latest();
+        $query = Product::with('umkmProfile')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('updated_at');
 
         if ($request->filled('search')) {
             $search = trim($request->search);

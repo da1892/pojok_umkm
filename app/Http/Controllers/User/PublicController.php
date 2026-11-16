@@ -455,7 +455,7 @@ class PublicController extends Controller
             });
         }
         
-        $products = $query->latest()->paginate(15)->withQueryString();
+        $products = $query->orderByDesc('is_featured')->latest()->paginate(15)->withQueryString();
 
         $wilayahJsonPath = public_path('wonogiri_wilayah.json');
         $kecamatanList = file_exists($wilayahJsonPath)
