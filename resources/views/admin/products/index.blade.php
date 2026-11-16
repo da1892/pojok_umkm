@@ -242,15 +242,9 @@
                                 </div>
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <button type="button" onclick="openProductQuickViewById({{ $product->id }})" class="font-bold text-slate-800 text-xs sm:text-sm leading-snug group-hover:text-[#800000] hover:underline transition-colors truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px] text-left cursor-pointer" title="{{ $product->name }}">
+                                        <button type="button" onclick="openProductQuickViewById({{ $product->id }})" class="font-bold text-slate-800 text-xs sm:text-sm leading-snug group-hover:text-[#800000] hover:underline transition-colors truncate max-w-[190px] sm:max-w-[230px] lg:max-w-[270px] text-left cursor-pointer" title="{{ $product->name }}">
                                             {{ $product->name }}
                                         </button>
-                                        @if($product->is_featured)
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-2xs shrink-0" title="Produk Unggulan Beranda">
-                                            <svg class="w-2.5 h-2.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                            Unggulan
-                                        </span>
-                                        @endif
                                     </div>
                                     @if($product->description)
                                     <p class="text-[11px] text-slate-500 truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px] mt-0.5">
@@ -261,7 +255,7 @@
                             </div>
                         </td>
 
-                        <!-- UMKM and Clickable Region Badge + Status Unggulan UMKM -->
+                        <!-- UMKM and Clickable Region Badge -->
                         <td class="px-4 py-3">
                             <a href="{{ route('admin.products', ['umkm_id' => $product->umkm_profile_id]) }}" 
                                class="font-bold text-slate-800 text-xs sm:text-sm truncate max-w-[160px] hover:text-[#800000] hover:underline block" 
@@ -269,15 +263,6 @@
                                 {{ $product->umkmProfile->business_name ?? '-' }}
                             </a>
                             
-                            <!-- Indikator Status Unggulan -->
-                            @if($product->is_featured)
-                                <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                        ⭐ Unggulan Beranda
-                                    </span>
-                                </div>
-                            @endif
-
                             @if(!empty($product->umkmProfile->district))
                             <div class="mt-1">
                                 <a href="{{ route('admin.products', ['district' => $product->umkmProfile->district]) }}" 
