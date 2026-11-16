@@ -219,9 +219,9 @@
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                         <th class="px-4 py-3.5">Produk</th>
-                        <th class="px-4 py-3.5">UMKM & Wilayah</th>
-                        <th class="px-3 py-3.5">Kategori</th>
-                        <th class="px-3 py-3.5 text-center whitespace-nowrap">Status</th>
+                        <th class="px-4 py-3.5 whitespace-nowrap">UMKM</th>
+                        <th class="px-4 py-3.5 whitespace-nowrap">Lokasi</th>
+                        <th class="px-3 py-3.5 whitespace-nowrap">Kategori</th>
                         <th class="px-3 py-3.5 text-center whitespace-nowrap">Produk Unggulan</th>
                         <th class="px-6 py-4 text-center whitespace-nowrap">Aksi</th>
                     </tr>
@@ -230,7 +230,7 @@
                     @forelse($products as $product)
                     <tr class="hover:bg-slate-50/70 transition-colors group">
                         <!-- Product Info & Image (Bisa diklik untuk Preview) -->
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3 align-middle">
                             <div class="flex items-center gap-3">
                                 <div onclick="openProductQuickViewById({{ $product->id }})" class="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shrink-0 group-hover:shadow-xs transition-all cursor-pointer hover:ring-2 hover:ring-[#800000]/40">
                                     <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/400x400/f1f5f9/94a3b8?text=Foto';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -240,107 +240,70 @@
                                     </span>
                                     @endif
                                 </div>
-                                <div class="min-w-0">
+                                <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <button type="button" onclick="openProductQuickViewById({{ $product->id }})" class="font-bold text-slate-800 text-xs sm:text-sm leading-snug group-hover:text-[#800000] hover:underline transition-colors truncate max-w-[190px] sm:max-w-[230px] lg:max-w-[270px] text-left cursor-pointer" title="{{ $product->name }}">
+                                        <button type="button" onclick="openProductQuickViewById({{ $product->id }})" class="font-bold text-slate-800 text-xs sm:text-sm leading-snug group-hover:text-[#800000] hover:underline transition-colors text-left cursor-pointer line-clamp-2 md:line-clamp-1 sidebar-expand-text" title="{{ $product->name }}">
                                             {{ $product->name }}
                                         </button>
                                     </div>
                                     @if($product->description)
-                                    <p class="text-[11px] text-slate-500 truncate max-w-[170px] sm:max-w-[200px] lg:max-w-[240px] mt-0.5">
-                                        {{ Str::limit($product->description, 45) }}
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 md:line-clamp-1 mt-0.5 sidebar-expand-text" title="{{ $product->description }}">
+                                        {{ Str::limit($product->description, 100) }}
                                     </p>
                                     @endif
                                 </div>
                             </div>
                         </td>
 
-                        <!-- UMKM and Clickable Region Badge -->
-                        <td class="px-4 py-3">
-                            <a href="{{ route('admin.products', ['umkm_id' => $product->umkm_profile_id]) }}" 
-                               class="font-bold text-slate-800 text-xs sm:text-sm truncate max-w-[160px] hover:text-[#800000] hover:underline block" 
-                               title="Klik untuk filter hanya produk dari {{ $product->umkmProfile->business_name ?? 'UMKM' }}">
-                                {{ $product->umkmProfile->business_name ?? '-' }}
-                            </a>
-                            
-                            @if(!empty($product->umkmProfile->district))
-                            <div class="mt-1">
-                                <a href="{{ route('admin.products', ['district' => $product->umkmProfile->district]) }}" 
-                                   class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-red-50 text-[#800000] hover:bg-[#800000] hover:text-white transition-all border border-red-200/60 shadow-2xs group/badge truncate max-w-[160px]"
-                                   title="Kec. {{ $product->umkmProfile->district }} @if(!empty($product->umkmProfile->village)) • Ds. {{ $product->umkmProfile->village }} @endif">
-                                    <svg class="w-2.5 h-2.5 text-[#800000] group-hover/badge:text-white transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                    <span class="truncate">Kec. {{ $product->umkmProfile->district }}</span>
-                                    @if(!empty($product->umkmProfile->village))
-                                    <span class="text-red-400 group-hover/badge:text-white/80 shrink-0">• Ds. {{ $product->umkmProfile->village }}</span>
-                                    @endif
+                        <!-- UMKM (Nama Usaha & Pemilik) -->
+                        <td class="px-4 py-3 align-middle">
+                            <div class="min-w-0">
+                                <a href="{{ route('admin.products', ['umkm_id' => $product->umkm_profile_id]) }}" 
+                                   class="font-bold text-slate-800 text-xs sm:text-sm hover:text-[#800000] hover:underline block leading-snug transition-colors line-clamp-2 md:line-clamp-1 sidebar-expand-text" 
+                                   title="Klik untuk filter hanya produk dari {{ $product->umkmProfile->business_name ?? 'UMKM' }}">
+                                    {{ $product->umkmProfile->business_name ?? '-' }}
                                 </a>
+                                @if(!empty($product->umkmProfile->owner_name))
+                                <span class="text-[11px] text-slate-400 block truncate mt-0.5 sidebar-expand-text">
+                                    {{ $product->umkmProfile->owner_name }}
+                                </span>
+                                @endif
+                            </div>
+                        </td>
+
+                        <!-- Lokasi (Wilayah Kecamatan & Desa) -->
+                        <td class="px-4 py-3 align-middle">
+                            @if(!empty($product->umkmProfile->district))
+                            <div class="inline-flex flex-col gap-1 items-start">
+                                <a href="{{ route('admin.products', ['district' => $product->umkmProfile->district]) }}" 
+                                   class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 text-[#800000] hover:bg-[#800000] hover:text-white transition-all border border-red-200/70 shadow-2xs group/badge whitespace-nowrap"
+                                   title="Filter Produk di Kec. {{ $product->umkmProfile->district }} @if(!empty($product->umkmProfile->village)) • Ds. {{ $product->umkmProfile->village }} @endif">
+                                    <svg class="w-3 h-3 text-[#800000] group-hover/badge:text-white transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                    <span>Kec. {{ $product->umkmProfile->district }}</span>
+                                </a>
+                                @if(!empty($product->umkmProfile->village))
+                                <span class="text-[11px] text-slate-500 font-medium pl-1 flex items-center gap-1 whitespace-nowrap">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0"></span>
+                                    <span>Ds. {{ $product->umkmProfile->village }}</span>
+                                </span>
+                                @endif
                             </div>
                             @else
-                            <div class="text-[11px] text-slate-400 mt-0.5 italic">
-                                Wilayah belum disetel
-                            </div>
+                            <span class="text-xs text-slate-400 italic">Wilayah belum disetel</span>
                             @endif
                         </td>
 
                         <!-- Category -->
-                        <td class="px-3 py-3 whitespace-nowrap">
+                        <td class="px-3 py-3 whitespace-nowrap align-middle">
                             <a href="{{ route('admin.products', ['category' => $product->category]) }}" 
-                               class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-[#800000] border border-slate-200/60 transition-colors"
+                               class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-[#800000] border border-slate-200/60 transition-colors"
                                title="Filter kategori {{ $product->category }}">
                                 {{ $product->category }}
                             </a>
                         </td>
 
-                        <!-- Status -->
-                        <td class="px-3 py-3 text-center whitespace-nowrap">
-                            @php
-                                $statusInfo = match(strtolower($product->status ?? 'active')) {
-                                    'verified', 'active' => [
-                                        'label' => 'Disetujui',
-                                        'class' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                        'dot' => 'bg-emerald-500'
-                                    ],
-                                    'pending' => [
-                                        'label' => 'Menunggu Persetujuan',
-                                        'class' => 'bg-amber-50 text-amber-700 border-amber-200',
-                                        'dot' => 'bg-amber-500 animate-pulse'
-                                    ],
-                                    'rejected' => [
-                                        'label' => 'Ditolak',
-                                        'class' => 'bg-red-50 text-red-700 border-red-200',
-                                        'dot' => 'bg-red-500'
-                                    ],
-                                    default => [
-                                        'label' => 'Disetujui',
-                                        'class' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                        'dot' => 'bg-emerald-500'
-                                    ]
-                                };
-                            @endphp
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border {{ $statusInfo['class'] }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $statusInfo['dot'] }}"></span>
-                                {{ $statusInfo['label'] }}
-                            </span>
-                            @if($product->status == 'pending')
-                                <div class="mt-1.5 flex items-center justify-center">
-                                    <form action="{{ route('admin.product.verify', $product->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer" title="Setujui Produk Ini agar tayang ke publik">
-                                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                            Setujui
-                                        </button>
-                                    </form>
-                                </div>
-                            @endif
-                            @if($product->status == 'rejected' && !empty($product->rejection_note))
-                                <div class="text-[10px] text-red-600 font-medium mt-1 max-w-[140px] truncate mx-auto" title="Alasan: {{ $product->rejection_note }}">
-                                    Catatan: {{ $product->rejection_note }}
-                                </div>
-                            @endif
-                        </td>
-
                         <!-- Produk Unggulan Toggle -->
-                        <td class="px-3 py-3 text-center whitespace-nowrap">
+                        <td class="px-3 py-3 text-center whitespace-nowrap align-middle">
                             <form action="{{ route('admin.product.toggle-featured', $product->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('PATCH')
@@ -359,7 +322,7 @@
                         </td>
 
                         <!-- Actions (Visual Icon Only, sama persis seperti di Data UMKM) -->
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                        <td class="px-6 py-4 text-center whitespace-nowrap align-middle">
                             <div class="flex items-center justify-center gap-2">
                                 <!-- Lihat Detail / Pratinjau Produk -->
                                 <button type="button" 

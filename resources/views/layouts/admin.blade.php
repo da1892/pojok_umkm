@@ -13,6 +13,11 @@
     </style>
 </head>
 <body class="bg-[#FAF9F6] text-slate-900 antialiased overflow-hidden selection:bg-[#800000] selection:text-white">
+    <script>
+        if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+            document.body ? document.body.classList.add('sidebar-collapsed') : document.documentElement.classList.add('sidebar-collapsed');
+        }
+    </script>
     <!-- Top Progress Bar on Page Navigation -->
     <div id="admin-progress-bar" style="position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#fbbf24,#f59e0b,#ef4444);z-index:999999;transition:width 0.2s ease,opacity 0.2s ease;pointer-events:none;opacity:0;"></div>
     <div class="flex h-screen w-full relative">
@@ -20,7 +25,18 @@
         <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-30 lg:hidden hidden transition-opacity opacity-0"></div>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 bg-[#800000] text-white flex flex-col transition-transform duration-300 z-40 fixed inset-y-0 left-0 lg:relative lg:translate-x-0 h-full shrink-0 shadow-xl -translate-x-full">
+        <aside id="sidebar" class="w-64 bg-[#800000] text-white flex flex-col transition-all duration-300 ease-in-out z-40 fixed inset-y-0 left-0 lg:relative lg:translate-x-0 h-full shrink-0 shadow-xl -translate-x-full">
+            <!-- Floating Edge Toggle Button on Desktop (Panah Geser Buka-Tutup Sidebar) -->
+            <button id="desktopSidebarToggleEdgeBtn" 
+                    type="button" 
+                    onclick="toggleDesktopSidebar()" 
+                    class="hidden lg:flex items-center justify-center absolute -right-3.5 top-7 w-7 h-7 bg-white text-[#800000] hover:bg-red-50 hover:scale-110 active:scale-95 rounded-full border border-slate-300 shadow-md cursor-pointer z-50 transition-all duration-300" 
+                    title="Tutup Sidebar (Perlebar Layar)">
+                <svg id="desktopEdgeArrowIcon" class="w-3.5 h-3.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
             <!-- Logo Area -->
             <div class="flex items-center justify-between px-6 py-6 border-b border-white/10">
                 <div class="flex items-center gap-3">
@@ -32,8 +48,13 @@
                         <p class="text-[10px] text-white/70">Wonogiri Admin</p>
                     </div>
                 </div>
+                <!-- Mobile Close Button -->
                 <button id="sidebarCloseBtn" class="lg:hidden text-white/70 hover:text-white p-1 rounded-md hover:bg-white/10 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                <!-- Desktop Collapse Button inside Logo Header -->
+                <button type="button" onclick="toggleDesktopSidebar()" class="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all cursor-pointer" title="Tutup Sidebar (Perlebar Layar)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                 </button>
             </div>
 
@@ -160,6 +181,16 @@
                     <button id="sidebarToggleBtn" class="lg:hidden p-2 text-slate-600 hover:text-[#800000] hover:bg-red-50 rounded-xl transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
+                    <!-- Desktop Sidebar Toggle Arrow Button -->
+                    <button id="desktopSidebarToggleBtn" 
+                            type="button" 
+                            onclick="toggleDesktopSidebar()" 
+                            class="hidden lg:flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-[#800000] border border-slate-200/80 transition-all cursor-pointer shadow-2xs group" 
+                            title="Tutup Sidebar (Perlebar Layar)">
+                        <svg id="desktopToggleIcon" class="w-4 h-4 transition-transform duration-300 text-slate-600 group-hover:text-[#800000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </button>
                     <div class="flex items-center gap-2">
                         <h2 class="text-lg lg:text-xl font-extrabold text-slate-800 tracking-tight truncate max-w-[200px] sm:max-w-xs md:max-w-md">@yield('page_title', 'Dashboard Pojok UMKM Wonogiri')</h2>
                     </div>
@@ -192,7 +223,7 @@
                 <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-red-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
                 <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
                 
-                <div class="relative z-10 max-w-7xl mx-auto">
+                <div id="adminContentContainer" class="relative z-10 max-w-7xl mx-auto transition-all duration-300">
                     @yield('content')
                 </div>
             </div>
@@ -213,13 +244,78 @@
         .custom-scrollbar:hover::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        /* Desktop Sidebar Collapse Styling */
+        @media (min-width: 1024px) {
+            #sidebar {
+                transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            body.sidebar-collapsed #sidebar {
+                margin-left: -16rem;
+            }
+            body.sidebar-collapsed #desktopToggleIcon {
+                transform: rotate(180deg);
+            }
+            body.sidebar-collapsed #desktopSidebarToggleBtn {
+                background-color: #800000;
+                color: #ffffff;
+                border-color: #800000;
+            }
+            body.sidebar-collapsed #desktopSidebarToggleBtn svg {
+                color: #ffffff;
+            }
+            body.sidebar-collapsed #desktopEdgeArrowIcon {
+                transform: rotate(180deg);
+            }
+            body.sidebar-collapsed #desktopSidebarToggleEdgeBtn {
+                position: fixed;
+                left: 0.75rem;
+                top: 4.75rem;
+                z-index: 50;
+                background-color: #800000;
+                color: #ffffff;
+                border-color: #800000;
+                box-shadow: 0 4px 14px rgba(128, 0, 0, 0.3);
+            }
+            body.sidebar-collapsed #adminContentContainer {
+                max-width: 100% !important;
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+            }
+            body.sidebar-collapsed .sidebar-expand-text {
+                max-width: none !important;
+                -webkit-line-clamp: unset !important;
+                line-clamp: unset !important;
+                white-space: normal !important;
+            }
+        }
     </style>
     <script>
+        function toggleDesktopSidebar() {
+            const isCollapsed = document.body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+            updateDesktopSidebarUI(isCollapsed);
+        }
+
+        function updateDesktopSidebarUI(isCollapsed) {
+            const topbarBtn = document.getElementById('desktopSidebarToggleBtn');
+            const edgeBtn = document.getElementById('desktopSidebarToggleEdgeBtn');
+            const titleText = isCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar (Perlebar Layar)';
+            if (topbarBtn) topbarBtn.setAttribute('title', titleText);
+            if (edgeBtn) edgeBtn.setAttribute('title', titleText);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const sidebarBackdrop = document.getElementById('sidebarBackdrop');
             const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
             const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+            // Apply saved sidebar collapse state
+            if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+                updateDesktopSidebarUI(true);
+            }
 
             function openSidebar() {
                 sidebar.classList.remove('-translate-x-full');
