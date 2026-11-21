@@ -24,7 +24,7 @@
             </h1>
 
             <p class="text-red-100 text-xs sm:text-base md:text-lg max-w-3xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed">
-                Panduan praktis dan langkah resmi bagi pelaku UMKM di Kabupaten Wonogiri untuk mendaftar akun, mengelola katalog produk, hingga mengajukan konsultasi online secara mandiri bersama Dinas Perdagangan dan KUKM.
+                Panduan praktis dan panduan detail pengisian formulir resmi bagi pelaku UMKM di Kabupaten Wonogiri: dari pendaftaran profil usaha, kurasi katalog produk, hingga pengajuan konsultasi online bersama Dinas Perdagangan dan KUKM.
             </p>
 
             <!-- Search Bar & Instant Quick Filters -->
@@ -37,7 +37,7 @@
                     </div>
                     <input type="text"
                            id="guide-search-input"
-                           placeholder="Cari panduan (misal: daftar akun, foto produk, harga tanpa titik, tiket konsultasi, NIB)..."
+                           placeholder="Cari panduan (misal: aturan pengisian, contoh nama brand, foto 2MB, harga tanpa titik, tiket konsultasi)..."
                            class="w-full pl-11 pr-24 py-3.5 sm:py-4 rounded-2xl bg-white text-slate-800 placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none focus:ring-4 focus:ring-amber-400/40 border-0 shadow-inner"
                            onkeyup="handleLiveSearch(this.value)">
                     <button type="button"
@@ -52,8 +52,8 @@
                 <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4 text-[11px] sm:text-xs">
                     <span class="text-red-200 font-semibold mr-1 hidden sm:inline">Pintas:</span>
                     <button type="button" onclick="filterByTopic('all')" class="quick-chip active px-3 py-1 rounded-full bg-amber-400 text-[#800000] font-bold shadow-xs hover:bg-amber-300 transition-all">Semua</button>
-                    <button type="button" onclick="filterByTopic('registrasi')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">1. Registrasi Akun</button>
-                    <button type="button" onclick="filterByTopic('katalog')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">2. Kelola Produk</button>
+                    <button type="button" onclick="filterByTopic('registrasi')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">1. Profil Usaha</button>
+                    <button type="button" onclick="filterByTopic('katalog')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">2. Katalog Produk</button>
                     <button type="button" onclick="filterByTopic('konsultasi')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">3. Tiket Konsultasi</button>
                     <button type="button" onclick="filterByTopic('faq')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">FAQ</button>
                     <button type="button" onclick="filterByTopic('legalitas')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">Izin &amp; NIB</button>
@@ -74,7 +74,7 @@
                 <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
                 </svg>
-                <span>Panduan Fitur Portal UMKM (3 Modul Utama)</span>
+                <span>Panduan Fitur &amp; Detail Pengisian Formulir (3 Modul)</span>
             </button>
             <button type="button"
                     id="tab-btn-legalitas"
@@ -88,28 +88,28 @@
         </div>
 
         <!-- ============================================================== -->
-        <!-- TAB 1: PANDUAN PENGGUNAAN PORTAL POJOK UMKM (CORE FEATURE)    -->
+        <!-- TAB 1: PANDUAN PENGGUNAAN & PENGISIAN FORMULIR PORTAL UMKM     -->
         <!-- ============================================================== -->
         <div id="section-portal-guide" class="space-y-10">
 
-            <!-- 3 Modul Quick Cards Header / Overview Stepper -->
+            <!-- 3 Modul Quick Overview Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <!-- Card 1 -->
                 <div onclick="scrollToSection('modul-registrasi')" class="p-6 rounded-3xl bg-white border border-slate-200/90 hover:border-amber-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <span class="w-10 h-10 rounded-2xl bg-amber-500 text-white font-black text-base flex items-center justify-center shadow-xs">1</span>
-                            <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Langkah Awal</span>
+                            <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Formulir Usaha</span>
                         </div>
                         <h3 class="font-extrabold text-slate-900 text-base sm:text-lg group-hover:text-amber-800 transition-colors mb-2">
-                            Registrasi &amp; Profil Usaha
+                            Panduan Profil Usaha
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Panduan daftar akun baru, melengkapi nama bisnis, memilih kecamatan di Wonogiri, nomor WhatsApp aktif, dan legalitas izin.
+                            Standar nama brand tanpa singkatan, kategori usaha, alamat 25 kecamatan, nomor WhatsApp 08 aktif, dan input legalitas.
                         </p>
                     </div>
                     <div class="mt-5 pt-3 border-t border-slate-100 text-xs font-bold text-amber-700 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                        Pelajari Modul Registrasi &rarr;
+                        Buka Detail Pengisian Profil &rarr;
                     </div>
                 </div>
 
@@ -118,17 +118,17 @@
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <span class="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-black text-base flex items-center justify-center shadow-xs">2</span>
-                            <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Etalase Produk</span>
+                            <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Formulir Produk</span>
                         </div>
                         <h3 class="font-extrabold text-slate-900 text-base sm:text-lg group-hover:text-emerald-800 transition-colors mb-2">
-                            Pengelolaan Katalog Produk
+                            Panduan Katalog Produk
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Ketentuan upload foto maks 2MB, penulisan deskripsi menarik, format harga satuan tanpa titik, dan tautan marketplace.
+                            Format nama produk spesifik, foto produk maks 2MB, template 4 poin deskripsi, dan harga angka murni tanpa titik.
                         </p>
                     </div>
                     <div class="mt-5 pt-3 border-t border-slate-100 text-xs font-bold text-emerald-700 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                        Pelajari Modul Katalog &rarr;
+                        Buka Detail Pengisian Katalog &rarr;
                     </div>
                 </div>
 
@@ -137,17 +137,17 @@
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <span class="w-10 h-10 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center shadow-xs">3</span>
-                            <span class="text-[10px] font-bold text-blue-800 bg-blue-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Bantuan Dinas</span>
+                            <span class="text-[10px] font-bold text-blue-800 bg-blue-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Formulir Tiket</span>
                         </div>
                         <h3 class="font-extrabold text-slate-900 text-base sm:text-lg group-hover:text-blue-800 transition-colors mb-2">
-                            Tiket Konsultasi Online
+                            Panduan Tiket Konsultasi
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Cara memilih topik bimbingan, menuliskan detail kendala, upload lampiran foto, serta melacak status tiket (Open, In Progress, Resolved).
+                            Pemilihan topik pendampingan, penulisan subjek kendala terarah, kronologi masalah, lampiran berkas, dan status tiket dinas.
                         </p>
                     </div>
                     <div class="mt-5 pt-3 border-t border-slate-100 text-xs font-bold text-blue-700 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                        Pelajari Modul Konsultasi &rarr;
+                        Buka Detail Pengisian Tiket &rarr;
                     </div>
                 </div>
             </div>
@@ -163,11 +163,12 @@
             </div>
 
             <!-- ============================================================== -->
-            <!-- MODUL 1: REGISTRASI & PENGISIAN PROFIL USAHA                   -->
+            <!-- MODUL 1: PANDUAN PENGISIAN PROFIL USAHA                        -->
             <!-- ============================================================== -->
             <div id="modul-registrasi" class="guide-block bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 scroll-mt-24"
-                 data-keywords="registrasi daftar buat akun register profil usaha toko umkm kecamatan wonogiri nomor wa whatsapp legalitas nib pirt halal kurasi">
+                 data-keywords="modul 1 profil usaha omah kriuk wonogiri aturan pengisian contoh penulisan nama brand kategori usaha alamat 25 kecamatan nomor whatsapp 08 legalitas nib pirt halal kurasi admin kesalahan umum">
                 
+                <!-- Module Header -->
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-8">
                     <div class="flex items-center gap-3.5">
                         <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black text-xl shadow-xs">
@@ -176,118 +177,233 @@
                             </svg>
                         </div>
                         <div>
-                            <span class="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-md">Modul Bagian A</span>
-                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Registrasi &amp; Pengisian Profil Usaha</h2>
+                            <span class="text-[11px] font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-md">Modul 1 &bull; Formulir Profil Usaha</span>
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Detail Pengisian Profil Usaha UMKM</h2>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('register') }}" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors shadow-xs inline-flex items-center gap-1.5">
-                            <span>Buka Halaman Daftar</span>
+                            <span>Formulir Pendaftaran</span>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         </a>
                     </div>
                 </div>
 
-                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-8">
-                    Seluruh pelaku usaha mikro, kecil, dan menengah yang beroperasi di wilayah Kabupaten Wonogiri berhak mendaftar akun di portal Pojok UMKM secara <strong class="text-slate-900 font-bold">100% Gratis</strong>. Ikuti 5 tahapan pengisian di bawah ini agar profil usaha Anda segera terverifikasi oleh Dinas KUKM.
+                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
+                    Halaman profil usaha adalah identitas resmi bisnis Anda di portal Pojok UMKM Kabupaten Wonogiri. Pengisian formulir yang rapi dan akurat akan mempercepat proses kurasi oleh tim Dinas KUKM serta memudahkan pembeli menemukan gerai Anda.
                 </p>
 
-                <!-- Steps Accordion / Cards List -->
-                <div class="space-y-4">
-                    
-                    <!-- Step 1 -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">1</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Daftar Akun Baru di Portal</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Klik tombol <strong>Daftar</strong> di navigasi atas atau kunjungi halaman <a href="{{ route('register') }}" class="text-[#991b1b] font-bold underline">/register</a>. Isi formulir dengan data pemilik usaha:
-                                </p>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-slate-700 bg-white p-3.5 rounded-xl border border-slate-200">
-                                    <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">&check;</span> <strong>Nama Lengkap:</strong> Sesuai identitas KTP pemilik.</div>
-                                    <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">&check;</span> <strong>Email Aktif:</strong> Untuk notifikasi sistem &amp; login.</div>
-                                    <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">&check;</span> <strong>Nomor WhatsApp:</strong> Awali angka 08 (misal 08123456789).</div>
-                                    <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">&check;</span> <strong>Password:</strong> Minimal 8 karakter kombinasi huruf &amp; angka.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- 2-Column Comparison Layout: Aturan Pengisian vs Contoh Penulisan yang Benar -->
+                <div class="space-y-4 mb-8">
 
-                    <!-- Step 2 -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Lengkapi Identitas &amp; Deskripsi Bisnis</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Setelah login, masuk ke <strong>Pengaturan Toko / Profil UMKM</strong>. Masukkan nama merek atau nama usaha Anda secara jelas (contoh: <em>Kacang Mete Wonogiren Berkah</em>, <em>Batik Canting Tirtomoyo</em>), lalu tentukan kategori usaha yang paling sesuai:
-                                </p>
-                                <div class="flex flex-wrap gap-1.5 text-[11px] font-semibold text-slate-600">
-                                    <span class="bg-amber-100/80 text-amber-800 px-2.5 py-1 rounded-lg">Makanan &amp; Minuman</span>
-                                    <span class="bg-amber-100/80 text-amber-800 px-2.5 py-1 rounded-lg">Batik &amp; Fashion</span>
-                                    <span class="bg-amber-100/80 text-amber-800 px-2.5 py-1 rounded-lg">Kerajinan Tangan</span>
-                                    <span class="bg-amber-100/80 text-amber-800 px-2.5 py-1 rounded-lg">Pertanian &amp; Perkebunan</span>
-                                    <span class="bg-amber-100/80 text-amber-800 px-2.5 py-1 rounded-lg">Jasa &amp; Perdagangan</span>
-                                </div>
+                    <!-- Field 1: Nama Usaha / Brand -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center">1</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Nama Usaha / Merek Dagang (Brand)</h3>
                             </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
                         </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">3</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Pilih Lokasi Kecamatan di Wonogiri (25 Kecamatan)</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Pilih salah satu dari <strong>25 Kecamatan</strong> di Kabupaten Wonogiri tempat usaha Anda beroperasi. Data ini sangat penting untuk menampilkan titik lokasi usaha Anda pada fitur <strong>Direktori &amp; Peta Interaktif UMKM Wonogiri</strong>.
-                                </p>
-                                <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs text-slate-600 leading-relaxed">
-                                    <strong class="text-slate-800">Cakupan Wilayah Binaan:</strong> Wonogiri Kota, Ngadirojo, Baturetno, Pracimantoro, Purwantoro, Tirtomoyo, Eromoko, Giriwoyo, Jatisrono, Manyaran, Slogohimo, Wuryantoro, Kismantoro, Bulukerto, Selogiri, Sidoharjo, Girimarto, Jatipurno, Karangtengah, Paranggupito, Puhpelem, Nguntoronadi, Batuwarno, Giritontro, dan Jatiroto.
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
                                 </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Wajib menggunakan <strong>nama merek dagang asli</strong> yang jelas dan mudah diingat konsumen.</li>
+                                    <li>Hindari penggunaan singkatan membingungkan (akronim tanpa arti) atau penulisan huruf kapital seluruhnya (ALL CAPS).</li>
+                                    <li>Dapat menyertakan nama ciri khas produk atau nama daerah asal di Wonogiri.</li>
+                                </ul>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">4</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Konfigurasi Nomor WhatsApp Aktif (Direct Order)</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Masukkan nomor WhatsApp aktif usaha Anda. Portal Pojok UMKM dilengkapi fitur tombol <strong class="text-emerald-700 font-bold">Pesan via WhatsApp</strong> di setiap halaman produk. Ketika pembeli menekan tombol tersebut, sistem akan langsung membuka obrolan ke WhatsApp Anda berisi nama produk yang diminati secara otomatis tanpa potongan komisi!
-                                </p>
-                                <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs p-3 rounded-xl flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-                                    <span>Format rekomendasi: <strong>081234567890</strong> atau <strong>6281234567890</strong> (pastikan nomor memiliki akun WA aktif).</span>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Penulisan yang Benar:
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 5 -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-amber-300 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">5</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Pengisian Legalitas Usaha (NIB, P-IRT, &amp; Halal)</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Cantumkan nomor izin legalitas yang telah Anda miliki. Jika Anda belum memilikinya, kolom ini dapat dikosongkan terlebih dahulu dan tim pendamping dinas siap membantu Anda mengurusnya tanpa biaya:
-                                </p>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                                    <div class="bg-white p-3 rounded-xl border border-slate-200">
-                                        <div class="font-bold text-slate-800 mb-0.5">Nomor NIB</div>
-                                        <div class="text-slate-500 text-[11px]">13 digit nomor izin berusaha dari sistem OSS Kementerian Investasi.</div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-medium text-emerald-900">
+                                        &check; <span class="font-bold">"Omah Kriuk Wonogiri"</span> <span class="text-slate-500 text-[11px]">(Jelas, ada identitas produk &amp; asal daerah)</span>
                                     </div>
-                                    <div class="bg-white p-3 rounded-xl border border-slate-200">
-                                        <div class="font-bold text-slate-800 mb-0.5">Izin P-IRT</div>
-                                        <div class="text-slate-500 text-[11px]">15 digit nomor izin edar pangan dari Dinas Kesehatan Wonogiri.</div>
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-medium text-emerald-900">
+                                        &check; <span class="font-bold">"Batik Tulis Canting Tirtomoyo"</span> <span class="text-slate-500 text-[11px]">(Menonjolkan kerajinan lokal khas kecamatan)</span>
                                     </div>
-                                    <div class="bg-white p-3 rounded-xl border border-slate-200">
-                                        <div class="font-bold text-slate-800 mb-0.5">Sertifikat Halal</div>
-                                        <div class="text-slate-500 text-[11px]">Nomor sertifikat halal BPJPH Kemenag (Program SEHATI gratis).</div>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through font-semibold">"OKW"</span> atau <span class="line-through font-semibold">"TOKO SAYA WONOGIRI"</span> (Terlalu ambigu / generik)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field 2: Kategori Usaha -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center">2</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Kategori Usaha</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Dipilih</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Pilih 1 sektor usaha yang menjadi fokus utama penjualan Anda dari dropdown sistem.</li>
+                                    <li>Kategori menentukan filter pencarian pembeli dan penugasan kurator pembina di dinas.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Panduan Pemilihan Sektor yang Tepat:
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <div class="font-bold text-slate-800">Kuliner / Makanan Olahan</div>
+                                        <div class="text-[11px] text-slate-500">Mete, keripik tempe benguk, abon, rengginang, kopi.</div>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <div class="font-bold text-slate-800">Fashion / Batik</div>
+                                        <div class="text-[11px] text-slate-500">Batik tulis, kain lurik, ecoprint, pakaian jadi.</div>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <div class="font-bold text-slate-800">Kriya / Kerajinan</div>
+                                        <div class="text-[11px] text-slate-500">Wayang kulit, anyaman tas pandan, ukir kayu.</div>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <div class="font-bold text-slate-800">Agribisnis / Jasa</div>
+                                        <div class="text-[11px] text-slate-500">Bibit tanaman, olahan jamu herbal, jasa katering.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field 3: Alamat Lengkap & Kecamatan -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center">3</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Alamat Lengkap &amp; Pilihan Kecamatan</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Tuliskan nama jalan/dusun, nomor RT/RW, dan desa/kelurahan tempat lokasi produksi atau toko fisik Anda.</li>
+                                    <li>Wajib memilih 1 dari <strong>25 Kecamatan</strong> di Kabupaten Wonogiri agar titik gerai Anda tampil akurat di fitur <em>Peta &amp; Direktori UMKM</em>.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Penulisan yang Benar:
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs text-slate-800">
+                                        <div class="text-[11px] text-slate-500 mb-0.5">Alamat Lengkap:</div>
+                                        <div class="font-bold text-emerald-950">"Jalan RM. Said No. 12, RT 02 / RW 04, Dusun Gudang, Desa Kaliancar"</div>
+                                        <div class="text-[11px] text-slate-500 mt-1">Pilihan Dropdown Kecamatan: <strong class="text-emerald-700">Selogiri</strong></div>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through font-semibold">"Wonogiri"</span> (Hanya menulis nama kabupaten tanpa detail jalan/desa)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field 4: Nomor WhatsApp Aktif -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center">4</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Nomor WhatsApp Aktif (Direct Order)</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Wajib diawali angka <strong>08</strong> tanpa tanda spasi, tanda hubung (-), atau kode negara (+62).</li>
+                                    <li>Nomor ini digunakan langsung oleh tombol <em>"Pesan via WhatsApp"</em> di katalog produk. Jika format salah, tombol WhatsApp tidak bisa diklik oleh pembeli!</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Penulisan yang Benar:
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-mono font-bold text-emerald-900">
+                                        &check; 081234567890 <span class="font-sans font-normal text-slate-500 text-[11px]">(Angka bersambung tanpa spasi)</span>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through font-mono font-semibold">0812-3456-7890</span> atau <span class="line-through font-mono font-semibold">+62 812 3456 7890</span> (Salah format)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field 5: Legalitas Usaha (Opsional / Nilai Tambah) -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center">5</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Legalitas Usaha (NIB, P-IRT, &amp; Halal)</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Opsional / Nilai Tambah</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Bagi usaha pemula yang belum memiliki legalitas, kolom ini dapat dikosongkan terlebih dahulu (tidak menghambat pendaftaran).</li>
+                                    <li>Jika sudah memiliki, masukkan nomor registrasi resmi: NIB (13 digit OSS), nomor P-IRT Dinkes, atau nomor Sertifikat Halal BPJPH.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Format Penulisan:
+                                </div>
+                                <div class="space-y-1.5 text-xs">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <span class="text-slate-500">Nomor NIB:</span> <strong class="font-mono text-emerald-900">0123456789012</strong> (13 digit angka)
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <span class="text-slate-500">Izin P-IRT:</span> <strong class="font-mono text-emerald-900">P-IRT 2063312010123-28</strong>
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200">
+                                        <span class="text-slate-500">Sertifikat Halal:</span> <strong class="font-mono text-emerald-900">ID33110001234561023</strong>
                                     </div>
                                 </div>
                             </div>
@@ -295,14 +411,41 @@
                     </div>
 
                 </div>
+
+                <!-- Callout Boxes for Modul 1: Tips Kurasi & Kesalahan Umum -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Callout Tips (Hijau/Biru) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-start gap-3.5">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="text-xs leading-relaxed">
+                            <strong class="font-bold text-emerald-900 block text-sm mb-1">Tips Lolos Kurasi Admin Dinas:</strong>
+                            Tuliskan deskripsi cerita usaha Anda secara singkat namun autentik (misal: tradisi resep turun-temurun, pemanfaatan bahan tani lokal Wonogiri). Profil yang memiliki nomor WhatsApp aktif dan deskripsi lengkap diprioritaskan disetujui dalam 1 hari kerja!
+                        </div>
+                    </div>
+
+                    <!-- Callout Warning (Kuning/Oranye) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 flex items-start gap-3.5">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                        </div>
+                        <div class="text-xs leading-relaxed">
+                            <strong class="font-bold text-amber-900 block text-sm mb-1">Kesalahan Umum yang Sering Terjadi:</strong>
+                            Memasukkan nomor telepon rumah/kantor kabel yang tidak terhubung ke aplikasi WhatsApp. Akibatnya, tombol direct order tidak dapat dibuka oleh pembeli. Pastikan nomor diawali <strong>08</strong> dan selalu aktif.
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ============================================================== -->
-            <!-- MODUL 2: PENGELOLAAN KATALOG PRODUK                           -->
+            <!-- MODUL 2: PANDUAN PENGISIAN KATALOG PRODUK                     -->
             <!-- ============================================================== -->
             <div id="modul-katalog" class="guide-block bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 scroll-mt-24"
-                 data-keywords="katalog kelola tambah produk unggulan foto gambar 2mb resolusi harga satuan tanpa titik deskripsi produk link marketplace shopee tokopedia stok">
+                 data-keywords="modul 2 katalog produk keripik tempe benguk pedas manis 200gr foto produk 2mb harga satuan tanpa titik template deskripsi komposisi tautan marketplace shopee tokopedia kurasi produk unggulan kesalahan umum">
                 
+                <!-- Module Header -->
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-8">
                     <div class="flex items-center gap-3.5">
                         <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
@@ -311,156 +454,268 @@
                             </svg>
                         </div>
                         <div>
-                            <span class="text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">Modul Bagian B</span>
-                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Pengelolaan Katalog Produk Unggulan</h2>
+                            <span class="text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md">Modul 2 &bull; Formulir Katalog Produk</span>
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Detail Pengisian Katalog Produk</h2>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('katalog') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors shadow-2xs inline-flex items-center gap-1.5">
-                            <span>Lihat Katalog Publik</span>
+                            <span>Lihat Etalase Katalog</span>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         </a>
                     </div>
                 </div>
 
-                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-8">
-                    Katalog produk adalah etalase digital utama yang dilihat oleh ribuan masyarakat luas, pembeli luar daerah, dan calon investor. Pastikan produk Anda disajikan dengan informasi yang rapi, visual yang memikat, dan ketentuan teknis yang benar.
+                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
+                    Katalog produk adalah etalase digital yang dilihat langsung oleh calon konsumen dan wisatawan. Ikuti format perbandingan di bawah ini agar produk Anda memenuhi standar kurasi resmi:
                 </p>
 
-                <!-- Steps List -->
-                <div class="space-y-4">
-                    
-                    <!-- Step 1: Upload Foto -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-emerald-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">1</span>
-                            <div class="flex-1">
-                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                                    <h3 class="text-sm sm:text-base font-bold text-slate-900">Ketentuan Upload Foto Produk (Maks 2MB)</h3>
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Format: JPG, PNG, WEBP</span>
+                <!-- 2-Column Comparison Layout: Aturan Pengisian vs Contoh Penulisan yang Benar -->
+                <div class="space-y-4 mb-8">
+
+                    <!-- Field 1: Nama Produk & Varian -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center">1</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Nama Produk &amp; Varian Rasa/Ukuran</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
                                 </div>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Unggah foto asli dari produk Anda. Demi performa portal yang kencang dan hemat kuota bagi calon pembeli, perhatikan panduan berikut:
-                                </p>
-                                <ul class="space-y-1.5 text-xs text-slate-600 bg-white p-3.5 rounded-xl border border-slate-200">
-                                    <li class="flex items-start gap-2"><span class="text-emerald-600 font-bold">&bull;</span> <strong>Ukuran Berkas:</strong> Maksimal <strong>2 Megabytes (2.048 KB)</strong>. Jika ukuran file HP terlalu besar, gunakan aplikasi kompres foto terlebih dahulu.</li>
-                                    <li class="flex items-start gap-2"><span class="text-emerald-600 font-bold">&bull;</span> <strong>Rasio Aspek:</strong> Disarankan rasio 1:1 (persegi) atau 4:3 dengan pencahayaan terang alami tanpa efek filter gelap.</li>
-                                    <li class="flex items-start gap-2"><span class="text-emerald-600 font-bold">&bull;</span> <strong>Fokus Gambar:</strong> Tampilkan kemasan produk secara utuh dan jelas sehingga label serta merek terlihat profesional.</li>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Tuliskan <strong>jenis produk, varian rasa, dan ukuran kemasan</strong> secara spesifik dalam satu baris judul.</li>
+                                    <li>Hindari judul yang terlalu singkat (hanya 1 kata) atau kata-kata promosi hiperbolis berlebihan seperti "termurah sedunia".</li>
                                 </ul>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Penulisan Deskripsi -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-emerald-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Penulisan Judul &amp; Deskripsi Produk yang Memikat</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Gunakan judul yang ringkas dan memuat kata kunci pencarian calon pembeli. Deskripsi harus menjawab pertanyaan pokok konsumen:
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                                        <div class="font-bold text-emerald-800 mb-1 flex items-center gap-1.5">
-                                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">&check;</span>
-                                            Contoh Judul Efektif:
-                                        </div>
-                                        <p class="text-slate-700 italic">"Kue Kering Nastar Mete Wonogiri Premium 250g"</p>
-                                        <p class="text-slate-700 italic">"Kain Batik Tulis Canting Motif Parang Wonogiren"</p>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Penulisan yang Benar:
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-bold text-emerald-950">
+                                        &check; "Keripik Tempe Benguk Pedas Manis - 200gr"
                                     </div>
-                                    <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                                        <div class="font-bold text-emerald-800 mb-1 flex items-center gap-1.5">
-                                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">&check;</span>
-                                            Poin Wajib di Kolom Deskripsi:
-                                        </div>
-                                        <p class="text-slate-600">Sertakan komposisi bahan baku lokal, berat bersih (gram/kg), masa kedaluwarsa, saran penyimpanan, dan nomor izin P-IRT/Halal.</p>
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-bold text-emerald-950">
+                                        &check; "Kacang Mete Matang Oven Rasa Bawang - 250gr"
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through font-semibold">"Keripik"</span> atau <span class="line-through font-semibold">"Keripik Tempe Benguk Enak Termurah Wonogiri Grosir"</span> (Salah)
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 3: Format Harga Satuan (Crucial Instruction) -->
-                    <div class="border-2 border-emerald-300 rounded-2xl p-5 sm:p-6 bg-emerald-50/40 hover:bg-emerald-50/70 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-emerald-700 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">3</span>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1.5">
-                                    <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Format Input Harga Satuan (PENTING: Angka Tanpa Titik/Koma)</h3>
-                                    <span class="text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-800 px-2 py-0.5 rounded">Perhatikan!</span>
+                    <!-- Field 2: Ketentuan Foto Produk (Badge: Maks 2MB) -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center">2</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Foto Produk Utama</h3>
+                            </div>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-md">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                Ukuran Maksimal 2MB
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan &amp; Ketentuan Teknis:
                                 </div>
-                                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-3">
-                                    Pada kolom formulir <strong>Harga Satuan</strong>, masukkan nominal <strong class="text-slate-900">angka murni saja</strong>. Jangan menuliskan tanda titik (.), koma (,), simbol mata uang "Rp", atau spasi. Sistem akan otomatis memformat dan menampilkan harga dalam format mata uang resmi rupiah.
-                                </p>
-                                
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                                    <div class="p-3 rounded-xl bg-white border border-emerald-300 shadow-2xs">
-                                        <div class="flex items-center gap-1.5 text-emerald-700 font-bold mb-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-                                            CARA INPUT YANG BENAR:
-                                        </div>
-                                        <div class="font-mono text-sm bg-slate-100 p-2 rounded-lg text-slate-800 font-bold mb-1">25000</div>
-                                        <div class="text-[11px] text-slate-500">Sistem otomatis menampilkan: <strong class="text-emerald-700">Rp 25.000</strong></div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Format wajib: <strong>JPG, JPEG, atau PNG</strong>.</li>
+                                    <li>Batas ukuran file: <strong>Maksimal 2 Megabytes (2.048 KB)</strong> per foto.</li>
+                                    <li>Pencahayaan terang alami, produk fokus di tengah, dan <strong>tanpa teks promosi / watermark berlebihan</strong> yang menutupi bentuk fisik kemasan.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Standar Visual yang Disarankan:
+                                </div>
+                                <div class="space-y-1.5 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs text-slate-800">
+                                        <div class="font-bold text-emerald-950">&check; Foto Kemasan Standing Pouch / Toples Bersih</div>
+                                        <div class="text-[11px] text-slate-500 mt-0.5">Rasio kotak 1:1, latar belakang meja kayu polos atau putih netral.</div>
                                     </div>
-                                    <div class="p-3 rounded-xl bg-white border border-rose-300 shadow-2xs">
-                                        <div class="flex items-center gap-1.5 text-rose-700 font-bold mb-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                            CONTOH SALAH (JANGAN DILAKUKAN):
-                                        </div>
-                                        <div class="font-mono text-sm bg-rose-50 p-2 rounded-lg text-rose-800 font-bold mb-1 line-through">Rp 25.000 &bull; 25.000 &bull; 25,000</div>
-                                        <div class="text-[11px] text-slate-500">Dapat menyebabkan error angka atau harga terbaca Rp 25 di sistem.</div>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; Foto buram di lantai redup, file >2MB, atau ditutupi stiker diskon besar.
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 4: Tautan Marketplace -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-emerald-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">4</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Penautan Link Marketplace &amp; Media Sosial Usaha</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Jika Anda telah memiliki toko online di Shopee, Tokopedia, Bukalapak, TikTok Shop, atau katalog Instagram, masukkan tautan URL lengkapnya pada kolom <strong>Tautan Marketplace</strong>.
-                                </p>
-                                <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-mono text-emerald-700 font-bold bg-slate-100 px-2 py-0.5 rounded">https://shopee.co.id/tokoanda</span>
-                                        <span class="text-slate-400">&bull; Langsung membuka aplikasi Shopee pembeli</span>
+                    <!-- Field 3: Deskripsi Produk (Template 4 Poin Pokok) -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center">3</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Deskripsi Produk (Template Poin)</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Template 4 Poin yang Wajib Ditulis:
+                                </div>
+                                <ol class="text-xs text-slate-700 space-y-1.5 list-decimal list-inside leading-relaxed">
+                                    <li><strong>Komposisi Utama:</strong> Bahan baku yang digunakan.</li>
+                                    <li><strong>Keunggulan Rasa/Tekstur:</strong> Karakteristik unik produk.</li>
+                                    <li><strong>Masa Simpan / Expired:</strong> Daya tahan simpan produk.</li>
+                                    <li><strong>Berat Bersih &amp; Izin:</strong> Netto (gram/kg) dan izin legalitas.</li>
+                                </ol>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Template Siap Salin:
+                                </div>
+                                <div class="p-3 rounded-xl bg-white border border-emerald-300 shadow-2xs text-[11px] text-slate-700 space-y-1 leading-relaxed">
+                                    <div>&bull; <strong>Komposisi:</strong> Tempe benguk pilihan Wonogiri, minyak nabati, bawang putih, cabai, gula jawa, garam.</div>
+                                    <div>&bull; <strong>Keunggulan:</strong> Tekstur gurih renyah tanpa bahan pengawet kimia buatan.</div>
+                                    <div>&bull; <strong>Masa Simpan:</strong> 6 bulan dalam kemasan kedap udara tertutup rapat.</div>
+                                    <div>&bull; <strong>Berat Bersih:</strong> 200 gram | P-IRT No. 2063312010123-28.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field 4: Input Harga Satuan (Wajib Angka Murni) -->
+                    <div class="border-2 border-emerald-300 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-emerald-100/70 px-5 py-3 border-b border-emerald-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-emerald-700 text-white font-black text-xs flex items-center justify-center">4</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Harga Satuan (Angka Murni Tanpa Titik/Koma)</h3>
+                            </div>
+                            <span class="text-[10px] font-black uppercase tracking-wider text-rose-800 bg-rose-100 px-2.5 py-0.5 rounded">Paling Penting!</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Wajib diisi <strong>angka murni saja</strong>.</li>
+                                    <li><strong>Dilarang</strong> menambahkan tanda titik (.), tanda koma (,), spasi, simbol "Rp", atau akhiran ",-".</li>
+                                    <li>Sistem secara otomatis mengubah tampilan angka menjadi format mata uang resmi di halaman katalog.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Perbandingan Input:
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-mono font-bold text-emerald-900">
+                                        &check; 15000 <span class="font-sans font-normal text-slate-500 text-[11px]">&rarr; Tampil di website: <strong class="text-emerald-700">Rp 15.000</strong></span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-mono text-emerald-700 font-bold bg-slate-100 px-2 py-0.5 rounded">https://tokopedia.com/tokoanda</span>
-                                        <span class="text-slate-400">&bull; Checkout aman dengan fasilitas bebas ongkir</span>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through font-mono font-bold">"Rp 15.000,-"</span> atau <span class="line-through font-mono font-bold">"15.000"</span> (Salah, sistem membaca Rp 15)
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 5: Kurasi Produk Unggulan -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-emerald-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">5</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Kurasi Menjadi "Produk Unggulan" Kabupaten Wonogiri</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                                    Produk yang memiliki kualitas kemasan standar BPOM, izin edar P-IRT/Halal lengkap, dan foto berkualitas tinggi akan dikurasi secara berkala oleh tim Dinas KUKM untuk disematkan badge emas <strong>Produk Unggulan</strong> dan ditampilkan di halaman muka Beranda utama portal!
-                                </p>
+                    <!-- Field 5: Tautan Pembelian (Opsional) -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center">5</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Tautan Pembelian Marketplace (Shopee / Tokopedia / Instagram)</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Opsional</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Salin dan tempelkan link lengkap yang diawali dengan protokol <strong>https://</strong> dari toko online Anda.</li>
+                                    <li>Mendukung Shopee, Tokopedia, TikTok Shop, Bukalapak, atau tautan postingan Instagram.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Link Lengkap yang Benar:
+                                </div>
+                                <div class="space-y-1.5 text-xs">
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 font-mono text-emerald-900 break-all">
+                                        &check; https://shopee.co.id/omahkriukwonogiri
+                                    </div>
+                                    <div class="p-2 rounded-lg bg-white border border-slate-200 font-mono text-emerald-900 break-all">
+                                        &check; https://www.tokopedia.com/omahkriuk
+                                    </div>
+                                    <div class="p-1.5 rounded bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through">shopee.co.id/omahkriuk</span> (Tanpa https:// tautan tidak bisa dibuka)
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
+
+                <!-- Callout Boxes for Modul 2: Tips Kurasi & Kesalahan Umum -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Callout Tips (Hijau/Biru) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-start gap-3.5">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="text-xs leading-relaxed">
+                            <strong class="font-bold text-emerald-900 block text-sm mb-1">Tips Lolos Kurasi Produk Unggulan:</strong>
+                            Gunakan foto produk dengan latar belakang bersih, kemasan tersegel rapi standar higienis, dan sertakan nomor P-IRT / Halal pada deskripsi. Produk yang memenuhi standar ini akan diberi tanda <strong>"Produk Unggulan"</strong> oleh dinas dan tampil di halaman depan portal!
+                        </div>
+                    </div>
+
+                    <!-- Callout Warning (Kuning/Oranye) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 flex items-start gap-3.5">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                        </div>
+                        <div class="text-xs leading-relaxed">
+                            <strong class="font-bold text-amber-900 block text-sm mb-1">Kesalahan Umum yang Sering Terjadi:</strong>
+                            Menulis harga dengan format titik seperti <code>25.000</code> atau <code>Rp 25.000</code>. Hal ini menyebabkan sistem membaca angka nominal secara salah. Cukup ketik angka bersih: <code>25000</code>.
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ============================================================== -->
-            <!-- MODUL 3: PENGAJUAN TIKET KONSULTASI ONLINE                     -->
+            <!-- MODUL 3: PANDUAN PENGISIAN TIKET KONSULTASI ONLINE             -->
             <!-- ============================================================== -->
             <div id="modul-konsultasi" class="guide-block bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 scroll-mt-24"
-                 data-keywords="konsultasi online tiket perizinan kendala bantuan dinas open in progress resolved cek tiket reply solusi lampiran berkas">
+                 data-keywords="modul 3 tiket konsultasi online perizinan legalitas nib pirt halal kemasan branding pemasaran digital subjek kendala sambal botol lampiran foto 2mb status tiket open in progress resolved cek tiket tips kurasi kesalahan umum">
                 
+                <!-- Module Header -->
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-8">
                     <div class="flex items-center gap-3.5">
                         <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
@@ -469,13 +724,13 @@
                             </svg>
                         </div>
                         <div>
-                            <span class="text-[11px] font-black uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">Modul Bagian C</span>
-                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Pengajuan Tiket Konsultasi Online</h2>
+                            <span class="text-[11px] font-black uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md">Modul 3 &bull; Formulir Tiket Konsultasi</span>
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Panduan Detail Pengajuan Tiket Konsultasi Online</h2>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('konsultasi') }}" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-xs inline-flex items-center gap-1.5">
-                            <span>Formulir Konsultasi</span>
+                            <span>Buka Formulir Tiket</span>
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         </a>
                         <a href="{{ route('konsultasi.cek') }}" class="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors shadow-2xs">
@@ -484,138 +739,179 @@
                     </div>
                 </div>
 
-                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-8">
-                    Layanan Konsultasi Online menghubungkan Anda langsung dengan fasilitator dan praktisi dinas untuk menyelesaikan kendala legalitas, permodalan, kemasan, hingga pelatihan manajemen secara cepat dan tercatat transparan.
+                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
+                    Layanan konsultasi online menghubungkan Anda langsung dengan fasilitator resmi Dinas Perdagangan dan KUKM Kabupaten Wonogiri untuk membantu kendala perizinan usaha, desain kemasan, hingga akses permodalan KUR.
                 </p>
 
-                <!-- Steps List -->
-                <div class="space-y-4">
-                    
-                    <!-- Step 1: Topik Konsultasi -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-blue-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">1</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Memilih Topik Bidang Konsultasi</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Buka formulir <a href="{{ route('konsultasi') }}" class="text-[#991b1b] font-bold underline">/konsultasi</a>, lalu tentukan topik permasalahan yang sesuai agar tiket langsung didisposisikan ke petugas ahli yang tepat:
-                                </p>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
-                                    <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                                        <div class="font-bold text-blue-900">&bull; Perizinan &amp; Legalitas</div>
-                                        <div class="text-[11px] text-slate-500">NIB OSS, P-IRT Dinkes, Sertifikat Halal.</div>
+                <!-- 2-Column Comparison Layout: Aturan Pengisian vs Contoh Penulisan yang Benar -->
+                <div class="space-y-4 mb-8">
+
+                    <!-- Field 1: Pemilihan Topik Konsultasi -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">1</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Pemilihan Topik / Kategori Konsultasi</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Dipilih</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Kapan Memilih Setiap Topik:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li><strong>Perizinan &amp; Legalitas:</strong> Pilih jika butuh bantuan NIB OSS, izin edar P-IRT Dinkes, atau sertifikasi Halal SEHATI.</li>
+                                    <li><strong>Pengembangan Kemasan &amp; Branding:</strong> Pilih jika butuh review desain label BPOM, kemasan higienis, atau hak merek HAKI.</li>
+                                    <li><strong>Pemasaran Digital:</strong> Pilih jika butuh bimbingan jualan online, foto produk katalog, atau marketplace.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Kasus &amp; Pilihan Tepat:
+                                </div>
+                                <div class="space-y-1.5 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs">
+                                        <div class="font-bold text-emerald-950">Kasus: Belum punya izin edar untuk sambal botol</div>
+                                        <div class="text-[11px] text-slate-500 mt-0.5">Pilih Kategori: <strong class="text-blue-700">"Perizinan &amp; Legalitas (NIB/PIRT/Halal)"</strong></div>
                                     </div>
-                                    <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                                        <div class="font-bold text-blue-900">&bull; Kemasan &amp; Merek HAKI</div>
-                                        <div class="text-[11px] text-slate-500">Desain label BPOM &amp; pendaftaran hak merek.</div>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                                        <div class="font-bold text-blue-900">&bull; Pemasaran &amp; Digitalisasi</div>
-                                        <div class="text-[11px] text-slate-500">Jualan online, media sosial &amp; marketplace.</div>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                                        <div class="font-bold text-blue-900">&bull; Permodalan &amp; KUR</div>
-                                        <div class="text-[11px] text-slate-500">Akses pembiayaan bank &amp; subsidi bunga.</div>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                                        <div class="font-bold text-blue-900">&bull; Pelatihan &amp; Manajemen</div>
-                                        <div class="text-[11px] text-slate-500">Workshop bimbingan teknis &amp; pembukuan.</div>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-white border border-slate-200">
-                                        <div class="font-bold text-blue-900">&bull; Lainnya</div>
-                                        <div class="text-[11px] text-slate-500">Pertanyaan umum seputar program dinas.</div>
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs">
+                                        <div class="font-bold text-emerald-950">Kasus: Ingin logo &amp; nama brand tidak ditiru kompetitor</div>
+                                        <div class="text-[11px] text-slate-500 mt-0.5">Pilih Kategori: <strong class="text-blue-700">"Pengembangan Kemasan &amp; Branding (Hak Merek)"</strong></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 2: Detail Kendala & Lampiran -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-blue-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">2</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Menuliskan Detail Kendala &amp; Melampirkan Dokumen Pendukung</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Tuliskan kronologi kendala Anda secara runut pada kolom pesan. Jika ada berkas bukti (tangkapan layar error OSS, foto kemasan saat ini, atau draft sertifikat), lampirkan melalui tombol upload:
-                                </p>
-                                <div class="bg-blue-50/60 p-3.5 rounded-xl border border-blue-200 text-xs text-blue-900 space-y-1">
-                                    <div>&bull; <strong>Format Lampiran:</strong> PDF, JPG, JPEG, atau PNG.</div>
-                                    <div>&bull; <strong>Batas Maksimal File:</strong> 2MB per file agar pengiriman berjalan lancar tanpa kendala kuota.</div>
-                                </div>
+                    <!-- Field 2: Judul / Subjek Kendala -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">2</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Judul / Subjek Kendala</h3>
                             </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
                         </div>
-                    </div>
-
-                    <!-- Step 3: Memahami Status Tiket (Crucial Spec) -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-blue-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">3</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-2">Memantau Alur Status Tiket Konsultasi</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-                                    Setiap pengajuan tiket memperoleh nomor referensi unik (contoh: <strong class="text-slate-800">#TKT-2026-0042</strong>). Status tiket memiliki 3 tahapan resmi:
-                                </p>
-
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                                    <!-- Status 1: Open -->
-                                    <div class="p-4 rounded-xl bg-white border border-amber-300 shadow-2xs">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
-                                            <span class="font-extrabold text-amber-800 uppercase tracking-wide text-[11px]">1. Open (Menunggu)</span>
-                                        </div>
-                                        <p class="text-slate-600 leading-relaxed">
-                                            Tiket berhasil dibuat dan masuk antrean sistem dinas. Petugas sedang menjadwalkan telaah awal.
-                                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Tuliskan judul permasalahan secara singkat, padat, dan langsung menyebutkan inti pokok kendala.</li>
+                                    <li>Hindari judul yang terlalu singkat hanya 1 kata seperti "Tolong", "Halo", atau "Tanya".</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Judul yang Tepat:
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-bold text-emerald-950">
+                                        &check; "Pendampingan pengurusan izin PIRT untuk produk sambal botol"
                                     </div>
-
-                                    <!-- Status 2: In Progress -->
-                                    <div class="p-4 rounded-xl bg-white border border-blue-300 shadow-2xs">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                                            <span class="font-extrabold text-blue-800 uppercase tracking-wide text-[11px]">2. In Progress (Diproses)</span>
-                                        </div>
-                                        <p class="text-slate-600 leading-relaxed">
-                                            Konsultan dinas sedang memproses jawaban, memberikan instruksi perbaikan, atau menghubungi pemohon.
-                                        </p>
+                                    <div class="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs font-bold text-emerald-950">
+                                        &check; "Konsultasi pendaftaran sertifikasi Halal gratis SEHATI kue basah"
                                     </div>
-
-                                    <!-- Status 3: Resolved -->
-                                    <div class="p-4 rounded-xl bg-white border border-emerald-300 shadow-2xs">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                                            <span class="font-extrabold text-emerald-800 uppercase tracking-wide text-[11px]">3. Resolved (Selesai)</span>
-                                        </div>
-                                        <p class="text-slate-600 leading-relaxed">
-                                            Solusi tuntas telah diberikan. Pelaku usaha dapat mencetak rekomendasi atau menutup konsultasi.
-                                        </p>
+                                    <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                                        &cross; <span class="line-through font-semibold">"Tolong saya min"</span> atau <span class="line-through font-semibold">"Tanya izin"</span> (Terlalu singkat)
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 4: Cek Tiket Tanpa Login -->
-                    <div class="border border-slate-200/90 rounded-2xl p-5 sm:p-6 bg-slate-50/50 hover:bg-white hover:border-blue-400 transition-all">
-                        <div class="flex items-start gap-4">
-                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center shrink-0 mt-0.5">4</span>
-                            <div class="flex-1">
-                                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-1.5">Cek Status &amp; Balas Jawaban Petugas Tanpa Perlu Login</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3">
-                                    Bagi pelaku UMKM yang mengajukan konsultasi secara publik tanpa membuat akun, Anda dapat mengecek status dan membalas pesan petugas secara mandiri kapan saja melalui menu <strong>Cek Tiket Konsultasi</strong>:
-                                </p>
-                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1.5">
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-[10px]">1</span>
-                                        <span>Buka halaman <a href="{{ route('konsultasi.cek') }}" class="text-[#991b1b] font-bold underline">/konsultasi/cek</a> melalui browser HP atau laptop.</span>
+                    <!-- Field 3: Detail Permasalahan & Kontak WhatsApp -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">3</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Detail Permasalahan &amp; Nomor Kontak</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">Wajib Diisi</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Aturan Pengisian:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Ceritakan kendala secara runtut: produk yang dibuat, tahapan yang sudah dilakukan, dan kendala spesifik yang dihadapi.</li>
+                                    <li>Wajib mencantumkan nomor telepon / WhatsApp yang bisa dihubungi petugas Dinas jika diperlukan komunikasi lebih lanjut.</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Contoh Penulisan yang Benar -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                                    Contoh Uraian Kendala yang Lengkap:
+                                </div>
+                                <div class="p-3 rounded-xl bg-white border border-emerald-300 shadow-2xs text-[11px] text-slate-700 leading-relaxed italic">
+                                    "Halo Tim Dinas KUKM, kami UMKM Sambal Tradisional dari Kecamatan Giriwoyo. Kami berencana mengurus izin SPP-IRT untuk kemasan botol kaca 150ml. Kami sudah memiliki NIB, namun belum memahami ketentuan pencantuman informasi gizi dan tanggal kedaluwarsa pada label kemasan. Mohon bimbingan review desain label kami. Kontak WhatsApp: 081234567890 (Ibu Siti)."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Field 4: Lampiran Pendukung & Status Tiket -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                        <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">4</span>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Lampiran Berkas &amp; Pemantauan Status Tiket</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Maks 2MB</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+                            <!-- Left: Aturan Pengisian -->
+                            <div class="p-4 sm:p-5 bg-white">
+                                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                    Berkas yang Dapat Dilampirkan:
+                                </div>
+                                <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Foto kemasan produk saat ini (JPG/PNG).</li>
+                                    <li>Tangkapan layar (screenshot) pesan error pada sistem OSS atau SiHalal.</li>
+                                    <li>Dokumen pendukung (PDF, maksimal 2MB per berkas).</li>
+                                </ul>
+                            </div>
+                            <!-- Right: Status Tiket Dinas -->
+                            <div class="p-4 sm:p-5 bg-emerald-50/40">
+                                <div class="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
+                                    3 Indikator Status Tiket Dinas:
+                                </div>
+                                <div class="space-y-1.5 text-xs">
+                                    <div class="p-2 rounded-lg bg-white border border-amber-300 flex items-center justify-between">
+                                        <div class="flex items-center gap-1.5 font-bold text-amber-800">
+                                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                            1. Open (Menunggu)
+                                        </div>
+                                        <span class="text-[10px] text-slate-500">Tiket masuk antrean</span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-[10px]">2</span>
-                                        <span>Masukkan <strong>Nomor Tiket</strong> dan <strong>Nomor WhatsApp</strong> yang Anda gunakan saat mendaftar.</span>
+                                    <div class="p-2 rounded-lg bg-white border border-blue-300 flex items-center justify-between">
+                                        <div class="flex items-center gap-1.5 font-bold text-blue-800">
+                                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                            2. In Progress (Diproses)
+                                        </div>
+                                        <span class="text-[10px] text-slate-500">Petugas sedang menelaah</span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-[10px]">3</span>
-                                        <span>Baca catatan rekomendasi resmi dari petugas dinas dan kirim balasan jika terdapat hal yang ingin ditanyakan lagi.</span>
+                                    <div class="p-2 rounded-lg bg-white border border-emerald-300 flex items-center justify-between">
+                                        <div class="flex items-center gap-1.5 font-bold text-emerald-800">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            3. Resolved (Selesai)
+                                        </div>
+                                        <span class="text-[10px] text-slate-500">Solusi telah diberikan</span>
                                     </div>
                                 </div>
                             </div>
@@ -623,6 +919,32 @@
                     </div>
 
                 </div>
+
+                <!-- Callout Boxes for Modul 3: Tips Kurasi & Kesalahan Umum -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Callout Tips (Hijau/Biru) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 flex items-start gap-3.5">
+                        <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="text-xs leading-relaxed">
+                            <strong class="font-bold text-blue-900 block text-sm mb-1">Tips Lolos &amp; Respon Cepat Petugas:</strong>
+                            Simpan nomor tiket unik Anda (contoh: <code>#TKT-2026-XXXX</code>). Anda dapat memantau jawaban petugas dan mengirim balasan secara mandiri kapan pun di menu <a href="{{ route('konsultasi.cek') }}" class="underline font-bold text-blue-800">Cek Tiket Konsultasi</a> cukup dengan memasukkan Nomor Tiket dan Nomor WhatsApp tanpa perlu login!
+                        </div>
+                    </div>
+
+                    <!-- Callout Warning (Kuning/Oranye) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 flex items-start gap-3.5">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                        </div>
+                        <div class="text-xs leading-relaxed">
+                            <strong class="font-bold text-amber-900 block text-sm mb-1">Kesalahan Umum yang Sering Terjadi:</strong>
+                            Mengirimkan tiket baru berulang kali untuk masalah yang sama persis. Hal ini membuat antrean tiket menumpuk. Cukup gunakan kolom balasan pada nomor tiket yang sudah aktif agar riwayat bimbingan Anda tetap tersambung dengan petugas yang sama.
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -1080,8 +1402,8 @@
             c.className = 'quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all';
         });
 
-        if (event && event.target) {
-            event.target.className = 'quick-chip active px-3 py-1 rounded-full bg-amber-400 text-[#800000] font-bold shadow-xs hover:bg-amber-300 transition-all';
+        if (window.event && window.event.target) {
+            window.event.target.className = 'quick-chip active px-3 py-1 rounded-full bg-amber-400 text-[#800000] font-bold shadow-xs hover:bg-amber-300 transition-all';
         }
 
         if (topic === 'all') {
