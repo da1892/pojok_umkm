@@ -457,43 +457,45 @@
             </div>
         @endif
 
-        <!-- Pagination (Compact) -->
+        <!-- Pagination (Pill Modern) -->
         @if ($umkms->hasPages())
-        <div class="flex items-center justify-center gap-1.5 mt-7 mb-5 select-none">
-            {{-- Tombol Previous (<) --}}
-            @if ($umkms->onFirstPage())
-                <span class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center shadow-2xs pointer-events-none opacity-40">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                </span>
-            @else
-                <a href="{{ $umkms->previousPageUrl() }}#direktori-anchor" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                </a>
-            @endif
-
-            {{-- Nomor Halaman --}}
-            @foreach ($umkms->links()->elements[0] as $page => $url)
-                @if ($page == $umkms->currentPage())
-                    <span class="w-8 h-8 rounded-lg flex items-center justify-center transition-all text-xs font-bold bg-[#800000] text-white shadow-xs cursor-default">
-                        {{ $page }}
+        <div class="flex items-center justify-center gap-3 mt-10 mb-8 select-none">
+            <nav class="inline-flex items-center gap-1.5 p-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xs" role="navigation" aria-label="Navigasi Halaman Direktori UMKM">
+                {{-- Tombol Previous (<) --}}
+                @if ($umkms->onFirstPage())
+                    <span class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 text-slate-300 flex items-center justify-center cursor-not-allowed select-none" title="Halaman Pertama">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                     </span>
                 @else
-                    <a href="{{ $url }}#direktori-anchor" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
-                        {{ $page }}
+                    <a href="{{ $umkms->previousPageUrl() }}#direktori-anchor" class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-[#800000] hover:-translate-y-0.5 hover:shadow-xs flex items-center justify-center transition-all duration-200" title="Halaman Sebelumnya">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                     </a>
                 @endif
-            @endforeach
 
-            {{-- Tombol Next (>) --}}
-            @if ($umkms->hasMorePages())
-                <a href="{{ $umkms->nextPageUrl() }}#direktori-anchor" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                </a>
-            @else
-                <span class="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center shadow-2xs pointer-events-none opacity-40">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                </span>
-            @endif
+                {{-- Nomor Halaman --}}
+                @foreach ($umkms->links()->elements[0] as $page => $url)
+                    @if ($page == $umkms->currentPage())
+                        <span class="min-w-[40px] h-10 px-3 rounded-xl flex items-center justify-center text-sm font-black bg-gradient-to-r from-[#800000] via-[#941515] to-[#800000] text-white shadow-md shadow-red-950/20 ring-2 ring-red-900/10 cursor-default">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <a href="{{ $url }}#direktori-anchor" class="min-w-[40px] h-10 px-3 rounded-xl flex items-center justify-center text-sm font-bold bg-white border border-slate-200/80 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-[#800000] hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200">
+                            {{ $page }}
+                        </a>
+                    @endif
+                @endforeach
+
+                {{-- Tombol Next (>) --}}
+                @if ($umkms->hasMorePages())
+                    <a href="{{ $umkms->nextPageUrl() }}#direktori-anchor" class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-[#800000] hover:-translate-y-0.5 hover:shadow-xs flex items-center justify-center transition-all duration-200" title="Halaman Berikutnya">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                    </a>
+                @else
+                    <span class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 text-slate-300 flex items-center justify-center cursor-not-allowed select-none" title="Halaman Terakhir">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                    </span>
+                @endif
+            </nav>
         </div>
         @endif
 

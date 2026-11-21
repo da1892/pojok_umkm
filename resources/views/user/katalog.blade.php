@@ -359,41 +359,43 @@
         <!-- Pagination Container for Smooth AJAX Replacement -->
         <div id="katalog-pagination-container">
             @if ($products->hasPages())
-            <div class="flex items-center justify-center gap-2 mt-12 mb-8 reveal delay-300 select-none">
-                {{-- Tombol Previous (<) --}}
-                @if ($products->onFirstPage())
-                    <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                    </span>
-                @else
-                    <a href="{{ $products->previousPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                    </a>
-                @endif
-
-                {{-- Nomor Halaman --}}
-                @foreach ($products->links()->elements[0] as $page => $url)
-                    @if ($page == $products->currentPage())
-                        <span class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-bold bg-[#991b1b] text-white shadow-xs cursor-default">
-                            {{ $page }}
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-12 mb-8 reveal delay-300 select-none">
+                <nav class="inline-flex items-center gap-1.5 p-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xs" role="navigation" aria-label="Navigasi Halaman Katalog">
+                    {{-- Tombol Previous (<) --}}
+                    @if ($products->onFirstPage())
+                        <span class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 text-slate-300 flex items-center justify-center cursor-not-allowed opacity-60" title="Halaman Pertama">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                         </span>
                     @else
-                        <a href="{{ $url }}#katalog-anchor" class="w-9 h-9 rounded-lg flex items-center justify-center transition-all text-xs sm:text-sm font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs">
-                            {{ $page }}
+                        <a href="{{ $products->previousPageUrl() }}#katalog-anchor" class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-[#800000] hover:-translate-y-0.5 hover:shadow-xs flex items-center justify-center transition-all duration-200" title="Halaman Sebelumnya">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                         </a>
                     @endif
-                @endforeach
 
-                {{-- Tombol Next (>) --}}
-                @if ($products->hasMorePages())
-                    <a href="{{ $products->nextPageUrl() }}#katalog-anchor" class="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center transition-all shadow-2xs">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                    </a>
-                @else
-                    <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-300 flex items-center justify-center transition-all shadow-2xs pointer-events-none opacity-40">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                    </span>
-                @endif
+                    {{-- Nomor Halaman --}}
+                    @foreach ($products->links()->elements[0] as $page => $url)
+                        @if ($page == $products->currentPage())
+                            <span class="min-w-[40px] h-10 px-3 rounded-xl flex items-center justify-center text-sm font-black bg-gradient-to-r from-[#800000] via-[#941515] to-[#800000] text-white shadow-md shadow-red-950/20 ring-2 ring-red-900/10 cursor-default">
+                                {{ $page }}
+                            </span>
+                        @else
+                            <a href="{{ $url }}#katalog-anchor" class="min-w-[40px] h-10 px-3 rounded-xl flex items-center justify-center text-sm font-bold bg-white border border-slate-200/80 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-[#800000] hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200">
+                                {{ $page }}
+                            </a>
+                        @endif
+                    @endforeach
+
+                    {{-- Tombol Next (>) --}}
+                    @if ($products->hasMorePages())
+                        <a href="{{ $products->nextPageUrl() }}#katalog-anchor" class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-red-50 hover:border-red-200 hover:text-[#800000] hover:-translate-y-0.5 hover:shadow-xs flex items-center justify-center transition-all duration-200" title="Halaman Berikutnya">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                        </a>
+                    @else
+                        <span class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 text-slate-300 flex items-center justify-center cursor-not-allowed opacity-60" title="Halaman Terakhir">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                        </span>
+                    @endif
+                </nav>
             </div>
             @endif
         </div>

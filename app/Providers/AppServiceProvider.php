@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
             return $user->role === 'admin';
         });
 
+        // Tampilan pagination default konsisten di seluruh aplikasi (Admin & User)
+        \Illuminate\Pagination\Paginator::defaultView('vendor.pagination.tailwind');
+        \Illuminate\Pagination\Paginator::defaultSimpleView('vendor.pagination.tailwind');
+
         // Otomatis hapus cache publik & admin ketika ada perubahan data
         \App\Models\User\Product::saved(fn() => \App\Services\CacheService::clearPublicCache());
         \App\Models\User\Product::deleted(fn() => \App\Services\CacheService::clearPublicCache());
