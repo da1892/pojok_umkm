@@ -20,7 +20,8 @@ class StoreController extends Controller
         }
 
         $products = $umkm->products()->latest()->get();
-        return view('user.store.dashboard', compact('umkm', 'products'));
+        $consultationsCount = \App\Models\Consultation::where('user_id', $user->id)->count();
+        return view('user.store.dashboard', compact('umkm', 'products', 'consultationsCount'));
     }
 
     public function profile()
@@ -33,7 +34,8 @@ class StoreController extends Controller
         }
 
         $productsCount = $umkm->products()->count();
-        return view('user.store.profile', compact('umkm', 'productsCount'));
+        $consultationsCount = \App\Models\Consultation::where('user_id', $user->id)->count();
+        return view('user.store.profile', compact('umkm', 'productsCount', 'consultationsCount'));
     }
 
     public function updateProfile(Request $request)
@@ -214,8 +216,11 @@ class StoreController extends Controller
 
     public function consultations()
     {
-        $consultations = \App\Models\Consultation::where('user_id', auth()->id())->latest()->get();
-        return view('user.store.consultations', compact('consultations'));
+        $user = auth()->user();
+        $umkm = $user->umkmProfile;
+        $productsCount = $umkm ? $umkm->products()->count() : 0;
+        $consultations = \App\Models\Consultation::where('user_id', $user->id)->latest()->get();
+        return view('user.store.consultations', compact('consultations', 'umkm', 'productsCount'));
     }
 
     public function destroyProduct($id)
