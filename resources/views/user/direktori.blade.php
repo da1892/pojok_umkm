@@ -4,16 +4,16 @@
 
 <!-- Compact Hero Header Section -->
 <div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-8 sm:pt-28 sm:pb-10"
-     style="background: linear-gradient(rgba(120, 15, 15, 0.9), rgba(70, 10, 10, 0.95)), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
+     style="filter: brightness(1.10) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.22) 45%, rgba(0, 0, 0, 0.38) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
     <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 backdrop-blur-md border border-white/20 text-red-100 mb-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-black/25 backdrop-blur-md border border-white/30 text-white mb-2 shadow-sm">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             Direktori Resmi UMKM Wonogiri
         </span>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1.5 tracking-tight [text-shadow:_0_2px_8px_rgba(0,0,0,0.5)]">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1.5 tracking-tight [text-shadow:_0_3px_12px_rgba(0,0,0,0.85)]">
             Katalog Direktori Pelaku Usaha
         </h1>
-        <p class="text-xs sm:text-sm text-white/90 max-w-xl mx-auto leading-relaxed [text-shadow:_0_1px_4px_rgba(0,0,0,0.5)] mb-3">
+        <p class="text-xs sm:text-sm text-white max-w-xl mx-auto leading-relaxed [text-shadow:_0_1px_6px_rgba(0,0,0,0.85)] mb-3 font-medium">
             Temukan produk unggulan dan profil pelaku UMKM terdaftar di 25 kecamatan Kabupaten Wonogiri.
         </p>
 
