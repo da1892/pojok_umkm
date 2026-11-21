@@ -6,6 +6,7 @@ use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\StoreController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\User\PublicController;
+use App\Http\Controllers\User\GuideController;
 
 Route::get('/', [PublicController::class, 'welcome'])->name('home');
 
@@ -18,8 +19,8 @@ Route::get('/api/peta-umkm', [PublicController::class, 'getMapUmkmData'])->name(
 Route::get('/informasi', [PublicController::class, 'informasi'])->name('informasi');
 Route::get('/informasi/{id}', [PublicController::class, 'showNews'])->name('informasi.show');
 
-// Info & Panduan Publik
-Route::get('/panduan', [PublicController::class, 'panduan'])->name('panduan');
+// Info & Panduan Publik (User Guide & Legalitas)
+Route::get('/panduan', [GuideController::class, 'index'])->name('panduan');
 Route::get('/info-panduan', function() { return redirect()->route('panduan'); });
 
 // Konsultasi Publik

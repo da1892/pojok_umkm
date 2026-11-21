@@ -250,9 +250,9 @@
                     <ul class="space-y-2 text-xs text-red-100/90 font-medium">
                         <li><a href="/katalog" class="hover:text-[#facc15] transition-colors">Katalog Produk</a></li>
                         <li><a href="/direktori" class="hover:text-[#facc15] transition-colors">Direktori UMKM</a></li>
+                        <li><a href="/panduan" class="hover:text-[#facc15] transition-colors">Panduan Pengguna</a></li>
                         <li><a href="/konsultasi" class="hover:text-[#facc15] transition-colors">Konsultasi Online</a></li>
                         <li><a href="/informasi" class="hover:text-[#facc15] transition-colors">Agenda Pelatihan</a></li>
-                        <li><a href="/konsultasi" class="hover:text-[#facc15] transition-colors">Sertifikasi Halal & PIRT</a></li>
                     </ul>
                 </div>
 
