@@ -15,7 +15,7 @@
             Produk Unggulan UMKM Wonogiri
         </h1>
         <p class="text-xs sm:text-base md:text-lg text-white max-w-2xl mx-auto font-semibold leading-relaxed [text-shadow:_0_2px_10px_rgba(0,0,0,0.85)]">
-            Temukan aneka ragam produk lokal berkualitas tinggi hasil produksi langsung putra-putri Wonogiri.
+            Temukan ragam produk lokal berkualitas tinggi karya autentik pelaku UMKM binaan Kabupaten Wonogiri.
         </p>
     </div>
 </div>
