@@ -134,8 +134,8 @@
         </div>
 
         <!-- Table (Format Standar & Profesional Seperti Pada Umumnya) -->
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs sm:text-sm">
+        <div class="overflow-x-auto table-scrollbar -mx-px">
+            <table class="w-full min-w-[760px] text-left text-xs sm:text-sm border-collapse">
                 <thead class="bg-slate-50/90 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                     <tr>
                         <th class="w-12 px-3.5 py-3.5 text-center whitespace-nowrap">No</th>
@@ -145,7 +145,7 @@
                         <th class="px-5 py-3.5 whitespace-nowrap">Peran / Hak Akses</th>
                         <th class="px-4 py-3.5 text-center whitespace-nowrap">Status</th>
                         <th class="px-4 py-3.5 text-center whitespace-nowrap">Terdaftar</th>
-                        <th class="px-4 py-3.5 text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-4 py-3.5 text-center whitespace-nowrap sticky right-0 bg-slate-50/95 backdrop-blur-xs z-10 border-l border-slate-200/80 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">Aksi</th>
                         @else
                         <th class="px-4 py-3 whitespace-nowrap">Pelaku Usaha</th>
                         <th class="px-4 py-3">Nama UMKM</th>
@@ -153,7 +153,7 @@
                         <th class="px-4 py-3">Alamat / Wilayah</th>
                         <th class="px-3 py-3 text-center whitespace-nowrap">Produk</th>
                         <th class="px-3.5 py-3 text-center whitespace-nowrap">Terdaftar</th>
-                        <th class="px-4 py-3 text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-4 py-3 text-center whitespace-nowrap sticky right-0 bg-slate-50/95 backdrop-blur-xs z-10 border-l border-slate-200/80 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">Aksi</th>
                         @endif
                     </tr>
                 </thead>
@@ -214,7 +214,7 @@
                         </td>
 
                         <!-- [ADMIN] 6. Aksi -->
-                        <td class="px-4 py-3.5 align-middle text-center whitespace-nowrap">
+                        <td class="px-4 py-3.5 align-middle text-center whitespace-nowrap sticky right-0 bg-white group-hover:bg-slate-50/95 transition-colors z-10 border-l border-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">
                             <div class="flex items-center justify-center gap-2">
                                 <button type="button" 
                                         onclick="openResetPasswordModal('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')" 
@@ -361,7 +361,7 @@
                         </td>
 
                         <!-- [UMKM] 7. Aksi -->
-                        <td class="px-4 py-3 align-top text-center whitespace-nowrap">
+                        <td class="px-4 py-3 align-top text-center whitespace-nowrap sticky right-0 bg-white group-hover:bg-slate-50/95 transition-colors z-10 border-l border-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">
                             <div class="flex items-center justify-center gap-1.5">
                                 @if($user->umkmProfile)
                                 <!-- Tombol Pintas Tambah Produk untuk UMKM ini -->

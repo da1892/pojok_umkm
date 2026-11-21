@@ -8,28 +8,28 @@
         <h3 class="font-bold text-slate-800 text-lg">Konsultasi UMKM</h3>
         <p class="text-slate-500 text-sm mt-1">Daftar pertanyaan dan masalah pelaku UMKM Wonogiri.</p>
     </div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+    <div class="overflow-x-auto table-scrollbar -mx-px">
+        <table class="w-full min-w-[760px] text-left text-sm border-collapse">
+            <thead class="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-bold text-[11px] uppercase tracking-wider">
                 <tr>
-                    <th class="px-6 py-4">ID Tiket</th>
-                    <th class="px-6 py-4">Nama / UMKM</th>
-                    <th class="px-6 py-4">Kategori</th>
-                    <th class="px-6 py-4">Waktu Masuk</th>
-                    <th class="px-6 py-4">Status</th>
-                    <th class="px-6 py-4 text-right">Aksi</th>
+                    <th class="px-3.5 py-3 sm:px-4 sm:py-3.5">ID Tiket</th>
+                    <th class="px-3.5 py-3 sm:px-4 sm:py-3.5">Nama / UMKM</th>
+                    <th class="px-3.5 py-3 sm:px-4 sm:py-3.5">Kategori</th>
+                    <th class="px-3.5 py-3 sm:px-4 sm:py-3.5 whitespace-nowrap">Waktu Masuk</th>
+                    <th class="px-3.5 py-3 sm:px-4 sm:py-3.5">Status</th>
+                    <th class="px-3.5 py-3 sm:px-4 sm:py-3.5 text-right whitespace-nowrap sticky right-0 bg-slate-50/95 backdrop-blur-xs z-10 border-l border-slate-200/80 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse($consultations as $consultation)
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 font-medium text-slate-900">#{{ $consultation->ticket_id ?? $consultation->id }}</td>
-                    <td class="px-6 py-4">
-                        <div class="font-medium text-slate-900">{{ $consultation->name }}</div>
+                <tr class="hover:bg-slate-50/80 transition-colors group">
+                    <td class="px-3.5 py-3 sm:px-4 sm:py-3.5 font-bold text-slate-900">#{{ $consultation->ticket_id ?? $consultation->id }}</td>
+                    <td class="px-3.5 py-3 sm:px-4 sm:py-3.5">
+                        <div class="font-bold text-slate-900">{{ $consultation->name }}</div>
                         <div class="text-xs text-slate-500">{{ $consultation->email ?? $consultation->phone }}</div>
                     </td>
-                    <td class="px-6 py-4">{{ $consultation->subject }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-3.5 py-3 sm:px-4 sm:py-3.5 text-slate-700">{{ $consultation->subject }}</td>
+                    <td class="px-3.5 py-3 sm:px-4 sm:py-3.5 whitespace-nowrap">
                         <div class="font-medium text-slate-900">{{ $consultation->created_at->translatedFormat('d M Y') }}</div>
                         <div class="text-xs text-slate-500 font-mono flex items-center gap-1.5 mt-0.5">
                             <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -37,7 +37,7 @@
                             <span class="text-[10px] text-slate-400">({{ $consultation->created_at->diffForHumans() }})</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-3.5 py-3 sm:px-4 sm:py-3.5">
                         @php
                             $isUserFinished = false;
                             if (strtolower((string)$consultation->status) === 'selesai') {
@@ -77,7 +77,7 @@
                             {{ $statusText }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                    <td class="px-3.5 py-3 sm:px-4 sm:py-3.5 text-right whitespace-nowrap sticky right-0 bg-white group-hover:bg-slate-50/95 transition-colors z-10 border-l border-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">
                         <div class="inline-flex items-center justify-end gap-1.5">
                             @if($consultation->status !== 'selesai')
                                 <form id="finish-consultation-row-{{ $consultation->id }}" action="{{ route('admin.consultations.reply', $consultation->id) }}" method="POST" class="inline">

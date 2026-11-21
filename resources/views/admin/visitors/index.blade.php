@@ -270,16 +270,16 @@
             </form>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+        <div class="overflow-x-auto table-scrollbar -mx-px">
+            <table class="w-full min-w-[760px] text-left text-xs border-collapse">
                 <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold tracking-wider">
                     <tr>
-                        <th class="px-6 py-3.5">Waktu Akses</th>
-                        <th class="px-6 py-3.5">IP Address</th>
-                        <th class="px-6 py-3.5">Halaman Diakses</th>
-                        <th class="px-6 py-3.5">Perangkat</th>
-                        <th class="px-6 py-3.5">Browser & Platform</th>
-                        <th class="px-6 py-3.5">Rujukan (Referer)</th>
+                        <th class="px-4 sm:px-6 py-3.5 whitespace-nowrap">Waktu Akses</th>
+                        <th class="px-4 sm:px-6 py-3.5 whitespace-nowrap">IP Address</th>
+                        <th class="px-4 sm:px-6 py-3.5 whitespace-nowrap">Halaman Diakses</th>
+                        <th class="px-4 sm:px-6 py-3.5 whitespace-nowrap">Perangkat</th>
+                        <th class="px-4 sm:px-6 py-3.5 whitespace-nowrap">Browser & Platform</th>
+                        <th class="px-4 sm:px-6 py-3.5 whitespace-nowrap">Rujukan (Referer)</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

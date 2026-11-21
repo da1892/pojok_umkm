@@ -199,8 +199,8 @@
 
     <!-- Products Table Card -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
+        <div class="overflow-x-auto table-scrollbar -mx-px">
+            <table class="w-full min-w-[760px] text-left text-sm border-collapse">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                         <th class="px-4 py-3.5">Produk</th>
@@ -208,7 +208,7 @@
                         <th class="px-4 py-3.5 whitespace-nowrap">Lokasi</th>
                         <th class="px-3 py-3.5 whitespace-nowrap">Kategori</th>
                         <th class="px-3 py-3.5 text-center whitespace-nowrap">Produk Unggulan</th>
-                        <th class="px-6 py-4 text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-3 py-3 sm:px-4 sm:py-3.5 text-center whitespace-nowrap sticky right-0 bg-slate-50/95 backdrop-blur-xs z-10 border-l border-slate-200/80 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -307,7 +307,7 @@
                         </td>
 
                         <!-- Actions (Visual Icon Only, sama persis seperti di Data UMKM) -->
-                        <td class="px-6 py-4 text-center whitespace-nowrap align-middle">
+                        <td class="px-3 py-3 sm:px-4 sm:py-3.5 text-center whitespace-nowrap align-middle sticky right-0 bg-white group-hover:bg-slate-50/95 transition-colors z-10 border-l border-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">
                             <div class="flex items-center justify-center gap-2">
                                 <!-- Lihat Detail / Pratinjau Produk -->
                                 <button type="button" 

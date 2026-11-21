@@ -204,7 +204,7 @@
             </header>
 
             <!-- Page Content -->
-            <div class="flex-1 overflow-y-auto p-6 lg:p-8 relative">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-8 relative">
                 <!-- Background decoration -->
                 <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-red-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
                 <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
@@ -229,6 +229,23 @@
         }
         .custom-scrollbar:hover::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modern Horizontal Table Scrollbar for Tablet & Mobile */
+        .table-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .table-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 9999px;
+        }
+        .table-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .table-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         /* Desktop Sidebar Collapse Styling */

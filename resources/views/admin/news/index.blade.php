@@ -54,15 +54,15 @@
 
     <!-- Table Card -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
+        <div class="overflow-x-auto table-scrollbar -mx-px">
+            <table class="w-full min-w-[760px] text-left text-sm border-collapse">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                        <th class="px-6 py-4">Berita & Kegiatan</th>
-                        <th class="px-6 py-4">Kategori</th>
-                        <th class="px-6 py-4">Tanggal Rilis</th>
-                        <th class="px-6 py-4 text-center">Status On / Off</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
+                        <th class="px-4 sm:px-6 py-4">Berita & Kegiatan</th>
+                        <th class="px-4 sm:px-6 py-4 whitespace-nowrap">Kategori</th>
+                        <th class="px-4 sm:px-6 py-4 whitespace-nowrap">Tanggal Rilis</th>
+                        <th class="px-4 sm:px-6 py-4 text-center whitespace-nowrap">Status On / Off</th>
+                        <th class="px-4 sm:px-6 py-4 text-right whitespace-nowrap sticky right-0 bg-slate-50/95 backdrop-blur-xs z-10 border-l border-slate-200/80 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -70,7 +70,7 @@
                     @php
                         $itemImg = $item->image_path ? (str_starts_with($item->image_path, 'http') || str_starts_with($item->image_path, 'img/') ? asset($item->image_path) : asset('storage/' . $item->image_path)) : asset('img/news/bimtek.jpg');
                     @endphp
-                    <tr class="hover:bg-slate-50/70 transition-colors">
+                    <tr class="hover:bg-slate-50/70 transition-colors group">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3.5">
                                 <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
@@ -106,7 +106,7 @@
                                 </button>
                             </form>
                         </td>
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-4 sm:px-6 py-4 text-right whitespace-nowrap sticky right-0 bg-white group-hover:bg-slate-50/95 transition-colors z-10 border-l border-slate-100 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.04)]">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('informasi.show', $item->id) }}" target="_blank" class="p-2 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200/60" title="Lihat Tampilan Publik">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
