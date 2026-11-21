@@ -266,7 +266,7 @@
         <div id="katalog-anchor" class="scroll-mt-24"></div>
 
         <!-- Katalog Content Container -->
-        <div id="katalog-grid-container" class="relative z-10 reveal delay-200">
+        <div id="katalog-grid-container" class="relative z-10">
             @if ($products->count() > 0)
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
                 @foreach ($products as $product)
@@ -359,7 +359,7 @@
         <!-- Pagination Container for Smooth AJAX Replacement -->
         <div id="katalog-pagination-container">
             @if ($products->hasPages())
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-12 mb-8 reveal delay-300 select-none">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-12 mb-8 select-none">
                 <nav class="inline-flex items-center gap-1.5 p-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xs" role="navigation" aria-label="Navigasi Halaman Katalog">
                     {{-- Tombol Previous (<) --}}
                     @if ($products->onFirstPage())
@@ -470,6 +470,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (paginationContainer) {
                 paginationContainer.innerHTML = newPagination ? newPagination.innerHTML : '';
             }
+
+            document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+            if (window.initReveals) window.initReveals();
 
             // Update URL browser tanpa reload
             history.replaceState(null, '', targetUrl);
@@ -690,12 +693,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (newGrid && gridContainer) gridContainer.innerHTML = newGrid.innerHTML;
                 if (paginationContainer) paginationContainer.innerHTML = newPagination ? newPagination.innerHTML : '';
 
+                // Pastikan seluruh elemen baru langsung tampil jelas
+                document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+                if (window.initReveals) window.initReveals();
+
                 history.replaceState(null, '', href);
 
                 const anchor = document.getElementById('katalog-anchor');
                 if (anchor) anchor.scrollIntoView({ behavior: 'smooth' });
             })
-            .catch(err => console.error('Pagination fetch error:', err))
+            .catch(err => {
+                console.error('Pagination fetch error:', err);
+                // Fallback navigasi langsung bila AJAX bermasalah
+                window.location.href = href;
+            })
             .finally(() => {
                 if (gridContainer) gridContainer.classList.remove('opacity-40', 'pointer-events-none');
                 if (spinner) spinner.classList.add('hidden');

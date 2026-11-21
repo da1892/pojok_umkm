@@ -322,29 +322,29 @@
         }
 
         // Global Intersection Observer for animations (Instan saat render awal)
-        document.addEventListener('DOMContentLoaded', function() {
+        window.revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, { threshold: 0.05 });
+
+        window.initReveals = function() {
             const reveals = document.querySelectorAll('.reveal');
             reveals.forEach(el => {
                 const rect = el.getBoundingClientRect();
                 if (rect.top < window.innerHeight + 80) {
                     el.classList.add('active');
+                } else if (!el.classList.contains('active')) {
+                    window.revealObserver.observe(el);
                 }
             });
+        };
 
-            const revealObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target); 
-                    }
-                });
-            }, { threshold: 0.05 });
-
-            reveals.forEach(reveal => {
-                if (!reveal.classList.contains('active')) {
-                    revealObserver.observe(reveal);
-                }
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            window.initReveals();
 
             // Auto-scroll to #kontak if hash is present in URL
             if (window.location.hash === '#kontak') {
