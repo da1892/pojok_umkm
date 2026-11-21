@@ -4,28 +4,26 @@
 
 <!-- Compact Hero Header Section -->
 <div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-8 sm:pt-28 sm:pb-10"
-     style="filter: brightness(1.05) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(0, 0, 0, 0.35) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
+     style="filter: brightness(1.05) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.50) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
     <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6">
-        <div class="bg-slate-950/65 backdrop-blur-md rounded-3xl p-5 sm:p-7 border border-white/20 shadow-2xl">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 border border-white/20 text-white mb-2 shadow-sm">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Direktori Resmi UMKM Wonogiri
-            </span>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1.5 tracking-tight">
-                Katalog Direktori Pelaku Usaha
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-200 max-w-xl mx-auto leading-relaxed mb-3 font-normal">
-                Temukan produk unggulan dan profil pelaku UMKM terdaftar di 25 kecamatan Kabupaten Wonogiri.
-            </p>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-black/25 backdrop-blur-md border border-white/30 text-white mb-2 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Direktori Resmi UMKM Wonogiri
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1.5 tracking-tight [text-shadow:_0_3px_12px_rgba(0,0,0,0.85)]">
+            Katalog Direktori Pelaku Usaha
+        </h1>
+        <p class="text-xs sm:text-sm text-white max-w-xl mx-auto leading-relaxed [text-shadow:_0_1px_6px_rgba(0,0,0,0.85)] mb-3 font-medium">
+            Temukan produk unggulan dan profil pelaku UMKM terdaftar di 25 kecamatan Kabupaten Wonogiri.
+        </p>
 
-            <!-- Compact Metrics Pills -->
-            <div class="inline-flex items-center gap-3 px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] text-white/95">
-                <span><strong class="text-amber-300">{{ \App\Models\User\UmkmProfile::where('status', 'verified')->count() }}</strong> UMKM</span>
-                <span class="text-white/40">&bull;</span>
-                <span><strong class="text-amber-300">{{ \App\Models\User\Product::where('status', 'verified')->count() }}</strong> Produk</span>
-                <span class="text-white/40">&bull;</span>
-                <span><strong>25</strong> Kecamatan</span>
-            </div>
+        <!-- Compact Metrics Pills -->
+        <div class="inline-flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/15 text-[11px] text-white/95">
+            <span><strong class="text-amber-300">{{ \App\Models\User\UmkmProfile::where('status', 'verified')->count() }}</strong> UMKM</span>
+            <span class="text-white/40">&bull;</span>
+            <span><strong class="text-amber-300">{{ \App\Models\User\Product::where('status', 'verified')->count() }}</strong> Produk</span>
+            <span class="text-white/40">&bull;</span>
+            <span><strong>25</strong> Kecamatan</span>
         </div>
     </div>
 </div>

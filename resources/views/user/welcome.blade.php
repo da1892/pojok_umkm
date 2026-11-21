@@ -7,17 +7,17 @@
     
     <!-- Slide 1: Tugu Selamat Datang di Wonogiri -->
     <div class="hero-bg-slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-100 scale-100 z-0"
-         style="filter: brightness(1.10) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.20) 45%, rgba(0, 0, 0, 0.35) 100%), url('{{ asset('img/hero_wonogiri_1.jpg') }}') center center / cover no-repeat;">
+         style="filter: brightness(1.05) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.50) 100%), url('{{ asset('img/hero_wonogiri_1.jpg') }}') center center / cover no-repeat;">
     </div>
 
     <!-- Slide 2: Pasar Ngadirojo Wonogiri -->
     <div class="hero-bg-slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-0 scale-105 z-0"
-         style="filter: brightness(1.10) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.20) 45%, rgba(0, 0, 0, 0.35) 100%), url('{{ asset('img/hero_wonogiri_2.jpg') }}') center 25% / cover no-repeat;">
+         style="filter: brightness(1.05) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.50) 100%), url('{{ asset('img/hero_wonogiri_2.jpg') }}') center 25% / cover no-repeat;">
     </div>
 
     <!-- Slide 3: Pasar Kota Wonogiri -->
     <div class="hero-bg-slide absolute inset-0 transition-all duration-1000 ease-in-out opacity-0 scale-105 z-0"
-         style="filter: brightness(1.10) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.20) 45%, rgba(0, 0, 0, 0.35) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 35% / cover no-repeat;">
+         style="filter: brightness(1.05) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.50) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 35% / cover no-repeat;">
     </div>
 
     <!-- Navigation Arrows -->
@@ -34,36 +34,34 @@
 
     <!-- Content Overlay -->
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <div class="bg-slate-950/65 backdrop-blur-md rounded-3xl p-6 sm:p-9 md:p-12 border border-white/20 shadow-2xl">
-            <!-- Official Badge -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs sm:text-sm font-semibold mb-3.5 shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                <span>Pemerintah Kabupaten Wonogiri</span>
-            </div>
+        <!-- Official Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-black/25 backdrop-blur-md border border-white/30 text-white text-xs sm:text-sm font-semibold mb-3.5 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span>Pemerintah Kabupaten Wonogiri</span>
+        </div>
 
-            <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3.5 tracking-tight leading-tight">
-                Pojok UMKM Kabupaten Wonogiri
-            </h1>
-            <p class="text-sm sm:text-base md:text-xl text-slate-100 mb-8 max-w-2xl mx-auto leading-relaxed font-normal">
-                Wadah informasi resmi, kurasi, dan promosi produk unggulan UMKM Wonogiri sukses mendunia.
-            </p>
-            
-            <!-- Action Buttons Matching Mockup -->
-            <div class="flex flex-wrap items-center justify-center gap-3.5">
-                <a href="/katalog" class="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-                    <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-                    </svg>
-                    Lihat Produk UMKM
-                </a>
-                <a href="{{ route('informasi') }}" class="inline-flex items-center justify-center bg-white/15 hover:bg-white/25 border-2 border-white/50 hover:border-white text-white font-bold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md">
-                    Pelajari Program
-                </a>
-            </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight [text-shadow:_0_3px_14px_rgba(0,0,0,0.85),_0_1px_3px_rgba(0,0,0,0.95)]">
+            Pojok UMKM Kabupaten Wonogiri
+        </h1>
+        <p class="text-base sm:text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto leading-relaxed font-semibold [text-shadow:_0_2px_10px_rgba(0,0,0,0.85)]">
+            Wadah informasi resmi, kurasi, dan promosi produk unggulan UMKM Wonogiri sukses mendunia.
+        </p>
+        
+        <!-- Action Buttons Matching Mockup -->
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
+            <a href="/katalog" class="inline-flex items-center gap-2.5 bg-[#eab308] hover:bg-[#facc15] text-[#78350f] font-bold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                <svg class="w-4 h-4 text-[#78350f]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                </svg>
+                Lihat Produk UMKM
+            </a>
+            <a href="{{ route('informasi') }}" class="inline-flex items-center justify-center border-2 border-white/80 hover:border-white hover:bg-white/10 text-white font-semibold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-lg transition-all transform hover:-translate-y-0.5">
+                Pelajari Program
+            </a>
         </div>
 
         <!-- Slide Indicator Dots -->
-        <div class="flex items-center justify-center gap-2.5 pt-4">
+        <div class="flex items-center justify-center gap-2.5 pt-1">
             <button type="button" onclick="setHeroSlide(0)" class="hero-dot w-8 h-2.5 rounded-full bg-white transition-all duration-300 shadow-sm" aria-label="Slide 1"></button>
             <button type="button" onclick="setHeroSlide(1)" class="hero-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all duration-300 shadow-sm" aria-label="Slide 2"></button>
             <button type="button" onclick="setHeroSlide(2)" class="hero-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all duration-300 shadow-sm" aria-label="Slide 3"></button>
