@@ -34,34 +34,36 @@
 
     <!-- Content Overlay -->
     <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <!-- Official Badge -->
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-black/25 backdrop-blur-md border border-white/30 text-white text-xs sm:text-sm font-semibold mb-3.5 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span>Pemerintah Kabupaten Wonogiri</span>
-        </div>
+        <div class="bg-slate-950/65 backdrop-blur-md rounded-3xl p-6 sm:p-9 md:p-12 border border-white/20 shadow-2xl">
+            <!-- Official Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs sm:text-sm font-semibold mb-3.5 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span>Pemerintah Kabupaten Wonogiri</span>
+            </div>
 
-        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight leading-tight [text-shadow:_0_3px_14px_rgba(0,0,0,0.85),_0_1px_3px_rgba(0,0,0,0.95)]">
-            Pojok UMKM Kabupaten Wonogiri
-        </h1>
-        <p class="text-base sm:text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto leading-relaxed font-semibold [text-shadow:_0_2px_10px_rgba(0,0,0,0.85)]">
-            Wadah informasi resmi, kurasi, dan promosi produk unggulan UMKM Wonogiri sukses mendunia.
-        </p>
-        
-        <!-- Action Buttons Matching Mockup -->
-        <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
-            <a href="/katalog" class="inline-flex items-center gap-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-900 font-extrabold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-                <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-                </svg>
-                Lihat Produk UMKM
-            </a>
-            <a href="{{ route('informasi') }}" class="inline-flex items-center justify-center bg-white/20 hover:bg-white/30 backdrop-blur-md border-2 border-white text-white font-bold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                Pelajari Program
-            </a>
+            <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3.5 tracking-tight leading-tight">
+                Pojok UMKM Kabupaten Wonogiri
+            </h1>
+            <p class="text-sm sm:text-base md:text-xl text-slate-100 mb-8 max-w-2xl mx-auto leading-relaxed font-normal">
+                Wadah informasi resmi, kurasi, dan promosi produk unggulan UMKM Wonogiri sukses mendunia.
+            </p>
+            
+            <!-- Action Buttons Matching Mockup -->
+            <div class="flex flex-wrap items-center justify-center gap-3.5">
+                <a href="/katalog" class="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                    <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                    </svg>
+                    Lihat Produk UMKM
+                </a>
+                <a href="{{ route('informasi') }}" class="inline-flex items-center justify-center bg-white/15 hover:bg-white/25 border-2 border-white/50 hover:border-white text-white font-bold text-sm sm:text-base px-6 sm:px-8 py-3.5 rounded-xl transition-all transform hover:-translate-y-0.5 shadow-md">
+                    Pelajari Program
+                </a>
+            </div>
         </div>
 
         <!-- Slide Indicator Dots -->
-        <div class="flex items-center justify-center gap-2.5 pt-1">
+        <div class="flex items-center justify-center gap-2.5 pt-4">
             <button type="button" onclick="setHeroSlide(0)" class="hero-dot w-8 h-2.5 rounded-full bg-white transition-all duration-300 shadow-sm" aria-label="Slide 1"></button>
             <button type="button" onclick="setHeroSlide(1)" class="hero-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all duration-300 shadow-sm" aria-label="Slide 2"></button>
             <button type="button" onclick="setHeroSlide(2)" class="hero-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all duration-300 shadow-sm" aria-label="Slide 3"></button>

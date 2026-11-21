@@ -3,20 +3,22 @@
 @section('content')
 
 <!-- Hero Header Section with Bright & Clean Wonogiri Overlay -->
-<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-12 sm:pt-36 sm:pb-20"
-     style="filter: brightness(1.10) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.22) 45%, rgba(0, 0, 0, 0.38) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
-    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <!-- Official Badge -->
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-black/25 backdrop-blur-md border border-white/30 text-white text-xs sm:text-sm font-semibold mb-3 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span>Katalog Resmi Produk Wonogiri</span>
+<div class="relative w-full overflow-hidden text-white flex items-center justify-center text-center pt-24 pb-12 sm:pt-32 sm:pb-16"
+     style="filter: brightness(1.05) contrast(1.02); background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(0, 0, 0, 0.35) 100%), url('{{ asset('img/hero_wonogiri_3.jpg') }}') center 30% / cover no-repeat;">
+    <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 reveal">
+        <div class="bg-slate-950/65 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl">
+            <!-- Official Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-semibold mb-3 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span>Katalog Resmi Produk Wonogiri</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3 tracking-tight">
+                Produk Unggulan UMKM Wonogiri
+            </h1>
+            <p class="text-xs sm:text-base md:text-lg text-slate-200 max-w-2xl mx-auto font-normal leading-relaxed">
+                Temukan aneka ragam produk lokal berkualitas tinggi hasil produksi langsung putra-putri Wonogiri.
+            </p>
         </div>
-        <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-white mb-2 sm:mb-3.5 tracking-tight [text-shadow:_0_3px_14px_rgba(0,0,0,0.85),_0_1px_3px_rgba(0,0,0,0.95)]">
-            Produk Unggulan UMKM Wonogiri
-        </h1>
-        <p class="text-xs sm:text-base md:text-lg text-white max-w-2xl mx-auto font-semibold leading-relaxed [text-shadow:_0_2px_10px_rgba(0,0,0,0.85)]">
-            Temukan aneka ragam produk lokal berkualitas tinggi hasil produksi langsung putra-putri Wonogiri.
-        </p>
     </div>
 </div>
 
