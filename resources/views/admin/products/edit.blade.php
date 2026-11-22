@@ -84,7 +84,7 @@
                                 Klik atau seret foto baru
                             </span>
                             <span class="text-[11px] text-slate-500 mt-1 max-w-xs">
-                                Format JPG, PNG, WEBP (Maksimal 10MB per berkas). Foto #1 otomatis jadi sampul.
+                                Format JPG, PNG, WEBP (Maksimal 5MB per berkas). Foto #1 otomatis jadi sampul.
                             </span>
                         </div>
                     </div>

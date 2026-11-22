@@ -207,15 +207,11 @@
             <!-- Header Section with Badge -->
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-3.5 sm:mb-4">
                 <div>
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs mb-1">
-                        <svg class="w-3.5 h-3.5 text-amber-500 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <span>Kurasi Resmi Dinas Perdagangan Wonogiri</span>
-                    </div>
                     <h2 class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight">
                         Produk Unggulan
                     </h2>
                     <p class="text-slate-500 text-xs sm:text-sm mt-0.5 max-w-xl">
-                        Koleksi komoditas dan karya khas pilihan asli Wonogiri dengan jaminan mutu dan legalitas resmi.
+                        Koleksi produk unggulan pilihan hasil kurasi pelaku UMKM terverifikasi dan binaan Pemerintah Kabupaten Wonogiri.
                     </p>
                 </div>
 
@@ -652,10 +648,6 @@
                         <div class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400">Produk Unggulan</div>
                         <div class="text-sm sm:text-lg font-black text-[#800000]" id="map-total-count">{{ count($umkmMapList ?? []) }}</div>
                     </div>
-                    <div class="flex-1 sm:flex-initial px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs text-center min-w-[65px]">
-                        <div class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400">Kecamatan</div>
-                        <div class="text-sm sm:text-lg font-black text-amber-600">25</div>
-                    </div>
                     <button type="button" 
                             onclick="resetWonogiriMap()" 
                             class="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-[#800000] hover:bg-red-900 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
@@ -840,14 +832,6 @@
                     <!-- Scrollable List of UMKM Cards -->
                     <div id="sidebar-umkm-list" class="flex-1 overflow-y-auto space-y-2.5 pr-1.5 scrollbar-thin">
                         <!-- Dinamis via JavaScript -->
-                    </div>
-
-                    <!-- Sidebar Footer CTA -->
-                    <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 text-[11px]">Belum terdaftar di peta?</span>
-                        <a href="{{ route('toko.create') }}" class="font-bold text-[#800000] hover:underline flex items-center gap-1 text-[11px]">
-                            Daftarkan Usaha Anda &rarr;
-                        </a>
                     </div>
 
                 </div>

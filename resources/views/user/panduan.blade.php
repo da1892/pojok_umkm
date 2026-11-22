@@ -27,29 +27,10 @@
                 Panduan praktis dan panduan detail pengisian formulir resmi bagi pelaku UMKM di Kabupaten Wonogiri: dari pendaftaran profil usaha, kurasi katalog produk, hingga pengajuan konsultasi online bersama Dinas Perdagangan dan KUKM.
             </p>
 
-            <!-- Search Bar & Instant Quick Filters -->
-            <div class="max-w-2xl mx-auto">
-                <div class="relative flex items-center shadow-lg rounded-2xl">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-                        </svg>
-                    </div>
-                    <input type="text"
-                           id="guide-search-input"
-                           placeholder="Cari panduan (misal: aturan pengisian, contoh nama brand, foto 2MB, harga tanpa titik, tiket konsultasi)..."
-                           class="w-full pl-11 pr-24 py-3.5 sm:py-4 rounded-2xl bg-white text-slate-800 placeholder-slate-400 text-xs sm:text-sm font-medium focus:outline-none focus:ring-4 focus:ring-amber-400/40 border-0 shadow-inner"
-                           onkeyup="handleLiveSearch(this.value)">
-                    <button type="button"
-                            id="btn-clear-search"
-                            onclick="clearLiveSearch()"
-                            class="hidden absolute right-3 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all">
-                        Reset
-                    </button>
-                </div>
-
+            <!-- Instant Quick Filters -->
+            <div class="max-w-3xl mx-auto">
                 <!-- Quick Filter Chips -->
-                <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4 text-[11px] sm:text-xs">
+                <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
                     <span class="text-red-200 font-semibold mr-1 hidden sm:inline">Pintas:</span>
                     <button type="button" onclick="filterByTopic('all')" class="quick-chip active px-3 py-1 rounded-full bg-amber-400 text-[#800000] font-bold shadow-xs hover:bg-amber-300 transition-all">Semua</button>
                     <button type="button" onclick="filterByTopic('registrasi')" class="quick-chip px-3 py-1 rounded-full bg-white/15 text-white hover:bg-white/25 border border-white/20 transition-all">1. Profil Usaha</button>
@@ -64,6 +45,30 @@
 
     <!-- Main Content Container -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20">
+
+        <!-- Banner Unduh PDF Panduan Resmi (Tunggal & Rapi) -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-red-50 text-[#800000] border border-red-100 flex items-center justify-center shrink-0 shadow-2xs">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-sm sm:text-base font-extrabold text-slate-900">Buku Panduan Pengguna &amp; Tata Cara Pengisian Formulir (PDF)</h4>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                        Dokumen panduan resmi berisi tata cara pemakaian web, pendaftaran profil UMKM, kurasi katalog produk, hingga pengajuan tiket konsultasi.
+                    </p>
+                </div>
+            </div>
+            <a href="{{ route('panduan.download_pdf') }}"
+               class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#800000] hover:bg-red-900 text-white font-bold text-xs sm:text-sm shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all shrink-0 cursor-pointer">
+                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                </svg>
+                <span>Unduh Dokumen PDF</span>
+            </a>
+        </div>
 
         <!-- Master Tabs Nav: Switch between Portal Guide & Legalitas Usaha -->
         <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-200/90 mb-8 flex flex-col sm:flex-row gap-2">
@@ -124,7 +129,7 @@
                             Panduan Katalog Produk
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Format nama produk spesifik, foto produk maks 2MB, template 4 poin deskripsi, dan harga angka murni tanpa titik.
+                            Format nama produk spesifik, foto produk maks 5MB, template 4 poin deskripsi, dan harga angka murni tanpa titik.
                         </p>
                     </div>
                     <div class="mt-5 pt-3 border-t border-slate-100 text-xs font-bold text-emerald-700 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
@@ -443,7 +448,7 @@
             <!-- MODUL 2: PANDUAN PENGISIAN KATALOG PRODUK                     -->
             <!-- ============================================================== -->
             <div id="modul-katalog" class="guide-block bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 scroll-mt-24"
-                 data-keywords="modul 2 katalog produk keripik tempe benguk pedas manis 200gr foto produk 2mb harga satuan tanpa titik template deskripsi komposisi tautan marketplace shopee tokopedia kurasi produk unggulan kesalahan umum">
+                 data-keywords="modul 2 katalog produk keripik tempe benguk pedas manis 200gr foto produk 5mb harga satuan tanpa titik template deskripsi komposisi tautan marketplace shopee tokopedia kurasi produk unggulan kesalahan umum">
                 
                 <!-- Module Header -->
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-8">
@@ -515,7 +520,7 @@
                         </div>
                     </div>
 
-                    <!-- Field 2: Ketentuan Foto Produk (Badge: Maks 2MB) -->
+                    <!-- Field 2: Ketentuan Foto Produk (Badge: Maks 5MB) -->
                     <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
                         <div class="bg-slate-100/80 px-5 py-3 border-b border-slate-200 flex items-center justify-between">
                             <div class="flex items-center gap-2">
@@ -524,7 +529,7 @@
                             </div>
                             <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-md">
                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-                                Ukuran Maksimal 2MB
+                                Ukuran Maksimal 5MB
                             </span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
@@ -536,7 +541,7 @@
                                 </div>
                                 <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
                                     <li>Format wajib: <strong>JPG, JPEG, atau PNG</strong>.</li>
-                                    <li>Batas ukuran file: <strong>Maksimal 2 Megabytes (2.048 KB)</strong> per foto.</li>
+                                    <li>Batas ukuran file: <strong>Maksimal 5 Megabytes (5.120 KB)</strong> per foto.</li>
                                     <li>Pencahayaan terang alami, produk fokus di tengah, dan <strong>tanpa teks promosi / watermark berlebihan</strong> yang menutupi bentuk fisik kemasan.</li>
                                 </ul>
                             </div>
@@ -552,7 +557,7 @@
                                         <div class="text-[11px] text-slate-500 mt-0.5">Rasio kotak 1:1, latar belakang meja kayu polos atau putih netral.</div>
                                     </div>
                                     <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
-                                        &cross; Foto buram di lantai redup, file >2MB, atau ditutupi stiker diskon besar.
+                                        &cross; Foto buram di lantai redup, file >5MB, atau ditutupi stiker diskon besar.
                                     </div>
                                 </div>
                             </div>
@@ -713,7 +718,7 @@
             <!-- MODUL 3: PANDUAN PENGISIAN TIKET KONSULTASI ONLINE             -->
             <!-- ============================================================== -->
             <div id="modul-konsultasi" class="guide-block bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 scroll-mt-24"
-                 data-keywords="modul 3 tiket konsultasi online perizinan legalitas nib pirt halal kemasan branding pemasaran digital subjek kendala sambal botol lampiran foto 2mb status tiket open in progress resolved cek tiket tips kurasi kesalahan umum">
+                 data-keywords="modul 3 tiket konsultasi online perizinan legalitas nib pirt halal kemasan branding pemasaran digital subjek kendala sambal botol lampiran foto 5mb status tiket open in progress resolved cek tiket tips kurasi kesalahan umum">
                 
                 <!-- Module Header -->
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-8">
@@ -871,7 +876,7 @@
                                 <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">4</span>
                                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kolom: Lampiran Berkas &amp; Pemantauan Status Tiket</h3>
                             </div>
-                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Maks 2MB</span>
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Maks 5MB</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
                             <!-- Left: Aturan Pengisian -->
@@ -883,7 +888,7 @@
                                 <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed">
                                     <li>Foto kemasan produk saat ini (JPG/PNG).</li>
                                     <li>Tangkapan layar (screenshot) pesan error pada sistem OSS atau SiHalal.</li>
-                                    <li>Dokumen pendukung (PDF, maksimal 2MB per berkas).</li>
+                                    <li>Dokumen pendukung (PDF, maksimal 5MB per berkas).</li>
                                 </ul>
                             </div>
                             <!-- Right: Status Tiket Dinas -->
@@ -1210,7 +1215,7 @@
                         <span class="faq-icon text-[#991b1b] font-black text-lg transition-transform duration-200">&plus;</span>
                     </button>
                     <div class="faq-answer hidden px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-                        Kendala unggah foto umumnya disebabkan oleh: (1) Ukuran file melebihi batas maksimal <strong>2 Megabytes (2MB)</strong>, atau (2) Format file bukan JPG, JPEG, PNG, atau WEBP. Silakan kompres foto menggunakan aplikasi kompres foto di ponsel atau perkecil resolusi kamera Anda menjadi 1:1 atau 4:3 sebelum mengunggah.
+                        Kendala unggah foto umumnya disebabkan oleh: (1) Ukuran file melebihi batas maksimal <strong>5 Megabytes (5MB)</strong>, atau (2) Format file bukan JPG, JPEG, PNG, atau WEBP. Silakan kompres foto menggunakan aplikasi kompres foto di ponsel atau perkecil resolusi kamera Anda menjadi 1:1 atau 4:3 sebelum mengunggah.
                     </div>
                 </div>
 

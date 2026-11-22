@@ -336,8 +336,8 @@ class AdminController extends Controller
             'category' => 'required|string|max:100',
             'description' => 'nullable|string',
             'images' => 'nullable|array|max:5',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
             'umkm_profile_id.required' => 'Pilih Toko UMKM pemilik produk ini.',
             'umkm_profile_id.exists' => 'Toko UMKM yang dipilih tidak valid.',
@@ -346,9 +346,9 @@ class AdminController extends Controller
             'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
             'images.*.image' => 'File foto harus berupa gambar.',
             'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
-            'images.*.max' => 'Ukuran gambar maksimal 10MB.',
+            'images.*.max' => 'Ukuran gambar maksimal 5MB.',
             'image.image' => 'File foto harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 10MB.',
+            'image.max' => 'Ukuran gambar maksimal 5MB.',
         ]);
 
         $umkm = UmkmProfile::findOrFail($request->umkm_profile_id);
@@ -774,13 +774,13 @@ class AdminController extends Controller
             'category' => 'required|string',
             'description' => 'nullable|string',
             'images' => 'nullable|array|max:5',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240'
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120'
         ], [
             'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
             'images.*.image' => 'File harus berupa gambar.',
             'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
-            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.'
+            'images.*.max' => 'Ukuran setiap gambar maksimal 5MB.'
         ]);
 
         $data = [
@@ -1074,7 +1074,7 @@ class AdminController extends Controller
             'excerpt' => 'nullable|string',
             'content' => 'required|string',
             'images' => 'nullable|array|max:10',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
             'is_published' => 'nullable',
         ]);
 
@@ -1117,7 +1117,7 @@ class AdminController extends Controller
             'excerpt' => 'nullable|string',
             'content' => 'required|string',
             'images' => 'nullable|array|max:10',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
             'is_published' => 'nullable',
         ]);
 
@@ -1585,7 +1585,7 @@ class AdminController extends Controller
             'pirt' => 'nullable|string|max:100',
             'halal_cert' => 'nullable|string|max:100',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
             'name.required' => 'Nama pemilik usaha wajib diisi.',
             'email.required' => 'Alamat email wajib diisi.',
@@ -1686,17 +1686,17 @@ class AdminController extends Controller
             'category' => 'required|string|max:100',
             'description' => 'nullable|string',
             'images' => 'nullable|array|max:5',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
             'name.required' => 'Nama produk wajib diisi.',
             'category.required' => 'Kategori produk wajib dipilih.',
             'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
             'images.*.image' => 'File foto harus berupa gambar.',
             'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
-            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.',
+            'images.*.max' => 'Ukuran setiap gambar maksimal 5MB.',
             'image.image' => 'File foto harus berupa gambar.',
-            'image.max' => 'Ukuran gambar maksimal 10MB.',
+            'image.max' => 'Ukuran gambar maksimal 5MB.',
         ]);
 
         $allImagesPaths = [];
@@ -1910,10 +1910,10 @@ class AdminController extends Controller
     public function importExcel(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:10240',
+            'file' => 'required|file|max:5120',
         ], [
             'file.required' => 'Pilih file Excel (.xlsx) atau CSV yang akan diimpor.',
-            'file.max' => 'Ukuran file maksimal 10MB.',
+            'file.max' => 'Ukuran file maksimal 5MB.',
         ]);
 
         $file = $request->file('file');

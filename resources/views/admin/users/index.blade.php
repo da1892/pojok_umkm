@@ -570,7 +570,7 @@
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih File Spreadsheet (.xlsx / .csv)</label>
                 <input type="file" name="file" accept=".xlsx,.csv,.txt" required class="w-full text-xs text-slate-600 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 p-3">
-                <p class="text-[10px] text-slate-400 mt-1">Maksimal ukuran file: 10MB.</p>
+                <p class="text-[10px] text-slate-400 mt-1">Maksimal ukuran file: 5MB.</p>
             </div>
 
             <div class="flex items-center justify-end gap-2.5 pt-2">

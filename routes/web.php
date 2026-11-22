@@ -21,6 +21,7 @@ Route::get('/informasi/{id}', [PublicController::class, 'showNews'])->name('info
 
 // Info & Panduan Publik (User Guide & Legalitas)
 Route::get('/panduan', [GuideController::class, 'index'])->name('panduan');
+Route::get('/panduan/download-pdf', [GuideController::class, 'downloadPdf'])->name('panduan.download_pdf');
 Route::get('/info-panduan', function() { return redirect()->route('panduan'); });
 
 // Konsultasi Publik

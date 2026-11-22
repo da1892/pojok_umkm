@@ -175,13 +175,13 @@ class StoreController extends Controller
             'category' => 'required|string|max:255',
             'description' => 'required|string',
             'images' => 'nullable|array|max:5',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240'
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120'
         ], [
             'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
             'images.*.image' => 'File harus berupa gambar.',
             'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
-            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.'
+            'images.*.max' => 'Ukuran setiap gambar maksimal 5MB.'
         ]);
 
         $imagePaths = [];
@@ -254,13 +254,13 @@ class StoreController extends Controller
             'category' => 'required|string|max:255',
             'description' => 'required|string',
             'images' => 'nullable|array|max:5',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240'
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120'
         ], [
             'images.max' => 'Maksimal 5 foto produk dapat diunggah.',
             'images.*.image' => 'File harus berupa gambar.',
             'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
-            'images.*.max' => 'Ukuran setiap gambar maksimal 10MB.'
+            'images.*.max' => 'Ukuran setiap gambar maksimal 5MB.'
         ]);
 
         $data = [

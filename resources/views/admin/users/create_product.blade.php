@@ -91,7 +91,7 @@
                 </div>
 
                 <p class="text-xs text-slate-500 leading-relaxed">
-                    Unggah minimal 1 dan maksimal 5 foto produk. <strong>Foto pertama otomatis dijadikan foto sampul utama</strong> di katalog pembeli. Format: JPG, PNG, WEBP (maks. 10MB/foto).
+                    Unggah minimal 1 dan maksimal 5 foto produk. <strong>Foto pertama otomatis dijadikan foto sampul utama</strong> di katalog pembeli. Format: JPG, PNG, WEBP (maks. 5MB/foto).
                 </p>
 
                 <!-- Dropzone Area -->

@@ -126,7 +126,7 @@
                     <div class="sm:col-span-2">
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Foto Tempat Usaha / Logo Toko (Opsional)</label>
                         <input type="file" name="image" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-[#800000] hover:file:bg-red-100 cursor-pointer border border-slate-200 rounded-xl bg-slate-50 p-1.5">
-                        <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 3MB.</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 5MB.</p>
                     </div>
                 </div>
             </div>
