@@ -192,14 +192,13 @@
         <!-- Produk Unggulan -->
         @php
             if (!isset($featuredProducts)) {
-                // Ambil HANYA produk yang diaktifkan sebagai Unggulan oleh Admin (1 UMKM 1 produk unggulan)
+                // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin
                 $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                     ->where('status', 'verified')
                     ->where('is_featured', true)
                     ->latest()
-                    ->get()
-                    ->unique('umkm_profile_id')
-                    ->take(10);
+                    ->take(16)
+                    ->get();
             }
         @endphp
 

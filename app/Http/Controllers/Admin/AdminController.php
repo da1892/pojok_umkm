@@ -368,14 +368,6 @@ class AdminController extends Controller
         $imagePath = !empty($allImagesPaths) ? $allImagesPaths[0] : null;
 
         $isFeatured = $request->has('is_featured');
-        if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
-            $featuredCount = Product::where('umkm_profile_id', $umkm->id)
-                ->where('is_featured', true)
-                ->count();
-            if ($featuredCount >= 2) {
-                $isFeatured = false;
-            }
-        }
 
         $productData = [
             'umkm_profile_id' => $umkm->id,
@@ -807,21 +799,6 @@ class AdminController extends Controller
         }
 
         if ($request->boolean('is_featured')) {
-            if ($product->umkm_profile_id) {
-                $existingFeatured = Product::where('umkm_profile_id', $product->umkm_profile_id)
-                    ->where('id', '!=', $product->id)
-                    ->where('is_featured', true)
-                    ->orderBy('updated_at', 'asc')
-                    ->get();
-
-                if ($existingFeatured->count() >= 2) {
-                    $excessCount = $existingFeatured->count() - 1;
-                    foreach ($existingFeatured->take($excessCount) as $oldP) {
-                        $oldP->update(['is_featured' => false]);
-                    }
-                }
-            }
-
             if ($product->status !== 'verified') {
                 $data['status'] = 'verified';
                 $data['rejection_note'] = null;
@@ -850,31 +827,8 @@ class AdminController extends Controller
     {
         $product = Product::with('umkmProfile')->findOrFail($id);
         $wasPending = false;
-        $replacedProductNames = [];
 
         if (!$product->is_featured) {
-            // Mau dijadikan Unggulan:
-            // Cek apakah UMKM ini sudah memiliki produk unggulan lain
-            if ($product->umkm_profile_id) {
-                $existingFeatured = Product::where('umkm_profile_id', $product->umkm_profile_id)
-                    ->where('id', '!=', $product->id)
-                    ->where('is_featured', true)
-                    ->orderBy('updated_at', 'asc') // yang paling lama aktif berada di urutan awal
-                    ->get();
-
-                // Jika sudah ada 2 atau lebih produk unggulan:
-                if ($existingFeatured->count() >= 2) {
-                    // Nonaktifkan produk yang paling lama agar tersisa 1, sehingga produk baru ini menjadi yang ke-2
-                    $excessCount = $existingFeatured->count() - 1;
-                    $toDemote = $existingFeatured->take($excessCount);
-                    foreach ($toDemote as $oldProd) {
-                        $oldProd->is_featured = false;
-                        $oldProd->save();
-                        $replacedProductNames[] = $oldProd->name;
-                    }
-                }
-            }
-
             $product->is_featured = true;
 
             // Jika status belum verified, otomatis setujui agar langsung tayang
@@ -895,14 +849,9 @@ class AdminController extends Controller
         CacheService::clearPublicCache();
 
         if ($product->is_featured) {
-            if (!empty($replacedProductNames)) {
-                $replacedStr = implode(', ', $replacedProductNames);
-                $statusText = "dijadikan Produk Unggulan di Beranda & Peta (menggantikan '{$replacedStr}' karena kuota maksimal 2 produk unggulan per UMKM)";
-            } else {
-                $statusText = $wasPending 
-                    ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda & Peta' 
-                    : 'dijadikan Produk Unggulan dan tampil di Beranda & Peta';
-            }
+            $statusText = $wasPending 
+                ? 'disetujui & langsung dijadikan Produk Unggulan di Beranda & Peta' 
+                : 'dijadikan Produk Unggulan dan tampil di Beranda & Peta';
         } else {
             $statusText = 'dihapus dari daftar Produk Unggulan';
         }
@@ -914,7 +863,6 @@ class AdminController extends Controller
                 'success' => true,
                 'is_featured' => (bool)$product->is_featured,
                 'status' => $product->status,
-                'replaced_products' => $replacedProductNames,
                 'message' => $msg
             ]);
         }
@@ -1400,20 +1348,6 @@ class AdminController extends Controller
 
         $isFeatured = $request->boolean('is_featured');
 
-        if ($isFeatured) {
-            $existingFeatured = Product::where('umkm_profile_id', $request->umkm_profile_id)
-                ->where('is_featured', true)
-                ->orderBy('updated_at', 'asc')
-                ->get();
-
-            if ($existingFeatured->count() >= 2) {
-                $excessCount = $existingFeatured->count() - 1;
-                foreach ($existingFeatured->take($excessCount) as $oldP) {
-                    $oldP->update(['is_featured' => false]);
-                }
-            }
-        }
-
         $product = Product::create([
             'umkm_profile_id' => $request->umkm_profile_id,
             'name' => $request->name,
@@ -1714,18 +1648,6 @@ class AdminController extends Controller
         $imagePath = !empty($allImagesPaths) ? $allImagesPaths[0] : null;
 
         $isFeatured = $request->has('is_featured');
-        if ($isFeatured && Schema::hasColumn('products', 'is_featured')) {
-            $existingFeatured = Product::where('umkm_profile_id', $umkm->id)
-                ->where('is_featured', true)
-                ->orderBy('updated_at', 'asc')
-                ->get();
-            if ($existingFeatured->count() >= 2) {
-                $excessCount = $existingFeatured->count() - 1;
-                foreach ($existingFeatured->take($excessCount) as $oldP) {
-                    $oldP->update(['is_featured' => false]);
-                }
-            }
-        }
 
         $productData = [
             'umkm_profile_id' => $umkm->id,
