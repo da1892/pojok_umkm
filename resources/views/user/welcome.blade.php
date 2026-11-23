@@ -192,13 +192,15 @@
         <!-- Produk Unggulan -->
         @php
             if (!isset($featuredProducts)) {
-                // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin
+                // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi maksimal 10 produk untuk beranda)
                 $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                     ->where('status', 'verified')
                     ->where('is_featured', true)
-                    ->latest()
-                    ->take(16)
+                    ->latest('updated_at')
+                    ->take(10)
                     ->get();
+            } else {
+                $featuredProducts = $featuredProducts->take(10);
             }
         @endphp
 
