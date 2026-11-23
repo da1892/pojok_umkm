@@ -19,12 +19,11 @@ class PublicController extends Controller
                 ->take(12)
                 ->get();
 
-            // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi maksimal 10 produk untuk beranda)
+            // Ambil semua produk yang diaktifkan sebagai Unggulan oleh Admin (dirotasi otomatis per 10 produk di beranda)
             $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                 ->where('status', 'verified')
                 ->where('is_featured', true)
                 ->latest('updated_at')
-                ->take(10)
                 ->get();
 
             // 1. Data Agregat Pokok (dikonsolidasikan dalam 1 query SQL ke umkm_profiles)

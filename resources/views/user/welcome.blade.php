@@ -192,116 +192,315 @@
         <!-- Produk Unggulan -->
         @php
             if (!isset($featuredProducts)) {
-                // Ambil produk yang diaktifkan sebagai Unggulan oleh Admin (dibatasi maksimal 10 produk untuk beranda)
+                // Ambil semua produk yang diaktifkan sebagai Unggulan oleh Admin (dirotasi per 10 produk setiap 5 detik)
                 $featuredProducts = \App\Models\User\Product::with('umkmProfile')
                     ->where('status', 'verified')
                     ->where('is_featured', true)
                     ->latest('updated_at')
-                    ->take(10)
                     ->get();
-            } else {
-                $featuredProducts = $featuredProducts->take(10);
             }
+            // Kelompokkan per 10 produk untuk ditampilkan bergantian di halaman beranda
+            $featuredChunks = $featuredProducts->chunk(10);
+            $totalFeatured = $featuredProducts->count();
+            $totalPages = $featuredChunks->count();
         @endphp
 
         <div class="mb-2 reveal delay-300">
-            <!-- Header Section with Badge -->
+            <!-- Header Section with Badge & Rotasi Controls -->
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-3.5 sm:mb-4">
                 <div>
-                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-                        Produk Unggulan
-                    </h2>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <h2 class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                            Produk Unggulan
+                        </h2>
+                        @if($totalPages > 1)
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200/90 text-amber-900 text-[11px] font-bold shadow-2xs">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                            </span>
+                            <span>Rotasi Otomatis (5 dtk)</span>
+                        </div>
+                        @endif
+                    </div>
                     <p class="text-slate-500 text-xs sm:text-sm mt-0.5 max-w-xl">
                         Koleksi produk unggulan pilihan hasil kurasi pelaku UMKM terverifikasi dan binaan Pemerintah Kabupaten Wonogiri.
                     </p>
                 </div>
 
-                <a href="/katalog" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-[#800000] to-[#a81c1c] text-white hover:from-[#660000] hover:to-[#8a1414] rounded-xl text-xs sm:text-sm font-bold transition-all shadow-2xs hover:shadow-md hover:-translate-y-0.5 shrink-0 group">
-                    <svg class="w-3.5 h-3.5 text-white/90" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M4 4h3.5v3.5H4V4zm6.25 0h3.5v3.5h-3.5V4zm6.25 0H20v3.5h-3.5V4zM4 10.25h3.5v3.5H4v-3.5zm6.25 0h3.5v3.5h-3.5v-3.5zm6.25 0H20v3.5h-3.5v-3.5zM4 16.5h3.5V20H4v-3.5zm6.25 0h3.5V20h-3.5v-3.5zm6.25 0H20V20h-3.5v-3.5z"/>
-                    </svg>
-                    <span>Katalog Selengkapnya</span>
-                    <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-                    </svg>
-                </a>
-            </div>
-
-            <!-- Product Cards Grid: Tampilan & Ukuran Card Identik dengan Berita & Kegiatan (5 Kolom) -->
-            @if($featuredProducts->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3">
-                @foreach ($featuredProducts as $product)
-                <div class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-                    <a href="{{ route('katalog.show', $product->id) }}" class="block flex-1">
-                        <!-- Thumbnail Image Container (Sama persis ukuran Berita: h-28 sm:h-32) -->
-                        <div class="h-28 sm:h-32 w-full overflow-hidden bg-slate-100 relative">
-                            @if($product->image_path)
-                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                </div>
-                            @endif
-
-                            <!-- Category Badge (Top-Left, persis Berita) -->
-                            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-bold bg-white/95 backdrop-blur-xs text-[#800000] shadow-xs">
-                                {{ $product->category ?? 'Produk UMKM' }}
-                            </span>
-
-                            <!-- Golden Featured Badge (Top-Right, kompak) -->
-                            @if($product->is_featured)
-                            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs flex items-center gap-1 border border-amber-300/40">
-                                <svg class="w-2.5 h-2.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                <span>Unggulan</span>
-                            </span>
-                            @endif
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    @if($totalPages > 1)
+                    <!-- Navigation & Page Indicator -->
+                    <div class="inline-flex items-center gap-1.5 bg-white border border-slate-200/90 px-2 py-1.5 rounded-xl shadow-2xs">
+                        <button type="button" 
+                                id="featured-prev-btn" 
+                                class="p-1 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-[#800000] transition-colors cursor-pointer" 
+                                title="Halaman Sebelumnya">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        
+                        <div class="flex items-center gap-1 px-1">
+                            @for($i = 0; $i < $totalPages; $i++)
+                            <button type="button" 
+                                    class="featured-dot h-2 rounded-full transition-all duration-300 cursor-pointer {{ $i === 0 ? 'w-5 bg-[#800000]' : 'w-2 bg-slate-300 hover:bg-slate-400' }}" 
+                                    data-page="{{ $i }}" 
+                                    title="Halaman {{ $i + 1 }}"></button>
+                            @endfor
                         </div>
 
-                        <!-- Card Body (Persis Berita: padding p-3 sm:p-3.5) -->
-                        <div class="p-3 sm:p-3.5">
-                            <!-- Tanggal Ditambahkan / Info Agenda (Persis Berita) -->
-                            <div class="text-[10px] font-bold text-[#b91c1c] mb-1 inline-flex items-center gap-1">
-                                <svg class="w-3 h-3 text-[#b91c1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <span>{{ $product->created_at ? $product->created_at->translatedFormat('d F Y') : 'Khas Wonogiri' }}</span>
-                            </div>
-
-                            <!-- Product Name (Persis Berita) -->
-                            <h3 class="text-xs sm:text-[13px] font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug mb-1.5 line-clamp-2 min-h-[2.1rem]">
-                                {{ $product->name }}
-                            </h3>
-
-                            <!-- Product Excerpt / Description (Persis Berita: line-clamp-2) -->
-                            <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2 min-h-[1.8rem]">
-                                {{ $product->description ? Str::limit(strip_tags($product->description), 85) : 'Koleksi produk unggulan berkualitas khas binaan Dinas Perdagangan Wonogiri.' }}
-                            </p>
-                        </div>
-                    </a>
-
-                    <!-- Card Footer: Author & Detail -->
-                    <div class="px-3 sm:px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
-                        <span class="text-slate-400 font-medium truncate max-w-[90px] sm:max-w-[105px]">
-                            {{ $product->umkmProfile->business_name ?? 'Admin UMKM' }}
+                        <span id="featured-page-counter" class="text-[11px] font-extrabold text-slate-600 px-1 select-none">
+                            1 / {{ $totalPages }}
                         </span>
 
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <!-- Pointing Peta Shortcut -->
-                            <button type="button" 
-                                    onclick="focusProductOnMap({{ $product->id }})" 
-                                    class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/90 transition-colors cursor-pointer shadow-2xs" 
-                                    title="Lihat Pointing Lokasi di Peta Wonogiri">
-                                <svg class="w-2.5 h-2.5 text-amber-600 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-                                <span>Peta</span>
-                            </button>
+                        <button type="button" 
+                                id="featured-next-btn" 
+                                class="p-1 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-[#800000] transition-colors cursor-pointer" 
+                                title="Halaman Berikutnya">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                    @endif
 
-                            <a href="{{ route('katalog.show', $product->id) }}" class="font-bold text-[#800000] hover:text-red-900 inline-flex items-center gap-0.5 hover:translate-x-0.5 transition-transform shrink-0">
-                                <span>Detail</span>
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <a href="/katalog" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-[#800000] to-[#a81c1c] text-white hover:from-[#660000] hover:to-[#8a1414] rounded-xl text-xs sm:text-sm font-bold transition-all shadow-2xs hover:shadow-md hover:-translate-y-0.5 shrink-0 group">
+                        <svg class="w-3.5 h-3.5 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M4 4h3.5v3.5H4V4zm6.25 0h3.5v3.5h-3.5V4zm6.25 0H20v3.5h-3.5V4zM4 10.25h3.5v3.5H4v-3.5zm6.25 0h3.5v3.5h-3.5v-3.5zm6.25 0H20v3.5h-3.5v-3.5zM4 16.5h3.5V20H4v-3.5zm6.25 0h3.5V20h-3.5v-3.5zm6.25 0H20V20h-3.5v-3.5z"/>
+                        </svg>
+                        <span>Katalog Selengkapnya</span>
+                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product Cards Grid: Tampilan 10 Produk yang Berotasi Otomatis Setiap 5 Detik -->
+            @if($totalFeatured > 0)
+            <div id="featured-products-container" class="relative group/featured" title="Arahkan kursor untuk menjeda rotasi">
+                @foreach ($featuredChunks as $pageIndex => $chunk)
+                <div class="featured-slide transition-all duration-500 ease-in-out {{ $pageIndex === 0 ? 'opacity-100 block' : 'opacity-0 hidden' }}" 
+                     data-page="{{ $pageIndex }}">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3">
+                        @foreach ($chunk as $product)
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border border-slate-200/90 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+                            <a href="{{ route('katalog.show', $product->id) }}" class="block flex-1">
+                                <!-- Thumbnail Image Container (Sama persis ukuran Berita: h-28 sm:h-32) -->
+                                <div class="h-28 sm:h-32 w-full overflow-hidden bg-slate-100 relative">
+                                    @if($product->image_path)
+                                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=Foto+Produk';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                                            <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                    @endif
+
+                                    <!-- Category Badge (Top-Left, persis Berita) -->
+                                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-bold bg-white/95 backdrop-blur-xs text-[#800000] shadow-xs">
+                                        {{ $product->category ?? 'Produk UMKM' }}
+                                    </span>
+
+                                    <!-- Golden Featured Badge (Top-Right, kompak) -->
+                                    @if($product->is_featured)
+                                    <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs flex items-center gap-1 border border-amber-300/40">
+                                        <svg class="w-2.5 h-2.5 text-yellow-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                        <span>Unggulan</span>
+                                    </span>
+                                    @endif
+                                </div>
+
+                                <!-- Card Body (Persis Berita: padding p-3 sm:p-3.5) -->
+                                <div class="p-3 sm:p-3.5">
+                                    <!-- Tanggal Ditambahkan / Info Agenda (Persis Berita) -->
+                                    <div class="text-[10px] font-bold text-[#b91c1c] mb-1 inline-flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-[#b91c1c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span>{{ $product->created_at ? $product->created_at->translatedFormat('d F Y') : 'Khas Wonogiri' }}</span>
+                                    </div>
+
+                                    <!-- Product Name (Persis Berita) -->
+                                    <h3 class="text-xs sm:text-[13px] font-bold text-slate-900 group-hover:text-[#800000] transition-colors leading-snug mb-1.5 line-clamp-2 min-h-[2.1rem]">
+                                        {{ $product->name }}
+                                    </h3>
+
+                                    <!-- Product Excerpt / Description (Persis Berita: line-clamp-2) -->
+                                    <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2 min-h-[1.8rem]">
+                                        {{ $product->description ? Str::limit(strip_tags($product->description), 85) : 'Koleksi produk unggulan berkualitas khas binaan Dinas Perdagangan Wonogiri.' }}
+                                    </p>
+                                </div>
                             </a>
+
+                            <!-- Card Footer: Author & Detail -->
+                            <div class="px-3 sm:px-3.5 py-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                                <span class="text-slate-400 font-medium truncate max-w-[90px] sm:max-w-[105px]">
+                                    {{ $product->umkmProfile->business_name ?? 'Admin UMKM' }}
+                                </span>
+
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <!-- Pointing Peta Shortcut -->
+                                    <button type="button" 
+                                            onclick="focusProductOnMap({{ $product->id }})" 
+                                            class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/90 transition-colors cursor-pointer shadow-2xs" 
+                                            title="Lihat Pointing Lokasi di Peta Wonogiri">
+                                        <svg class="w-2.5 h-2.5 text-amber-600 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                                        <span>Peta</span>
+                                    </button>
+
+                                    <a href="{{ route('katalog.show', $product->id) }}" class="font-bold text-[#800000] hover:text-red-900 inline-flex items-center gap-0.5 hover:translate-x-0.5 transition-transform shrink-0">
+                                        <span>Detail</span>
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
+                        @endforeach
+
+                        @if($loop->last && $chunk->count() < 10)
+                        <div class="bg-gradient-to-br from-red-50/60 via-white to-amber-50/40 rounded-2xl overflow-hidden shadow-2xs hover:shadow-lg border-2 border-dashed border-red-200/90 hover:border-[#800000] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between p-4 group text-center items-center justify-center min-h-[220px]">
+                            <div class="my-auto flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-2xl bg-[#800000]/10 text-[#800000] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-2xs">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M4 4h3.5v3.5H4V4zm6.25 0h3.5v3.5h-3.5V4zm6.25 0H20v3.5h-3.5V4zM4 10.25h3.5v3.5H4v-3.5zm6.25 0h3.5v3.5h-3.5v-3.5zm6.25 0H20v3.5h-3.5v-3.5zM4 16.5h3.5V20H4v-3.5zm6.25 0h3.5V20h-3.5v-3.5zm6.25 0H20V20h-3.5v-3.5z"/>
+                                    </svg>
+                                </div>
+                                <h4 class="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-[#800000] transition-colors mb-1">
+                                    Katalog Lengkap
+                                </h4>
+                                <p class="text-[11px] text-slate-500 mb-3 max-w-[150px] leading-relaxed">
+                                    Jelajahi seluruh ragam produk UMKM terkurasi Wonogiri
+                                </p>
+                                <a href="/katalog" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#800000] text-white hover:bg-[#660000] transition-colors shadow-2xs">
+                                    <span>Buka Katalog</span>
+                                    <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 @endforeach
             </div>
+
+            @if($totalPages > 1)
+            <script>
+            (function() {
+                let currentFeaturedPage = 0;
+                const totalFeaturedPages = {{ $totalPages }};
+                let featuredInterval = null;
+                let isFeaturedTransitioning = false;
+
+                function showFeaturedPage(targetPage) {
+                    if (totalFeaturedPages <= 1 || isFeaturedTransitioning) return;
+                    
+                    if (targetPage >= totalFeaturedPages) targetPage = 0;
+                    if (targetPage < 0) targetPage = totalFeaturedPages - 1;
+                    if (targetPage === currentFeaturedPage) return;
+
+                    isFeaturedTransitioning = true;
+                    const slides = document.querySelectorAll('.featured-slide');
+                    const dots = document.querySelectorAll('.featured-dot');
+                    const currentSlide = slides[currentFeaturedPage];
+                    const nextSlide = slides[targetPage];
+
+                    if (currentSlide && nextSlide) {
+                        currentSlide.classList.remove('opacity-100');
+                        currentSlide.classList.add('opacity-0');
+
+                        setTimeout(() => {
+                            currentSlide.classList.add('hidden');
+                            currentSlide.classList.remove('block');
+
+                            nextSlide.classList.remove('hidden');
+                            nextSlide.classList.add('block');
+                            
+                            void nextSlide.offsetWidth;
+
+                            nextSlide.classList.remove('opacity-0');
+                            nextSlide.classList.add('opacity-100');
+
+                            currentFeaturedPage = targetPage;
+                            isFeaturedTransitioning = false;
+                        }, 250);
+                    } else {
+                        isFeaturedTransitioning = false;
+                    }
+
+                    dots.forEach((dot, idx) => {
+                        if (idx === targetPage) {
+                            dot.classList.add('w-5', 'bg-[#800000]');
+                            dot.classList.remove('w-2', 'bg-slate-300');
+                        } else {
+                            dot.classList.remove('w-5', 'bg-[#800000]');
+                            dot.classList.add('w-2', 'bg-slate-300');
+                        }
+                    });
+
+                    const counterEl = document.getElementById('featured-page-counter');
+                    if (counterEl) {
+                        counterEl.textContent = `${targetPage + 1} / ${totalFeaturedPages}`;
+                    }
+                }
+
+                function startFeaturedRotation() {
+                    if (totalFeaturedPages <= 1) return;
+                    stopFeaturedRotation();
+                    featuredInterval = setInterval(() => {
+                        showFeaturedPage(currentFeaturedPage + 1);
+                    }, 5000);
+                }
+
+                function stopFeaturedRotation() {
+                    if (featuredInterval) {
+                        clearInterval(featuredInterval);
+                        featuredInterval = null;
+                    }
+                }
+
+                function initFeaturedRotation() {
+                    const container = document.getElementById('featured-products-container');
+                    const prevBtn = document.getElementById('featured-prev-btn');
+                    const nextBtn = document.getElementById('featured-next-btn');
+                    const dots = document.querySelectorAll('.featured-dot');
+
+                    if (container) {
+                        container.addEventListener('mouseenter', stopFeaturedRotation);
+                        container.addEventListener('mouseleave', startFeaturedRotation);
+                        container.addEventListener('touchstart', stopFeaturedRotation, { passive: true });
+                    }
+
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            showFeaturedPage(currentFeaturedPage - 1);
+                            startFeaturedRotation();
+                        });
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            showFeaturedPage(currentFeaturedPage + 1);
+                            startFeaturedRotation();
+                        });
+                    }
+
+                    dots.forEach(function(dot) {
+                        dot.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const targetPage = parseInt(this.getAttribute('data-page'), 10);
+                            showFeaturedPage(targetPage);
+                            startFeaturedRotation();
+                        });
+                    });
+
+                    startFeaturedRotation();
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initFeaturedRotation);
+                } else {
+                    initFeaturedRotation();
+                }
+            })();
+            </script>
+            @endif
             @else
             <div class="text-center py-16 bg-white rounded-3xl border border-slate-200/80 shadow-sm max-w-lg mx-auto">
                 <div class="w-16 h-16 mx-auto mb-4 text-amber-500 bg-amber-50 rounded-2xl flex items-center justify-center border border-amber-200 shadow-xs">
