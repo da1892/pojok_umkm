@@ -14,6 +14,15 @@
     </div>
     @endif
 
+    @if(session('warning'))
+    <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4 text-sm flex items-start gap-3 shadow-xs">
+        <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <div class="flex-1 font-medium leading-relaxed">
+            {{ session('warning') }}
+        </div>
+    </div>
+    @endif
+
     @if(session('error'))
     <div class="bg-red-50 border border-red-200 text-red-800 rounded-2xl p-4 text-sm flex items-start gap-3 shadow-xs">
         <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -557,6 +566,7 @@
                     <li>Unduh template resmi terlebih dahulu agar format kolom sesuai.</li>
                     <li>Kolom <strong>nama_usaha</strong> wajib diisi. Kolom <strong>email</strong> dan <strong>password</strong> boleh dikosongkan (sistem otomatis membuatkannya).</li>
                     <li>Bila kolom produk diisi pada baris yang sama, produk pertamanya otomatis langsung dibuat dan tayang di katalog publik.</li>
+                    <li>Sistem secara otomatis mendeteksi jika data (nama usaha / email) sudah pernah terdaftar untuk mencegah duplikasi data.</li>
                 </ol>
                 <div class="pt-1">
                     <a href="{{ route('admin.users.template') }}" class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-900 underline">

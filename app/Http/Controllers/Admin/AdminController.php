@@ -1579,6 +1579,13 @@ class AdminController extends Controller
             'address.required' => 'Alamat lengkap wajib diisi.',
         ]);
 
+        // Cek duplikasi nama usaha
+        if (UmkmProfile::whereRaw('LOWER(TRIM(business_name)) = ?', [strtolower(trim($request->business_name))])->exists()) {
+            return back()->withInput()->withErrors([
+                'business_name' => 'Nama usaha / toko "' . $request->business_name . '" sudah terdaftar sebelumnya di sistem Pojok UMKM.'
+            ]);
+        }
+
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('umkm_profiles', 'public');
@@ -2049,7 +2056,9 @@ class AdminController extends Controller
 
         $importedCount = 0;
         $skippedCount = 0;
-        $messages = [];
+        $duplicateDetails = [];
+        $seenEmails = [];
+        $seenBusinessNames = [];
 
         DB::beginTransaction();
         try {
@@ -2059,14 +2068,15 @@ class AdminController extends Controller
                     continue;
                 }
 
-                $namaUsaha = $getCol($row, ['nama_usaha', 'nama_toko', 'business_name', 'usaha', 'toko']);
+                $namaUsaha = trim($getCol($row, ['nama_usaha', 'nama_toko', 'business_name', 'usaha', 'toko']) ?? '');
                 if (empty($namaUsaha)) {
                     $skippedCount++;
                     continue;
                 }
 
-                $namaPemilik = $getCol($row, ['nama_pemilik', 'owner_name', 'nama', 'pemilik']) ?: $namaUsaha;
-                $email = $getCol($row, ['email', 'surel', 'e_mail']);
+                $namaPemilik = trim($getCol($row, ['nama_pemilik', 'owner_name', 'nama', 'pemilik']) ?? '') ?: $namaUsaha;
+                $emailRaw = trim($getCol($row, ['email', 'surel', 'e_mail']) ?? '');
+                $email = !empty($emailRaw) ? strtolower($emailRaw) : null;
                 $password = $getCol($row, ['password', 'sandi', 'kata_sandi']) ?: 'PojokUmkm2026!';
                 $gender = $getCol($row, ['gender', 'jenis_kelamin', 'jk']);
                 $phone = $getCol($row, ['no_whatsapp', 'whatsapp', 'phone', 'no_hp', 'telepon', 'nohp']) ?: '081234567890';
@@ -2084,7 +2094,7 @@ class AdminController extends Controller
 
                 // Normalisasi Gender
                 if ($gender) {
-                    $genderLower = strtolower($gender);
+                    $genderLower = strtolower(trim($gender));
                     if (str_starts_with($genderLower, 'l') || str_contains($genderLower, 'laki')) {
                         $gender = 'L';
                     } elseif (str_starts_with($genderLower, 'p') || str_contains($genderLower, 'perempuan') || str_contains($genderLower, 'wanita')) {
@@ -2094,24 +2104,47 @@ class AdminController extends Controller
                     }
                 }
 
-                // Normalisasi Email
+                // Cek apakah data sudah ada sebelumnya di sistem (berdasarkan nama toko atau email)
+                $lowerNamaUsaha = strtolower($namaUsaha);
+                $isBusinessExists = UmkmProfile::whereRaw('LOWER(TRIM(business_name)) = ?', [$lowerNamaUsaha])->exists()
+                                    || in_array($lowerNamaUsaha, $seenBusinessNames);
+                $isEmailExists = $email ? (User::where('email', $email)->exists() || in_array($email, $seenEmails)) : false;
+
+                if ($isBusinessExists || $isEmailExists) {
+                    $skippedCount++;
+                    $alasan = [];
+                    if ($isBusinessExists) {
+                        $alasan[] = "nama toko '{$namaUsaha}' sudah ada";
+                    }
+                    if ($isEmailExists) {
+                        $alasan[] = "email '{$email}' sudah terdaftar";
+                    }
+                    $reasonStr = implode(' & ', $alasan);
+
+                    $duplicateDetails[] = [
+                        'row' => $rowIndex + 2,
+                        'business_name' => $namaUsaha,
+                        'email' => $email ?: '-',
+                        'reason' => ucfirst($reasonStr),
+                    ];
+                    continue;
+                }
+
+                // Normalisasi / Generate Email jika kosong
                 if (empty($email)) {
                     $baseSlug = Str::slug($namaUsaha, '');
                     if (empty($baseSlug)) $baseSlug = 'umkm' . ($rowIndex + 1);
                     $email = $baseSlug . '@pojokumkm.id';
                     $suffix = 1;
-                    while (User::where('email', $email)->exists()) {
+                    while (User::where('email', $email)->exists() || in_array($email, $seenEmails)) {
                         $email = $baseSlug . $suffix . '@pojokumkm.id';
                         $suffix++;
                     }
-                } else {
-                    $email = strtolower(trim($email));
-                    if (User::where('email', $email)->exists()) {
-                        $skippedCount++;
-                        $messages[] = "Baris " . ($rowIndex + 2) . ": Email '{$email}' sudah terdaftar, dilewati.";
-                        continue;
-                    }
                 }
+
+                // Catat ke daftar antrean batch yang sedang diproses
+                $seenEmails[] = $email;
+                $seenBusinessNames[] = $lowerNamaUsaha;
 
                 // 1. Buat User
                 $user = User::create([
@@ -2167,12 +2200,46 @@ class AdminController extends Controller
 
             DB::commit();
 
-            $successMsg = "Berhasil mengimpor {$importedCount} akun UMKM baru!";
-            if ($skippedCount > 0) {
-                $successMsg .= " ({$skippedCount} baris dilewati karena email sudah ada / kosong).";
+            if ($importedCount === 0 && $skippedCount > 0) {
+                $warningMsg = "Sistem membaca bahwa seluruh {$skippedCount} data yang diimpor sudah terdaftar sebelumnya di database. Tidak ada data baru yang ditambahkan.";
+                return redirect()->route('admin.users.index')
+                    ->with('warning', $warningMsg)
+                    ->with('import_result', [
+                        'status' => 'all_duplicates',
+                        'imported' => 0,
+                        'skipped' => $skippedCount,
+                        'total_duplicates' => count($duplicateDetails),
+                        'duplicates' => array_slice($duplicateDetails, 0, 5),
+                        'message' => $warningMsg,
+                    ]);
+            } elseif ($importedCount > 0 && $skippedCount > 0) {
+                $partialMsg = "Berhasil mengimpor {$importedCount} akun UMKM baru! Sebanyak {$skippedCount} baris data lainnya dilewati karena sudah terdaftar di sistem.";
+                return redirect()->route('admin.users.index')
+                    ->with('warning', $partialMsg)
+                    ->with('import_result', [
+                        'status' => 'partial',
+                        'imported' => $importedCount,
+                        'skipped' => $skippedCount,
+                        'total_duplicates' => count($duplicateDetails),
+                        'duplicates' => array_slice($duplicateDetails, 0, 5),
+                        'message' => $partialMsg,
+                    ]);
+            } elseif ($importedCount > 0 && $skippedCount === 0) {
+                $successMsg = "Berhasil mengimpor seluruh {$importedCount} akun UMKM baru ke dalam sistem!";
+                return redirect()->route('admin.users.index')
+                    ->with('success', $successMsg)
+                    ->with('import_result', [
+                        'status' => 'success',
+                        'imported' => $importedCount,
+                        'skipped' => 0,
+                        'total_duplicates' => 0,
+                        'duplicates' => [],
+                        'message' => $successMsg,
+                    ]);
+            } else {
+                return redirect()->route('admin.users.index')
+                    ->with('warning', 'Tidak ditemukan baris data UMKM yang dapat diproses pada file yang diunggah. Pastikan data diisi di bawah baris header.');
             }
-
-            return redirect()->route('admin.users.index')->with('success', $successMsg);
 
         } catch (\Throwable $e) {
             DB::rollBack();

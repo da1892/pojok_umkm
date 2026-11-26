@@ -648,7 +648,122 @@
         })();
     </script>
 
-    @if(session('success') || session('verified_item'))
+    @if(session('import_result'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const res = {!! json_encode(session('import_result')) !!};
+            if (!res) return;
+
+            if (res.status === 'all_duplicates') {
+                let dupListHtml = '';
+                if (res.duplicates && res.duplicates.length > 0) {
+                    dupListHtml = '<div style="margin-top:14px; max-height:160px; overflow-y:auto; border-radius:14px; background:#fef3c7; border:1px solid #fde68a; padding:12px 14px; font-size:12px; text-align:left;">' +
+                        '<div style="font-weight:700; color:#92400e; margin-bottom:6px; display:flex; align-items:center; gap:6px;">' +
+                        '<svg style="width:14px; height:14px; color:#b45309; flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+                        '<span>Contoh data yang sudah terdaftar di sistem:</span>' +
+                        '</div>';
+                    res.duplicates.forEach(d => {
+                        dupListHtml += `<div style="padding:5px 0; border-bottom:1px dashed #fcd34d; color:#78350f;">
+                            <strong>Baris ${d.row}:</strong> ${d.business_name} <span style="color:#b45309; font-size:11px;">(${d.reason})</span>
+                        </div>`;
+                    });
+                    if (res.total_duplicates > res.duplicates.length) {
+                        dupListHtml += `<div style="padding-top:6px; font-size:11px; color:#92400e; font-style:italic;">... dan ${res.total_duplicates - res.duplicates.length} baris data lainnya sudah ada.</div>`;
+                    }
+                    dupListHtml += '</div>';
+                }
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Sudah Terdaftar',
+                    html: `
+                        <div style="text-align:center; padding: 4px 0;">
+                            <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 14px; border-radius:9999px; background:#fef3c7; color:#92400e; font-size:11px; font-weight:800; letter-spacing:0.5px; margin-bottom:12px;">
+                                SISTEM MENDETEKSI DATA DUPLIKAT
+                            </div>
+                            <div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:18px; padding:16px 18px; text-align:left; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                                <div style="font-size:14px; font-weight:800; color:#b45309; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                                    <svg style="width:18px; height:18px; color:#b45309;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    Tidak Ada Data Baru Ditambahkan
+                                </div>
+                                <p style="font-size:13px; color:#475569; margin:0; line-height:1.6;">
+                                    Sistem membaca bahwa seluruh <strong>${res.skipped} baris data</strong> yang diunggah sudah terdaftar sebelumnya di database. Tidak ada data ganda yang dimasukkan.
+                                </p>
+                                ${dupListHtml}
+                            </div>
+                            <div style="font-size:12px; color:#64748b; margin-top:12px; line-height:1.5;">
+                                Data akun UMKM yang sudah ada tetap aman dan tidak mengalami duplikasi.
+                            </div>
+                        </div>
+                    `,
+                    confirmButtonColor: '#d97706',
+                    confirmButtonText: 'Saya Mengerti',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl p-6 border-2 border-amber-200',
+                        title: 'text-amber-700 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-amber-600 hover:bg-amber-700 text-white'
+                    }
+                });
+            } else if (res.status === 'partial') {
+                let dupListHtml = '';
+                if (res.duplicates && res.duplicates.length > 0) {
+                    dupListHtml = '<div style="margin-top:10px; max-height:120px; overflow-y:auto; border-radius:10px; background:#fffbeb; border:1px solid #fde68a; padding:8px 10px; font-size:11px; text-align:left;">' +
+                        '<div style="font-weight:700; color:#92400e; margin-bottom:4px;">Sebagian data dilewati karena sudah ada:</div>';
+                    res.duplicates.forEach(d => {
+                        dupListHtml += `<div style="padding:2px 0; color:#78350f;">• Baris ${d.row}: <strong>${d.business_name}</strong> (${d.reason})</div>`;
+                    });
+                    dupListHtml += '</div>';
+                }
+
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Import Selesai dengan Catatan',
+                    html: `
+                        <div style="text-align:center; padding: 4px 0;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+                                <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:14px; padding:12px;">
+                                    <div style="font-size:11px; font-weight:700; color:#065f46; text-transform:uppercase;">Berhasil Diimpor</div>
+                                    <div style="font-size:20px; font-weight:900; color:#047857;">${res.imported} Akun</div>
+                                </div>
+                                <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:12px;">
+                                    <div style="font-size:11px; font-weight:700; color:#92400e; text-transform:uppercase;">Dilewati (Sudah Ada)</div>
+                                    <div style="font-size:20px; font-weight:900; color:#b45309;">${res.skipped} Data</div>
+                                </div>
+                            </div>
+                            ${dupListHtml}
+                        </div>
+                    `,
+                    confirmButtonColor: '#059669',
+                    confirmButtonText: 'Selesai',
+                    showConfirmButton: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl p-6 border-2 border-emerald-100',
+                        title: 'text-slate-800 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-emerald-600 hover:bg-emerald-700 text-white'
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil Mengimpor!',
+                    html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">Berhasil mengimpor <strong>${res.imported} akun UMKM baru</strong> ke dalam sistem Pojok UMKM.</div>`,
+                    confirmButtonColor: '#059669',
+                    confirmButtonText: 'Oke',
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl border-2 border-emerald-100 p-6',
+                        title: 'text-emerald-700 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-emerald-600 hover:bg-emerald-700 text-white'
+                    }
+                });
+            }
+        });
+    </script>
+    @endif
+
+    @if((session('success') || session('verified_item')) && !session('import_result'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const verifiedItem = {!! json_encode(session('verified_item')) !!};
@@ -804,6 +919,22 @@
                         confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-red-600 hover:bg-red-700 text-white'
                     }
                 });
+            } else if (lowerMsg.includes('0 akun') || (lowerMsg.includes('dilewati') && lowerMsg.includes('sudah ada'))) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Sudah Terdaftar',
+                    html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">${rawMsg}</div>`,
+                    confirmButtonColor: '#d97706',
+                    confirmButtonText: 'Oke',
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'rounded-3xl shadow-2xl border-2 border-amber-200 p-6',
+                        title: 'text-amber-700 font-bold text-xl mb-1',
+                        confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-amber-600 hover:bg-amber-700 text-white'
+                    }
+                });
             } else {
                 Swal.fire({
                     icon: 'success',
@@ -821,6 +952,28 @@
                     }
                 });
             }
+        });
+    </script>
+    @endif
+
+    @if(session('warning') && !session('import_result'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Pemberitahuan',
+                html: `<div style="font-size: 14px; line-height: 1.6; color: #334155;">{!! json_encode(session('warning')) !!}</div>`,
+                confirmButtonColor: '#d97706',
+                confirmButtonText: 'Oke',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: true,
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl border-2 border-amber-200 p-6',
+                    title: 'text-amber-700 font-bold text-xl mb-1',
+                    confirmButton: 'rounded-xl font-bold px-8 py-2.5 text-sm shadow-md bg-amber-600 hover:bg-amber-700 text-white'
+                }
+            });
         });
     </script>
     @endif
