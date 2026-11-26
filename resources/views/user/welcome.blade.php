@@ -412,7 +412,7 @@
                     </div>
                     <p class="text-[11px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1 font-medium">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Pendampingan Selesai
+                        {{ number_format($completedConsultations ?? $totalConsultations ?? 0, 0, ',', '.') }} Pendampingan Selesai
                     </p>
                 </div>
             </div>

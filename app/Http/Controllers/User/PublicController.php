@@ -45,7 +45,8 @@ class PublicController extends Controller
             $totalVerifiedUmkm = (int)($umkmAgg->total_verified_umkm ?? 0);
             $totalDistricts = (int)($umkmAgg->total_districts ?? 0);
             $totalProducts = \App\Models\User\Product::where('status', 'verified')->count();
-            $totalConsultations = \App\Models\User\Consultation::where('status', 'selesai')->count();
+            $totalConsultations = \App\Models\Consultation::count();
+            $completedConsultations = \App\Models\Consultation::where('status', 'selesai')->count();
 
             // 2. Data Agregat Kategori Produk
             $categoryStats = \App\Models\User\Product::where('status', 'verified')
@@ -151,6 +152,7 @@ class PublicController extends Controller
                 'totalVerifiedUmkm', 
                 'totalProducts', 
                 'totalConsultations',
+                'completedConsultations',
                 'totalDistricts',
                 'categoryStats',
                 'legalitasStats',
@@ -683,6 +685,8 @@ class PublicController extends Controller
             'attachment' => $storedAttachment,
         ]);
 
+        \App\Services\CacheService::clearPublicCache();
+
         // Mengirimkan email konfirmasi HTML resmi berisi UUID ke pengguna
         try {
             \Illuminate\Support\Facades\Mail::to($consultation->email)
@@ -812,6 +816,8 @@ class PublicController extends Controller
             'updated_at' => now(),
         ]);
 
+        \App\Services\CacheService::clearPublicCache();
+
         return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
             ->with('success', 'Balasan Anda berhasil terkirim ke Admin Dinas Perdagangan & KUKM Wonogiri. Mohon menunggu tanggapan selanjutnya.');
     }
@@ -865,6 +871,8 @@ class PublicController extends Controller
             'status' => 'selesai',
             'updated_at' => now(),
         ]);
+
+        \App\Services\CacheService::clearPublicCache();
 
         return redirect()->route('konsultasi.cek', ['ticket_id' => $ticket_id])
             ->with('success', 'Alhamdulillah! Sesi konsultasi tiket #' . $ticket_id . ' telah berhasil diselesaikan dengan baik. Terima kasih atas apresiasi dan penilaian Anda!');

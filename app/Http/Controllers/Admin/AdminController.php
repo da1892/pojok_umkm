@@ -500,6 +500,8 @@ class AdminController extends Controller
             'response' => $response,
             'admin_id' => auth()->id()
         ]);
+
+        \App\Services\CacheService::clearPublicCache();
         
         // Kirim email notifikasi balasan resmi ke pengkonsultasi jika ada email
         $emailSent = false;

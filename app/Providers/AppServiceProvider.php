@@ -42,5 +42,9 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\User\UmkmProfile::deleted(fn() => \App\Services\CacheService::clearPublicCache());
         \App\Models\User\NewsInformation::saved(fn() => \App\Services\CacheService::clearPublicCache());
         \App\Models\User\NewsInformation::deleted(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\Consultation::saved(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\Consultation::deleted(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\Consultation::saved(fn() => \App\Services\CacheService::clearPublicCache());
+        \App\Models\User\Consultation::deleted(fn() => \App\Services\CacheService::clearPublicCache());
     }
 }
