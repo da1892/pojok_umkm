@@ -280,7 +280,7 @@
                     <span>Katalog Produk Anda</span>
                     <span class="text-xs px-2.5 py-1 rounded-full bg-red-100 text-[#800000] font-black">{{ $products->count() }} Produk</span>
                 </h3>
-                <p class="text-xs text-slate-500 mt-1">Kelola data produk, foto kemasan, harga resmi, dan pantau status kurasi oleh Dinas.</p>
+                <p class="text-xs text-slate-500 mt-1">Kelola data produk, foto kemasan, dan pantau status kurasi oleh Dinas.</p>
             </div>
             @if($umkm->status == 'verified')
                 <a href="{{ route('toko.product.create') }}" class="inline-flex items-center justify-center gap-2 bg-[#800000] hover:bg-red-900 text-white text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl transition-all shadow-xs hover:shadow-md">
@@ -336,13 +336,6 @@
                                     Ditolak
                                 </span>
                             @endif
-                        </div>
-
-                        {{-- Tampilan Harga Menarik di Atas Foto --}}
-                        <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white pointer-events-none">
-                            <span class="text-base sm:text-lg font-black text-amber-300 drop-shadow-md tracking-tight">
-                                Rp {{ number_format($product->price ?? 0, 0, ',', '.') }}
-                            </span>
                         </div>
                     </div>
 
@@ -411,7 +404,7 @@
                     </svg>
                 </div>
                 <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">Belum ada produk di etalase Anda</h3>
-                <p class="text-xs sm:text-sm text-slate-500 mb-6 max-w-md mx-auto leading-relaxed">Etalase toko Anda masih kosong. Tambahkan produk unggulan Anda lengkap dengan foto menarik, rincian varian, dan harga agar dapat dipromosikan ke pembeli.</p>
+                <p class="text-xs sm:text-sm text-slate-500 mb-6 max-w-md mx-auto leading-relaxed">Etalase toko Anda masih kosong. Tambahkan produk unggulan Anda lengkap dengan foto menarik dan rincian varian agar dapat dipromosikan ke pembeli.</p>
                 
                 @if($umkm->status == 'verified')
                     <a href="{{ route('toko.product.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#800000] via-[#941515] to-[#800000] hover:from-red-900 hover:to-red-950 text-white font-bold rounded-2xl text-xs sm:text-sm shadow-md shadow-red-950/20 active:scale-98 transition-all">
