@@ -206,6 +206,35 @@
                         $firstProduct = $products->whereNotNull('image_path')->first() ?? $products->first();
                         $productCount = $products->count();
                         $categoryName = $firstProduct ? $firstProduct->category : 'UMKM Wonogiri';
+
+                        // Tema gradasi warna tematik berdasarkan kategori produk
+                        $catKey = trim($categoryName);
+                        $theme = match(true) {
+                            str_contains($catKey, 'Makanan') || str_contains($catKey, 'Minuman') || str_contains($catKey, 'Kuliner') => [
+                                'bg' => 'from-amber-600 via-orange-600 to-red-700',
+                                'badge' => 'Kuliner Wonogiri',
+                            ],
+                            str_contains($catKey, 'Batik') || str_contains($catKey, 'Fashion') => [
+                                'bg' => 'from-rose-800 via-red-900 to-purple-950',
+                                'badge' => 'Batik & Busana',
+                            ],
+                            str_contains($catKey, 'Kerajinan') || str_contains($catKey, 'Kriya') => [
+                                'bg' => 'from-amber-800 via-stone-800 to-stone-950',
+                                'badge' => 'Kriya & Kerajinan',
+                            ],
+                            str_contains($catKey, 'Pertanian') || str_contains($catKey, 'Hasil Tani') || str_contains($catKey, 'Agro') => [
+                                'bg' => 'from-emerald-700 via-teal-800 to-green-950',
+                                'badge' => 'Hasil Tani Lokal',
+                            ],
+                            str_contains($catKey, 'Kreatif') => [
+                                'bg' => 'from-blue-700 via-indigo-800 to-slate-900',
+                                'badge' => 'Kreatif Wonogiri',
+                            ],
+                            default => [
+                                'bg' => 'from-[#800000] via-[#991b1b] to-amber-900',
+                                'badge' => 'UMKM Wonogiri',
+                            ],
+                        };
                     @endphp
                     <div class="bg-white rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between group">
                         
@@ -222,11 +251,17 @@
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20"></div>
                             @else
-                                <div class="w-full h-full bg-gradient-to-br from-[#800000] via-[#991b1b] to-amber-700 flex flex-col items-center justify-center text-white relative">
-                                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center font-black text-base sm:text-lg text-white shadow-inner mb-0.5">
-                                        {{ strtoupper(substr($item->business_name, 0, 2)) }}
+                                <div class="w-full h-full bg-gradient-to-br {{ $theme['bg'] }} flex flex-col items-center justify-center text-white relative overflow-hidden select-none">
+                                    <!-- Background subtle pattern -->
+                                    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:12px_12px]"></div>
+                                    <div class="relative z-10 flex flex-col items-center justify-center text-center px-2">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center font-black text-sm sm:text-lg text-white shadow-lg mb-1 tracking-wider">
+                                            {{ strtoupper(substr($item->business_name, 0, 2)) }}
+                                        </div>
+                                        <span class="text-[8px] sm:text-[9.5px] text-white/90 font-medium tracking-wide drop-shadow-xs">
+                                            {{ $theme['badge'] }}
+                                        </span>
                                     </div>
-                                    <span class="text-[8px] sm:text-[9px] text-white/80 font-medium">UMKM Wonogiri</span>
                                 </div>
                             @endif
 
@@ -294,7 +329,7 @@
                                                     @if($prod->image_path)
                                                         <img src="{{ asset('storage/' . $prod->image_path) }}" class="w-full h-full object-cover">
                                                     @else
-                                                        <div class="w-full h-full bg-slate-200 flex items-center justify-center text-[8px] text-slate-600 font-bold">{{ substr($prod->name, 0, 1) }}</div>
+                                                        <div class="w-full h-full bg-gradient-to-br {{ $theme['bg'] }} flex items-center justify-center text-[8px] text-white font-bold">{{ substr($prod->name, 0, 1) }}</div>
                                                     @endif
                                                 </div>
                                             @endforeach
@@ -336,6 +371,34 @@
                         $firstProduct = $products->whereNotNull('image_path')->first() ?? $products->first();
                         $productCount = $products->count();
                         $categoryName = $firstProduct ? $firstProduct->category : 'UMKM Wonogiri';
+
+                        $catKey = trim($categoryName);
+                        $theme = match(true) {
+                            str_contains($catKey, 'Makanan') || str_contains($catKey, 'Minuman') || str_contains($catKey, 'Kuliner') => [
+                                'bg' => 'from-amber-600 via-orange-600 to-red-700',
+                                'badge' => 'Kuliner Wonogiri',
+                            ],
+                            str_contains($catKey, 'Batik') || str_contains($catKey, 'Fashion') => [
+                                'bg' => 'from-rose-800 via-red-900 to-purple-950',
+                                'badge' => 'Batik & Busana',
+                            ],
+                            str_contains($catKey, 'Kerajinan') || str_contains($catKey, 'Kriya') => [
+                                'bg' => 'from-amber-800 via-stone-800 to-stone-950',
+                                'badge' => 'Kriya & Kerajinan',
+                            ],
+                            str_contains($catKey, 'Pertanian') || str_contains($catKey, 'Hasil Tani') || str_contains($catKey, 'Agro') => [
+                                'bg' => 'from-emerald-700 via-teal-800 to-green-950',
+                                'badge' => 'Hasil Tani Lokal',
+                            ],
+                            str_contains($catKey, 'Kreatif') => [
+                                'bg' => 'from-blue-700 via-indigo-800 to-slate-900',
+                                'badge' => 'Kreatif Wonogiri',
+                            ],
+                            default => [
+                                'bg' => 'from-[#800000] via-[#991b1b] to-amber-900',
+                                'badge' => 'UMKM Wonogiri',
+                            ],
+                        };
                     @endphp
                     <div class="bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs hover:shadow-sm transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group">
                         
@@ -352,7 +415,7 @@
                                          alt="{{ $item->business_name }}" 
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 @else
-                                    <div class="w-full h-full bg-gradient-to-br from-[#800000] to-red-800 flex items-center justify-center font-bold text-white text-sm">
+                                    <div class="w-full h-full bg-gradient-to-br {{ $theme['bg'] }} flex items-center justify-center font-bold text-white text-sm shadow-inner">
                                         {{ strtoupper(substr($item->business_name, 0, 2)) }}
                                     </div>
                                 @endif
