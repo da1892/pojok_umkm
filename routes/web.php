@@ -12,9 +12,11 @@ Route::get('/', [PublicController::class, 'welcome'])->name('home');
 
 Route::get('/katalog', [PublicController::class, 'katalog'])->name('katalog');
 Route::get('/katalog/{id}', [PublicController::class, 'showProduct'])->name('katalog.show');
+Route::get('/produk', function() { return redirect()->route('katalog'); });
 
 Route::get('/direktori', [PublicController::class, 'direktori'])->name('direktori');
 Route::get('/direktori/{id}', [PublicController::class, 'showUmkm'])->name('direktori.show');
+Route::get('/direktori-umkm', function() { return redirect()->route('direktori'); });
 Route::get('/api/peta-umkm', [PublicController::class, 'getMapUmkmData'])->name('api.peta.umkm');
 Route::get('/informasi', [PublicController::class, 'informasi'])->name('informasi');
 Route::get('/informasi/{id}', [PublicController::class, 'showNews'])->name('informasi.show');
