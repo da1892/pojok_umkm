@@ -522,8 +522,8 @@
     </script>
 
     <!-- Modal Lupa Kata Sandi -->
-    <div id="forgotPasswordModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs hidden transition-all duration-300" onclick="handleBackdropClick(event)">
-        <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all p-6 sm:p-7" onclick="event.stopPropagation()">
+    <div id="forgotPasswordModal" class="fixed inset-0 flex items-center justify-center p-4 bg-slate-900/65 backdrop-blur-xs hidden transition-all duration-300" style="z-index: 99999;" onclick="handleBackdropClick(event)">
+        <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform transition-all p-6 sm:p-7" style="z-index: 100000;" onclick="event.stopPropagation()">
             <!-- Close Button -->
             <button type="button" onclick="closeForgotPasswordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" title="Tutup">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
