@@ -1815,7 +1815,7 @@ class AdminController extends Controller
         }
 
         // Default & Rekomendasi: File Excel .xlsx asli dengan layout rapi dan kolom terpisah
-        if (!file_exists($templatePath)) {
+        if (!file_exists($templatePath) || filesize($templatePath) < 6000) {
             $this->generateXlsxTemplateFile($templatePath);
         }
 
@@ -1836,38 +1836,56 @@ class AdminController extends Controller
             return;
         }
 
-        $zip->addFromString('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        $sharedStrings = [];
+        $stringIndexMap = [];
+
+        $getStringIndex = function(string $str) use (&$sharedStrings, &$stringIndexMap): int {
+            if (!isset($stringIndexMap[$str])) {
+                $idx = count($sharedStrings);
+                $sharedStrings[] = $str;
+                $stringIndexMap[$str] = $idx;
+            }
+            return $stringIndexMap[$str];
+        };
+
+        $zip->addFromString("[Content_Types].xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
   <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
   <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
 </Types>');
 
-        $zip->addFromString('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        $zip->addFromString("_rels/.rels", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
 </Relationships>');
 
-        $zip->addFromString('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        $zip->addFromString("xl/_rels/workbook.xml.rels", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
-  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>
 </Relationships>');
 
-        $zip->addFromString('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        $zip->addFromString("xl/workbook.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <workbookPr/>
+  <bookViews><workbookView activeTab="0"/></bookViews>
   <sheets>
-    <sheet name="Template Import UMKM" sheetId="1" r:id="rId1"/>
+    <sheet name="Template Import UMKM" sheetId="1" r:id="rId2"/>
   </sheets>
+  <calcPr calcId="125725" fullCalcOnLoad="true"/>
 </workbook>');
 
-        $zip->addFromString('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        $zip->addFromString("xl/styles.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <fonts count="2">
-    <font><sz val="11"/><name val="Calibri"/></font>
-    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+  <fonts count="3">
+    <font><sz val="11"/><color theme="1"/><name val="Calibri"/><family val="2"/></font>
+    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/><family val="2"/></font>
+    <font><sz val="11"/><color rgb="FF0F172A"/><name val="Calibri"/><family val="2"/></font>
   </fonts>
   <fills count="4">
     <fill><patternFill patternType="none"/></fill>
@@ -1888,10 +1906,16 @@ class AdminController extends Controller
     <xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>
   </cellStyleXfs>
   <cellXfs count="4">
-    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>
-    <xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
-    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
-    <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">
+      <alignment horizontal="center" vertical="center" wrapText="1"/>
+    </xf>
+    <xf numFmtId="0" fontId="2" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1">
+      <alignment vertical="center"/>
+    </xf>
+    <xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">
+      <alignment vertical="center"/>
+    </xf>
   </cellXfs>
 </styleSheet>');
 
@@ -1913,7 +1937,7 @@ class AdminController extends Controller
             ['col' => 'halal', 'width' => 20],
         ];
 
-                $sampleRows = [
+        $sampleRows = [
             [
                 'Budi Santoso', 'budi.santoso@gmail.com', 'PojokUmkm2026!', 'L', 'Mete Wonogiri Lestari',
                 '081234567801', 'Wonogiri', 'Giriwono', 'Jl. Ahmad Yani No. 12, Giriwono', 'Makanan & Minuman',
@@ -2036,6 +2060,17 @@ class AdminController extends Controller
             ]
         ];
 
+        $numCols = count($headers);
+        $lastColLetter = '';
+        $tempCol = $numCols;
+        while ($tempCol > 0) {
+            $rem = ($tempCol - 1) % 26;
+            $lastColLetter = chr(65 + $rem) . $lastColLetter;
+            $tempCol = intdiv($tempCol - 1, 26);
+        }
+        $totalRows = count($sampleRows) + 1;
+        $dimension = "A1:{$lastColLetter}{$totalRows}";
+
         $colsXml = '<cols>';
         foreach ($headers as $idx => $h) {
             $cNum = $idx + 1;
@@ -2047,7 +2082,8 @@ class AdminController extends Controller
         $sheetDataXml .= '<row r="1" ht="28" customHeight="1">';
         foreach ($headers as $idx => $h) {
             $colLetter = chr(65 + $idx);
-            $sheetDataXml .= '<c r="' . $colLetter . '1" t="inlineStr" s="1"><is><t>' . htmlspecialchars($h['col']) . '</t></is></c>';
+            $sIdx = $getStringIndex($h['col']);
+            $sheetDataXml .= '<c r="' . $colLetter . '1" t="s" s="1"><v>' . $sIdx . '</v></c>';
         }
         $sheetDataXml .= '</row>';
 
@@ -2057,7 +2093,14 @@ class AdminController extends Controller
             $sheetDataXml .= '<row r="' . $rowNum . '" ht="22" customHeight="1">';
             foreach ($rowValues as $cIdx => $val) {
                 $colLetter = chr(65 + $cIdx);
-                $sheetDataXml .= '<c r="' . $colLetter . $rowNum . '" t="inlineStr" s="' . $styleId . '"><is><t>' . htmlspecialchars($val) . '</t></is></c>';
+                $cellRef = $colLetter . $rowNum;
+                $valStr = (string)$val;
+                if ($valStr !== '') {
+                    $sIdx = $getStringIndex($valStr);
+                    $sheetDataXml .= '<c r="' . $cellRef . '" t="s" s="' . $styleId . '"><v>' . $sIdx . '</v></c>';
+                } else {
+                    $sheetDataXml .= '<c r="' . $cellRef . '" s="' . $styleId . '"/>';
+                }
             }
             $sheetDataXml .= '</row>';
         }
@@ -2065,16 +2108,28 @@ class AdminController extends Controller
 
         $sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <dimension ref="' . $dimension . '"/>
   <sheetViews>
     <sheetView tabSelected="1" workbookViewId="0">
       <pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>
     </sheetView>
   </sheetViews>
+  <sheetFormatPr defaultRowHeight="15"/>
   ' . $colsXml . '
   ' . $sheetDataXml . '
 </worksheet>';
 
         $zip->addFromString('xl/worksheets/sheet1.xml', $sheetXml);
+
+        $totalStringCount = count($sharedStrings);
+        $sstXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' . $totalStringCount . '" uniqueCount="' . $totalStringCount . '">';
+        foreach ($sharedStrings as $str) {
+            $sstXml .= '<si><t>' . htmlspecialchars($str, ENT_XML1, 'UTF-8') . '</t></si>';
+        }
+        $sstXml .= '</sst>';
+        $zip->addFromString('xl/sharedStrings.xml', $sstXml);
+
         $zip->close();
     }
 
