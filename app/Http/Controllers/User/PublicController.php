@@ -36,8 +36,8 @@ class PublicController extends Controller
                     COUNT(*) FILTER (WHERE nib IS NOT NULL AND nib != '') as total_nib,
                     COUNT(*) FILTER (WHERE halal_cert IS NOT NULL AND halal_cert != '') as total_halal,
                     COUNT(*) FILTER (WHERE pirt IS NOT NULL AND pirt != '') as total_pirt,
-                    COUNT(*) FILTER (WHERE gender = 'Laki-laki') as gender_male,
-                    COUNT(*) FILTER (WHERE gender = 'Perempuan') as gender_female
+                    COUNT(*) FILTER (WHERE UPPER(TRIM(gender)) IN ('LAKI-LAKI', 'L', 'PRIA')) as gender_male,
+                    COUNT(*) FILTER (WHERE UPPER(TRIM(gender)) IN ('PEREMPUAN', 'P', 'WANITA')) as gender_female
                 FROM umkm_profiles
             ");
 

@@ -24,15 +24,26 @@ class AdminController extends Controller
         $pendingUmkms = UmkmProfile::with('products')->where('status', 'pending')->latest()->get();
         $pendingProducts = Product::with('umkmProfile')->where('status', 'pending')->latest()->get();
         
-        $counts = Cache::remember('admin_dashboard_counts', 600, function() {
+        $counts = Cache::remember('admin_dashboard_counts', 300, function() {
             return DB::selectOne("
                 SELECT
                     (SELECT count(*) FROM umkm_profiles WHERE status = 'verified') as total_umkm,
-                    (SELECT count(*) FROM products WHERE status = 'verified') as total_products
+                    (SELECT count(*) FROM umkm_profiles WHERE created_at >= NOW() - INTERVAL '7 days') as new_umkm_this_week,
+                    (SELECT count(*) FROM products WHERE status = 'verified') as total_products,
+                    (SELECT count(*) FROM products WHERE status = 'verified' AND updated_at >= NOW() - INTERVAL '7 days') as new_products_this_week,
+                    (SELECT count(*) FROM consultations WHERE status IN ('menunggu', 'diproses')) as new_consultations,
+                    (SELECT count(*) FROM consultations WHERE status = 'selesai') as completed_consultations,
+                    (SELECT count(*) FROM consultations) as total_all_consultations
             ");
         });
         $totalUmkm = (int)($counts->total_umkm ?? 0);
+        $newUmkmThisWeek = (int)($counts->new_umkm_this_week ?? 0);
         $totalProducts = (int)($counts->total_products ?? 0);
+        $newProductsThisWeek = (int)($counts->new_products_this_week ?? 0);
+        $newConsultations = (int)($counts->new_consultations ?? 0);
+        $completedConsultations = (int)($counts->completed_consultations ?? 0);
+        $totalAllConsultations = (int)($counts->total_all_consultations ?? 0);
+        $completionRate = $totalAllConsultations > 0 ? round(($completedConsultations / $totalAllConsultations) * 100) : 100;
 
         $stats = Cache::remember('admin_dashboard_stats', 3600, function() {
             // Data Distribusi per Wilayah (Kecamatan)
@@ -157,6 +168,16 @@ class AdminController extends Controller
                 ->take(6)
                 ->get();
 
+            // Grafik Konsultasi Masuk per Bulan (Tahun Berjalan)
+            $monthlyConsultations = \App\Models\Consultation::whereYear('created_at', now()->year)
+                ->selectRaw("EXTRACT(MONTH FROM created_at)::int as month, count(*) as count")
+                ->groupBy('month')
+                ->pluck('count', 'month')
+                ->toArray();
+            $monthlyConsultationsData = array_map(function($m) use ($monthlyConsultations) {
+                return (int)($monthlyConsultations[$m] ?? 0);
+            }, range(1, 12));
+
             return compact(
                 'districtStats',
                 'categoryStats',
@@ -167,7 +188,8 @@ class AdminController extends Controller
                 'visitorDailyChart',
                 'visitorDeviceStats',
                 'visitorBrowserStats',
-                'visitorTopPages'
+                'visitorTopPages',
+                'monthlyConsultationsData'
             );
         });
 
@@ -190,7 +212,13 @@ class AdminController extends Controller
             'pendingUmkms' => $pendingUmkms, 
             'pendingProducts' => $pendingProducts, 
             'totalUmkm' => $totalUmkm, 
+            'newUmkmThisWeek' => $newUmkmThisWeek,
             'totalProducts' => $totalProducts,
+            'newProductsThisWeek' => $newProductsThisWeek,
+            'newConsultations' => $newConsultations,
+            'completedConsultations' => $completedConsultations,
+            'totalAllConsultations' => $totalAllConsultations,
+            'completionRate' => $completionRate,
             'wilayahWonogiri' => $wilayahWonogiri,
             'recentVisitors' => $recentVisitors,
         ], $stats));

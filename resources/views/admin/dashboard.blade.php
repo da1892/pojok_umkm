@@ -17,7 +17,7 @@
             </div>
             <p class="text-xs font-semibold text-emerald-600 flex items-center gap-1">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                +24 UMKM baru minggu ini
+                +{{ $newUmkmThisWeek ?? 0 }} UMKM baru minggu ini
             </p>
         </div>
 
@@ -34,7 +34,7 @@
             </div>
             <p class="text-xs font-semibold text-emerald-600 flex items-center gap-1">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                +56 produk baru terkurasi
+                +{{ $newProductsThisWeek ?? 0 }} produk baru terkurasi
             </p>
         </div>
 
@@ -43,13 +43,15 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Konsultasi Baru</p>
-                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">24</h3>
+                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">{{ $newConsultations ?? 0 }}</h3>
                 </div>
                 <div class="p-2.5 bg-red-50 text-[#800000] rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                 </div>
             </div>
-            <p class="text-xs font-semibold text-amber-500">Perlu penanganan segera</p>
+            <p class="text-xs font-semibold {{ ($newConsultations ?? 0) > 0 ? 'text-amber-500' : 'text-slate-400' }}">
+                {{ ($newConsultations ?? 0) > 0 ? 'Perlu penanganan segera' : 'Semua sudah ditangani' }}
+            </p>
         </div>
 
         <!-- Card 4 -->
@@ -57,13 +59,13 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Konsultasi Selesai</p>
-                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">890</h3>
+                    <h3 class="text-3xl font-bold text-slate-800 tracking-tight">{{ $completedConsultations ?? 0 }}</h3>
                 </div>
                 <div class="p-2.5 bg-red-50 text-[#800000] rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
             </div>
-            <p class="text-xs font-semibold text-emerald-600">Tingkat penyelesaian 94%</p>
+            <p class="text-xs font-semibold text-emerald-600">Tingkat penyelesaian {{ $completionRate ?? 100 }}%</p>
         </div>
     </div>
 
@@ -894,7 +896,7 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                 datasets: [{
                     label: 'Konsultasi Masuk',
-                    data: [15, 25, 30, 45, 60, 40, 75, 95, 70, 80, 50, 40],
+                    data: {!! json_encode($monthlyConsultationsData ?? [0,0,0,0,0,0,0,0,0,0,0,0]) !!},
                     backgroundColor: '#B91C1C', // tailwind red-700
                     borderRadius: 4,
                     barPercentage: 0.6,
