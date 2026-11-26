@@ -1777,101 +1777,203 @@ class AdminController extends Controller
         return back()->with('success', "Akun '{$userName}' ({$userEmail}) beserta data tokonya berhasil dihapus.");
     }
 
-    public function downloadExcelTemplate()
+    public function downloadExcelTemplate(Request $request)
     {
+        $format = strtolower((string)$request->query('format', 'xlsx'));
+        $templatePath = public_path('templates/template_import_umkm_wonogiri.xlsx');
+
+        if ($format === 'csv') {
+            $headers = [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => 'attachment; filename="template_import_umkm_wonogiri.csv"',
+                'Pragma' => 'no-cache',
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Expires' => '0',
+            ];
+
+            $callback = function() {
+                $handle = fopen('php://output', 'w');
+                fwrite($handle, "\xEF\xBB\xBF");
+
+                fputcsv($handle, [
+                    'nama_pemilik', 'email', 'password', 'gender', 'nama_usaha', 'no_whatsapp',
+                    'kecamatan', 'desa', 'alamat', 'kategori_produk', 'nama_produk', 'deskripsi_produk',
+                    'nib', 'pirt', 'halal'
+                ], ';', '"', "\\");
+
+                fputcsv($handle, [
+                    'Budi Santoso', 'budi.santoso@gmail.com', 'PojokUmkm2026!', 'L', 'Keripik Singkong Barokah',
+                    '081234567890', 'Wonogiri', 'Giriwono', 'Jl. Ahmad Yani No. 12', 'Makanan & Minuman',
+                    'Keripik Singkong Balado 250g', 'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
+                    '1234567890123', 'P-IRT 2063312010123-26', 'ID3311000123456'
+                ], ';', '"', "\\");
+
+                fclose($handle);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        }
+
+        // Default & Rekomendasi: File Excel .xlsx asli dengan layout rapi dan kolom terpisah
+        if (!file_exists($templatePath)) {
+            $this->generateXlsxTemplateFile($templatePath);
+        }
+
+        return response()->download($templatePath, 'template_import_umkm_wonogiri.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    private function generateXlsxTemplateFile(string $outputPath): void
+    {
+        $dir = dirname($outputPath);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($outputPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            return;
+        }
+
+        $zip->addFromString('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+</Types>');
+
+        $zip->addFromString('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>');
+
+        $zip->addFromString('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>');
+
+        $zip->addFromString('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheets>
+    <sheet name="Template Import UMKM" sheetId="1" r:id="rId1"/>
+  </sheets>
+</workbook>');
+
+        $zip->addFromString('xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <fonts count="2">
+    <font><sz val="11"/><name val="Calibri"/></font>
+    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+  </fonts>
+  <fills count="4">
+    <fill><patternFill patternType="none"/></fill>
+    <fill><patternFill patternType="gray125"/></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF800000"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFF8FAFC"/></patternFill></fill>
+  </fills>
+  <borders count="2">
+    <border><left/><right/><top/><bottom/></border>
+    <border>
+      <left style="thin"><color rgb="FFCBD5E1"/></left>
+      <right style="thin"><color rgb="FFCBD5E1"/></right>
+      <top style="thin"><color rgb="FFCBD5E1"/></top>
+      <bottom style="thin"><color rgb="FFCBD5E1"/></bottom>
+    </border>
+  </borders>
+  <cellStyleXfs count="1">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>
+  </cellStyleXfs>
+  <cellXfs count="4">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>
+    <xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
+  </cellXfs>
+</styleSheet>');
+
         $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="template_import_umkm_wonogiri.csv"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
+            ['col' => 'nama_pemilik', 'width' => 22],
+            ['col' => 'email', 'width' => 28],
+            ['col' => 'password', 'width' => 18],
+            ['col' => 'gender', 'width' => 10],
+            ['col' => 'nama_usaha', 'width' => 28],
+            ['col' => 'no_whatsapp', 'width' => 18],
+            ['col' => 'kecamatan', 'width' => 18],
+            ['col' => 'desa', 'width' => 18],
+            ['col' => 'alamat', 'width' => 32],
+            ['col' => 'kategori_produk', 'width' => 24],
+            ['col' => 'nama_produk', 'width' => 28],
+            ['col' => 'deskripsi_produk', 'width' => 36],
+            ['col' => 'nib', 'width' => 18],
+            ['col' => 'pirt', 'width' => 24],
+            ['col' => 'halal', 'width' => 20],
         ];
 
-        $callback = function() {
-            $handle = fopen('php://output', 'w');
-            // Tulis UTF-8 BOM agar Excel Windows langsung membaca kolom dengan sempurna
-            fwrite($handle, "\xEF\xBB\xBF");
+        $sampleRows = [
+            [
+                'Budi Santoso', 'budi.santoso@gmail.com', 'PojokUmkm2026!', 'L', 'Keripik Singkong Barokah',
+                '081234567890', 'Wonogiri', 'Giriwono', 'Jl. Ahmad Yani No. 12', 'Makanan & Minuman',
+                'Keripik Singkong Balado 250g', 'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
+                '1234567890123', 'P-IRT 2063312010123-26', 'ID3311000123456'
+            ],
+            [
+                'Siti Rahayu', 'siti.batik@gmail.com', 'PojokUmkm2026!', 'P', 'Batik Tulis Wonogiren',
+                '089876543210', 'Tirtomoyo', 'Dlepih', 'Dusun Dlepih RT 02/03', 'Batik/Fashion',
+                'Kain Batik Tulis Motif Wonogiren', 'Kain batik tulis halus dengan pewarna alam khas Wonogiri.',
+                '', '', ''
+            ],
+            [
+                'Slamet Widodo', 'slamet.madu@gmail.com', 'PojokUmkm2026!', 'L', 'Madu Hutan Asli Baturetno',
+                '085612345678', 'Baturetno', 'Baturetno', 'Jl. Raya Baturetno No. 45', 'Olahan Hasil Pertanian',
+                'Madu Murni Nektar Randu 500ml', 'Madu murni alami langsung dari peternak lebah hutan Baturetno.',
+                '9876543210987', '', 'ID3311000987654'
+            ]
+        ];
 
-            // Header kolom
-            fputcsv($handle, [
-                'nama_pemilik',
-                'email',
-                'password',
-                'gender',
-                'nama_usaha',
-                'no_whatsapp',
-                'kecamatan',
-                'desa',
-                'alamat',
-                'kategori_produk',
-                'nama_produk',
-                'deskripsi_produk',
-                'nib',
-                'pirt',
-                'halal',
-            ], ',', '"', "\\");
+        $colsXml = '<cols>';
+        foreach ($headers as $idx => $h) {
+            $cNum = $idx + 1;
+            $colsXml .= '<col min="' . $cNum . '" max="' . $cNum . '" width="' . $h['width'] . '" customWidth="1"/>';
+        }
+        $colsXml .= '</cols>';
 
-            // Contoh Data 1
-            fputcsv($handle, [
-                'Budi Santoso',
-                'budi.santoso@gmail.com',
-                'PojokUmkm2026!',
-                'L',
-                'Keripik Singkong Barokah',
-                '081234567890',
-                'Wonogiri',
-                'Giriwono',
-                'Jl. Ahmad Yani No. 12',
-                'Makanan & Minuman',
-                'Keripik Singkong Balado 250g',
-                'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
-                '1234567890123',
-                'P-IRT 2063312010123-26',
-                'ID3311000123456',
-            ], ',', '"', "\\");
+        $sheetDataXml = '<sheetData>';
+        $sheetDataXml .= '<row r="1" ht="28" customHeight="1">';
+        foreach ($headers as $idx => $h) {
+            $colLetter = chr(65 + $idx);
+            $sheetDataXml .= '<c r="' . $colLetter . '1" t="inlineStr" s="1"><is><t>' . htmlspecialchars($h['col']) . '</t></is></c>';
+        }
+        $sheetDataXml .= '</row>';
 
-            // Contoh Data 2
-            fputcsv($handle, [
-                'Siti Rahayu',
-                'siti.batik@gmail.com',
-                'PojokUmkm2026!',
-                'P',
-                'Batik Tulis Wonogiren',
-                '089876543210',
-                'Tirtomoyo',
-                'Dlepih',
-                'Dusun Dlepih RT 02/03',
-                'Batik/Fashion',
-                'Kain Batik Tulis Motif Wonogiren',
-                'Kain batik tulis halus dengan pewarna alam khas Wonogiri.',
-                '',
-                '',
-                '',
-            ], ',', '"', "\\");
+        foreach ($sampleRows as $rIdx => $rowValues) {
+            $rowNum = $rIdx + 2;
+            $styleId = ($rowNum % 2 == 0) ? 2 : 3;
+            $sheetDataXml .= '<row r="' . $rowNum . '" ht="22" customHeight="1">';
+            foreach ($rowValues as $cIdx => $val) {
+                $colLetter = chr(65 + $cIdx);
+                $sheetDataXml .= '<c r="' . $colLetter . $rowNum . '" t="inlineStr" s="' . $styleId . '"><is><t>' . htmlspecialchars($val) . '</t></is></c>';
+            }
+            $sheetDataXml .= '</row>';
+        }
+        $sheetDataXml .= '</sheetData>';
 
-            // Contoh Data 3 (Email & password kosong, sistem otomatis membuatkannya)
-            fputcsv($handle, [
-                'Slamet Widodo',
-                '',
-                '',
-                'L',
-                'Madu Hutan Asli Baturetno',
-                '085612345678',
-                'Baturetno',
-                'Belikurip',
-                'Jl. Raya Baturetno KM 3',
-                'Makanan & Minuman',
-                'Madu Hutan Murni 500ml',
-                'Madu murni alami tanpa bahan pengawet.',
-                '',
-                '',
-                '',
-            ], ',', '"', "\\");
+        $sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheetViews>
+    <sheetView tabSelected="1" workbookViewId="0">
+      <pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>
+    </sheetView>
+  </sheetViews>
+  ' . $colsXml . '
+  ' . $sheetDataXml . '
+</worksheet>';
 
-            fclose($handle);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        $zip->addFromString('xl/worksheets/sheet1.xml', $sheetXml);
+        $zip->close();
     }
 
     public function importExcel(Request $request)
