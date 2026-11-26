@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard - Pojok UMKM Wonogiri')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
@@ -46,7 +49,7 @@
             <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
                 @php
-                    $badgeCounts = \Illuminate\Support\Facades\Cache::remember('admin_sidebar_badges', 60, function() {
+                    $badgeCounts = \Illuminate\Support\Facades\Cache::remember('admin_sidebar_badges', 300, function() {
                         $row = \Illuminate\Support\Facades\DB::selectOne("
                             SELECT
                                 (SELECT count(*) FROM consultations WHERE status = 'menunggu') as unanswered,
@@ -142,7 +145,9 @@
             <div class="p-4 border-t border-white/10 bg-black/10">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin Wonogiri') }}&background=800000&color=fff" alt="User Avatar" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-[#600000] text-white flex items-center justify-center font-bold text-xs uppercase select-none">
+                            {{ strtoupper(substr(auth()->user()->name ?? 'AW', 0, 2)) }}
+                        </div>
                     </div>
                     <div class="overflow-hidden flex-1">
                         <p class="text-sm font-semibold truncate">{{ auth()->user()->name ?? 'Admin Wonogiri' }}</p>

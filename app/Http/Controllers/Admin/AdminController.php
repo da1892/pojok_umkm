@@ -24,15 +24,17 @@ class AdminController extends Controller
         $pendingUmkms = UmkmProfile::with('products')->where('status', 'pending')->latest()->get();
         $pendingProducts = Product::with('umkmProfile')->where('status', 'pending')->latest()->get();
         
-        $counts = DB::selectOne("
-            SELECT
-                (SELECT count(*) FROM umkm_profiles WHERE status = 'verified') as total_umkm,
-                (SELECT count(*) FROM products WHERE status = 'verified') as total_products
-        ");
+        $counts = Cache::remember('admin_dashboard_counts', 600, function() {
+            return DB::selectOne("
+                SELECT
+                    (SELECT count(*) FROM umkm_profiles WHERE status = 'verified') as total_umkm,
+                    (SELECT count(*) FROM products WHERE status = 'verified') as total_products
+            ");
+        });
         $totalUmkm = (int)($counts->total_umkm ?? 0);
         $totalProducts = (int)($counts->total_products ?? 0);
 
-        $stats = Cache::remember('admin_dashboard_stats', 180, function() {
+        $stats = Cache::remember('admin_dashboard_stats', 3600, function() {
             // Data Distribusi per Wilayah (Kecamatan)
             $districtStats = UmkmProfile::select('district')
                 ->selectRaw("count(CASE WHEN products.status = 'verified' THEN products.id END) as total_products")
@@ -405,7 +407,7 @@ class AdminController extends Controller
 
     public function consultations()
     {
-        $consultations = \App\Models\Consultation::with('messages')
+        $consultations = \App\Models\Consultation::with(['messages.user'])
             ->orderByRaw("CASE WHEN status = 'menunggu' THEN 0 ELSE 1 END ASC")
             ->orderBy('updated_at', 'desc')
             ->paginate(10);
@@ -547,11 +549,19 @@ class AdminController extends Controller
         $totalViews = (clone $query)->count();
         $uniqueVisitors = (clone $query)->distinct('session_id')->count('session_id');
 
-        // Ringkasan Tetap (Hari Ini & Bulan Ini)
-        $todayViews = VisitorLog::whereDate('visited_at', Carbon::today())->count();
-        $todayVisitors = VisitorLog::whereDate('visited_at', Carbon::today())->distinct('session_id')->count('session_id');
-        $monthViews = VisitorLog::where('visited_at', '>=', Carbon::now()->startOfMonth())->count();
-        $monthVisitors = VisitorLog::where('visited_at', '>=', Carbon::now()->startOfMonth())->distinct('session_id')->count('session_id');
+        // Ringkasan Tetap (Hari Ini & Bulan Ini) dikonsolidasikan dalam 1 query SQL
+        $fixedSummary = DB::selectOne("
+            SELECT
+                COUNT(*) FILTER (WHERE visited_at::date = CURRENT_DATE) as today_views,
+                COUNT(DISTINCT session_id) FILTER (WHERE visited_at::date = CURRENT_DATE) as today_visitors,
+                COUNT(*) FILTER (WHERE visited_at >= date_trunc('month', CURRENT_DATE)) as month_views,
+                COUNT(DISTINCT session_id) FILTER (WHERE visited_at >= date_trunc('month', CURRENT_DATE)) as month_visitors
+            FROM visitor_logs
+        ");
+        $todayViews = (int)($fixedSummary->today_views ?? 0);
+        $todayVisitors = (int)($fixedSummary->today_visitors ?? 0);
+        $monthViews = (int)($fixedSummary->month_views ?? 0);
+        $monthVisitors = (int)($fixedSummary->month_visitors ?? 0);
 
         // Chart Data Kunjungan
         $chartStartDate = Carbon::now()->subDays($daysForChart - 1)->startOfDay();
@@ -1451,12 +1461,17 @@ class AdminController extends Controller
 
         $users = $query->paginate(15)->withQueryString();
 
-        $totalUmkmUsers = User::where(function($q) {
-            $q->where('role', 'umkm')->orWhereHas('umkmProfile');
-        })->where('role', '!=', 'admin')->count();
-        $totalAdminUsers = User::where('role', 'admin')->count();
-        $totalProductsCount = Product::count();
-        $totalVerifiedUmkms = UmkmProfile::where('status', 'verified')->count();
+        $usersCounts = DB::selectOne("
+            SELECT
+                (SELECT count(*) FROM users WHERE (role = 'umkm' OR id IN (SELECT user_id FROM umkm_profiles WHERE user_id IS NOT NULL)) AND role != 'admin') as total_umkm,
+                (SELECT count(*) FROM users WHERE role = 'admin') as total_admin,
+                (SELECT count(*) FROM products) as total_products,
+                (SELECT count(*) FROM umkm_profiles WHERE status = 'verified') as total_verified_umkms
+        ");
+        $totalUmkmUsers = (int)($usersCounts->total_umkm ?? 0);
+        $totalAdminUsers = (int)($usersCounts->total_admin ?? 0);
+        $totalProductsCount = (int)($usersCounts->total_products ?? 0);
+        $totalVerifiedUmkms = (int)($usersCounts->total_verified_umkms ?? 0);
 
         $districts = $this->getWilayahWonogiri();
 

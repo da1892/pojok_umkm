@@ -94,7 +94,7 @@ class Consultation extends Model
      */
     public function getThreadMessagesAttribute()
     {
-        $msgs = $this->messages()->with('user')->get();
+        $msgs = $this->relationLoaded('messages') ? $this->messages : $this->messages()->with('user')->get();
 
         if ($msgs->isNotEmpty()) {
             return $msgs;
