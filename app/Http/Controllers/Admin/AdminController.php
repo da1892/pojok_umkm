@@ -1801,13 +1801,6 @@ class AdminController extends Controller
                     'nib', 'pirt', 'halal'
                 ], ';', '"', "\\");
 
-                fputcsv($handle, [
-                    'Budi Santoso', 'budi.santoso@gmail.com', 'PojokUmkm2026!', 'L', 'Keripik Singkong Barokah',
-                    '081234567890', 'Wonogiri', 'Giriwono', 'Jl. Ahmad Yani No. 12', 'Makanan & Minuman',
-                    'Keripik Singkong Balado 250g', 'Keripik singkong renyah dengan bumbu balado khas Wonogiri.',
-                    '1234567890123', 'P-IRT 2063312010123-26', 'ID3311000123456'
-                ], ';', '"', "\\");
-
                 fclose($handle);
             };
 
@@ -1815,7 +1808,7 @@ class AdminController extends Controller
         }
 
         // Default & Rekomendasi: File Excel .xlsx asli dengan layout rapi dan kolom terpisah
-        if (!file_exists($templatePath) || filesize($templatePath) < 6000) {
+        if (!file_exists($templatePath)) {
             $this->generateXlsxTemplateFile($templatePath);
         }
 
@@ -1937,128 +1930,7 @@ class AdminController extends Controller
             ['col' => 'halal', 'width' => 20],
         ];
 
-        $sampleRows = [
-            [
-                'Budi Santoso', 'budi.santoso@gmail.com', 'PojokUmkm2026!', 'L', 'Mete Wonogiri Lestari',
-                '081234567801', 'Wonogiri', 'Giriwono', 'Jl. Ahmad Yani No. 12, Giriwono', 'Makanan & Minuman',
-                'Kacang Mete Oven Asli Wonogiri 500g', 'Kacang mete kualitas super oven renyah tanpa minyak khas Wonogiri.',
-                '1234567890101', 'P-IRT 2063312010101-26', 'ID3311000101001'
-            ],
-            [
-                'Siti Rahayu', 'siti.rahayu@gmail.com', 'PojokUmkm2026!', 'P', 'Batik Tulis Wonogiren Dlepih',
-                '089876543202', 'Tirtomoyo', 'Dlepih', 'Dusun Dlepih RT 02 RW 03', 'Batik/Fashion',
-                'Selendang Batik Tulis Motif Remukan', 'Selendang batik tulis motif remukan khas Wonogiren pewarna alami.',
-                '1234567890102', '', 'ID3311000101002'
-            ],
-            [
-                'Slamet Widodo', 'slamet.widodo@gmail.com', 'PojokUmkm2026!', 'L', 'Madu Hutan Baturetno Alami',
-                '085612345603', 'Baturetno', 'Belikurip', 'Jl. Raya Baturetno KM 3', 'Olahan Hasil Pertanian',
-                'Madu Hutan Murni Nektar Randu 500ml', 'Madu murni segar langsung dari peternak hutan lebah Baturetno.',
-                '1234567890103', 'P-IRT 2063312010103-26', 'ID3311000101003'
-            ],
-            [
-                'Sri Wahyuni', 'sri.wahyuni@gmail.com', 'PojokUmkm2026!', 'P', 'Tiwul Instan Manis Giriwoyo',
-                '087712345604', 'Giriwoyo', 'Platarejo', 'Dusun Platarejo RT 01 RW 02', 'Makanan & Minuman',
-                'Tiwul Instan Rasa Pandan Gula Jawa', 'Makanan tradisional tiwul instan berbahan singkong pilihan khas Giriwoyo.',
-                '1234567890104', 'P-IRT 2063312010104-26', 'ID3311000101004'
-            ],
-            [
-                'Joko Prasetyo', 'joko.prasetyo@gmail.com', 'PojokUmkm2026!', 'L', 'Kerajinan Wayang Kulit Kepuhsari',
-                '081398765405', 'Manyaran', 'Kepuhsari', 'Kampung Wayang Kepuhsari RT 03', 'Kerajinan',
-                'Wayang Kulit Tokoh Pandawa 50cm', 'Wayang kulit tatah sungging halus dari kulit kerbau asli khas Manyaran.',
-                '1234567890105', '', ''
-            ],
-            [
-                'Rina Marlina', 'rina.marlina@gmail.com', 'PojokUmkm2026!', 'P', 'Geti Wijen Karang Slogohimo',
-                '085798765406', 'Slogohimo', 'Sedayu', 'Jl. Sedayu - Slogohimo No. 25', 'Makanan & Minuman',
-                'Geti Wijen Gula Jawa Asli 300g', 'Camilan renyah manis perpaduan wijen lokal dan gula kelapa alami.',
-                '1234567890106', 'P-IRT 2063312010106-26', 'ID3311000101006'
-            ],
-            [
-                'Agus Hartono', 'agus.hartono@gmail.com', 'PojokUmkm2026!', 'L', 'Kerupuk Rambak Sapi Selogiri',
-                '081298765407', 'Selogiri', 'Kaliancar', 'Jl. Raya Selogiri - Solo KM 5', 'Makanan & Minuman',
-                'Kerupuk Rambak Kulit Sapi Gurih 200g', 'Kerupuk rambak kulit sapi murni renyah gurih tanpa pengawet buatan.',
-                '1234567890107', 'P-IRT 2063312010107-26', 'ID3311000101007'
-            ],
-            [
-                'Endang Susanti', 'endang.susanti@gmail.com', 'PojokUmkm2026!', 'P', 'Emping Melinjo Super Purwantoro',
-                '087898765408', 'Purwantoro', 'Bangsri', 'Dusun Bangsri RT 04 RW 01', 'Olahan Hasil Pertanian',
-                'Emping Melinjo Tipis Renyah 500g', 'Emping melinjo kualitas ekspor renyah gurih tanpa rasa pahit berlebih.',
-                '1234567890108', 'P-IRT 2063312010108-26', 'ID3311000101008'
-            ],
-            [
-                'Bambang Sutrisno', 'bambang.sutrisno@gmail.com', 'PojokUmkm2026!', 'L', 'Kopi Robusta Brenggolo',
-                '085298765409', 'Jatiroto', 'Brenggolo', 'Perbukitan Brenggolo RT 02', 'Olahan Hasil Pertanian',
-                'Kopi Robusta Brenggolo Fine Robusta 250g', 'Kopi petik merah dari lereng pegunungan Brenggolo aroma rempah khas.',
-                '1234567890109', 'P-IRT 2063312010109-26', 'ID3311000101009'
-            ],
-            [
-                'Tri Handayani', 'tri.handayani@gmail.com', 'PojokUmkm2026!', 'P', 'Abon Sapi Wonogiri Sedap',
-                '081598765410', 'Selogiri', 'Pare', 'Jl. Raya Pare No. 8, Selogiri', 'Makanan & Minuman',
-                'Abon Daging Sapi Murni Spesial 250g', 'Abon daging sapi segar dengan serat lembut dan racikan bumbu rempah tradisi.',
-                '1234567890110', 'P-IRT 2063312010110-26', 'ID3311000101010'
-            ],
-            [
-                'Hendro Wibowo', 'hendro.wibowo@gmail.com', 'PojokUmkm2026!', 'L', 'Minyak Kelapa Murni Eromoko',
-                '082198765411', 'Eromoko', 'Baleharjo', 'Dusun Baleharjo RT 01 RW 03', 'Produk Kreatif',
-                'Virgin Coconut Oil (VCO) Cold Pressed 250ml', 'Minyak kelapa murni proses dingin kaya asam laurat untuk kesehatan.',
-                '1234567890111', 'P-IRT 2063312010111-26', 'ID3311000101011'
-            ],
-            [
-                'Dewi Anggraeni', 'dewi.anggraeni@gmail.com', 'PojokUmkm2026!', 'P', 'Sambal Pecel Mete Wonogiri',
-                '081798765412', 'Wonogiri', 'Wonokarto', 'Jl. Ki Mangunsarkoro No. 19', 'Makanan & Minuman',
-                'Bumbu Sambal Pecel Kacang Mede 300g', 'Bumbu pecel istimewa dengan campuran kacang mete gurih dan cabai segar.',
-                '1234567890112', 'P-IRT 2063312010112-26', 'ID3311000101012'
-            ],
-            [
-                'Danang Kusuma', 'danang.kusuma@gmail.com', 'PojokUmkm2026!', 'L', 'Anyaman Bambu Lestari Wuryantoro',
-                '085898765413', 'Wuryantoro', 'Gumiwang Lor', 'Dusun Gumiwang Lor RT 02', 'Kerajinan',
-                'Besek Bambu & Tas Anyaman Hantaran', 'Kerajinan anyaman bambu halus ramah lingkungan untuk wadah oleh-oleh.',
-                '1234567890113', '', ''
-            ],
-            [
-                'Nurul Hidayah', 'nurul.hidayah@gmail.com', 'PojokUmkm2026!', 'P', 'Keripik Pisang Tanduk Jatipurno',
-                '082298765414', 'Jatipurno', 'Kopen', 'Jl. Raya Jatipurno KM 2', 'Makanan & Minuman',
-                'Keripik Pisang Tanduk Gurih Renyah 200g', 'Olahan pisang tanduk lereng Lawu selatan renyah manis gurih alami.',
-                '1234567890114', 'P-IRT 2063312010114-26', 'ID3311000101014'
-            ],
-            [
-                'Eko Setiawan', 'eko.setiawan@gmail.com', 'PojokUmkm2026!', 'L', 'Sambal Ikan Wader Gajah Mungkur',
-                '081998765415', 'Wuryantoro', 'Pulutan Kulon', 'Kawasan Waduk Gajah Mungkur RT 03', 'Makanan & Minuman',
-                'Sambal Ikan Wader Krispi Kemasan Botol 150g', 'Sambal pedas gurih dengan topping ikan wader air tawar segar waduk.',
-                '1234567890115', 'P-IRT 2063312010115-26', 'ID3311000101015'
-            ],
-            [
-                'Yuliana Sari', 'yuliana.sari@gmail.com', 'PojokUmkm2026!', 'P', 'Teh Herbal Daun Kelor Pracimantoro',
-                '085398765416', 'Pracimantoro', 'Gebangharjo', 'Dusun Gebangharjo RT 01', 'Olahan Hasil Pertanian',
-                'Teh Celup Daun Kelor Organik 20 Kantung', 'Minuman herbal kaya antioksidan dari budidaya kelor pegunungan karst.',
-                '1234567890116', 'P-IRT 2063312010116-26', 'ID3311000101016'
-            ],
-            [
-                'Arif Rahman', 'arif.rahman@gmail.com', 'PojokUmkm2026!', 'L', 'Jahe Merah Instan Bulukerto',
-                '081898765417', 'Bulukerto', 'Nadi', 'Lereng Gunung Gajah RT 02', 'Olahan Hasil Pertanian',
-                'Serbuk Jahe Merah Gula Aren 250g', 'Minuman penghangat tubuh dari jahe merah segar dan gula aren murni.',
-                '1234567890117', 'P-IRT 2063312010117-26', 'ID3311000101017'
-            ],
-            [
-                'Ratna Kumala', 'ratna.kumala@gmail.com', 'PojokUmkm2026!', 'P', 'Keripik Jamur Tiram Crispy',
-                '087698765418', 'Slogohimo', 'Pandan', 'Dusun Pandan RT 03 RW 01', 'Makanan & Minuman',
-                'Keripik Jamur Tiram Rasa Bawang 150g', 'Jamur tiram segar dibalut tepung berbumbu gurih renyah tahan lama.',
-                '1234567890118', 'P-IRT 2063312010118-26', 'ID3311000101018'
-            ],
-            [
-                'Sugeng Riyadi', 'sugeng.riyadi@gmail.com', 'PojokUmkm2026!', 'L', 'Kerajinan Kayu Jati Paranggupito',
-                '082398765419', 'Paranggupito', 'Gunturharjo', 'Kawasan Pesisir Gunturharjo RT 01', 'Kerajinan',
-                'Piring & Cangkir Kayu Jati Food Grade', 'Perlengkapan makan unik bernilai seni tinggi dari limbah kayu jati solid.',
-                '1234567890119', '', ''
-            ],
-            [
-                'Mega Puspitasari', 'mega.puspitasari@gmail.com', 'PojokUmkm2026!', 'P', 'Kemeja Ecoprint Daun Jati Wonogiri',
-                '085998765420', 'Ngadirojo', 'Ngadirojo Kidul', 'Jl. Raya Wonogiri - Ponorogo KM 8', 'Batik/Fashion',
-                'Kemeja Pria Ecoprint Motif Daun Jati & Lanang', 'Pakaian motif ecoprint teknik kukus memanfaatkan tanin daun jati asli.',
-                '1234567890120', '', 'ID3311000101020'
-            ]
-        ];
+        $sampleRows = [];
 
         $numCols = count($headers);
         $lastColLetter = '';
